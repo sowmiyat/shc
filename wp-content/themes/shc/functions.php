@@ -7,7 +7,6 @@ function change_footer_admin () {
 }
 add_filter('admin_footer_text', 'change_footer_admin', 9999);
 
-
 function my_footer_shh() {
 	remove_filter( 'update_footer', 'core_update_footer' ); 
 	add_filter( 'screen_options_show_screen', '__return_false' );
