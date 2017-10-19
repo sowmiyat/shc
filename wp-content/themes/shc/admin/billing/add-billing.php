@@ -215,7 +215,7 @@
 
 									<span style="margin-left: 10%;">
 										<B>Unit(Quantity):</B>
-										<input type="number" name="unit" value="1" id="retail_unit" class="retail_unit" min="0"/>
+										<input type="number" name="unit"  id="retail_unit" class="retail_unit" min="1"/>
 									</span>	
 									<span style="margin-left: 10%;">
 										<B>Discounted Price:</B>
@@ -449,7 +449,7 @@
 										<?php
 											} else {
 										?>
-											<button class="btn btn-success pull-right bill_submit" id="submit_payment" style="display:none;"><i class="fa fa-credit-card" ></i> Create Invoice</button>
+											<button class="btn btn-success pull-right bill_submit" id="submit_payment"><i class="fa fa-credit-card" ></i> Create Invoice</button>
 										<?php
 											}
 										?>

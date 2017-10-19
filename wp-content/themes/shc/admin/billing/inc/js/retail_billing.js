@@ -238,7 +238,6 @@ jQuery( "#billing_customer" ).autocomplete ({
                 var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="customer_table_retail" ><td class="td_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="customer_detail['+current_row+'][id]" class="sub_id" /><td class="td_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="customer_detail['+current_row+'][product]" class="sub_product"/><td class="td_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="customer_detail['+current_row+'][hsn]" class="sub_hsn"/><td class=""><input type="text" value = "'+ unit + '" name="customer_detail['+current_row+'][unit]" class="sub_unit"/> </td> <td class="td_stock">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][stock]" class="sub_stock"/><td class="td_price">' + price + '</td> <input type="hidden" value = "'+ price + '" name="customer_detail['+current_row+'][price]" class="sub_price"/> <td><input type="text" value ="'+ discount +'" name="customer_detail['+current_row+'][discount]" class="sub_discount"/></td><input type="hidden" value ="each" name="customer_detail['+current_row+'][discount_type]" class="discount_type"/><td class="td_amt">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][amt]" class="sub_amt"/><td class="td_cgst">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="customer_detail['+current_row+'][cgst]" class="sub_cgst"/> <td class="td_cgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][cgst_value]" class="sub_cgst_value"/><td class="td_sgst">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="customer_detail['+current_row+'][sgst]" class="sub_sgst"/><td class="td_sgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][sgst_value]" class="sub_sgst_value"/><td class="td_subtotal"></td> <input type="hidden" value ="" name="customer_detail['+current_row+'][subtotal]" class="sub_total"/><td><span class="sub_delete">Delete</span></td></tr>';                
                 jQuery('#bill_lot_add_retail').append(str);
             }
-        jQuery('.bill_submit').css('display','block');
             rowCalculate();
             jQuery('.retail_unit').val('0');
             jQuery('.retail_discount').val('0.00');
@@ -293,51 +292,65 @@ jQuery( "#billing_customer" ).autocomplete ({
     /*Submit Payment*/
     jQuery('#billing_container #submit_payment').on('click', function() {
 
-        var bill_update_url = bill_update.updateurl;
-        jQuery('#lightbox').css('display','block');
-        jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                action : 'create_order',
-                data : jQuery('#billing_container :input').serialize()
-            },
-            success: function (data) {
-                clearPopup();
-                popItUp('Success', 'Bill Created!');
-                jQuery('#lightbox').css('display','none');
-                console.log("efklf");
-                console.log(data);
-                window.location = bill_update_url+'&id='+data.inv_id;
+        var existing_count = parseInt( jQuery('#bill_lot_add_retail tr').length );
+        if(existing_count != 0 ) {
 
-            }
-        });
+            var bill_update_url = bill_update.updateurl;
+            jQuery('#lightbox').css('display','block');
+            jQuery.ajax({
+                type: "POST",
+                dataType : "json",
+                url: frontendajax.ajaxurl,
+                data: {
+                    action : 'create_order',
+                    data : jQuery('#billing_container :input').serialize()
+                },
+                success: function (data) {
+                    clearPopup();
+                    popItUp('Success', 'Bill Created!');
+                    jQuery('#lightbox').css('display','none');
+                    console.log("efklf");
+                    console.log(data);
+                    window.location = bill_update_url+'&id='+data.inv_id;
+
+                }
+            });
+        }
+        else {
+            alert('Please Add Atleast One Product!!! Empty Bill Can'+" ' "+'t Submit');
+        }
     });
 
 
      /*Update Payment*/
     jQuery('#billing_container #update_payment').on('click', function(){
 
-        var bill_invoice_url = bill_invoice.invoiceurl;
-        jQuery('#lightbox').css('display','block');
-        jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                action : 'update_order',
-                data : jQuery('#billing_container :input').serialize()
-            },
-            success: function (data) {
-                clearPopup();
-                popItUp('Success', 'Successfully Updated!');
-                jQuery('#lightbox').css('display','none');
+        var existing_count = parseInt( jQuery('#bill_lot_add_retail tr').length );
+        if(existing_count != 0 ) {
 
-                window.location = bill_invoice_url+'&id='+data.inv_id + '&year='+ data.year;
+            var bill_invoice_url = bill_invoice.invoiceurl;
+            jQuery('#lightbox').css('display','block');
+            jQuery.ajax({
+                type: "POST",
+                dataType : "json",
+                url: frontendajax.ajaxurl,
+                data: {
+                    action : 'update_order',
+                    data : jQuery('#billing_container :input').serialize()
+                },
+                success: function (data) {
+                    clearPopup();
+                    popItUp('Success', 'Successfully Updated!');
+                    jQuery('#lightbox').css('display','none');
 
-            }
-        });
+                    window.location = bill_invoice_url+'&id='+data.inv_id + '&year='+ data.year;
+
+                }
+            });
+        }
+        else {
+            alert('Please Add Atleast One Product!!! Empty Bill Can'+" ' "+'t Submit');
+        }
         
     });
 

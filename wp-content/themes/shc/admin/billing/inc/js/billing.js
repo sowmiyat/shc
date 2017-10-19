@@ -1,6 +1,7 @@
 jQuery(document).ready(function (argument) {
 
 jQuery('#ws_billing_customer').focus();
+
     jQuery('.year').datepicker({
         changeYear: true,
         showButtonPanel: true,
@@ -86,102 +87,36 @@ jQuery('#ws_billing_customer').focus();
     });
 //<-------- End  Popup Display for Home Delivery Click  --->
 
-//<-- Get Home delivery Address is current Customer Address-->
-
-    // jQuery('.home_delivery_check').live('change',function() {
-    //     var home_delivery =  jQuery('.home_delivery_check:checked').val(); 
-    //     var customer_type = jQuery('.customer_type').val();
-
-    //     if(home_delivery == 'yes' && customer_type == 'retail_customer' ) {
-
-    //           if( jQuery('.user_type').val() == 'new' ) {
-    //             var customer_id = jQuery('.customer_id_new').val();
-    //            }
-    //            else {
-    //             var customer_id = jQuery('.old_customer_id').val();
-    //            }  
-                 
-    //         jQuery.ajax ({
-    //             type: "POST",
-    //             dataType : "json",
-    //             url: frontendajax.ajaxurl,
-    //             data: {
-    //                 action          :'home_delivery_fetch',
-    //                 customer_id     : customer_id
-    //             },
-    //             success: function (data) {
-                
-    //             jQuery('.delivery_name').val(data.name).prop("readonly", true);
-    //             jQuery('.delivery_mobile').val(data.mobile).prop("readonly", true);
-    //             jQuery('.delivery_address').val(data.address).prop("readonly", true);
-
-    //             }
-    //         });
-
-    //     }
-    //     else if(home_delivery == 'yes' && customer_type == 'wholesale_customer' ) {
-
-    //           if( jQuery('.ws_user_type').val() == 'new' ) {
-    //             var customer_id = jQuery('.ws_customer_id_new').val();
-    //            }
-    //            else {
-    //             var customer_id = jQuery('.ws_old_customer_id').val();
-    //            }  
-                 
-    //         jQuery.ajax ({
-    //             type: "POST",
-    //             dataType : "json",
-    //             url: frontendajax.ajaxurl,
-    //             data: {
-    //                 action          :'ws_home_delivery_fetch',
-    //                 customer_id     : customer_id
-    //             },
-    //             success: function (data) {
-                
-    //             jQuery('.delivery_name').val(data.customer_name).prop("readonly", true);
-    //             jQuery('.delivery_mobile').val(data.mobile).prop("readonly", true);
-    //             jQuery('.delivery_address').val(data.address).prop("readonly", true);
-
-    //             }
-    //         });
-
-    //     }
-
-    //     else {
-
-    //         jQuery('.delivery_name').val('').prop("readonly", false);
-    //         jQuery('.delivery_mobile').val('').prop("readonly", false);
-    //         jQuery('.delivery_address').val('').prop("readonly", false);
-    //     }
-
-    // });
-
-//<-- End  Get Home delivery Address is current Customer Address-->
-  
-
       /*WS Submit Payment*/
-    jQuery('#ws_billing_container #ws_submit_payment').on('click', function(){
+    jQuery('#ws_billing_container #ws_submit_payment').on('click', function() {
 
-        var bill_update_url = bill_updatews.updateurlws;
-        jQuery('#lightbox').css('display','block');
-        jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                action : 'ws_create_order',
-                data   : jQuery('#ws_billing_container :input').serialize()
-            },
-            success: function (data) {
-                clearPopup();
-                popItUp('Success', 'Bill Created!');
-                jQuery('#lightbox').css('display','none');
-                console.log("efklf");
-                console.log(data);
-              window.location = bill_update_url+'&id='+data.inv_id;
+        var existing_count = parseInt( jQuery('#bill_lot_add tr').length );
+        if(existing_count != 0 ){
 
-            }
-        });
+            var bill_update_url = bill_updatews.updateurlws;
+            jQuery('#lightbox').css('display','block');
+            jQuery.ajax({
+                type: "POST",
+                dataType : "json",
+                url: frontendajax.ajaxurl,
+                data: {
+                    action : 'ws_create_order',
+                    data   : jQuery('#ws_billing_container :input').serialize()
+                },
+                success: function (data) {
+                    clearPopup();
+                    popItUp('Success', 'Bill Created!');
+                    jQuery('#lightbox').css('display','none');
+                    console.log("efklf");
+                    console.log(data);
+                  window.location = bill_update_url+'&id='+data.inv_id;
+
+                }
+            });
+        }
+        else {
+            alert('Please Add Atleast One Product!!! Empty Bill Can'+" ' "+'t Submit');
+        }
     });
 
    
@@ -801,7 +736,7 @@ jQuery( document ).ready(function() {
                     jQuery('.unit').val('0');
                     jQuery('.discount').val('0.00');
             }
-            jQuery('.ws_bill_submit').css('display','block');
+            // jQuery('.ws_bill_submit').css('display','block');
              ws_rowCalculate();
            
         } 

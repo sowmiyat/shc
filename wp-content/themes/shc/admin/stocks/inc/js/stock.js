@@ -142,10 +142,10 @@ function formatStateStockCreate (state) {
     return state.id;
   }
   var $state = jQuery(
-    '<span><b>Brand Name:</b>' +
+    '<span><b>Brand Name &nbsp;&nbsp;&nbsp;&nbsp;:</b>' +
       state.brand_name +
     '</span><br/>' +
-    '<span><b>Product Name:</b>' +
+    '<span><b>Product Name &nbsp;:</b>' +
       state.product_name +
     '</span>'
   );
