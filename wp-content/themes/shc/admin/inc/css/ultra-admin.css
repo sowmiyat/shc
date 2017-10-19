@@ -217,7 +217,7 @@ background-color: #1a1a1a; /*@*/
 
 #adminmenu li.menu-top{
 	padding:0;
-	min-height: 46px;
+	min-height: 40px;
 }
 
 #adminmenu .wp-submenu-head, #adminmenu a.menu-top{
@@ -244,7 +244,7 @@ background-color: #1a1a1a; /*@*/
 
 #adminmenu div.wp-menu-image{
 	width: 46px;
-	height: 46px;
+	height: 40px;
 }
 
 div.wp-menu-image:before{
@@ -918,9 +918,11 @@ input[type=checkbox], input[type=color], input[type=date], input[type=datetime-l
 	-o-box-shadow: none;
 	padding: 6px;
 	line-height: 23px;
-	font-size: 12px;
+	font-size: 14px;
 	margin-bottom: 5px;
 	color: #333333;
+	max-width: 150px;
+    height: 25px;
 }
 
 input[type=checkbox]{
@@ -1840,10 +1842,11 @@ div#widgets-right .widgets-holder-wrap.widget-hover{
 }
 
 .wp-admin select {
-	padding: 8px;
 	line-height: 23px;
 	height: auto;
 	vertical-align: middle;
+	max-width: 150px;
+    height: 25px;
 }
 
 .manage-menus .selected-menu {
@@ -3784,7 +3787,7 @@ As suggested by "anthonyparsons" on envato
 	Generated Dynamically
 ---------------------------------------------*/
 
- h1,h2,h3,h4,h5,h6, .postbox .hndle, .stuffbox .hndle, #delete-action, #dashboard-widgets #dashboard_activity h4, .welcome-panel h3, .welcome-panel .about-description,#titlediv #title,.widefat tfoot tr th, .widefat thead tr th, th.manage-column a, th.sortable a,.form-wrap label,.theme-browser .theme .theme-name, .theme-browser .theme .more-details, .no-plugin-results , .no-plugin-results a,.form-table th, #ws_menu_editor .ws_item_title,#ws_menu_editor .ws_edit_field, .settings_page_menu_editor .ui-dialog-title{font-family: 'Oswald', Arial, Helvetica, sans-serif;  font-weight:300;  font-style:normal; } body, p, #activity-widget #the-comment-list .comment-item h4,#wpadminbar, .ws_edit_field-colors .ws_color_scheme_display, #ws_menu_editor .ws_main_container .ws_edit_field input, #ws_menu_editor .ws_main_container .ws_edit_field select, #ws_menu_editor .ws_main_container .ws_edit_field textarea{font-family: 'Open Sans', Arial, Helvetica, sans-serif;  font-weight:400;  font-size:14px;  line-height:23px;  font-style:normal; } #adminmenu .wp-submenu-head, #adminmenu a.menu-top, #adminmenu .wp-has-current-submenu ul>li>a, .folded #adminmenu li.menu-top .wp-submenu>li>a, #adminmenu .wp-not-current-submenu li>a, .folded #adminmenu .wp-has-current-submenu li>a,#collapse-menu{ font-family: 'Oswald', Arial, Helvetica, sans-serif;  font-weight:300;  font-size:12px;  line-height:46px;  font-style:normal; } .wp-core-ui .button, .wp-core-ui .button-secondary,.wp-core-ui .button-primary,.upload-plugin .install-help, .upload-theme .install-help,.wordfenceWrap input[type='button'], .wordfenceWrap input[type='submit']{ font-family: 'Oswald', Arial, Helvetica, sans-serif;  font-weight:300;  font-size:15px;  line-height:23px;  font-style:normal; } 
+ h1,h2,h3,h4,h5,h6, .postbox .hndle, .stuffbox .hndle, #delete-action, #dashboard-widgets #dashboard_activity h4, .welcome-panel h3, .welcome-panel .about-description,#titlediv #title,.widefat tfoot tr th, .widefat thead tr th, th.manage-column a, th.sortable a,.form-wrap label,.theme-browser .theme .theme-name, .theme-browser .theme .more-details, .no-plugin-results , .no-plugin-results a,.form-table th, #ws_menu_editor .ws_item_title,#ws_menu_editor .ws_edit_field, .settings_page_menu_editor .ui-dialog-title{font-family: 'Oswald', Arial, Helvetica, sans-serif;  font-weight:300;  font-style:normal; } body, p, #activity-widget #the-comment-list .comment-item h4,#wpadminbar, .ws_edit_field-colors .ws_color_scheme_display, #ws_menu_editor .ws_main_container .ws_edit_field input, #ws_menu_editor .ws_main_container .ws_edit_field select, #ws_menu_editor .ws_main_container .ws_edit_field textarea{font-family: 'Open Sans', Arial, Helvetica, sans-serif;  font-weight:400;  font-size:14px;  line-height:23px;  font-style:normal; } #adminmenu .wp-submenu-head, #adminmenu a.menu-top, #adminmenu .wp-has-current-submenu ul>li>a, .folded #adminmenu li.menu-top .wp-submenu>li>a, #adminmenu .wp-not-current-submenu li>a, .folded #adminmenu .wp-has-current-submenu li>a,#collapse-menu{ font-family: 'Oswald', Arial, Helvetica, sans-serif;  font-weight:300;  font-size:12px;  line-height:40px;  font-style:normal; } .wp-core-ui .button, .wp-core-ui .button-secondary,.wp-core-ui .button-primary,.upload-plugin .install-help, .upload-theme .install-help,.wordfenceWrap input[type='button'], .wordfenceWrap input[type='submit']{ font-family: 'Oswald', Arial, Helvetica, sans-serif;  font-weight:300;  font-size:15px;  line-height:23px;  font-style:normal; } 
 /* -- Page BG -- */
  html, #ws_menu_editor .ws_editbox{background-color: #ffffff;} 
  
@@ -3801,7 +3804,8 @@ a, .no-plugin-results a{color:rgba(50,50,58,1) /*#32323a*/;} a:hover, .no-plugin
 /* -- primary -- */
  .nav-tab, .nav-tab-active, .nav-tab-active:hover , .nav-tab:hover, input[type=checkbox]:checked:before,a.post-format-icon:hover:before, a.post-state-format:hover:before,.view-switch a.current:before,.theme-browser .theme.add-new-theme:focus span:after, .theme-browser .theme.add-new-theme:hover span:after,.theme-browser .theme.add-new-theme span:after,.nav-tab-active, .nav-tab-active:hover,.filter-links .current,.filter-links li>a:focus, .filter-links li>a:hover, .show-filters .filter-links a.current:focus, .show-filters .filter-links a.current:hover,.upload-plugin .wp-upload-form .button,.upload-plugin .wp-upload-form .button:disabled{color:rgba(31,181,172,1.0) /*#1fb5ac*/;} 
  .highlight, .highlight a, input[type=radio]:checked:before,#edit-slug-box .edit-slug.button, #edit-slug-box #view-post-btn .button,.post-com-count:hover:after, .post-com-count:hover span,.tablenav .tablenav-pages a:focus, .tablenav .tablenav-pages a:hover,.media-item .bar,.theme-browser .theme .more-details,.theme-browser .theme.add-new-theme:focus:after, .theme-browser .theme.add-new-theme:hover:after,.widgets-chooser li.widgets-chooser-selected,.plugin-card .plugin-card-bottom,.pace .pace-progress, #ws_menu_editor a.ws_button:hover,#ws_menu_editor .ws_main_container .ws_container{background-color:rgba(31,181,172,1.0) /*#1fb5ac*/;} 
- input[type=checkbox]:focus, input[type=color]:focus, input[type=date]:focus, input[type=datetime-local]:focus, input[type=datetime]:focus, input[type=email]:focus, input[type=month]:focus, input[type=number]:focus, input[type=password]:focus, input[type=radio]:focus, input[type=search]:focus, input[type=tel]:focus, input[type=text]:focus, input[type=time]:focus, input[type=url]:focus, input[type=week]:focus, select:focus, textarea:focus,input[type=checkbox]:hover, input[type=color]:hover, input[type=date]:hover, input[type=datetime-local]:hover, input[type=datetime]:hover, input[type=email]:hover, input[type=month]:hover, input[type=number]:hover, input[type=password]:hover, input[type=radio]:hover, input[type=search]:hover, input[type=tel]:hover, input[type=text]:hover, input[type=time]:hover, input[type=url]:hover, input[type=week]:hover, select:hover, textarea:hover,#titlediv #title:focus, #titlediv #title:hover,.attachment-preview .thumbnail:hover,.media-frame.mode-grid .attachment.details:focus .attachment-preview,.media-frame.mode-grid .attachment:focus .attachment-preview,.media-frame.mode-grid .selected.attachment:focus .attachment-preview,.drag-drop.drag-over #drag-drop-area,.theme-browser .theme:focus,#available-widgets .widget-top:hover, #widgets-left .widget-in-question .widget-top, #widgets-left .widget-top:hover, .widgets-chooser ul, div#widgets-right .widget-top:hover,.widget-inside, .widget.open .widget-top, div#widgets-right .widgets-holder-wrap.widget-hover,.filter-links .current,.plugin-card:hover,.contextual-help-tabs .active{border-color:rgba(31,181,172,1.0) /*#1fb5ac*/;}
+ input[type=checkbox]:focus, input[type=color]:focus, input[type=date]:focus, input[type=datetime-local]:focus, input[type=datetime]:focus, input[type=email]:focus, input[type=month]:focus, input[type=number]:focus, input[type=password]:focus, input[type=radio]:focus, input[type=search]:focus, input[type=tel]:focus, input[type=text]:focus, input[type=time]:focus, input[type=url]:focus, input[type=week]:focus, select:focus, textarea:focus,input[type=checkbox]:hover, input[type=color]:hover, input[type=date]:hover, input[type=datetime-local]:hover, input[type=datetime]:hover, input[type=email]:hover, input[type=month]:hover, input[type=number]:hover, input[type=password]:hover, input[type=radio]:hover, input[type=search]:hover, input[type=tel]:hover, input[type=text]:hover, input[type=time]:hover, input[type=url]:hover, input[type=week]:hover, select:hover, textarea:hover,#titlediv #title:focus, #titlediv #title:hover,.attachment-preview .thumbnail:hover,.media-frame.mode-grid .attachment.details:focus .attachment-preview,.media-frame.mode-grid .attachment:focus .attachment-preview,.media-frame.mode-grid .selected.attachment:focus .attachment-preview,.drag-drop.drag-over #drag-drop-area,.theme-browser .theme:focus,#available-widgets .widget-top:hover, #widgets-left .widget-in-question .widget-top, #widgets-left .widget-top:hover, .widgets-chooser ul, div#widgets-right .widget-top:hover,.widget-inside, .widget.open .widget-top, div#widgets-right .widgets-holder-wrap.widget-hover,.filter-links .current,.plugin-card:hover,.contextual-help-tabs .active{border-color: rgba(31,181,172,1.0);
+    border: 2px solid rgba(31,181,172,1.0);}
  
 .has-dfw .quicktags-toolbar{border-color:#1fb5ac !important;} div.mce-toolbar-grp>div, .plugin-install-php .wp-filter, #ws_menu_editor .ws_main_container .ws_toolbar{border-bottom-color:rgba(31,181,172,1.0) /*#1fb5ac*/;}
  

@@ -602,7 +602,7 @@ body .container.body .right_col {
 body {
     color: #000;
     font-family: "Helvetica Neue", Roboto, Arial, "Droid Sans", sans-serif;
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 400;
     line-height: 1.471
 }
@@ -4945,4 +4945,29 @@ ul.notifications {
 
     #adminmenu .wp-submenu-head, #adminmenu a.menu-top, #adminmenu .wp-has-current-submenu ul>li>a, .folded #adminmenu li.menu-top .wp-submenu>li>a, #adminmenu .wp-not-current-submenu li>a, .folded #adminmenu .wp-has-current-submenu li>a, #collapse-menu{
             font-size: 14px !important;
+    }
+
+
+    .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+        padding: 4px;
+    }
+
+    dd, li {
+         margin-bottom: 0px; 
+    }
+    table a:focus,table a:hover {
+        color: rgba(31,181,172,1.0);
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .btn:hover,.btn:focus{
+        background: #779f16;
+    }
+    .paginate.pag3 li a:hover, .paginate.pag3 li a:focus{
+        background: #779f16;
+    }
+
+    a.list_update {
+        min-width: 50px;
     }
