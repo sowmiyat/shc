@@ -4944,5 +4944,5 @@ ul.notifications {
     }
 
     #adminmenu .wp-submenu-head, #adminmenu a.menu-top, #adminmenu .wp-has-current-submenu ul>li>a, .folded #adminmenu li.menu-top .wp-submenu>li>a, #adminmenu .wp-not-current-submenu li>a, .folded #adminmenu .wp-has-current-submenu li>a, #collapse-menu{
-            font-size: 10px !important;
+            font-size: 14px !important;
     }
