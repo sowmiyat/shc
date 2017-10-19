@@ -2544,7 +2544,7 @@ span.section {
 }
 
 .form-horizontal .control-label {
-    padding-top: 8px
+    padding-top: 0px
 }
 
 .form-control:focus {
@@ -2589,7 +2589,7 @@ legend {
 }
 
 .form-group {
-    margin-bottom: 10px
+    margin-bottom: 0px
 }
 
 .validate {
@@ -3394,7 +3394,7 @@ ul.count2 li span {
     border-top: 1px dashed #e7eaec;
     background-color: #fff;
     height: 1px;
-    margin: 10px 0
+    margin: 5px 0
 }
 
 ul.messages {
