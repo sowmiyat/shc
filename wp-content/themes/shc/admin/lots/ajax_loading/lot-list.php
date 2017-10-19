@@ -46,7 +46,7 @@
                                     <td class=""><?php echo $l_value->cgst; ?></td>
                                     <td class=""><?php echo $l_value->sgst; ?></td>
                                     <td class=""><?php echo $l_value->hsn; ?></td>
-                                    <td class=""><a href="<?php echo menu_page_url( 'add_lot', 0 )."&id=${lot_id}"; ?>">Update</a></td>
+                                    <td class=""><a href="<?php echo menu_page_url( 'add_lot', 0 )."&id=${lot_id}"; ?>" class="list_update">Update</a></td>
                                 </tr>
                     <?php
                                 $i++;

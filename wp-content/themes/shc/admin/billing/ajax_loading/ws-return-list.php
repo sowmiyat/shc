@@ -46,7 +46,7 @@
                                     <td class=""><?php echo 'GR'.$b_value->id; ?></td>
                                     <td class=""><?php echo $b_value->name; ?> </td>
                                     <td class=""><?php echo $b_value->mobile; ?> </td>  
-                                    <td><a href="<?php echo menu_page_url( 'ws_return_items_view', 0 )."&id=$b_value->id"; ?>">View</a></td>  
+                                    <td><a href="<?php echo menu_page_url( 'ws_return_items_view', 0 )."&id=$b_value->id"; ?>" class="bill_view">View</a></td>  
                                 </tr>
                     <?php
                                 $i++;

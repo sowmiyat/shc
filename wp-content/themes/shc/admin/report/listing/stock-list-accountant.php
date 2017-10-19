@@ -54,3 +54,51 @@
         </div>
     </div>
 </div>
+
+
+<script type="text/javascript">
+    
+jQuery(document).ready(function () {
+    jQuery('.bill_from').focus();
+    
+    jQuery('.filter-section input[type="text"]:last').live('keydown', function(e){
+
+        if(jQuery('.jambo_table td a').length == 0 && jQuery(".next.page-numbers").length == 0 ) {
+
+            var keyCode = e.keyCode || e.which; 
+            if (keyCode == 9) { 
+                e.preventDefault(); 
+                // call custom function here
+                jQuery('.bill_from').focus()
+            }
+        }
+
+    });
+
+
+    jQuery('.jambo_table td a').live('keydown', function(e) { 
+
+        if(jQuery(this).parent().parent().next('tr').length == 0 && jQuery(".next.page-numbers").length == 0) {
+            var keyCode = e.keyCode || e.which; 
+            if (keyCode == 9) { 
+                e.preventDefault(); 
+                // call custom function here
+                jQuery('.bill_from').focus()
+            } 
+        }
+    });
+
+    jQuery(".next.page-numbers").live('keydown', function(e) { 
+      var keyCode = e.keyCode || e.which; 
+
+      if (keyCode == 9) { 
+        e.preventDefault(); 
+        // call custom function here
+        jQuery('.bill_from').focus()
+      } 
+    });
+
+    
+})    
+
+</script>

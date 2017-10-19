@@ -69,7 +69,7 @@ if(isset($_GET['stock_id']) && $stock = get_stock($_GET['stock_id']) ) {
 						<div class="divider-dashed"></div>
 						<div class="form-group">
 							<div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-	                          	<button type="submit" class="btn btn-success sub_form">Submit</button>
+	                          	<button type="submit" class="btn btn-success submit_form">Submit</button>
 	                          	<button class="btn btn-primary stock_cancel" type="button" onclick="window.location = '<?php echo admin_url('admin.php?page=list_stocks'); ?>';">Cancel</button>
 							  	
 

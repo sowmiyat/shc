@@ -43,7 +43,7 @@
                                     <td class=""><?php echo $s_value->stock_count; ?></td>
                                     <td class=""><?php echo $s_value->selling_total; ?></td>
                                     <td class=""><?php echo $s_value->stock_created; ?></td>
-                                    <td class=""><a href="<?php echo menu_page_url( 'add_stocks', 0 )."&stock_id=${stock_id}"; ?>">Update</a></td>
+                                    <td class=""><a href="<?php echo menu_page_url( 'add_stocks', 0 )."&stock_id=${stock_id}"; ?>"  class="list_update">Update</a></td>
                                 </tr>
                     <?php
                                 $i++;

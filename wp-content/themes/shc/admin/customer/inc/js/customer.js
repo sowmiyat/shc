@@ -1,11 +1,19 @@
 jQuery(document).ready(function () {
 
+     jQuery('.submit_form').on('click',function(){
+        if(jQuery('form')[0].checkValidity()) {
+                jQuery('.submit_form').css('display','none');
+                jQuery('#lightbox').css('display','block');
+            }
+
+    });
+
     jQuery('#customer_name').focus();
     jQuery('#name').focus();
 
     /*Add Lot Form Submit*/
     jQuery("#create_customer").bind('submit', function (e) {
-        jQuery('#lightbox').css('display','block');
+       
         jQuery.ajax({
             type: "POST",
             dataType : "json",

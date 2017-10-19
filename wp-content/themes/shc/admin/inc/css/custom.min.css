@@ -4968,6 +4968,6 @@ ul.notifications {
         background: #779f16;
     }
 
-    a.list_update {
+    a.list_update,a.bill_view {
         min-width: 50px;
     }

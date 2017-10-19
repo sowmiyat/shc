@@ -49,7 +49,7 @@
                                     <td class=""><?php echo $b_value->sub_total; ?></td>
                                     <td class=""><?php echo $b_value->created_at; ?></td>
                                     <td>
-                                        <a href="<?php echo menu_page_url( 'ws_invoice', 0 )."&id=${bill_id}&year=$b_value->financial_year"; ?>">View</a>
+                                        <a href="<?php echo menu_page_url( 'ws_invoice', 0 )."&id=${bill_id}&year=$b_value->financial_year"; ?>" class="bill_view">View</a>
                                     </td>
                                 </tr>
                     <?php

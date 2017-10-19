@@ -51,7 +51,7 @@
                                     <td class=""><?php echo $c_value->gst_number; ?> </td>
                                     <td class=""><?php echo $c_value->sale_total; ?></td>
                                     <td class=""><?php echo $c_value->created_at; ?></td>
-                                    <td><a href="<?php echo menu_page_url( 'new_wholesale_customer', 0 )."&id=${customer_id}"; ?>">Update</a></td>
+                                    <td><a href="<?php echo menu_page_url( 'new_wholesale_customer', 0 )."&id=${customer_id}"; ?>" class="list_update">Update</a></td>
                                 </tr>
                     <?php
                                 $i++;

@@ -1,9 +1,9 @@
 jQuery(document).ready(function () {
      jQuery('#pro_number').live('keyup');
 
-     jQuery('.sub_form').on('click',function(){
+     jQuery('.submit_form').on('click',function(){
         if(jQuery('form')[0].checkValidity()) {
-                jQuery('.sub_form').css('display','none');
+                jQuery('.submit_form').css('display','none');
                 jQuery('#lightbox').css('display','block');
             }
 
