@@ -1,0 +1,106 @@
+jQuery(document).ready(function () {
+
+    jQuery('#customer_name').focus();
+    jQuery('#name').focus();
+
+    /*Add Lot Form Submit*/
+    jQuery("#create_customer").bind('submit', function (e) {
+        jQuery('#lightbox').css('display','block');
+        jQuery.ajax({
+            type: "POST",
+            dataType : "json",
+            url: frontendajax.ajaxurl,
+            data: {
+                action : jQuery('.customer_action').val(),
+                data : jQuery('#create_customer :input').serialize()
+            },
+            success: function (data) {
+                clearPopup();
+                jQuery('#lightbox').css('display','none');
+
+                if(data.redirect != 0) { 
+                    setTimeout(function() {
+                        managePopupContent(data);
+                    }, 1000);
+                }
+
+                if(data.success == 0) {
+                    popItUp('Error', data.msg);
+                } else {
+                    popItUp('Success', data.msg);
+                }
+            
+            }
+        });
+        e.preventDefault();
+        return false;
+    });
+
+    jQuery('.mobile_check').on('change',function() {
+       jQuery.ajax({
+            type: "POST",
+            dataType : "json",
+            url: frontendajax.ajaxurl,
+            data: {
+                action       : 'check_unique_mobile',
+                mobile       : jQuery('.mobile_check').val()
+            },
+            success: function (data) {
+               if(data != 0){
+                alert('Mobile Already Exists!!!');
+                jQuery('.mobile_check').val('').focus();
+
+            }
+            
+            }
+        });
+        
+
+    });
+
+    jQuery('.mobile_check_wholesale').on('change',function() {
+       jQuery.ajax({
+            type: "POST",
+            dataType : "json",
+            url: frontendajax.ajaxurl,
+            data: {
+                action       : 'check_unique_mobile_wholesale',
+                mobile       : jQuery('.mobile_check_wholesale').val()
+            },
+            success: function (data) {
+               if(data != 0){
+                alert('Mobile Already Exists!!!');
+                jQuery('.mobile_check_wholesale').val('').focus();
+
+            }
+            
+            }
+        });
+
+    });
+
+
+    jQuery('.wholesale_cus').on('change',function() {
+
+        var capital_str = jQuery('.wholesale_cus').val();
+        capital_str = capital_str.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+            return letter.toUpperCase();
+        });
+
+        jQuery('.wholesale_cus').val(capital_str);
+
+    });
+
+        jQuery('.wholesale_company').on('change',function() {
+
+        var capital_str = jQuery('.wholesale_company').val();
+        capital_str = capital_str.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+            return letter.toUpperCase();
+        });
+
+        jQuery('.wholesale_company').val(capital_str);
+
+    });
+
+
+});
