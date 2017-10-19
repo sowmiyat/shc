@@ -60,6 +60,16 @@
     
 jQuery(document).ready(function () {
     jQuery('.bill_from').focus();
+
+    jQuery(document).live('keydown', function(e){
+        if(jQuery(document.activeElement).closest("#wpbody-content").length == 0) {
+            var keyCode = e.keyCode || e.which; 
+            if (keyCode == 9) { 
+                e.preventDefault(); 
+                jQuery('.bill_from').focus()
+            }
+        }
+    });
     
     jQuery('.filter-section input[type="text"]:last').live('keydown', function(e){
 

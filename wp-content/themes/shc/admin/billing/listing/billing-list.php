@@ -71,6 +71,16 @@
 jQuery(document).ready(function () {
     jQuery('.ppage').focus();
     
+    jQuery(document).live('keydown', function(e){
+        if(jQuery(document.activeElement).closest("#wpbody-content").length == 0) {
+            var keyCode = e.keyCode || e.which; 
+            if (keyCode == 9) { 
+                e.preventDefault(); 
+                jQuery('.ppage').focus()
+            }
+        }
+    });
+    
     jQuery('.filter-section input[type="text"]:last').live('keydown', function(e){
 
         if(jQuery('.jambo_table td a').length == 0 && jQuery(".next.page-numbers").length == 0 ) {
