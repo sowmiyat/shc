@@ -37,9 +37,6 @@
 .billing-structure .ws_balance_amount {
     font-weight: bold;
 }
-.add-button{
-    margin-top: 15px;
-}
 
 #bill_lot_add .sub_unit {
 	border: 0;
@@ -70,6 +67,10 @@
 	margin-top: 10px;
 }
 
+.stock_bal_table thead {
+	background: #58606b;
+    color: #fff;
+}
 
 </style>
 			<div class="row">
@@ -149,6 +150,7 @@
 									<input type="hidden" name="ws_old_customer_id" class="ws_old_customer_id" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->customer_id;} else { echo '0'; } ?>"/>
 									<input type="hidden" name="ws_customer_id_new" class="ws_customer_id_new"/>
 								</div>
+
 								<!-- title row -->
 								<div class="row">
 									<div class="col-xs-12 invoice-header">
@@ -161,7 +163,9 @@
 
 								<!-- info row -->
 								<div class="row invoice-info">
-									<div class="col-md-4 col-sm-4 col-xs-12">
+
+									<div class="col-md-6 col-sm-6 col-xs-12">
+
 										<div class="form-group">
 											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Product Name <span class="required">*</span>
 											</label>
@@ -176,8 +180,7 @@
 												<input type="hidden" name="ws_stock" class="ws_slab_sys_txt"/>
 											</div>
 										</div>
-									</div>
-									<div class="col-md-4 col-sm-4 col-xs-12">
+
 										<div class="form-group">
 											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Unit(Quantity):<span class="required">*</span>
 											</label>
@@ -185,8 +188,7 @@
 												<input type="number" name="unit" id="unit" class="unit" min="1"/>
 											</div>
 										</div>
-									</div>
-									<div class="col-md-4 col-sm-4 col-xs-12">
+
 										<div class="form-group">
 											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Discounted Price:<span class="required">*</span>
 											</label>
@@ -194,8 +196,6 @@
 												<input type="number" name="discount" value="0.00" id="discount" class="discount"/>
 											</div>
 										</div>
-									</div>
-									<div class="col-md-offset-8 col-md-4 col-sm-4 col-xs-12">
 										<div class="form-group">
 											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name"><span class="required"></span>
 											</label>
@@ -203,11 +203,29 @@
 												<button class="btn btn-success add-button"  id="">ADD</button>
 											</div>
 										</div>
+										<input type="hidden" name="invoice_id" class="invoice_id" id="invoice_id" autocomplete="off" value="<?php echo $invoice_id['invoice_id']; ?>">
+										<input type="hidden" name="year" value="<?php echo $year; ?>" class="year"/> 
 									</div>
 
+									<div class="col-md-6 col-sm-6 col-xs-12">
+										<div class="stock_bal_table">
+											<table class="table table-bordered">
+												<thead>
+													<th>#S.No</th>
+													<th>Product Name</th>
+													<th>Stock</th>
+												</thead>
+												<tbody class="stock_table_body">
+													<tr>
+														<td>1</td>
+														<td>Product</td>
+														<td>100</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
 
-									<input type="hidden" name="invoice_id" class="invoice_id" id="invoice_id" autocomplete="off" value="<?php echo $invoice_id['invoice_id']; ?>">
-									<input type="hidden" name="year" value="<?php echo $year; ?>" class="year"/> 
 
 
 								</div>
