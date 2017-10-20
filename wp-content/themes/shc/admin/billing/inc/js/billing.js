@@ -198,25 +198,25 @@ jQuery('#ws_billing_customer').focus();
     });
 
 
-     jQuery( "#ws_billing_customer" ).autocomplete ({
+     jQuery( "#ws_billing_mobile" ).autocomplete ({
       source: function( request, response ) {
         jQuery.ajax( {
           url: frontendajax.ajaxurl,
           type: 'POST',
           dataType: "json",
           data: {
-            action: 'get_ws_customer_name',
+            action: 'get_ws_customer_mobile',
             search_key: request.term
           },
           success: function( data ) {
             response(jQuery.map( data.result, function( item ) {
                 return {
                     id: item.id,
-                    value: item.customer_name,
+                    value: item.mobile,
                     address : item.address,
-                    phone : item.mobile,
                     company_name : item.company_name,
-                    gst : item.gst_number
+                    gst : item.gst_number,
+                    name:item.customer_name
                 }
             }));
           }
@@ -245,8 +245,8 @@ jQuery('#ws_billing_customer').focus();
         });
         jQuery('.ws_old_customer_id').val(ui.item.id);
         jQuery('#ws_billing_address').val(ui.item.address);
-        jQuery('#ws_billing_mobile').val(ui.item.phone);
-        jQuery('#ws_billing_customer').val(ui.item.value);
+        jQuery('#ws_billing_mobile').val(ui.item.value);
+        jQuery('#ws_billing_customer').val(ui.item.name);
         jQuery('#ws_billing_company').val(ui.item.company_name);
         jQuery('#ws_billing_gst').val(ui.item.gst);
         console.log(ui.item.address);
@@ -262,70 +262,6 @@ jQuery('#ws_billing_customer').focus();
     });
 
 
-
-// //** Wholesale Customer Select billing **//    
-//   jQuery('#ws_billing_customer').select2({
-//         allowClear: true,
-//         width: '50%',
-//         multiple: true,
-//         minimumInputLength: 1,
-//         maximumSelectionLength: 1,
-//         ajax: {
-//             type: 'POST',
-//             url: frontendajax.ajaxurl,
-//             delay: 250,
-//             dataType: 'json',
-//             data: function(params) {
-//                 return {
-//                     action: 'get_ws_customer_name', //search term
-//                     page: 1,
-//                     search_key: params.term,
-//                 };
-//             },
-
-//             processResults: function(data) {
-//                 var results = [];
-//                 return {
-//                     results: jQuery.map(data.result, function(obj) {
-//                         return { id: obj.id, customer_name: obj.customer_name, address: obj.address, mobile: obj.mobile, company_name:obj.company_name };
-//                     })
-//                 };
-//             },
-//             cache: true
-//         },
-//         initSelection: function (element, callback) {
-//             callback({ id: jQuery(element).val(), mobile: jQuery(element).find(':selected').text() });
-//         },
-//         templateResult: formatCustomerNameResult,
-//         templateSelection: formatCustomerName
-//     }).on("select2:select", function (e) {
-//         jQuery.ajax({
-//             type: "POST",
-//             dataType : "json",
-//             url: frontendajax.ajaxurl,
-//             data: {
-//                 id      : e.params.data.id,
-//                 action  :'ws_customer_balance'
-//             },
-//               success: function (data) {
-                
-//                 jQuery('.ws_balance_amount').text(data);
-//                 jQuery('.ws_balance_amount_val').val(data);
-               
-
-//             }
-//         });
-//         jQuery('.ws_old_customer_id').val(e.params.data.id);
-//         jQuery('.ws_address1').text('Address : '+e.params.data.address);
-//         jQuery('.ws_customer_name').text('Name : '+e.params.data.customer_name);
-//         jQuery('.ws_customer_company').text('Company name : '+e.params.data.company_name);
-//         jQuery('.ws_bill_submit').css('display', 'block');
-
-//         jQuery('.ws_lot_id').focus();
-//         jQuery('.ws_paid_amount').trigger('change');
-//     });
-
-//      //<----- End Wholesale Customer Select billing --->
 
      //<---- Generate Print and Download Page ---> 
     jQuery('.generate_bill_new').on('click',function() {
@@ -518,28 +454,6 @@ function formatCustomerNameResult(data) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function populateSelectws(selector, v) {
 
      jQuery( "#ws_lot_id" ).autocomplete ({
@@ -591,7 +505,14 @@ function populateSelectws(selector, v) {
                 action  :'ws_slap'
             },
               success: function (data) {
-                jQuery('.ws_slab_sys_txt').val(data);
+                // jQuery('.ws_slab_sys_text').text(data);
+                // jQuery('.ws_slab_id').text("1");
+                //jQuery('.ws_slab_sys_txt').val(data);
+                //jQuery('.ws_slab_pro').text(ui.item.product_name);
+
+                
+                var str = '<td class="td_id">'+'1'+'</td><td class="stock_prod">' + ui.item.product_name + '</td><td class="slap_stock">'+ data +'</td><input type="hidden" name="ws_slab_sys_txt" value="'+ data +'"  class="ws_slab_sys_txt"/>';                
+                jQuery('.stock_table_body').html(str);
 
             }
         }); 
@@ -650,11 +571,29 @@ function alert_popup(msg = '', title = '') {
 //<---- Billing With Add button --->
 jQuery( document ).ready(function() {
 
-
         populateSelectws('.ws_lot_id', 'old');
 
-        jQuery('.sub_unit').live('change',function(){
-            var unit = jQuery(this).parent().parent().find('.sub_unit').val();
+        jQuery('.unit').live('change keyup',function(){
+            var stock = parseFloat(jQuery('.ws_slab_sys_txt').val());
+            var unit = parseFloat(jQuery('#unit').val());
+            if(unit > stock){
+                alert('Enter Quantity as small as avalible stock!!!');
+                jQuery('.unit').val(Math.ceil(stock));
+            }
+        });
+
+
+
+
+        jQuery('.sub_unit').live('change keyup',function(){
+
+            var unit = parseFloat(jQuery(this).parent().parent().find('.sub_unit').val());
+            var stock = parseFloat(jQuery(this).parent().parent().find('.sub_stock').val());
+            if( unit > stock){
+                alert('Enter Quantity as small as avalible stock!!!');
+                jQuery(this).parent().parent().find('.sub_unit').val(Math.ceil(stock));
+            }
+
             if(unit <= '0'){
                 alert("please enter unit!!!");
                 jQuery(this).parent().parent().find('.sub_unit').focus();
@@ -679,19 +618,10 @@ jQuery( document ).ready(function() {
            
             
         });
-    jQuery('.ws_discount').live('change',function(){
+    jQuery('.ws_discount').live('change',function() {
 
         ws_rowCalculate();
     });
-    //  jQuery('.sub_discount').live('click',function(){
-    //    jQuery(this).parent().parent().find('.sub_discount').css('background-color','#f1ad76');
-        
-    // });
-
-    //   jQuery('.sub_unit').live('click',function(){
-    //    jQuery(this).parent().parent().find('.sub_unit').css('background-color','#f1ad76');
-        
-    // });
 
     jQuery('.add-button').live('click',function() {
 
@@ -718,7 +648,7 @@ jQuery( document ).ready(function() {
 
                 
             } else {
-                var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="customer_table" ><td class="td_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="customer_detail['+current_row+'][id]" class="sub_id" /><td class="td_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="customer_detail['+current_row+'][product]" class="sub_product"/><td class="td_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="customer_detail['+current_row+'][hsn]" class="sub_hsn"/><td class=""><input type="text" value = "'+ unit + '" name="customer_detail['+current_row+'][unit]" class="sub_unit"/> </td> <td class="td_stock">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][stock]" class="sub_stock"/><td class="td_price">' + price + '</td> <input type="hidden" value = "'+ price + '" name="customer_detail['+current_row+'][price]" class="sub_price"/> <td><input type="text" value ="'+discount +'" name="customer_detail['+current_row+'][discount]" class="sub_discount"/></td><input type="hidden" value ="each" name="customer_detail['+current_row+'][discount_type]" class="discount_type"/><td class="td_amt">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][amt]" class="sub_amt"/><td class="td_cgst">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="customer_detail['+current_row+'][cgst]" class="sub_cgst"/> <td class="td_cgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][cgst_value]" class="sub_cgst_value"/><td class="td_sgst">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="customer_detail['+current_row+'][sgst]" class="sub_sgst"/><td class="td_sgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][sgst_value]" class="sub_sgst_value"/><td class="td_subtotal"></td> <input type="hidden" value ="" name="customer_detail['+current_row+'][subtotal]" class="sub_total"/><td><span class="sub_delete">Delete</span></td></tr>';                
+                var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="customer_table" ><td class="td_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="customer_detail['+current_row+'][id]" class="sub_id" /><td class="td_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="customer_detail['+current_row+'][product]" class="sub_product"/><td class="td_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="customer_detail['+current_row+'][hsn]" class="sub_hsn"/><td class=""><input type="text" value = "'+ unit + '" name="customer_detail['+current_row+'][unit]" class="sub_unit"/> </td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][stock]" class="sub_stock"/><td class="td_price">' + price + '</td> <input type="hidden" value = "'+ price + '" name="customer_detail['+current_row+'][price]" class="sub_price"/> <td><input type="text" value ="'+discount +'" name="customer_detail['+current_row+'][discount]" class="sub_discount"/></td><input type="hidden" value ="each" name="customer_detail['+current_row+'][discount_type]" class="discount_type"/><td class="td_amt">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][amt]" class="sub_amt"/><td class="td_cgst">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="customer_detail['+current_row+'][cgst]" class="sub_cgst"/> <td class="td_cgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][cgst_value]" class="sub_cgst_value"/><td class="td_sgst">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="customer_detail['+current_row+'][sgst]" class="sub_sgst"/><td class="td_sgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][sgst_value]" class="sub_sgst_value"/><td class="td_subtotal"></td> <input type="hidden" value ="" name="customer_detail['+current_row+'][subtotal]" class="sub_total"/><td><span class="sub_delete">Delete</span></td></tr>';                
                 jQuery('#bill_lot_add').append(str);
 
                     jQuery('.ws_lot_id').val('');
@@ -767,7 +697,7 @@ function makeid() {
 
 
 function ws_rowCalculate() {
- var discount = '0.00';
+    var discount = '0.00';
     var sub ='0.00';
     var count = '0.00';
     var unit = '0.00';
@@ -834,73 +764,7 @@ function ws_rowCalculate() {
 }
 
 
-function gstGrouping() {
 
-    var percentages = jQuery('.sub_cgst').map(function () {
-        return this.value; // $(this).val()
-    }).get();
-
-
-    var arr = [];
-    var sum = [];
-
-    jQuery.each( percentages, function(index, value){
-
-      var myname = value;
-      if( jQuery.inArray( myname, arr ) < 0 ) {
-         arr.push(myname);
-         sum[myname] =  { 
-                            'cgst' : parseFloat(jQuery('[value="'+value+'"].sub_cgst').parent().find('.sub_cgst_value').val()), 
-                            'sgst' :  parseFloat(jQuery('[value="'+value+'"].sub_cgst').parent().find('.sub_cgst_value').val())
-                        };
-    
-      } else {
-      
-         sum[myname] = {
-            'cgst' : sum[myname]['cgst'] + parseFloat(jQuery('[value="5.00"].sub_cgst').parent().find('.sub_cgst_value').val()), 
-            'sgst' : sum[myname]['sgst'] + parseFloat(jQuery('[value="5.00"].sub_cgst').parent().find('.sub_cgst_value').val()) 
-        };
-      }
-
-    });
-
-/*
-    jQuery('.sub_cgst').each(function(){
-        var myname = this.value;
-    })*/
-
-
-
-
-
-console.log(sum);
-
-    // if(selector.find('.sub_cgst').val() == '0.00') {    
-
-    //     jQuery(".zero").css("display", "inline-block");
-    //     jQuery('.amt_zero').text(selector.find('.sub_amt').val());
-    //     jQuery('.cgst_val_zero').text(selector.find('.sub_cgst_value').val());
-    //     jQuery('.sgst_val_zero').text(selector.find('.sub_sgst_value').val());
-
-    // }
-
-    // if(jQuery('.sub_cgst') == '5.00' ) {
-    //      jQuery(".five").css("display", "block");
-    // }
-    // if(jQuery('.sub_cgst') == '12.00' ) {
-    //      jQuery(".twelve").css("display", "block");
-    // }
-    // if(jQuery('.sub_cgst') == '18.00' ) {
-    //      jQuery(".eighteen").css("display", "block");
-
-    // } if(jQuery('.sub_cgst') == '28.00' ) {
-    //      jQuery(".twentyeight").css("display", "block");
-    // }
-
-
-
-
-}
 
 
 //<---- Return Goods --->

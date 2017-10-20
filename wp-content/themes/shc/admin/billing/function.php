@@ -178,6 +178,7 @@ function get_lot_data() {
 	}
 	echo json_encode($data);
 	die();
+
 }
 add_action( 'wp_ajax_get_lot_data', 'get_lot_data');
 add_action( 'wp_ajax_nopriv_get_lot_data', 'get_lot_data');
@@ -679,7 +680,7 @@ function get_customer_name() {
 add_action( 'wp_ajax_get_customer_name', 'get_customer_name' );
 add_action( 'wp_ajax_nopriv_get_customer_name', 'get_customer_name' );
 
-function get_ws_customer_name() { 
+function get_ws_customer_mobile() { 
 
 	$data['success'] = 0;
 	$data['msg'] = 'Something Went Wrong!';
@@ -694,8 +695,8 @@ function get_ws_customer_name() {
 	echo json_encode($data);
 	die();
 }
-add_action( 'wp_ajax_get_ws_customer_name', 'get_ws_customer_name' );
-add_action( 'wp_ajax_nopriv_get_ws_customer_name', 'get_ws_customer_name' );
+add_action( 'wp_ajax_get_ws_customer_mobile', 'get_ws_customer_mobile' );
+add_action( 'wp_ajax_nopriv_get_ws_customer_mobile', 'get_ws_customer_mobile' );
 
 
 
