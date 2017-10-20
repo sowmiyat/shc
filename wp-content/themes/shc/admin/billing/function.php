@@ -173,9 +173,8 @@ function get_lot_data() {
 	$search_term = $_POST['search_key'];
 	$query = "SELECT * FROM {$lot_table} WHERE  product_name like '%${search_term}%' AND active = 1";
 	
-	if( $data['items'] = $wpdb->get_results( $query, ARRAY_A ) ) {
+	if( $data['result'] = $wpdb->get_results( $query, ARRAY_A ) ) {
 		$data['success'] = 1;
-		
 	}
 	echo json_encode($data);
 	die();
@@ -680,7 +679,7 @@ function get_customer_name() {
 add_action( 'wp_ajax_get_customer_name', 'get_customer_name' );
 add_action( 'wp_ajax_nopriv_get_customer_name', 'get_customer_name' );
 
-function get_ws_customer_name() {
+function get_ws_customer_name() { 
 
 	$data['success'] = 0;
 	$data['msg'] = 'Something Went Wrong!';

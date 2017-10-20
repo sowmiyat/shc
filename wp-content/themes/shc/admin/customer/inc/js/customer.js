@@ -45,45 +45,61 @@ jQuery(document).ready(function () {
     });
 
     jQuery('.mobile_check').on('change',function() {
-       jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                action       : 'check_unique_mobile',
-                mobile       : jQuery('.mobile_check').val()
-            },
-            success: function (data) {
-               if(data != 0){
-                alert('Mobile Already Exists!!!');
-                jQuery('.mobile_check').val('').focus();
 
-            }
-            
-            }
-        });
-        
+        var mobile_num = jQuery('.mobile_check').val();
+        if(MobileValidate(mobile_num)) { 
 
+            jQuery.ajax({
+                type: "POST",
+                dataType : "json",
+                url: frontendajax.ajaxurl,
+                data: {
+                    action       : 'check_unique_mobile',
+                    mobile       : jQuery('.mobile_check').val()
+                },
+                success: function (data) {
+                   if(data != 0){
+                    alert('Mobile Already Exists!!!');
+                    jQuery('.mobile_check').val('').focus();
+
+                }
+                
+                }
+            });
+        }
+        else {
+             alert("It is not valid mobile number.input 10 digits number!");
+             jQuery('.mobile_check').val('').focus();
+        }
     });
 
     jQuery('.mobile_check_wholesale').on('change',function() {
-       jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                action       : 'check_unique_mobile_wholesale',
-                mobile       : jQuery('.mobile_check_wholesale').val()
-            },
-            success: function (data) {
-               if(data != 0){
-                alert('Mobile Already Exists!!!');
-                jQuery('.mobile_check_wholesale').val('').focus();
 
-            }
-            
-            }
-        });
+        var mobile_num = jQuery('.mobile_check_wholesale').val();
+        if(MobileValidate(mobile_num)) {  
+            jQuery.ajax({
+                type: "POST",
+                dataType : "json",
+                url: frontendajax.ajaxurl,
+                data: {
+                    action       : 'check_unique_mobile_wholesale',
+                    mobile       : jQuery('.mobile_check_wholesale').val()
+                },
+                success: function (data) {
+                   if(data != 0){
+                    alert('Mobile Already Exists!!!');
+                    jQuery('.mobile_check_wholesale').val('').focus();
+
+                }
+                
+                }
+            });
+        }
+        else {
+
+             alert("It is not valid mobile number.input 10 digits number!");
+             jQuery('.mobile_check_wholesale').val('').focus();
+        }
 
     });
 
@@ -112,3 +128,13 @@ jQuery(document).ready(function () {
 
 
 });
+
+function MobileValidate(mobile) {
+        var pattern = /^\d{10}$/;
+        if (pattern.test(mobile)) {
+            alert("Your mobile number : " + mobile);
+            return true;
+        }
+       
+        return false;
+    }

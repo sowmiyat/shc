@@ -2,7 +2,7 @@ jQuery(document).ready(function () {
 
  jQuery('#brand_name').focus();
 
-    jQuery('.sub_form').on('click',function(){
+    jQuery('.sub_form').on('click',function() {
         if(jQuery('form')[0].checkValidity()) {
             jQuery('.sub_form').css('display','none');
             jQuery('#lightbox').css('display','block');
@@ -86,11 +86,18 @@ jQuery('.unique_brand').on('change',function() {
 
 jQuery('.unique_product').on('change',function() {
     var capital_str = jQuery('.unique_product').val();
-    capital_str = capital_str.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+
+  if(isUpperCase(capital_str)){
+     var product = capital_str;
+  } 
+  else {
+
+     capital_str = capital_str.toLowerCase().replace(/\b[a-z]/g, function(letter) {
             return letter.toUpperCase();
     });
     var product = jQuery('.unique_product').val(capital_str);
 
+  }
        jQuery.ajax({
             type: "POST",
             dataType : "json",
@@ -121,6 +128,12 @@ jQuery('#cgst').on('change',function() {
 
 
 });
+
+  function isUpperCase(str) {
+    return str === str.toUpperCase();
+    }
+
+
 
 
 
