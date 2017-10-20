@@ -72,6 +72,9 @@
     color: #fff;
 }
 
+.form-control-feedback{
+	color: #000;
+}
 </style>
 			<div class="row">
 				<div class="col-md-12">
@@ -102,37 +105,58 @@
 								<div class="row invoice-info">
 									<div class="col-md-4 col-sm-4 col-xs-12">
 										<div class="form-group">
-											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Name <span class="required">*</span>
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Name
 											</label>
 											<div class="col-md-6 col-sm-6 col-xs-12">
-												<input type="text" id="ws_billing_customer" name="name" required value="<?php if(isset($bill_fdata)){ echo $bill_fdata->customer_name; } ?>" <?php if(isset($bill_fdata)){  echo 'readonly'; } ?>  >
+												<input type="text" id="ws_billing_customer" name="name" required value="<?php if(isset($bill_fdata)){ echo $bill_fdata->customer_name; } ?>"  >
 											</div>
 										</div>
 									</div>
 									<div class="col-md-4 col-sm-4 col-xs-12">
 										<div class="form-group">
-											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Mobile<span class="required">*</span>
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Primary Mobile<span class="required">*</span>
 											</label>
 											<div class="col-md-6 col-sm-6 col-xs-12">
-												<input type="tel" id="ws_billing_mobile" name="mobile" class="mobile_check_wholesale"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->mobile; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
+												<input type="tel" id="ws_billing_mobile" name="mobile" class="form-control has-feedback-left"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->mobile; } ?>" style="padding-right: 5px;">
+												<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+91</span> 
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4 col-sm-4 col-xs-12" style="display:none;">
+										<div class="form-group">
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Secondary Mobile<span class="required">*</span>
+											</label>
+											<div class="col-md-6 col-sm-6 col-xs-12">
+												<input type="tel" id="ws_billing_secondary_mobile" name="secondary_mobile" class="form-control has-feedback-left"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->mobile; } ?>">
+												<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+0</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4 col-sm-4 col-xs-12" style="display:none;">
+										<div class="form-group">
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Landline<span class="required">*</span>
+											</label>
+											<div class="col-md-6 col-sm-6 col-xs-12">
+												<input type="tel" id="ws_billing_landline_mobile" name="landline" class="form-control has-feedback-left"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->mobile; } ?>" >
+												<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+044</span>
 											</div>
 										</div>
 									</div>
 									<div class="col-md-4 col-sm-4 col-xs-12">
 										<div class="form-group">
-											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Address<span class="required">*</span>
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Address
 											</label>
 											<div class="col-md-6 col-sm-6 col-xs-12">
-												<input type="text" id="ws_billing_address" name="address" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->address; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
+												<input type="text" id="ws_billing_address" name="address" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->address; } ?>" >
 											</div>
 										</div>
 									</div>
 									<div class="col-md-4 col-sm-4 col-xs-12">
 										<div class="form-group">
-											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Company Name<span class="required">*</span>
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Company Name
 											</label>
 											<div class="col-md-6 col-sm-6 col-xs-12">
-												<input type="text" id="ws_billing_company" name="company" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->company_name; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
+												<input type="text" id="ws_billing_company" name="company" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->company_name; } ?>" >
 											</div>
 										</div>
 									</div>
@@ -141,7 +165,7 @@
 											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">GST No.<span class="required">*</span>
 											</label>
 											<div class="col-md-6 col-sm-6 col-xs-12">
-												<input id="ws_billing_gst" type="number" name="gst" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->gst_number; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
+												<input id="ws_billing_gst" type="number" name="gst" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->gst_number; } ?>">
 											</div>
 										</div>
 									</div>
@@ -177,7 +201,7 @@
 												<input type="hidden" name="ws_hsn" class="ws_hsn"/>
 												<input type="hidden" name="ws_cgst" class="cgst_percentage"/>
 												<input type="hidden" name="ws_sgst" class="sgst_percentage"/>
-												<input type="hidden" name="ws_stock" class="ws_slab_sys_txt"/>
+												
 											</div>
 										</div>
 
@@ -217,22 +241,16 @@
 												</thead>
 												<tbody class="stock_table_body">
 													<tr>
-														<td>1</td>
-														<td>Product</td>
-														<td>100</td>
+														<td class="ws_slab_id"></td>
+														<td class="ws_slab_pro"></td>
+														<td class="ws_slab_sys_text"></td>
 													</tr>
 												</tbody>
 											</table>
 										</div>
 									</div>
 
-
-
 								</div>
-
-
-
-
 
 								
 								<!-- Table row -->
@@ -247,7 +265,6 @@
 															<th>Product Name</th>
 															<th>HSN Code</th>
 															<th>Unit</th>
-															<th>Stock</th>
 															<th>MRP</th>
 															<th>Discounted Price</th>
 															<th>Amount</th>
