@@ -119,7 +119,13 @@
 					<div class="x_panel">
 						<div class="x_title">
 
-							<h2>Invoice Design</h2>
+							<h2>Invoice </h2>
+							<?php
+							if($bill_data && isset($bill_fdata) && $bill_fdata) {
+								echo "<b>Order ID : </b> ".$bill_fdata->order_id;
+							}
+							?>
+							<h2 style="float:right;"><b>Invoice ID : </b> <?PHP echo 'INV'.$invoice_id['inv_id']; ?></h2>
 							<div class="clearfix"></div>
 						</div>
 						<div class="x_content">
@@ -127,74 +133,62 @@
 							<section class="content invoice" id="billing_container">
 								<!-- title row -->
 								<div class="row">
-									<div class="col-xs-12 invoice-header">
-										<h1>
-											<i class="fa fa-globe"></i> Invoice.
-											<small class="pull-right"><?php echo date('d/m/Y'); ?></small>
-										</h1>
+									<div class="row">
+										<div class="col-xs-12 invoice-header">
+											<h4>Customer Details</h4>
+										</div>
+									<!-- /.col -->
 									</div>
 									<!-- /.col -->
 								</div>
 								<!-- info row -->
 								<div class="row invoice-info">
-									<!-- <div class="col-sm-4 invoice-col">
-										From
-										<address>
-											<strong>Saravana Health Store</strong>
-											<br>7/12,Mg Road,Thiruvanmiyur
-											<br>Chennai,Tamilnadu,
-											<br>Pincode-600041.
-											<br>Cell:9841141648.
-										</address>
-									</div> -->
 									<!-- /.col -->
-									<div class="col-sm-4 invoice-col">
-											<address>												
-												<div class="billing_customer_div">
 
-													<div class="ui-widget">
-													  <label for="billing_customer" style="width:100px;">Name: </label>
-													  <input type="text" id="billing_customer" name="name" required value="<?php if(isset($bill_fdata)){ echo $bill_fdata->customer_name; } ?>" <?php if(isset($bill_fdata)){  echo 'readonly'; } ?>  >
-													  <br/><br/>
-													  <label for="billing_mobile" style="width:100px;">Mobile: </label>
-													  <input type="tel" id="billing_mobile" name="mobile" class="mobile_check"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->mobile; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
-													  <br/><br/>
-													  <label for="billing_address" style="width:100px;">Address: </label>
-													  <input type="text" id="billing_address" name="address" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->address; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
-													  <br/><br/>
-													</div>
-													<!-- <select id="ws_billing_customer" name="ws_customer_id" class="ws_billing_customer" tabindex="-1" aria-hidden="true">
-													<?php
-														if($bill_data && isset($bill_fdata) && $bill_fdata) {
-															echo '<option selected value="'.$bill_fdata->customer_id.'">'.$bill_fdata->mobile.'</option>';
-														}
-													?>
-													</select> -->
-												
-												<!-- <div class="new_customername">
-													<input type="text" class="ws_new_customer" name="ws_new_customer" readonly/>
-												</div> -->
-												
-					                                <input type="hidden" name="ws_user_type" value="new" class="ws_user_type"/>
-					                                <input type="hidden" name="old_customer_id" class="old_customer_id" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->customer_id;} else { echo '0'; } ?>"/>
-					                               
-					                            </div>
-											</address>
+									<div class="row invoice-info">
+										<div class="col-md-4 col-sm-4 col-xs-12">
+											<div class="form-group">
+												<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Name <span class="required">*</span>
+												</label>
+												<div class="col-md-6 col-sm-6 col-xs-12">
+													<input type="text" id="billing_customer" name="name" required value="<?php if(isset($bill_fdata)){ echo $bill_fdata->customer_name; } ?>" <?php if(isset($bill_fdata)){  echo 'readonly'; } ?>  >
+												</div>
+											</div>
+										</div>
+										<div class="col-md-4 col-sm-4 col-xs-12">
+											<div class="form-group">
+												<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Mobile<span class="required">*</span>
+												</label>
+												<div class="col-md-6 col-sm-6 col-xs-12">
+													<input type="tel" id="billing_mobile" name="mobile" class="mobile_check"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->mobile; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
+												</div>
+											</div>
+										</div>
+										<div class="col-md-4 col-sm-4 col-xs-12">
+											<div class="form-group">
+												<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Address<span class="required">*</span>
+												</label>
+												<div class="col-md-6 col-sm-6 col-xs-12">
+													<input type="text" id="billing_address" name="address" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->address; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
+												</div>
+											</div>
+										</div>
+
+										<input type="hidden" name="ws_user_type" value="new" class="ws_user_type"/>
+						                <input type="hidden" name="old_customer_id" class="old_customer_id" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->customer_id;} else { echo '0'; } ?>"/>
 									</div>
+
+
+
+									
 									<!-- /.col -->
 									<div class="col-sm-4 invoice-col">
 										<b>
 											<input type="hidden" name="invoice_id" class="invoice_id" id="invoice_id" autocomplete="off" value="<?php echo  $invoice_id['invoice_id']; ?>">
 											<input type="hidden" name="year" value="<?php echo $year; ?>" class="year"/> 
-											<b>Invoice Id : </b> <?php echo '#INV'.$invoice_id['inv_id']; ?>
 										</b>
 										<br>
 										<br>
-										<?php
-										if($bill_data && isset($bill_fdata) && $bill_fdata) {
-											echo "<b>Order ID : </b> ".$bill_fdata->order_id;
-										}
-										?>
 									</div>
 									<!-- /.col -->
 								</div>
