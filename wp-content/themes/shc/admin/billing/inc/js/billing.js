@@ -198,8 +198,9 @@ jQuery('#ws_billing_customer').focus();
     });
 
 
-     jQuery( "#ws_billing_mobile" ).autocomplete ({
+     jQuery( "#ws_billing_customer, #ws_billing_mobile" ).autocomplete ({
       source: function( request, response ) {
+        var billing_field = jQuery(this.element).attr('id');
         jQuery.ajax( {
           url: frontendajax.ajaxurl,
           type: 'POST',
@@ -210,13 +211,22 @@ jQuery('#ws_billing_customer').focus();
           },
           success: function( data ) {
             response(jQuery.map( data.result, function( item ) {
+                if(billing_field == 'ws_billing_customer') {
+                    var field_val = item.customer_name;
+                    var identification = 'name';
+                } else {
+                    var field_val = item.mobile;
+                    var identification = 'mobile';
+                }
                 return {
                     id: item.id,
-                    value: item.mobile,
+                    value: field_val,
                     address : item.address,
+                    mobile : item.mobile,
                     company_name : item.company_name,
                     gst : item.gst_number,
-                    name:item.customer_name
+                    name:item.customer_name,
+                    identification : identification
                 }
             }));
           }
@@ -224,8 +234,6 @@ jQuery('#ws_billing_customer').focus();
       },
       minLength: 2,
       select: function( event, ui ) {
-
-
 
          jQuery.ajax({
             type: "POST",
@@ -245,8 +253,17 @@ jQuery('#ws_billing_customer').focus();
         });
         jQuery('.ws_old_customer_id').val(ui.item.id);
         jQuery('#ws_billing_address').val(ui.item.address);
-        jQuery('#ws_billing_mobile').val(ui.item.value);
-        jQuery('#ws_billing_customer').val(ui.item.name);
+
+        if(ui.item.identification == 'mobile' ) {
+            jQuery('#ws_billing_mobile').val(ui.item.value);
+            jQuery('#ws_billing_customer').val(ui.item.name);
+        } else {
+            jQuery('#ws_billing_mobile').val(ui.item.mobile);
+            jQuery('#ws_billing_customer').val(ui.item.value);
+        }
+
+        
+
         jQuery('#ws_billing_company').val(ui.item.company_name);
         jQuery('#ws_billing_gst').val(ui.item.gst);
         console.log(ui.item.address);
@@ -364,8 +381,8 @@ jQuery('#ws_billing_customer').focus();
         var current_bal = parseFloat(jQuery('.ws_fsub_total').val());
         var paid = parseFloat(jQuery('.ws_paid_amount').val());
         var bal = (prev_bal + current_bal) - paid;
-        jQuery('.ws_return_amt').val(bal);
-        jQuery('.ws_return_amt_txt').text(bal);
+        jQuery('.ws_return_amt').val(Math.ceil(bal));
+        jQuery('.ws_return_amt_txt').text(Math.ceil(bal));
 
     });
 
@@ -571,57 +588,61 @@ function alert_popup(msg = '', title = '') {
 //<---- Billing With Add button --->
 jQuery( document ).ready(function() {
 
-        populateSelectws('.ws_lot_id', 'old');
+    populateSelectws('.ws_lot_id', 'old');
 
-        jQuery('.unit').live('change keyup',function(){
-            var stock = parseFloat(jQuery('.ws_slab_sys_txt').val());
-            var unit = parseFloat(jQuery('#unit').val());
-            if(unit > stock){
-                alert('Enter Quantity as small as avalible stock!!!');
-                jQuery('.unit').val(Math.ceil(stock));
-            }
-        });
-
-
+    jQuery('.unit').live('change keyup',function(){
+        var stock = parseFloat(jQuery('.ws_slab_sys_txt').val());
+        var unit = parseFloat(jQuery('#unit').val());
+        if(unit > stock){
+            alert('Enter Quantity as small as avalible stock!!!');
+            jQuery('.unit').val(Math.ceil(stock));
+        }
+    });
 
 
-        jQuery('.sub_unit').live('change keyup',function(){
 
-            var unit = parseFloat(jQuery(this).parent().parent().find('.sub_unit').val());
-            var stock = parseFloat(jQuery(this).parent().parent().find('.sub_stock').val());
-            if( unit > stock){
-                alert('Enter Quantity as small as avalible stock!!!');
-                jQuery(this).parent().parent().find('.sub_unit').val(Math.ceil(stock));
-            }
 
-            if(unit <= '0'){
-                alert("please enter unit!!!");
-                jQuery(this).parent().parent().find('.sub_unit').focus();
-                jQuery(this).parent().parent().find('.sub_unit').val('1');
-            }
-            
-                 ws_rowCalculate();
-           
-            
-        });
+    jQuery('.sub_unit').live('change keyup',function(){
 
-         jQuery('.sub_discount').live('change',function(){
-            var unit = jQuery(this).parent().parent().find('.sub_discount').val();
+        var unit = parseFloat(jQuery(this).parent().parent().find('.sub_unit').val());
+        var stock = parseFloat(jQuery(this).parent().parent().find('.sub_stock').val());
+        if( unit > stock){
+            alert('Enter Quantity as small as avalible stock!!!');
+            jQuery(this).parent().parent().find('.sub_unit').val(Math.ceil(stock));
+        }
 
-            if(unit <= '0'){
-                alert("please enter price!!!");
-                jQuery(this).parent().parent().find('.sub_discount').focus();
-                jQuery(this).parent().parent().find('.sub_discount').val('1');
-            }
-            
-                 ws_rowCalculate();
-           
-            
-        });
-    jQuery('.ws_discount').live('change',function() {
+        if(unit <= '0'){
+            alert("please enter unit!!!");
+            jQuery(this).parent().parent().find('.sub_unit').focus();
+            jQuery(this).parent().parent().find('.sub_unit').val('1');
+        }
+        
+             ws_rowCalculate();
+       
+        
+    });
 
+    jQuery('.sub_discount').live('change keyup',function(){
+
+        jQuery(this).parent().parent().find('.discount_type').val('each');
+        var unit = jQuery(this).parent().parent().find('.sub_discount').val();
+
+        if(unit <= '0'){
+            alert("please enter price!!!");
+            jQuery(this).parent().parent().find('.sub_discount').focus();
+            jQuery(this).parent().parent().find('.sub_discount').val('1');
+        }
+        
+             ws_rowCalculate();
+       
+        
+    });
+    jQuery('.ws_discount').live('change keyup',function() {
         ws_rowCalculate();
     });
+
+
+
 
     jQuery('.add-button').live('click',function() {
 
@@ -679,6 +700,7 @@ jQuery( document ).ready(function() {
 
     jQuery('.sub_delete').live('click',function(){
        jQuery(this).parent().parent().remove();
+        ws_rowCalculate();
         
     });
 
@@ -714,32 +736,37 @@ function ws_rowCalculate() {
     var row_discount    = parseFloat(jQuery(this).find('.sub_discount').val());
     var row_mrp         = parseFloat(jQuery(this).find('.sub_price').val());
     unit                = parseFloat(jQuery(this).find('.sub_unit').val());
+    var cgst                = parseFloat(jQuery(this).find('.sub_cgst').val());
+    var sgst                = parseFloat(jQuery(this).find('.sub_sgst').val());
     if( row_discount == row_mrp  || jQuery(this).find('.discount_type').val() == 'whole' ) {
-         var sub_tot1    = (parseFloat(jQuery(this).find('.sub_price').val()) * parseFloat(jQuery(this).find('.sub_unit').val()));
-             
-            count               = parseFloat(discount / existing_count);
-            sub                 = (sub_tot1 *  count)/100;
-            var row_dis_new     = (sub / unit);
-            var unit_price      = row_mrp - row_dis_new;
-        
+
+            var unit_price      =   jQuery(this).find('.sub_price').val();
+
+            var whole_unit_total      = row_mrp * unit;
+           
+            var whole_dis   = (whole_unit_total  * discount)/100;
+            var unit_total = whole_unit_total - whole_dis;
+
         jQuery(this).find('.discount_type').val('whole');
        
     }
 
     else {
-        var unit_price    = row_discount;
-
-    }
-        jQuery(this).find('.sub_discount').val(unit_price);
-        var unit_price          = parseFloat(jQuery(this).find('.sub_discount').val());
+        var unit_price          = parseFloat(row_discount);
         var unit_count          = parseFloat(jQuery(this).find('.sub_unit').val());
-        var cgst                = parseFloat(jQuery(this).find('.sub_cgst').val());
-        var sgst                = parseFloat(jQuery(this).find('.sub_sgst').val());
         var unit_total          = (unit_price * unit_count);
-        var row_per_cgst        = ( (cgst * unit_total) / 100 );
-        var row_per_sgst        = ( (sgst * unit_total) / 100 );
-        var amt = unit_total - (row_per_cgst + row_per_sgst); 
-        unit_total               = (isNaN(unit_total) ? '0.00' : unit_total);
+       
+    }
+        var diviser         = 100 + cgst + sgst ;
+        var amt             = (unit_total *  100)/(diviser);
+        var full_gst        = unit_total - amt;
+        var row_per_cgst    = full_gst/2;
+        var row_per_sgst    = full_gst/2;
+
+
+        jQuery(this).find('.sub_discount').val(unit_price);
+      
+        unit_total   = (isNaN(unit_total) ? '0.00' : unit_total);
 
         jQuery(this).find('.td_subtotal').text(unit_total.toFixed(2)); 
         jQuery(this).find('.sub_total').val(unit_total.toFixed(2));
