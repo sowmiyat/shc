@@ -38,10 +38,7 @@
     font-weight: bold;
 }
 .add-button{
-	margin-left: 45%;
     margin-top: 15px;
-
-
 }
 
 #bill_lot_add .sub_unit {
@@ -79,8 +76,15 @@
 				<div class="col-md-12">
 					<div class="x_panel">
 						<div class="x_title">
-
-							<h2>Invoice Design</h2>
+							<h2>
+								Invoice 
+								<?php 
+									if($bill_data && isset($bill_fdata) && $bill_fdata) {
+												echo "<b>Order ID : </b> ".$bill_fdata->order_id;
+									}
+								?>
+							</h2>
+							<h2 style="float:right;"><b>Invoice ID : </b> <?PHP echo $invoice_id['inv_id']; ?></h2>
 							<div class="clearfix"></div>
 						</div>
 						<div class="x_content">
@@ -89,118 +93,128 @@
 								<!-- title row -->
 								<div class="row">
 									<div class="col-xs-12 invoice-header">
-										<h1>
-											<i class="fa fa-globe"></i> Invoice.
-											<small class="pull-right"><?php echo date('d/m/Y'); ?></small>
-										</h1>
+										<h4>Customer Details</h4>
 									</div>
 									<!-- /.col -->
 								</div>
 								<!-- info row -->
 								<div class="row invoice-info">
-									<!-- <div class="col-sm-4 invoice-col">
-										From
-										<address>
-											<strong>Saravana Health Store</strong>
-											<br>7/12,Mg Road,Thiruvanmiyur
-											<br>Chennai,Tamilnadu,
-											<br>Pincode-600041.
-											<br>Cell:9841141648.
-										</address>
-									</div> -->
-									<!-- /.col -->
-
-									<div class="col-sm-4 invoice-col">
-										
-											<address>
-
-												<div class="ws_billing_customer_div">
-
-													<div class="ui-widget">
-													  <label for="ws_billing_customer" style="width:100px;">Name: </label>
-													  <input id="ws_billing_customer" name="name" required value="<?php if(isset($bill_fdata)){ echo $bill_fdata->customer_name; } ?>" <?php if(isset($bill_fdata)){  echo 'readonly'; } ?>  >
-													  <br/><br/>
-													  <label for="ws_billing_mobile" style="width:100px;">Mobile: </label>
-													  <input type="tel" id="ws_billing_mobile" name="mobile" class="mobile_check_wholesale"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->mobile; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
-													  <br/><br/>
-													  <label for="ws_billing_address" style="width:100px;">Address: </label>
-													  <input id="ws_billing_address" name="address" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->address; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
-													  <br/><br/>
-													  <label for="ws_billing_company" style="width:100px;">Company Name: </label>
-													  <input id="ws_billing_company" name="company" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->company_name; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
-													  <br/><br/>
-													  <label for="ws_billing_gst" style="width:100px;">GST: </label>
-													  <input id="ws_billing_gst" type="number" name="gst" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->gst_number; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
-													</div>
-													<!-- <select id="ws_billing_customer" name="ws_customer_id" class="ws_billing_customer" tabindex="-1" aria-hidden="true">
-													<?php
-														if($bill_data && isset($bill_fdata) && $bill_fdata) {
-															echo '<option selected value="'.$bill_fdata->customer_id.'">'.$bill_fdata->mobile.'</option>';
-														}
-													?>
-													</select> -->
-												
-												<!-- <div class="new_customername">
-													<input type="text" class="ws_new_customer" name="ws_new_customer" readonly/>
-												</div> -->
-												
-					                                <input type="hidden" name="ws_user_type" value="new" class="ws_user_type"/>
-					                                <input type="hidden" name="ws_old_customer_id" class="ws_old_customer_id" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->customer_id;} else { echo '0'; } ?>"/>
-					                                <input type="hidden" name="ws_customer_id_new" class="ws_customer_id_new"/>
-					                            </div>
-												<br><span class="ws_address1"></span>
-												<br><span class="ws_customer_name"></span>
-												<br><span class="ws_customer_company"></span>
-												
-											</address>							
-											
+									<div class="col-md-4 col-sm-4 col-xs-12">
+										<div class="form-group">
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Name <span class="required">*</span>
+											</label>
+											<div class="col-md-6 col-sm-6 col-xs-12">
+												<input type="text" id="ws_billing_customer" name="name" required value="<?php if(isset($bill_fdata)){ echo $bill_fdata->customer_name; } ?>" <?php if(isset($bill_fdata)){  echo 'readonly'; } ?>  >
+											</div>
+										</div>
 									</div>
-									<!-- /.col -->
-									<div class="col-sm-4 invoice-col">
-										<b>
-											<input type="hidden" name="invoice_id" class="invoice_id" id="invoice_id" autocomplete="off" value="<?php echo $invoice_id['invoice_id']; ?>">
-											 <input type="hidden" name="year" value="<?php echo $year; ?>" class="year"/> 
-										</b>
-										<br>
-										<b>Invoice ID : </b> <?PHP echo $invoice_id['inv_id']; ?>
-										<br>
-										<?php
-										if($bill_data && isset($bill_fdata) && $bill_fdata) {
-
-											echo "<b>Order ID : </b> ".$bill_fdata->order_id;
-										}
-										
-										?>
+									<div class="col-md-4 col-sm-4 col-xs-12">
+										<div class="form-group">
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Mobile<span class="required">*</span>
+											</label>
+											<div class="col-md-6 col-sm-6 col-xs-12">
+												<input type="tel" id="ws_billing_mobile" name="mobile" class="mobile_check_wholesale"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->mobile; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
+											</div>
+										</div>
 									</div>
-									<!-- /.col -->
+									<div class="col-md-4 col-sm-4 col-xs-12">
+										<div class="form-group">
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Address<span class="required">*</span>
+											</label>
+											<div class="col-md-6 col-sm-6 col-xs-12">
+												<input type="text" id="ws_billing_address" name="address" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->address; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4 col-sm-4 col-xs-12">
+										<div class="form-group">
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Company Name<span class="required">*</span>
+											</label>
+											<div class="col-md-6 col-sm-6 col-xs-12">
+												<input type="text" id="ws_billing_company" name="company" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->company_name; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4 col-sm-4 col-xs-12">
+										<div class="form-group">
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">GST No.<span class="required">*</span>
+											</label>
+											<div class="col-md-6 col-sm-6 col-xs-12">
+												<input id="ws_billing_gst" type="number" name="gst" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->gst_number; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
+											</div>
+										</div>
+									</div>
+
+									<input type="hidden" name="ws_user_type" value="new" class="ws_user_type"/>
+									<input type="hidden" name="ws_old_customer_id" class="ws_old_customer_id" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->customer_id;} else { echo '0'; } ?>"/>
+									<input type="hidden" name="ws_customer_id_new" class="ws_customer_id_new"/>
 								</div>
-								<!-- /.row -->
+								<!-- title row -->
 								<div class="row">
-									<B>Product Name :</B>									
-									<input type="text" name="lot_number" class="ws_lot_id" id="ws_lot_id" />
-									
-									<input type="hidden" name="ws_lot_id_orig" class="ws_lot_id_orig">
-									<input type="hidden" name="ws_product" class="ws_product" /> 
-									<input type="hidden" name="ws_unit_price" class="ws_unit_price"/>
-									<input type="hidden" name="ws_hsn" class="ws_hsn"/>
-									<input type="hidden" name="ws_cgst" class="cgst_percentage"/>
-									<input type="hidden" name="ws_sgst" class="sgst_percentage"/>
-									<input type="hidden" name="ws_stock" class="ws_slab_sys_txt"/>
-
-									<span style="margin-left: 10%;">
-										<B>Unit(Quantity):</B>
-										<input type="number" name="unit" id="unit" class="unit" min="1"/>
-									</span>	
-									<span style="margin-left: 10%;">
-										<B>Discounted Price:</B>
-										<input type="number" name="discount" value="0.00" id="discount" class="discount"/>
-									</span>
-								</div>
-								<div class="row"> 
-									<div class="">
-										<button class="btn btn-success add-button"  id="">ADD</button>
+									<div class="col-xs-12 invoice-header">
+										<h4>Add Products</h4>
 									</div>
+									<!-- /.col -->
 								</div>
+
+
+
+								<!-- info row -->
+								<div class="row invoice-info">
+									<div class="col-md-4 col-sm-4 col-xs-12">
+										<div class="form-group">
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Product Name <span class="required">*</span>
+											</label>
+											<div class="col-md-6 col-sm-6 col-xs-12">
+												<input type="text" name="lot_number" class="ws_lot_id" id="ws_lot_id" />
+												<input type="hidden" name="ws_lot_id_orig" class="ws_lot_id_orig">
+												<input type="hidden" name="ws_product" class="ws_product" /> 
+												<input type="hidden" name="ws_unit_price" class="ws_unit_price"/>
+												<input type="hidden" name="ws_hsn" class="ws_hsn"/>
+												<input type="hidden" name="ws_cgst" class="cgst_percentage"/>
+												<input type="hidden" name="ws_sgst" class="sgst_percentage"/>
+												<input type="hidden" name="ws_stock" class="ws_slab_sys_txt"/>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4 col-sm-4 col-xs-12">
+										<div class="form-group">
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Unit(Quantity):<span class="required">*</span>
+											</label>
+											<div class="col-md-6 col-sm-6 col-xs-12">
+												<input type="number" name="unit" id="unit" class="unit" min="1"/>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4 col-sm-4 col-xs-12">
+										<div class="form-group">
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Discounted Price:<span class="required">*</span>
+											</label>
+											<div class="col-md-6 col-sm-6 col-xs-12">
+												<input type="number" name="discount" value="0.00" id="discount" class="discount"/>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-offset-8 col-md-4 col-sm-4 col-xs-12">
+										<div class="form-group">
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name"><span class="required"></span>
+											</label>
+											<div class="col-md-6 col-sm-6 col-xs-12">
+												<button class="btn btn-success add-button"  id="">ADD</button>
+											</div>
+										</div>
+									</div>
+
+
+									<input type="hidden" name="invoice_id" class="invoice_id" id="invoice_id" autocomplete="off" value="<?php echo $invoice_id['invoice_id']; ?>">
+									<input type="hidden" name="year" value="<?php echo $year; ?>" class="year"/> 
+
+
+								</div>
+
+
+
+
 
 								
 								<!-- Table row -->
