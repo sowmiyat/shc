@@ -2581,7 +2581,7 @@ legend {
 }
 
 .form-control.has-feedback-left {
-    padding-left: 45px
+    padding-left: 40px
 }
 
 .form-control.has-feedback-right {
@@ -4970,4 +4970,18 @@ ul.notifications {
 
     a.list_update,a.bill_view {
         min-width: 50px;
+    }
+
+    input[type=radio] {
+        width: 15px;
+        height: 15px;
+        margin: 0px;
+    }
+    input[type=radio]:focus {
+        margin: 0px;
+        border: 1px solid rgba(31,181,172,1.0);
+    }
+
+    .invoice .table {
+        margin-bottom: 8px;
     }

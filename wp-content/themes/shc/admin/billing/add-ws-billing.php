@@ -71,11 +71,61 @@
 	background: #58606b;
     color: #fff;
 }
-
 .form-control-feedback{
 	color: #000;
 }
+.secondary_mobile, .landline_mobile {
+	display: none;
+}
 </style>
+
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+
+	    jQuery('#ws_billing_mobile').live('keydown', function(e){
+            var keyCode = e.keyCode || e.which; 
+            if (keyCode == 40) { 
+
+            	if(jQuery('#ui-id-1').css('display') != 'block') {
+                	e.preventDefault();
+                	jQuery('.secondary_mobile').css('display', 'block');
+                	jQuery('#ws_billing_secondary_mobile').focus();
+            	}
+
+            }
+	    });
+	    jQuery('#ws_billing_secondary_mobile').live('keydown', function(e){
+            var keyCode = e.keyCode || e.which; 
+            if (keyCode == 40) { 
+                e.preventDefault(); 
+                jQuery('.landline_mobile').css('display', 'block');
+                jQuery('#ws_billing_landline_mobile').focus();
+            }
+            if (keyCode == 38) { 
+                e.preventDefault(); 
+                jQuery('.secondary_mobile').css('display', 'none');
+                jQuery('#ws_billing_secondary_mobile').val('');
+                jQuery('#ws_billing_mobile').focus();
+            }
+	    });
+
+
+	    jQuery('#ws_billing_landline_mobile').live('keydown', function(e){ console.log(e);
+            var keyCode = e.keyCode || e.which; 
+            if (keyCode == 38) { 
+                e.preventDefault(); 
+                jQuery('.landline_mobile').css('display', 'none');
+                jQuery('#ws_billing_landline_mobile').val('');
+                jQuery('#ws_billing_secondary_mobile').focus();
+            }
+	    });
+	    
+
+
+	});
+</script>
+
+
 			<div class="row">
 				<div class="col-md-12">
 					<div class="x_panel">
@@ -96,9 +146,9 @@
 							<section class="content invoice" id="ws_billing_container">
 								<!-- title row -->
 								<div class="row">
-									<div class="col-xs-12 invoice-header">
+									<!-- <div class="col-xs-12 invoice-header">
 										<h4>Customer Details</h4>
-									</div>
+									</div> -->
 									<!-- /.col -->
 								</div>
 								<!-- info row -->
@@ -122,7 +172,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="col-md-4 col-sm-4 col-xs-12" style="display:none;">
+									<div class="col-md-4 col-sm-4 col-xs-12 secondary_mobile">
 										<div class="form-group">
 											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Secondary Mobile<span class="required">*</span>
 											</label>
@@ -132,7 +182,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="col-md-4 col-sm-4 col-xs-12" style="display:none;">
+									<div class="col-md-4 col-sm-4 col-xs-12 landline_mobile">
 										<div class="form-group">
 											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Landline<span class="required">*</span>
 											</label>
@@ -177,9 +227,9 @@
 
 								<!-- title row -->
 								<div class="row">
-									<div class="col-xs-12 invoice-header">
+									<!-- <div class="col-xs-12 invoice-header">
 										<h4>Add Products</h4>
-									</div>
+									</div> -->
 									<!-- /.col -->
 								</div>
 
@@ -188,7 +238,7 @@
 								<!-- info row -->
 								<div class="row invoice-info">
 
-									<div class="col-md-6 col-sm-6 col-xs-12">
+									<div class="col-md-4 col-sm-4 col-xs-12">
 
 										<div class="form-group">
 											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Product Name <span class="required">*</span>
@@ -231,7 +281,7 @@
 										<input type="hidden" name="year" value="<?php echo $year; ?>" class="year"/> 
 									</div>
 
-									<div class="col-md-6 col-sm-6 col-xs-12">
+									<div class="col-md-8 col-sm-8 col-xs-12">
 										<div class="stock_bal_table">
 											<table class="table table-bordered">
 												<thead>
@@ -327,9 +377,82 @@
 									<div class="col-xs-6">
 										
 										<div class="billing-structure">Payment Due From Previous Bills:<span class="ws_balance_amount"></span>
-											<input type="hidden" value="0.00" name="ws_balance_amount_val" class="ws_balance_amount_val"/> 
+											<input type="hidden" value="0.00" name="ws_balance_amount_val" class="ws_balance_amount_val"/>
 										</div>
-										</br>
+
+
+										<div class="payment_options">
+											<div class="payment_status">
+												Payment Type : <?php 
+													if(isset($_GET['id'])) { 
+														$payment_type = $bill_fdata->payment_type;
+														echo $payment_type; 
+														echo "<br>";
+														echo $bill_fdata->payment_details;
+													} else {
+													?>
+														<div class="row">
+															<div class="col-md-2">
+																<input type="radio" name="ws_payment_pay_type" value="cash" class="payment_pay_type" checked/> Cash
+															</div>
+															<div class="col-md-2">
+																<input type="radio" name="ws_payment_pay_type" value="card" class="payment_pay_type"/> Card
+															</div>
+															<div class="col-md-3">
+																<input type="radio" name="ws_payment_pay_type" value="cheque" class="payment_pay_type"/> Cheque
+															</div>
+															<div class="col-md-5">
+																<input type="radio" name="ws_payment_pay_type" value="Internet Banking" class="payment_pay_type"/>Internet Banking
+															</div>
+															<div class="col-md-5">
+																<input type="radio" name="ws_payment_pay_type" value="credit" class="payment_pay_type"/>Credit
+															</div>
+														</div>
+														<div>
+															<div class="payment_details_card"><input type="textarea" name="card_number" value=""  placeholder="Card Details" class="card_number"/> </div>
+															<div class="payment_details_cheque">
+																<input type="textarea" name="cheque_number" value="" placeholder="Cheque Details"  class="cheque_number"/>
+																<input type="textarea" name="cheque_date" value="" placeholder="Cheque Date"  class="cheque_date"/>
+															</div>
+															<div class="payment_details_internet">
+																<textarea  name="internet_banking_details" class="internet_banking_details" placeholder="Bank Details" style="width:100%;"></textarea>
+															</div> 
+														</div>
+													<?php
+													}
+												?>
+											</div>
+										</div>
+										<div>
+											<div>
+												Home Delivery: <input type ="hidden" value="wholesale_customer" class="customer_type"/>
+											</div>
+											<div>
+												<?php if(isset($_GET['id'])) { 
+													$payment_type = $bill_fdata->payment_type; ?>
+													<div>
+														
+														<input type="text" name="ws_delivery_name" class="ws_delivery_name" placeholder="Name" value="<?php echo $bill_fdata->home_delivery_name; ?>" style="height: 40px;"/>
+														<input type="text" name="ws_delivery_phone" class="ws_delivery_phone" placeholder="Phone" value="<?php echo $bill_fdata->home_delivery_mobile; ?>" style="height: 40px;"/>
+														<textarea  placeholder="Address" name="ws_delivery_address" class="ws_delivery_address" style="width:100%;"><?php echo $bill_fdata->home_delivery_address; ?></textarea>	
+													</div>
+												<?php } else { ?>
+													<div>
+
+														<input type="text" name="ws_delivery_name" class="ws_delivery_name" placeholder="Name" style="height: 40px;"/>
+														<input type="text" name="ws_delivery_phone" class="ws_delivery_phone" placeholder="Phone" style="height: 40px;"/>
+														<textarea  placeholder="Address" name="ws_delivery_address" class="ws_delivery_address" style="width:100%;"></textarea>
+													</div>
+												<?php } ?>
+											</div>
+
+
+
+										</div>
+							
+												
+
+
 
 									</div>
 									<!-- /.col -->
@@ -378,69 +501,6 @@
 																<span class="fa fa-inr form-control-feedback right" aria-hidden="true"></span>
 															</div>
 														</td>
-													</tr>
-													<tr>
-													<th>Payment Type: <br/></th>
-													
-														<?php if(isset($_GET['id'])) { 
-														$payment_type = $bill_fdata->payment_type; ?>
-														<td>
-														<?php 	echo $payment_type; 
-																echo '<br/>';
-																echo $bill_fdata->payment_details;
-														 ?>
-														</td>
-													<?php } else { ?>
-														<td>
-															<table>
-																<tr><td><input type="radio" name="ws_payment_pay_type" value="cash" class="payment_pay_type" checked/> Cash</td></tr>
-																<tr><td><input type="radio" name="ws_payment_pay_type" value="card" class="payment_pay_type"/> Card</td></tr>
-																<tr><td class="payment_details_card"><input type="textarea" name="card_number" value=""  placeholder="Card Details" class="card_number"/> </td></tr>
-																<tr><td><input type="radio" name="ws_payment_pay_type" value="cheque" class="payment_pay_type"/> Cheque</td> </tr>
-																<tr>
-																	<td class="payment_details_cheque">
-																		<input type="textarea" name="cheque_number" value="" placeholder="Cheque Details"  class="cheque_number"/>
-
-																		<input type="textarea" name="cheque_date" value="" placeholder="Cheque Date"  class="cheque_date"/>
-																	 </td> 
-																	
-																	 	
-																	
-																</tr>
-																<tr><td><input type="radio" name="ws_payment_pay_type" value="Internet Banking" class="payment_pay_type"/>Internet Banking</td></tr>
-																<tr>
-																	<td class="payment_details_internet">
-																	<textarea  name="internet_banking_details" class="internet_banking_details" placeholder="Bank Details" ></textarea>
-																	</td>
-																</tr>
-																<tr>
-																	<td>
-																		<input type="radio" name="ws_payment_pay_type" value="credit" class="payment_pay_type"/>Credit
-																	</td>
-																</tr>
-															</table>
-														</td>
-															<?php } ?>
-													</tr>
-													<tr>
-													<th>Home Delivery: <input type ="hidden" value="wholesale_customer" class="customer_type"/><br/></th>
-
-													<?php if(isset($_GET['id'])) { 
-														$payment_type = $bill_fdata->payment_type; ?>
-														<td>
-															
-															<input type="text" name="ws_delivery_name" class="ws_delivery_name" placeholder="Name" value="<?php echo $bill_fdata->home_delivery_name; ?>"/>
-															<input type="text" name="ws_delivery_phone" class="ws_delivery_phone" placeholder="Phone" value="<?php echo $bill_fdata->home_delivery_mobile; ?>"/>
-															<textarea  placeholder="Address" name="ws_delivery_address" class="ws_delivery_address"><?php echo $bill_fdata->home_delivery_address; ?></textarea>	
-														</td>
-													<?php } else { ?>
-														<td>
-
-															<input type="text" name="ws_delivery_name" class="ws_delivery_name" placeholder="Name"/>
-															<input type="text" name="ws_delivery_phone" class="ws_delivery_phone" placeholder="Phone"/>
-															<textarea  placeholder="Address" name="ws_delivery_address" class="ws_delivery_address"></textarea>
-														</td>
-															<?php } ?>
 													</tr>
 												</tbody>
 											</table>

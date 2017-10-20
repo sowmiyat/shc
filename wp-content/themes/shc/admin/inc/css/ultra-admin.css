@@ -908,7 +908,7 @@ div.wp-menu-image:before{
 input[type=number] {
 	height: 35px;
 }
-input[type=checkbox], input[type=color], input[type=date], input[type=datetime-local], input[type=datetime], input[type=email], input[type=month], input[type=number], input[type=password], input[type=radio], input[type=search], input[type=tel], input[type=text], input[type=time], input[type=url], input[type=week], select, textarea{
+input[type=checkbox], input[type=color], input[type=date], input[type=datetime-local], input[type=datetime], input[type=email], input[type=month], input[type=number], input[type=password], input[type=radio], input[type=search], input[type=tel], input[type=text], input[type=time], input[type=url], input[type=week], select{
 	background: #f8f8f8;
 	border: 1px solid #e8e8e8;
 	box-shadow: none;
@@ -923,6 +923,23 @@ input[type=checkbox], input[type=color], input[type=date], input[type=datetime-l
 	color: #333333;
 	max-width: 140px;
     height: 25px;
+    width: 100%;
+}
+textarea{
+	background: #f8f8f8;
+	border: 1px solid #e8e8e8;
+	box-shadow: none;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	-ms-box-shadow: none;
+	-o-box-shadow: none;
+	padding: 6px;
+	line-height: 23px;
+	font-size: 14px;
+	margin-bottom: 5px;
+	color: #333333;
+    height: 40px;
+    width: 100%;
 }
 
 input[type=checkbox]{
