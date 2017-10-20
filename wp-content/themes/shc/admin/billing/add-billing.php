@@ -154,13 +154,13 @@
 
 													<div class="ui-widget">
 													  <label for="billing_customer" style="width:100px;">Name: </label>
-													  <input id="billing_customer" name="name" required value="<?php if(isset($bill_fdata)){ echo $bill_fdata->customer_name; } ?>" <?php if(isset($bill_fdata)){  echo 'readonly'; } ?>  >
+													  <input type="text" id="billing_customer" name="name" required value="<?php if(isset($bill_fdata)){ echo $bill_fdata->customer_name; } ?>" <?php if(isset($bill_fdata)){  echo 'readonly'; } ?>  >
 													  <br/><br/>
 													  <label for="billing_mobile" style="width:100px;">Mobile: </label>
 													  <input type="tel" id="billing_mobile" name="mobile" class="mobile_check"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->mobile; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
 													  <br/><br/>
 													  <label for="billing_address" style="width:100px;">Address: </label>
-													  <input id="billing_address" name="address" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->address; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
+													  <input type="text" id="billing_address" name="address" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->address; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
 													  <br/><br/>
 													</div>
 													<!-- <select id="ws_billing_customer" name="ws_customer_id" class="ws_billing_customer" tabindex="-1" aria-hidden="true">
@@ -194,7 +194,6 @@
 										if($bill_data && isset($bill_fdata) && $bill_fdata) {
 											echo "<b>Order ID : </b> ".$bill_fdata->order_id;
 										}
-										
 										?>
 									</div>
 									<!-- /.col -->
