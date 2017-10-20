@@ -147,19 +147,19 @@ jQuery( "#billing_customer" ).autocomplete ({
 
   populateSelect2('.retail_lot_id', 'old');
 
-  jQuery('.sub_unit,.discount').live('change',function() {
-    rowCalculate();
+  jQuery('.sub_unit,.discount').live('change keyup',function() {
+    //rowCalculate();
   });
 
 
 
-    jQuery('.sub_discount').live('change',function() {
-        jQuery(this).parent().parent().find('.discount_type').val('each');
+    jQuery('.sub_discount').live('change keyup',function() {
+        //jQuery(this).parent().parent().find('.discount_type').val('each');
       
-    rowCalculate();
+    //rowCalculate();
   });
 
-   jQuery('.paid_amount').on('change',function(){
+   jQuery('.paid_amount').on('change keyup',function(){
         var prev_bal = parseFloat(jQuery('.balance_amount_val').val());
 
         var current_bal = parseFloat(jQuery('.fsub_total').val());
@@ -271,6 +271,7 @@ jQuery( "#billing_customer" ).autocomplete ({
 
     jQuery('.sub_delete').live('click',function(){
        jQuery(this).parent().parent().remove();
+       
         
     });
 

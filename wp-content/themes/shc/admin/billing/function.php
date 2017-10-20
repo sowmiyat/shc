@@ -343,6 +343,8 @@ function ws_create_order() {
 		'customer_name' 			=> $params['name'], 
 		'company_name' 				=> $params['company'],
 		'mobile' 					=> $params['mobile'],
+		'secondary_mobile' 			=> $params['secondary_mobile'],
+		'landline' 					=> $params['landline'],
 		'address' 					=> $params['address'], 
 		'gst_number' 				=> $params['gst']
 		);
@@ -354,6 +356,8 @@ function ws_create_order() {
 		'customer_name' 			=> $params['name'], 
 		'company_name' 				=> $params['company'],
 		'mobile' 					=> $params['mobile'],
+		'secondary_mobile' 			=> $params['secondary_mobile'],
+		'landline' 					=> $params['landline'],
 		'address' 					=> $params['address'], 
 		'gst_number' 				=> $params['gst']
 		);
@@ -527,7 +531,38 @@ function ws_update_order() {
 	$data['year'] = date('Y');
 	parse_str($_POST['data'], $params);
 	$invoice_id = $params['invoice_id'];
-	$customer_id = $params['ws_old_customer_id'];
+
+	if($params['ws_old_customer_id'] != '0')
+	{
+		$customer_id = $params['ws_old_customer_id'];
+		$customer_update = array(
+		'customer_name' 			=> $params['name'], 
+		'company_name' 				=> $params['company'],
+		'mobile' 					=> $params['mobile'],
+		'secondary_mobile' 			=> $params['secondary_mobile'],
+		'landline' 					=> $params['landline'],
+		'address' 					=> $params['address'], 
+		'gst_number' 				=> $params['gst']
+		);
+		$wpdb->update($customer_table, $customer_update,array('id' => $customer_id));
+
+	}
+	else {
+		$customer_update = array(
+		'customer_name' 			=> $params['name'], 
+		'company_name' 				=> $params['company'],
+		'mobile' 					=> $params['mobile'],
+		'secondary_mobile' 			=> $params['secondary_mobile'],
+		'landline' 					=> $params['landline'],
+		'address' 					=> $params['address'], 
+		'gst_number' 				=> $params['gst']
+		);
+			
+		$wpdb->insert($customer_table, $customer_update);
+
+		$customer_id = $wpdb->insert_id;
+	}
+
 
 	$sale_update = array(
 		'customer_id' 				=>  $customer_id, 
@@ -740,7 +775,7 @@ add_action( 'wp_ajax_ws_return_billing_filter', 'ws_return_billing_filter' );
 add_action( 'wp_ajax_nopriv_ws_return_billing_filter', 'ws_return_billing_filter' );
 
 
-function slap(){
+function slap() {
 
 	$data['success'] = 0;
 	global $wpdb;
