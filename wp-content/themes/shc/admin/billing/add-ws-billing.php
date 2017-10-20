@@ -177,7 +177,7 @@
 											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Secondary Mobile<span class="required">*</span>
 											</label>
 											<div class="col-md-6 col-sm-6 col-xs-12">
-												<input type="tel" id="ws_billing_secondary_mobile" name="secondary_mobile" class="form-control has-feedback-left"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->mobile; } ?>">
+												<input type="tel" id="ws_billing_secondary_mobile" name="secondary_mobile" class="form-control has-feedback-left"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->secondary_mobile; } ?>">
 												<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+0</span>
 											</div>
 										</div>
@@ -187,7 +187,7 @@
 											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Landline<span class="required">*</span>
 											</label>
 											<div class="col-md-6 col-sm-6 col-xs-12">
-												<input type="tel" id="ws_billing_landline_mobile" name="landline" class="form-control has-feedback-left"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->mobile; } ?>" >
+												<input type="tel" id="ws_billing_landline_mobile" name="landline" class="form-control has-feedback-left"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->landline; } ?>" >
 												<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+044</span>
 											</div>
 										</div>
@@ -345,7 +345,7 @@
 		 															<td class="td_product">' .$c_value->product_name. '</td> <input type="hidden" value = "'.$c_value->product_name. '" name="customer_detail['.$i.'][product]" class="sub_product"/>
 		 															<td class="td_hsn">' .$c_value->hsn. '</td> <input type="hidden" value = "'.$c_value->hsn. '" name="customer_detail['.$i.'][hsn]" class="sub_hsn"/>
 		 															<td class=""><input type="text" value = "'.$c_value->sale_unit. '" name="customer_detail['.$i.'][unit]" class="sub_unit"/> </td> 
-		 															<td class="td_stock"></td> <input type="hidden" value = "" name="customer_detail['.$i.'][stock]" class="sub_stock"/>
+		 															
 		 															<td class="td_price">' .$c_value->unit_price. '</td> <input type="hidden" value = "'.$c_value->unit_price. '" name="customer_detail['.$i.'][price]" class="sub_price"/> 
 		 															<td><input type="text" value ="'.$c_value->discount.'" name="customer_detail['.$i.'][discount]" class="sub_discount"/></td>
 		 															<input type="hidden" value ="each" name="customer_detail['.$i.'][discount_type]" class="discount_type"/>

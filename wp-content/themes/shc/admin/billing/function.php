@@ -64,6 +64,8 @@ function getBillDataws($inv_id = 0, $year = 0) {
 ( CASE WHEN c.company_name IS NULL THEN 0 ELSE c.company_name END ) as company_name,
 ( CASE WHEN c.customer_name IS NULL THEN 'Nil' ELSE c.customer_name END ) as customer_name,
 ( CASE WHEN c.mobile IS NULL THEN 'Nil' ELSE c.mobile END ) as mobile,
+( CASE WHEN c.secondary_mobile IS NULL THEN 'Nil' ELSE c.secondary_mobile END ) as secondary_mobile,
+( CASE WHEN c.landline IS NULL THEN 'Nil' ELSE c.landline END ) as landline,
 ( CASE WHEN c.address IS NULL THEN 'Nil' ELSE c.address END ) as address
 FROM ${sale_table} as s LEFT JOIN ${customer_table} as c ON s.customer_id = c.id WHERE s.inv_id = ${inv_id} and s.financial_year = ${year} AND s.locked = 1";
 
@@ -363,6 +365,7 @@ function ws_create_order() {
 		);
 			
 		$wpdb->insert($customer_table, $customer_update);
+
 
 		$customer_id = $wpdb->insert_id;
 	}
