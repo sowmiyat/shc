@@ -516,103 +516,94 @@ function formatCustomerNameResult(data) {
   return $state;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function populateSelectws(selector, v) {
 
-   jQuery(selector).select2({
-
-        allowClear: true,
-        width: '15%',
-        multiple: true,
-        minimumInputLength: 1,
-        maximumSelectionLength: 1,
-        ajax: {
-        type: 'POST',
-        url: frontendajax.ajaxurl,
-        delay: 250,
-        dataType: 'json',
-            data: function(params) {
+     jQuery( "#ws_lot_id" ).autocomplete ({
+      source: function( request, response ) {
+        jQuery.ajax( {
+          url: frontendajax.ajaxurl,
+          type: 'POST',
+          dataType: "json",
+          data: {
+            action: 'get_lot_data',
+            search_key: request.term
+          },
+          success: function( data ) {
+            response(jQuery.map( data.result, function( item ) {
                 return {
-                    action: 'get_lot_data', // search term
-                    page: 1,
-                    search_key: params.term,
-                   
-                };
-            },
-
-            processResults: function(data) {
-                var results = [];
-                return {
-                    results: jQuery.map(data.items, function(obj) {
-                        return { id: obj.id, lot_no:obj.lot_no, brand_name: obj.brand_name, product_name:obj.product_name,hsn:obj.hsn, unit_price:obj.selling_price, cgst:obj.cgst,sgst:obj.sgst, bal_stock:obj.bal_stock };
-                    })
-                };
-            },
-            cache: true
-        },
-        initSelection: function (element, callback) {
-          callback({ id: jQuery(element).val(), product_name: jQuery(element).find(':selected').text() });
-        },
-        templateResult: formatStateBillCreate,
-        templateSelection: formatStateBillCreate1
-    }).on("select2:select", function (e) {    
+                    id: item.id,
+                    lot_no: item.lot_no,
+                    brand_name : item.brand_name,
+                    product_name : item.product_name,
+                    hsn : item.hsn,
+                    cgst : item.cgst,
+                    sgst : item.sgst,
+                    unit_price : item.selling_price,
+                    value : item.product_name +' \('+item.brand_name+'\)',
+                }
+            }));
+          }
+        } );
+      },
+      minLength: 2,
+      select: function( event, ui ) {
 
 
-        jQuery('.unit').focus(); 
+        jQuery('.ws_lot_id_orig').val(ui.item.id);  
+        jQuery('.ws_product').val(ui.item.product_name);  
+        jQuery('.ws_unit_price').val(ui.item.unit_price);
+        jQuery('.discount').val(ui.item.unit_price);
+        jQuery('.ws_hsn').val(ui.item.hsn);
+        jQuery('.cgst_percentage').val(ui.item.cgst);
+        jQuery('.sgst_percentage').val(ui.item.sgst);
 
-
-        jQuery('.ws_lot_id').val(e.params.data.id);  
-        jQuery('.ws_product').val(e.params.data.product_name);  
-        jQuery('.ws_unit_price').val(e.params.data.unit_price);
-        jQuery('.discount').val(e.params.data.unit_price);
-        jQuery('.ws_hsn').val(e.params.data.hsn);
-        jQuery('.cgst_percentage').val(e.params.data.cgst);
-        jQuery('.sgst_percentage').val(e.params.data.sgst);
-
-        var selector = jQuery(this);
+       var selector = jQuery(this);
         jQuery.ajax({
             type: "POST",
             dataType : "json",
             url: frontendajax.ajaxurl,
             data: {
-                id      : e.params.data.id,
+                id      : ui.item.id,
                 action  :'ws_slap'
             },
               success: function (data) {
                 jQuery('.ws_slab_sys_txt').val(data);
 
             }
-        });       
+        }); 
+
+
+
+        console.log( "id: " + ui.item.id);
+      }
     });
+
 }
 
-function formatStateBillCreate (state) {
-    if (!state.id) {
-        return state.id;
-    }
-    var $state = jQuery(
-    '<span><b>Brand Name  :</b>' +
-    state.brand_name +
-    '</span><br/>' +
-    '<span><b>Product Name : </b>' +
-    state.product_name +
-    '</span>'
-   
-    );
-    return $state;
-};
-
-function formatStateBillCreate1 (state) {
-    if (!state.id) {
-        return state.id;
-    }
-    var $state = jQuery(
-    '<span>' +
-    state.product_name +
-    '</span><br/>'
-   
-    );
-    return $state;
-};
 
 
 function validatePhone(txtPhone) {
@@ -660,7 +651,7 @@ function alert_popup(msg = '', title = '') {
 jQuery( document ).ready(function() {
 
 
-    populateSelectws('.ws_lot_id', 'old');
+        populateSelectws('.ws_lot_id', 'old');
 
         jQuery('.sub_unit').live('change',function(){
             var unit = jQuery(this).parent().parent().find('.sub_unit').val();
@@ -706,7 +697,7 @@ jQuery( document ).ready(function() {
 
        
 
-        var product_id          = jQuery('.ws_lot_id').val();
+        var product_id          = jQuery('.ws_lot_id_orig').val();
         var product_name        = jQuery('.ws_product').val();
         var hsn_code            = jQuery('.ws_hsn').val();
         var stock               = jQuery('.ws_slab_sys_txt').val();
@@ -719,7 +710,7 @@ jQuery( document ).ready(function() {
        if( !!product_id && unit !='0' &&  unit != '' && discount != '0.00' &&  discount != '' && discount != '0') {
             var existing_count = parseInt( jQuery('#bill_lot_add tr').length );
             var current_row = existing_count + 1;
-            if( jQuery('.customer_table[data-productid='+ product_id +']').length != 0 ) {
+            if( jQuery('.customer_table[data-productid="'+ product_id +'"]').length != 0 ) {
                 var selector = jQuery('.customer_table[data-productid='+ product_id +']');
                 var actual_unit = selector.find('.sub_unit').val();
                 var final_unit = parseFloat(unit) + parseFloat(actual_unit);

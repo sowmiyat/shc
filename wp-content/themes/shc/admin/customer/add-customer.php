@@ -34,7 +34,7 @@ input[type=number]::-webkit-outer-spin-button {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Mobile <span class="required">*</span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="tel" id="tel" name="mobile" required="required" class="form-control col-md-7 col-xs-12 mobile_check" autocomplete="off" value="<?php echo ($customer) ? $customer->mobile : ''; ?>">
+								<input type="text" id="mobile" name="mobile" required="required" class="form-control col-md-7 col-xs-12 mobile_check" autocomplete="off" value="<?php echo ($customer) ? $customer->mobile : ''; ?>">
 							</div>
 						</div>
 						<div class="divider-dashed"></div>

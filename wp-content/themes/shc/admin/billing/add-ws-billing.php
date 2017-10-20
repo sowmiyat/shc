@@ -177,10 +177,9 @@
 								<!-- /.row -->
 								<div class="row">
 									<B>Product Name :</B>									
-									<select name="lot_number" class="ws_lot_id" id="ws_lot_id" tabindex="-1" aria-hidden="true" />
-									</select>
-
-
+									<input type="text" name="lot_number" class="ws_lot_id" id="ws_lot_id" />
+									
+									<input type="hidden" name="ws_lot_id_orig" class="ws_lot_id_orig">
 									<input type="hidden" name="ws_product" class="ws_product" /> 
 									<input type="hidden" name="ws_unit_price" class="ws_unit_price"/>
 									<input type="hidden" name="ws_hsn" class="ws_hsn"/>

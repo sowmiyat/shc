@@ -85,7 +85,7 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 									</label>
 									<div class="col-md-6 col-sm-6 col-xs-12">
 										<select id="cgst" name="cgst">
-											<option value="0.00" <?php if(($lot->cgst) == '0.00'){ echo 'selected'; } ?>>0.0%</option>
+											<option value="0.00" <?php if(($lot->cgst) == '0.00'){ echo 'selected'; } ?>>0.00%</option>
 											<option value="2.50" <?php if(($lot->cgst) == '2.50'){ echo 'selected'; } ?>>2.50%</option>
 											<option value="6.00" <?php if(($lot->cgst) == '6.00'){ echo 'selected'; } ?>>6.00%</option>
 											<option value="9.00" <?php if(($lot->cgst) == '9.00'){ echo 'selected'; } ?>>9.00%</option>
@@ -99,7 +99,7 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">SGST % <span class="required">*</span>
 									</label>
 									<div class="col-md-6 col-sm-6 col-xs-12">
-										<input type="text" id="sgst" name="sgst" required="required" class="form-control col-md-7 col-xs-12" readonly  value="<?php echo ($lot) ? $lot->sgst : ''; ?>">
+										<input type="text" id="sgst" name="sgst" required="required" class="form-control col-md-7 col-xs-12" readonly  value="<?php echo ($lot) ? $lot->sgst : '0.00'; ?>">
 									</div>
 								</div>
 							</div>
