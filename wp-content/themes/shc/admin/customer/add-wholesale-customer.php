@@ -3,6 +3,9 @@ input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
      -webkit-appearance: none;
      }
+.form-control-feedback{
+	color: #000;
+}
 </style>
 
 <?php
@@ -36,10 +39,29 @@ input[type=number]::-webkit-outer-spin-button {
 						</div>
 						<div class="divider-dashed"></div>
 						<div class="form-group">
-							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Mobile <span class="required">*</span>
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Primary Mobile <span class="required">*</span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="tel" id="mobile" name="mobile" required="required" class="form-control col-md-7 col-xs-12 mobile_check_wholesale" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->mobile : ''; ?>">
+								<input type="tel" id="mobile" name="mobile" required="required" class="form-control col-md-7 col-xs-12 has-feedback-left mobile_check_wholesale" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->mobile : ''; ?>">
+								<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+91</span> 
+							</div>
+						</div>
+						<div class="divider-dashed"></div>
+						<div class="form-group">
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Secondary Mobile <span class="required">*</span>
+							</label>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+								<input type="tel" id="secondary mobile" name="secondary mobile" required="required" class="form-control col-md-7 col-xs-12 has-feedback-left mobile_check_wholesale" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->secondary_mobile : ''; ?>">
+								<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">0</span>
+							</div>
+						</div>
+						<div class="divider-dashed"></div>
+						<div class="form-group">
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Landline <span class="required">*</span>
+							</label>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+								<input type="tel" id="landline" name="landline" required="required" class="form-control col-md-7 has-feedback-left col-xs-12" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->landline : ''; ?>">
+								<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">044</span>
 							</div>
 						</div>
 						<div class="divider-dashed"></div>
@@ -100,19 +122,19 @@ var checkInputTel = function() {
   this.setSelectionRange(start - move, end - move);
 }
 jQuery("#customer_name").on('change',function(){
-	var alphanumers = /^[a-zA-Z0-9]+$/;
+	var alphanumers =/^[a-zA-Z0-9 ]+$/; 
 	if(!alphanumers.test(jQuery("#customer_name").val())){
     	alert("name can have only alphabets and numbers.");
-    	jQuery("#customer_name").val('');
+    	jQuery("#customer_name").focus();
 	}
 
 });
 
 jQuery("#company_name").on('change',function(){
-	var alphanumers = /^[a-zA-Z0-9]+$/;
+	var alphanumers = /^[a-zA-Z0-9 ]+$/;
 	if(!alphanumers.test(jQuery("#company_name").val())){
     	alert("name can have only alphabets and numbers.");
-    	jQuery("#company_name").val('');
+    	jQuery("#company_name").focus();
 	}
 
 });

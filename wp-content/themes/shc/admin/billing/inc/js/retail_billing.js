@@ -301,8 +301,8 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
             rowCalculate();
             jQuery('.retail_unit').val('0');
             jQuery('.retail_discount').val('0.00');
-            jQuery('.retail_lot_id').text('');
-            jQuery('.retail_lot_id').val('');
+            jQuery('.lot_id').text('');
+            jQuery('.lot_id').val('');
           
          } 
        

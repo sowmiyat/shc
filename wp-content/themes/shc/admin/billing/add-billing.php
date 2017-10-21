@@ -130,7 +130,7 @@
 											</label>
 											<div class="col-md-6 col-sm-6 col-xs-12">
 												<input type="tel" id="billing_secondary_mobile" name="secondary_mobile" class="form-control has-feedback-left"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->secondary_mobile; } ?>">
-												<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+0</span>
+												<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">0</span>
 											</div>
 										</div>
 									</div>
@@ -140,7 +140,7 @@
 											</label>
 											<div class="col-md-6 col-sm-6 col-xs-12">
 												<input type="tel" id="billing_landline_mobile" name="landline" class="form-control has-feedback-left"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->landline; } ?>" >
-												<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+044</span>
+												<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">044</span>
 											</div>
 										</div>
 									</div>
@@ -441,7 +441,7 @@
 											if($update) {
 										?>
 										<input type="hidden" name="id" class="invoice_id_new" value="<?php echo $bill_fdata->id; ?>">
-											 <button class="btn btn-default print_bill pull-right"><i class="fa fa-print"></i> Print</button>
+											<button class="btn btn-default print_bill pull-right"><i class="fa fa-print"></i> Print</button>
 											<button class="btn btn-success pull-right" id="update_payment"><i class="fa fa fa-edit"></i> Update Invoice</button>
 											<button class="btn btn-primary pull-right " style="margin-right: 5px;"><i class="fa fa-file-pdf-o generate_bill"> Generate PDF</i></button>
 										<?php

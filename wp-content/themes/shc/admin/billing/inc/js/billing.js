@@ -65,7 +65,7 @@ jQuery('#ws_billing_mobile').live('keydown', function(e){
     });
 
     jQuery("#ws_billing_customer").on('change',function(){
-        var alphanumers = /^[a-zA-Z0-9]+$/;
+        var alphanumers = /^[a-zA-Z0-9 ]+$/;
         if(!alphanumers.test(jQuery("#ws_billing_customer").val())){
             alert("name can have only alphabets and numbers.");
             jQuery("#ws_billing_customer").val('');
@@ -73,17 +73,10 @@ jQuery('#ws_billing_mobile').live('keydown', function(e){
 
     });
 
-    jQuery("#ws_billing_address").on('change',function(){
-        var alphanumers = /^[a-zA-Z0-9]+$/;
-        if(!alphanumers.test(jQuery("#ws_billing_address").val())){
-            alert("address can have only alphabets and numbers.");
-            jQuery("#ws_billing_address").val('');
-        }
-
-    });
+    
 
      jQuery("#ws_billing_company").on('change',function(){
-        var alphanumers = /^[a-zA-Z0-9]+$/;
+        var alphanumers = /^[a-zA-Z0-9 ]+$/;
         if(!alphanumers.test(jQuery("#ws_billing_company").val())){
             alert("Company name can have only alphabets and numbers.");
             jQuery("#ws_billing_company").val('');

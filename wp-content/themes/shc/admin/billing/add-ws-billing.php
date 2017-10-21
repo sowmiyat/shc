@@ -122,7 +122,7 @@
 											</label>
 											<div class="col-md-6 col-sm-6 col-xs-12">
 												<input type="tel" id="ws_billing_secondary_mobile" name="secondary_mobile" class="form-control has-feedback-left"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->secondary_mobile; } ?>">
-												<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+0</span>
+												<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">0</span>
 											</div>
 										</div>
 									</div>
@@ -132,7 +132,7 @@
 											</label>
 											<div class="col-md-6 col-sm-6 col-xs-12">
 												<input type="tel" id="ws_billing_landline_mobile" name="landline" class="form-control has-feedback-left"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->landline; } ?>" >
-												<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+044</span>
+												<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">044</span>
 											</div>
 										</div>
 									</div>
