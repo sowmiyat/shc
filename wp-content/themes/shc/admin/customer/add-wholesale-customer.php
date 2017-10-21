@@ -42,7 +42,7 @@ input[type=number]::-webkit-outer-spin-button {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Primary Mobile <span class="required">*</span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="tel" id="mobile" name="mobile" required="required" class="form-control col-md-7 col-xs-12 has-feedback-left mobile_check_wholesale" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->mobile : ''; ?>">
+								<input type="text" id="mobile" name="mobile" required="required" class="form-control col-md-7 col-xs-12 has-feedback-left mobile_check_wholesale" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->mobile : ''; ?>">
 								<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+91</span> 
 							</div>
 						</div>
@@ -51,7 +51,7 @@ input[type=number]::-webkit-outer-spin-button {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Secondary Mobile <span class="required">*</span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="tel" id="secondary mobile" name="secondary mobile" required="required" class="form-control col-md-7 col-xs-12 has-feedback-left mobile_check_wholesale" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->secondary_mobile : ''; ?>">
+								<input type="text" id="secondary mobile" name="secondary mobile" required="required" class="form-control col-md-7 col-xs-12 has-feedback-left mobile_check_wholesale" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->secondary_mobile : ''; ?>">
 								<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">0</span>
 							</div>
 						</div>
@@ -60,7 +60,7 @@ input[type=number]::-webkit-outer-spin-button {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Landline <span class="required">*</span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="tel" id="landline" name="landline" required="required" class="form-control col-md-7 has-feedback-left col-xs-12" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->landline : ''; ?>">
+								<input type="text" id="landline" name="landline" required="required" class="form-control col-md-7 has-feedback-left col-xs-12" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->landline : ''; ?>">
 								<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">044</span>
 							</div>
 						</div>
@@ -106,21 +106,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 
 <script>
-var inputEl = document.getElementById('mobile');
-var goodKey = '0123456789+ ';
-var key = null;
 
-var checkInputTel = function() {
-  var start = this.selectionStart,
-    end = this.selectionEnd;
-
-  var filtered = this.value.split('').filter(filterInput);
-  this.value = filtered.join("");
-
-  /* Prevents moving the pointer for a bad character */
-  var move = (filterInput(String.fromCharCode(key)) || (key == 0 || key == 8)) ? 0 : 1;
-  this.setSelectionRange(start - move, end - move);
-}
 jQuery("#customer_name").on('change',function(){
 	var alphanumers =/^[a-zA-Z0-9 ]+$/; 
 	if(!alphanumers.test(jQuery("#customer_name").val())){
@@ -139,15 +125,4 @@ jQuery("#company_name").on('change',function(){
 
 });
 
-var filterInput = function(val) {
-  return (goodKey.indexOf(val) > -1);
-}
-
-/* This function save the character typed */
-var res = function(e) {
-  key = (typeof e.which == "number") ? e.which : e.keyCode;
-}
-
-inputEl.addEventListener('input', checkInputTel);
-inputEl.addEventListener('keypress', res);
 </script>

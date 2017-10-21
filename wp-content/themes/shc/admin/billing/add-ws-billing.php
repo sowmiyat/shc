@@ -111,7 +111,7 @@
 											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Primary Mobile<span class="required">*</span>
 											</label>
 											<div class="col-md-6 col-sm-6 col-xs-12">
-												<input type="tel" id="ws_billing_mobile" name="mobile" class="form-control has-feedback-left"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->mobile; } ?>" style="padding-right: 5px;">
+												<input type="text" id="ws_billing_mobile" name="mobile" class="form-control has-feedback-left" onkeypress="return isNumberKey(event)"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->mobile; } ?>" style="padding-right: 5px;">
 												<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+91</span> 
 											</div>
 										</div>
@@ -121,7 +121,7 @@
 											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Secondary Mobile<span class="required">*</span>
 											</label>
 											<div class="col-md-6 col-sm-6 col-xs-12">
-												<input type="tel" id="ws_billing_secondary_mobile" name="secondary_mobile" class="form-control has-feedback-left"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->secondary_mobile; } ?>">
+												<input type="text" id="ws_billing_secondary_mobile" name="secondary_mobile" class="form-control has-feedback-left" onkeypress="return isNumberKey(event)"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->secondary_mobile; } ?>">
 												<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">0</span>
 											</div>
 										</div>
@@ -131,7 +131,7 @@
 											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Landline<span class="required">*</span>
 											</label>
 											<div class="col-md-6 col-sm-6 col-xs-12">
-												<input type="tel" id="ws_billing_landline_mobile" name="landline" class="form-control has-feedback-left"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->landline; } ?>" >
+												<input type="text" id="ws_billing_landline_mobile" name="landline" class="form-control has-feedback-left" onkeypress="return isNumberKey(event)"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->landline; } ?>" >
 												<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">044</span>
 											</div>
 										</div>
@@ -470,49 +470,4 @@
 				</div>
 			</div>
 
-
-			<SCRIPT language=Javascript>
-
-
-			var inputEl = document.getElementById('ws_billing_mobile');
-			var goodKey = '0123456789+ ';
-			var key = null;
-
-			var checkInputTel = function() {
-			  var start = this.selectionStart,
-			    end = this.selectionEnd;
-
-			  var filtered = this.value.split('').filter(filterInput);
-			  this.value = filtered.join("");
-
-			  /* Prevents moving the pointer for a bad character */
-			  var move = (filterInput(String.fromCharCode(key)) || (key == 0 || key == 8)) ? 0 : 1;
-			  this.setSelectionRange(start - move, end - move);
-			}
-
-			var filterInput = function(val) {
-			  return (goodKey.indexOf(val) > -1);
-			}
-
-			/* This function save the character typed */
-			var res = function(e) {
-			  key = (typeof e.which == "number") ? e.which : e.keyCode;
-			}
-
-			inputEl.addEventListener('input', checkInputTel);
-			inputEl.addEventListener('keypress', res);
-			   <!--
-			   function isNumberKey(evt)
-			   {
-			      var charCode = (evt.which) ? evt.which : evt.keyCode;
-			      if (charCode != 46 && charCode > 31 
-			        && (charCode < 48 || charCode > 57))
-			         return false;
-
-			      return true;
-			   }
-			   //-->
-
-			   
-			</SCRIPT>
 

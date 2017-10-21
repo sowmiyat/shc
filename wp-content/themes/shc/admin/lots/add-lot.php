@@ -149,17 +149,3 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 </div>
 
 
-
-<SCRIPT language=Javascript>
-   <!--
-   function isNumberKey(evt)
-   {
-      var charCode = (evt.which) ? evt.which : evt.keyCode;
-      if (charCode != 46 && charCode > 31 
-        && (charCode < 48 || charCode > 57))
-         return false;
-
-      return true;
-   }
-   //-->
-</SCRIPT>
