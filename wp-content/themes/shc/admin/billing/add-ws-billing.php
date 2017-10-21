@@ -12,7 +12,6 @@
 		$bill_fdata 				= $bill_data['bill_data'];
 
 		$bill_ldata 				= $bill_data['ordered_data'];
-		$delivery 					= getHomedelivery($_GET['id']);
 		$invoice_id['invoice_id']       = $bill_fdata->id;
 	} else {
 		$invoice_id 				= generateInvoicews();
@@ -20,19 +19,11 @@
 
 ?>
 <style>
-.ws_old_user_bill,.ws_new_customer {
-    display: none;
-    font-size: 16px;
-}
 
-.ws_old_user_bill, .ws_new_user_bill,.ws_new_customer{
-    cursor: pointer;
-    font-size: 16px;
-}
 
 .billing-structure {
     border: 2px solid red;
-    padding: 20px;
+    padding: 10px;
 }
 .billing-structure .ws_balance_amount {
     font-weight: bold;
@@ -78,53 +69,6 @@
 	display: none;
 }
 </style>
-
-<script type="text/javascript">
-	jQuery(document).ready(function(){
-
-	    jQuery('#ws_billing_mobile').live('keydown', function(e){
-            var keyCode = e.keyCode || e.which; 
-            if (keyCode == 40) { 
-
-            	if(jQuery('#ui-id-1').css('display') != 'block') {
-                	e.preventDefault();
-                	jQuery('.secondary_mobile').css('display', 'block');
-                	jQuery('#ws_billing_secondary_mobile').focus();
-            	}
-
-            }
-	    });
-	    jQuery('#ws_billing_secondary_mobile').live('keydown', function(e){
-            var keyCode = e.keyCode || e.which; 
-            if (keyCode == 40) { 
-                e.preventDefault(); 
-                jQuery('.landline_mobile').css('display', 'block');
-                jQuery('#ws_billing_landline_mobile').focus();
-            }
-            if (keyCode == 38) { 
-                e.preventDefault(); 
-                jQuery('.secondary_mobile').css('display', 'none');
-                jQuery('#ws_billing_secondary_mobile').val('');
-                jQuery('#ws_billing_mobile').focus();
-            }
-	    });
-
-
-	    jQuery('#ws_billing_landline_mobile').live('keydown', function(e){ console.log(e);
-            var keyCode = e.keyCode || e.which; 
-            if (keyCode == 38) { 
-                e.preventDefault(); 
-                jQuery('.landline_mobile').css('display', 'none');
-                jQuery('#ws_billing_landline_mobile').val('');
-                jQuery('#ws_billing_secondary_mobile').focus();
-            }
-	    });
-	    
-
-
-	});
-</script>
-
 
 			<div class="row">
 				<div class="col-md-12">
@@ -345,7 +289,7 @@
 		 															<td class="td_product">' .$c_value->product_name. '</td> <input type="hidden" value = "'.$c_value->product_name. '" name="customer_detail['.$i.'][product]" class="sub_product"/>
 		 															<td class="td_hsn">' .$c_value->hsn. '</td> <input type="hidden" value = "'.$c_value->hsn. '" name="customer_detail['.$i.'][hsn]" class="sub_hsn"/>
 		 															<td class=""><input type="text" value = "'.$c_value->sale_unit. '" name="customer_detail['.$i.'][unit]" class="sub_unit"/> </td> 
-		 															
+		 															<input type="hidden" value = "" name="customer_detail['.$i.'][stock]" class="sub_stock"/>
 		 															<td class="td_price">' .$c_value->unit_price. '</td> <input type="hidden" value = "'.$c_value->unit_price. '" name="customer_detail['.$i.'][price]" class="sub_price"/> 
 		 															<td><input type="text" value ="'.$c_value->discount.'" name="customer_detail['.$i.'][discount]" class="sub_discount"/></td>
 		 															<input type="hidden" value ="each" name="customer_detail['.$i.'][discount_type]" class="discount_type"/>
@@ -425,7 +369,7 @@
 										</div>
 										<div>
 											<div>
-												Home Delivery: <input type ="hidden" value="wholesale_customer" class="customer_type"/>
+												Home Delivery:
 											</div>
 											<div>
 												<?php if(isset($_GET['id'])) { 
@@ -445,15 +389,7 @@
 													</div>
 												<?php } ?>
 											</div>
-
-
-
 										</div>
-							
-												
-
-
-
 									</div>
 									<!-- /.col -->
 									<div class="col-xs-6">
@@ -466,7 +402,7 @@
 														<td>
 															<div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
 																<input type="text" class="form-control ws_discount" value="<?php 
-																echo ( $bill_data && $bill_fdata ) ? $bill_fdata->discount : 0;  ?>" name="ws_discount">									
+																echo ( $bill_data && $bill_fdata ) ? $bill_fdata->discount : 0;  ?>" name="ws_discount" style="margin: 0;">									
 																<span class="fa fa-percent form-control-feedback right ws_dis_fa_per"></span>
 																	
 															</div>
@@ -477,7 +413,7 @@
 														<td>
 															<div class="form-horizontal form-label-left input_mask" style="position:relative;">
 																<div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
-																	<input type="text" class="form-control ws_fsub_total" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->sub_total : 0;  ?>" readonly name="ws_fsub_total">
+																	<input type="text" class="form-control ws_fsub_total" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->sub_total : 0;  ?>" readonly name="ws_fsub_total" style="margin: 0;">
 																	<span class="fa fa-inr form-control-feedback right" aria-hidden="true"></span>
 																</div>
 															</div>
@@ -487,7 +423,7 @@
 														<th>Paid Amount:</th>
 														<td>
 															<div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
-																<input type="text" class="form-control ws_paid_amount" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->paid_amount : 0;  ?>" name="ws_paid_amount">
+																<input type="text" class="form-control ws_paid_amount" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->paid_amount : 0;  ?>" name="ws_paid_amount" style="margin: 0;">
 																<span class="fa fa-inr form-control-feedback right" aria-hidden="true"></span>
 															</div>
 														</td>
@@ -498,7 +434,6 @@
 															<div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
 																<input type="hidden" class="form-control ws_return_amt" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->return_amt : 0;  ?>" name="ws_return_amt">
 																<span class="ws_return_amt_txt"><?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->return_amt : 0;  ?></span>
-																<span class="fa fa-inr form-control-feedback right" aria-hidden="true"></span>
 															</div>
 														</td>
 													</tr>

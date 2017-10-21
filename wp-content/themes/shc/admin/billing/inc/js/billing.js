@@ -2,6 +2,54 @@ jQuery(document).ready(function (argument) {
 
 jQuery('#ws_billing_customer').focus();
 
+jQuery('#ws_billing_mobile').live('keydown', function(e){
+        var keyCode = e.keyCode || e.which; 
+        if (keyCode == 40) { 
+
+            if(jQuery('#ui-id-1').css('display') != 'block') {
+                e.preventDefault();
+                jQuery('.secondary_mobile').css('display', 'block');
+                jQuery('#ws_billing_secondary_mobile').focus();
+            }
+
+        }
+    });
+    jQuery('#ws_billing_secondary_mobile').live('keydown', function(e){
+        var keyCode = e.keyCode || e.which; 
+        if (keyCode == 40) { 
+            e.preventDefault(); 
+            jQuery('.landline_mobile').css('display', 'block');
+            jQuery('#ws_billing_landline_mobile').focus();
+        }
+        if (keyCode == 38) { 
+            e.preventDefault(); 
+            jQuery('.secondary_mobile').css('display', 'none');
+            jQuery('#ws_billing_secondary_mobile').val('');
+            jQuery('#ws_billing_mobile').focus();
+        }
+    });
+
+
+    jQuery('#ws_billing_landline_mobile').live('keydown', function(e){ console.log(e);
+        var keyCode = e.keyCode || e.which; 
+        if (keyCode == 38) { 
+            e.preventDefault(); 
+            jQuery('.landline_mobile').css('display', 'none');
+            jQuery('#ws_billing_landline_mobile').val('');
+            jQuery('#ws_billing_secondary_mobile').focus();
+        }
+    });
+
+
+    jQuery("#ws_submit_payment").on('keydown',  function(e) { 
+      var keyCode = e.keyCode || e.which; 
+
+      if (keyCode == 9) { 
+        e.preventDefault(); 
+        jQuery('#ws_billing_customer').focus();
+      } 
+
+    });
     jQuery('.year').datepicker({
         changeYear: true,
         showButtonPanel: true,
@@ -11,6 +59,7 @@ jQuery('#ws_billing_customer').focus();
             jQuery(this).datepicker('setDate', new Date(year, 1));
         }
     });
+
     jQuery(".year").focus(function () {
         jQuery(".ui-datepicker-month").hide();
     });
@@ -225,6 +274,8 @@ jQuery('#ws_billing_customer').focus();
                     mobile : item.mobile,
                     company_name : item.company_name,
                     gst : item.gst_number,
+                    secondary_mobile : item.secondary_mobile,
+                    landline : item.landline,
                     name:item.customer_name,
                     identification : identification
                 }
@@ -263,7 +314,8 @@ jQuery('#ws_billing_customer').focus();
         }
 
         
-
+        jQuery('#ws_billing_secondary_mobile').val(ui.item.secondary_mobile);
+        jQuery('#ws_billing_landline_mobile').val(ui.item.landline);
         jQuery('#ws_billing_company').val(ui.item.company_name);
         jQuery('#ws_billing_gst').val(ui.item.gst);
         console.log(ui.item.address);
@@ -376,7 +428,7 @@ jQuery('#ws_billing_customer').focus();
 
 //<----- End Pop up For Customers and home delivery--->
 //<--- Display Balance -----> 
-    jQuery('.ws_paid_amount').on('change',function(){
+    jQuery('.ws_paid_amount').on('change',function() {
         var prev_bal = parseFloat(jQuery('.ws_balance_amount_val').val());
         var current_bal = parseFloat(jQuery('.ws_fsub_total').val());
         var paid = parseFloat(jQuery('.ws_paid_amount').val());
@@ -701,6 +753,7 @@ jQuery( document ).ready(function() {
     jQuery('.sub_delete').live('click',function(){
        jQuery(this).parent().parent().remove();
         ws_rowCalculate();
+
         
     });
 
@@ -732,20 +785,22 @@ function ws_rowCalculate() {
     };
     var sub_tot=parseFloat(0);
     jQuery('.customer_table').each(function() { 
-    var row_sub         = parseFloat('0.00');
-    var row_discount    = parseFloat(jQuery(this).find('.sub_discount').val());
-    var row_mrp         = parseFloat(jQuery(this).find('.sub_price').val());
-    unit                = parseFloat(jQuery(this).find('.sub_unit').val());
-    var cgst                = parseFloat(jQuery(this).find('.sub_cgst').val());
-    var sgst                = parseFloat(jQuery(this).find('.sub_sgst').val());
+    var row_sub                 = parseFloat('0.00');
+    var row_discount            = parseFloat(jQuery(this).find('.sub_discount').val());
+    var row_mrp                 = parseFloat(jQuery(this).find('.sub_price').val());
+    unit                        = parseFloat(jQuery(this).find('.sub_unit').val());
+    var cgst                    = parseFloat(jQuery(this).find('.sub_cgst').val());
+    var sgst                    = parseFloat(jQuery(this).find('.sub_sgst').val());
     if( row_discount == row_mrp  || jQuery(this).find('.discount_type').val() == 'whole' ) {
 
-            var unit_price      =   jQuery(this).find('.sub_price').val();
+            // var unit_price      =   jQuery(this).find('.sub_price').val();
 
             var whole_unit_total      = row_mrp * unit;
            
             var whole_dis   = (whole_unit_total  * discount)/100;
             var unit_total = whole_unit_total - whole_dis;
+
+            var unit_price      = (unit_total / unit);
 
         jQuery(this).find('.discount_type').val('whole');
        

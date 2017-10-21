@@ -4,27 +4,94 @@ jQuery('#billing_customer').focus();
     populateReturnProductsRetail('.rtn_lot_id');
 
 
-    jQuery("#billing_customer").on('change',function(){
-        var alphanumers = /^[a-zA-Z0-9]+$/;
-        if(!alphanumers.test(jQuery("#billing_customer").val())){
-            alert("name can have only alphabets and numbers.");
-            jQuery("#billing_customer").val('');
+jQuery('#billing_mobile').live('keydown', function(e){
+    var keyCode = e.keyCode || e.which; 
+    if (keyCode == 40) { 
+
+        if(jQuery('#ui-id-1').css('display') != 'block') {
+            e.preventDefault();
+            jQuery('.secondary_mobile').css('display', 'block');
+            jQuery('#billing_secondary_mobile').focus();
         }
+
+    }
+});
+
+jQuery('.retail_unit').live('change keyup',function(){
+    var stock = parseFloat(jQuery('.ws_slab_sys_txt').val());
+    var unit = parseFloat(jQuery('#retail_unit').val());
+    if(unit > stock){
+        alert('Enter Quantity as small as avalible stock!!!');
+        jQuery('.retail_unit').val(Math.ceil(stock));
+    }
+});
+
+
+
+
+jQuery('#billing_secondary_mobile').live('keydown', function(e){
+    var keyCode = e.keyCode || e.which; 
+    if (keyCode == 40) { 
+        e.preventDefault(); 
+        jQuery('.landline_mobile').css('display', 'block');
+        jQuery('#billing_landline_mobile').focus();
+    }
+    if (keyCode == 38) { 
+        e.preventDefault(); 
+        jQuery('.secondary_mobile').css('display', 'none');
+        jQuery('#billing_secondary_mobile').val('');
+        jQuery('#billing_mobile').focus();
+    }
+});
+
+
+jQuery('#billing_landline_mobile').live('keydown', function(e){ console.log(e);
+    var keyCode = e.keyCode || e.which; 
+    if (keyCode == 38) { 
+        e.preventDefault(); 
+        jQuery('.landline_mobile').css('display', 'none');
+        jQuery('#billing_landline_mobile').val('');
+        jQuery('#billing_secondary_mobile').focus();
+    }
+});
+
+
+//<-----After keydown submit using tab goto first text box--->
+ jQuery("#submit_payment").on('keydown',  function(e) { 
+      var keyCode = e.keyCode || e.which; 
+
+      if (keyCode == 9) { 
+        e.preventDefault(); 
+        jQuery('#billing_customer').focus();
+      } 
 
     });
 
-    jQuery("#billing_address").on('change',function(){
-        var alphanumers = /^[a-zA-Z0-9]+$/;
-        if(!alphanumers.test(jQuery("#billing_address").val())){
-            alert("address can have only alphabets and numbers.");
-            jQuery("#billing_address").val('');
-        }
 
-    });
+
+
+    // jQuery("#billing_customer").on('change',function(){
+    //     var alphanumers = /^[a-zA-Z0-9]+$/;
+    //     if(!alphanumers.test(jQuery("#billing_customer").val())){
+    //         alert("name can have only alphabets and numbers.");
+    //         jQuery("#billing_customer").val('');
+    //     }
+
+    // });
+
+    // jQuery("#billing_address").on('change',function(){
+    //     var alphanumers = /^[a-zA-Z0-9]+$/;
+    //     if(!alphanumers.test(jQuery("#billing_address").val())){
+    //         alert("address can have only alphabets and numbers.");
+    //         jQuery("#billing_address").val('');
+    //     }
+
+    // });
 
     
-jQuery( "#billing_customer" ).autocomplete ({
+jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
       source: function( request, response ) {
+        var billing_field = jQuery(this.element).attr('id');
         jQuery.ajax( {
           url: frontendajax.ajaxurl,
           type: 'POST',
@@ -35,11 +102,26 @@ jQuery( "#billing_customer" ).autocomplete ({
           },
           success: function( data ) {
             response(jQuery.map( data.result, function( item ) {
+
+                if(billing_field == 'billing_customer') {
+                    var field_val = item.name;
+                    var identification = 'name';
+                } else {
+                    var field_val = item.mobile;
+                    var identification = 'mobile';
+                }
+
+
                 return {
                     id: item.id,
-                    value: item.name,
+                    value: field_val,
                     address : item.address,
-                    phone : item.mobile      
+                    name : item.name,
+                    mobile : item.mobile,
+                    secondary_mobile : item.secondary_mobile,
+                    landline : item.landline,
+                    identification : identification 
+
                 }
             }));
           }
@@ -66,12 +148,19 @@ jQuery( "#billing_customer" ).autocomplete ({
 
             }
         });
+
+         if(ui.item.identification == 'mobile' ) {
+            jQuery('#billing_mobile').val(ui.item.value);
+            jQuery('#billing_customer').val(ui.item.name);
+        } else {
+            jQuery('#billing_mobile').val(ui.item.mobile);
+            jQuery('#billing_customer').val(ui.item.value);
+        }
+
+        jQuery('#billing_secondary_mobile').val(ui.item.secondary_mobile);
+        jQuery('#billing_landline_mobile').val(ui.item.landline);
         jQuery('.old_customer_id').val(ui.item.id);
         jQuery('#billing_address').val(ui.item.address);
-        jQuery('#billing_mobile').val(ui.item.phone);
-        jQuery('#billing_customer').val(ui.item.value);
-        jQuery('#billing_company').val(ui.item.company_name);
-        jQuery('#billing_gst').val(ui.item.gst);
         console.log(ui.item.address);
        
 
@@ -80,84 +169,55 @@ jQuery( "#billing_customer" ).autocomplete ({
 
 
 
-        console.log( "id: " + ui.item.id + " name " + ui.item.value + " address " + ui.item.address + "gst ");
+        console.log( "id: " + ui.item.id);
       }
     });
-    // jQuery('#billing_customer').select2({
-    //     allowClear: true,
-    //     width: '50%',
-    //     multiple: true,
-    //     minimumInputLength: 1,
-    //     maximumSelectionLength: 1,
-    //     ajax: {
-    //         type: 'POST',
-    //         url: frontendajax.ajaxurl,
-    //         delay: 250,
-    //         dataType: 'json',
-    //         data: function(params) {
-    //             return {
-    //                 action: 'get_customer_name', //search term
-    //                 page: 1,
-    //                 search_key: params.term,
-    //             };
-    //         },
-    //         processResults: function(data) {
-    //             var results = [];
-    //             return {
-    //                 results: jQuery.map(data.result, function(obj) {
-    //                     return { id: obj.id, customer_name: obj.name, address: obj.address, mobile: obj.mobile, type: obj.type.toLowerCase() };
-    //                 })
-    //             };
-    //         },
-    //         cache: true
-    //     },
-    //     initSelection: function (element, callback) {
-    //         callback({ id: jQuery(element).val(), mobile: jQuery(element).find(':selected').text() });
-    //     },
-    //     templateResult: formatCustomerNameResult,
-    //     templateSelection: formatCustomerName
-    // }).on("select2:select", function (e) {
-    //     jQuery.ajax({
-    //         type: "POST",
-    //         dataType : "json",
-    //         url: frontendajax.ajaxurl,
-    //         data: {
-    //             id      : e.params.data.id,
-    //             action  :'customer_balance'
-    //         },
-    //           success: function (data) {
-    //             jQuery('.balance_amount').text(data);
-    //             jQuery('.balance_amount_val').val(data);
-               
-
-    //         }
-    //     });
-
-    //     jQuery('.old_customer_id').val(e.params.data.id);
-    //     jQuery('.address1').text(e.params.data.address);
-    //     jQuery('.customer_mobile').text('Phone : '+e.params.data.mobile);
-    //     jQuery('.bill_submit').css('display', 'block');
-    //     jQuery('.retail_lot_id').focus();
-
-
-    //     jQuery('.paid_amount').trigger('change');
-
-    // });
 //<------ Select Product ------>
 
-  populateSelect2('.retail_lot_id', 'old');
+  populateSelect2('.lot_id', 'old');
 
-  jQuery('.sub_unit,.discount').live('change keyup',function() {
-    //rowCalculate();
+
+   jQuery('.retail_sub_unit').live('change keyup',function(){
+
+        var unit = parseFloat(jQuery(this).parent().parent().find('.retail_sub_unit').val());
+        var stock = parseFloat(jQuery(this).parent().parent().find('.retail_sub_stock').val());
+        if( unit > stock){
+            alert('Enter Quantity as small as avalible stock!!!');
+            jQuery(this).parent().parent().find('.retail_sub_unit').val(Math.ceil(stock));
+        }
+
+        if(unit <= '0'){
+            alert("please enter unit!!!");
+            jQuery(this).parent().parent().find('.retail_sub_unit').focus();
+            jQuery(this).parent().parent().find('.retail_sub_unit').val('1');
+        }
+        
+             rowCalculate();
+       
+        
+    });
+
+    jQuery('.retail_sub_discount').live('change keyup',function(){
+
+        jQuery(this).parent().parent().find('.discount_type').val('each');
+        var unit = jQuery(this).parent().parent().find('.retail_sub_discount').val();
+
+        if(unit <= '0'){
+            alert("please enter price!!!");
+            jQuery(this).parent().parent().find('.retail_sub_discount').focus();
+            jQuery(this).parent().parent().find('.retail_sub_discount').val('1');
+        }
+        
+        rowCalculate();
+        
+    });
+
+
+  jQuery('.discount').live('change keyup',function() {
+    rowCalculate();
   });
 
 
-
-    jQuery('.sub_discount').live('change keyup',function() {
-        //jQuery(this).parent().parent().find('.discount_type').val('each');
-      
-    //rowCalculate();
-  });
 
    jQuery('.paid_amount').on('change keyup',function(){
         var prev_bal = parseFloat(jQuery('.balance_amount_val').val());
@@ -212,10 +272,10 @@ jQuery( "#billing_customer" ).autocomplete ({
 
        
 
-        var product_id          = jQuery('.retail_lot_id').val();
+        var product_id          = jQuery('.retail_lot_id_orig').val();
         var product_name        = jQuery('.retail_product').val();
         var hsn_code            = jQuery('.retail_hsn').val();
-        var stock               = jQuery('.retail_slab_sys_txt').val();
+        var stock               = jQuery('.ws_slab_sys_txt').val();
         var price               = jQuery('.retail_unit_price').val();
         var unit                = jQuery('.retail_unit').val();
         var discount            = jQuery('.retail_discount').val();
@@ -229,13 +289,13 @@ jQuery( "#billing_customer" ).autocomplete ({
             var current_row = existing_count + 1;
             if( jQuery('.customer_table_retail[data-productid='+ product_id +']').length != 0 ) {
                 var selector = jQuery('.customer_table_retail[data-productid='+ product_id +']');
-                var actual_unit = selector.find('.sub_unit').val();
+                var actual_unit = selector.find('.retail_sub_unit').val();
                 var final_unit = parseFloat(unit) + parseFloat(actual_unit);
-                selector.find('.sub_unit').val(final_unit);
+                selector.find('.retail_sub_unit').val(final_unit);
 
                 
             } else {
-                var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="customer_table_retail" ><td class="td_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="customer_detail['+current_row+'][id]" class="sub_id" /><td class="td_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="customer_detail['+current_row+'][product]" class="sub_product"/><td class="td_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="customer_detail['+current_row+'][hsn]" class="sub_hsn"/><td class=""><input type="text" value = "'+ unit + '" name="customer_detail['+current_row+'][unit]" class="sub_unit"/> </td> <td class="td_stock">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][stock]" class="sub_stock"/><td class="td_price">' + price + '</td> <input type="hidden" value = "'+ price + '" name="customer_detail['+current_row+'][price]" class="sub_price"/> <td><input type="text" value ="'+ discount +'" name="customer_detail['+current_row+'][discount]" class="sub_discount"/></td><input type="hidden" value ="each" name="customer_detail['+current_row+'][discount_type]" class="discount_type"/><td class="td_amt">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][amt]" class="sub_amt"/><td class="td_cgst">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="customer_detail['+current_row+'][cgst]" class="sub_cgst"/> <td class="td_cgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][cgst_value]" class="sub_cgst_value"/><td class="td_sgst">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="customer_detail['+current_row+'][sgst]" class="sub_sgst"/><td class="td_sgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][sgst_value]" class="sub_sgst_value"/><td class="td_subtotal"></td> <input type="hidden" value ="" name="customer_detail['+current_row+'][subtotal]" class="sub_total"/><td><span class="sub_delete">Delete</span></td></tr>';                
+                var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="customer_table_retail" ><td class="td_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="customer_detail['+current_row+'][id]" class="sub_id" /><td class="td_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="customer_detail['+current_row+'][product]" class="sub_product"/><td class="td_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="customer_detail['+current_row+'][hsn]" class="sub_hsn"/><td class=""><input type="text" value = "'+ unit + '" name="customer_detail['+current_row+'][unit]" class="retail_sub_unit"/> </td>  <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][stock]" class="retail_sub_stock"/><td class="td_price">' + price + '</td> <input type="hidden" value = "'+ price + '" name="customer_detail['+current_row+'][price]" class="sub_price"/> <td><input type="text" value ="'+ discount +'" name="customer_detail['+current_row+'][discount]" class="retail_sub_discount"/></td><input type="hidden" value ="each" name="customer_detail['+current_row+'][discount_type]" class="discount_type"/><td class="td_amt">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][amt]" class="sub_amt"/><td class="td_cgst">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="customer_detail['+current_row+'][cgst]" class="sub_cgst"/> <td class="td_cgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][cgst_value]" class="sub_cgst_value"/><td class="td_sgst">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="customer_detail['+current_row+'][sgst]" class="sub_sgst"/><td class="td_sgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][sgst_value]" class="sub_sgst_value"/><td class="td_subtotal"></td> <input type="hidden" value ="" name="customer_detail['+current_row+'][subtotal]" class="sub_total"/><td><span class="retail_sub_delete">Delete</span></td></tr>';                
                 jQuery('#bill_lot_add_retail').append(str);
             }
             rowCalculate();
@@ -243,8 +303,7 @@ jQuery( "#billing_customer" ).autocomplete ({
             jQuery('.retail_discount').val('0.00');
             jQuery('.retail_lot_id').text('');
             jQuery('.retail_lot_id').val('');
-
-           
+          
          } 
        
         else {
@@ -253,8 +312,8 @@ jQuery( "#billing_customer" ).autocomplete ({
             }
             else if(discount == ''){
                 alert_popup('Enter Discounted Price !!!');
-                jQuery('.retail_lot_id').text('');
-                jQuery('.retail_lot_id').val('');
+                jQuery('.lot_id').text('');
+                jQuery('.lot_id').val('');
             }
              else if ( unit == '0' && unit == '') {
                 alert_popup('Enter Unit !!!');
@@ -269,8 +328,9 @@ jQuery( "#billing_customer" ).autocomplete ({
     
     });
 
-    jQuery('.sub_delete').live('click',function(){
+    jQuery('.retail_sub_delete').live('click',function(){
        jQuery(this).parent().parent().remove();
+        rowCalculate();
        
         
     });
@@ -356,7 +416,7 @@ jQuery( "#billing_customer" ).autocomplete ({
     });
 
       /*Update Return Payment*/
-    jQuery('#return_billing_container #return_update_payment').on('click', function(){
+    jQuery('#return_billing_container #return_update_payment').on('click', function() {
       
 
         var bill_invoice_url = bill_return_list.return_items;
@@ -447,8 +507,6 @@ jQuery( "#billing_customer" ).autocomplete ({
 
 
 
-
-
 //<--------- Return Submit--->
    jQuery('.add-button-return-retail').live('click',function() {
 
@@ -517,188 +575,70 @@ jQuery( "#billing_customer" ).autocomplete ({
 
 
 
- function customer_create_submit_popup(action = '', length = 0) {
-    jQuery.ajax({
-        dataType : "json",
-        type: "POST",
-        url: frontendajax.ajaxurl,
-        data: {
-            key : 'post_popup_content',
-            data : jQuery("#add_customer").serialize(),
-            length : length,
-            action : action
-        },
-        success: function (data) {
-
-                jQuery('.customer_id_new').val(data.id);
-                jQuery('.new_customer').val(data.customer_name);
-                jQuery('.address1').text(data.address);
-                jQuery('.customer_mobile').text(data.mobile);
-                clear_main_popup();
-                jQuery('#src_info_box').bPopup().close();
-                alert_popup('<span class="success_msg">Customer Account Created!</span>', 'Success');
-               
-
-                 
-                
-        }
-    });
-}
-
-
-function delivery_create_submit_popup(action = '', length = 0) {
-    jQuery.ajax({
-        dataType : "json",
-        type: "POST",
-        url: frontendajax.ajaxurl,
-        data: {
-            key         : 'post_popup_content',
-            data        : jQuery("#add_delivery").serialize(),
-            length      : length,
-            action      : action
-        },
-        success: function (data) {
-                jQuery('.delivery_id').val(data.id);
-                jQuery('.ws_delivery_name').text(data.delivery_name);
-                jQuery('.ws_delivery_phone').text(data.delivery_mobile);
-                jQuery('.ws_delivery_address').text(data.delivery_address);
-                jQuery('.list_customers').html(data);
-                clear_main_popup();
-                jQuery('#src_info_box').bPopup().close();
-                alert_popup('<span class="success_msg">Delivery Added Successfully!</span>', 'Success');
-                
-
-        }
-    });
-}
-
-function formatCustomerName (state) {
-    if (!state.id) {
-        return state.id;
-    }
-
-    var $state = jQuery(
-        '<span>' +
-          state.mobile +
-        '</span>'
-    );
-    return $state;
-};
-
-function formatCustomerNameResult(data) {
-    if (!data.id) { // adjust for custom placeholder values
-        return 'Searching ...';
-    }
-    var $state = jQuery(
-        '<span>Name : ' +
-          data.customer_name +
-        '</span>' +
-        '<br><span> Mobile : ' +
-          data.mobile +
-        '</span>'
-    );
-    return $state;
-}
-
 function populateSelect2(selector, v) {
 
-jQuery(selector).select2({
-
-        allowClear: true,
-        width: '15%',
-        multiple: true,
-        minimumInputLength: 1,
-        maximumSelectionLength: 1,
-        ajax: {
-        type: 'POST',
-        url: frontendajax.ajaxurl,
-        delay: 250,
-        dataType: 'json',
-            data: function(params) {
+     jQuery( "#lot_id" ).autocomplete ({
+      source: function( request, response ) {
+        jQuery.ajax( {
+          url: frontendajax.ajaxurl,
+          type: 'POST',
+          dataType: "json",
+          data: {
+            action: 'get_lot_data',
+            search_key: request.term
+          },
+          success: function( data ) {
+            response(jQuery.map( data.result, function( item ) {
                 return {
-                    action: 'get_lot_data', // search term
-                    page: 1,
-                    search_key: params.term,
-                   
-                };
-            },
-
-            processResults: function(data) {
-                var results = [];
-                return {
-                    results: jQuery.map(data.items, function(obj) {
-                        return { id: obj.id, lot_no:obj.lot_no, brand_name: obj.brand_name, product_name:obj.product_name,hsn:obj.hsn, unit_price:obj.selling_price, cgst:obj.cgst,sgst:obj.sgst, bal_stock:obj.bal_stock };
-                    })
-                };
-            },
-            cache: true
-        },
-        initSelection: function (element, callback) {
-          callback({ id: jQuery(element).val(), product_name: jQuery(element).find(':selected').text() });
-        },
-        templateResult: formatStateBillCreate,
-        templateSelection: formatStateBillCreate1
-    }).on("select2:select", function (e) {    
+                    id: item.id,
+                    lot_no: item.lot_no,
+                    brand_name : item.brand_name,
+                    product_name : item.product_name,
+                    hsn : item.hsn,
+                    cgst : item.cgst,
+                    sgst : item.sgst,
+                    unit_price : item.selling_price,
+                    value : item.product_name +' \('+item.brand_name+'\)',
+                }
+            }));
+          }
+        } );
+      },
+      minLength: 2,
+      select: function( event, ui ) {
 
 
-        jQuery('.unit').focus(); 
+        jQuery('.retail_lot_id_orig').val(ui.item.id);  
+        jQuery('.retail_product').val(ui.item.product_name);  
+        jQuery('.retail_unit_price').val(ui.item.unit_price);
+        jQuery('.retail_discount').val(ui.item.unit_price);
+        jQuery('.retail_hsn').val(ui.item.hsn);
+        jQuery('.retail_cgst_percentage').val(ui.item.cgst);
+        jQuery('.retail_sgst_percentage').val(ui.item.sgst);
 
-
-        jQuery('.retail_lot_id').val(e.params.data.id);  
-        jQuery('.retail_product').val(e.params.data.product_name);  
-        jQuery('.retail_unit_price').val(e.params.data.unit_price);
-        jQuery('.retail_discount').val(e.params.data.unit_price);
-        jQuery('.retail_hsn').val(e.params.data.hsn);
-        jQuery('.retail_cgst_percentage').val(e.params.data.cgst);
-        jQuery('.retail_sgst_percentage').val(e.params.data.sgst);
-
-        var selector = jQuery(this);
+       var selector = jQuery(this);
         jQuery.ajax({
             type: "POST",
             dataType : "json",
             url: frontendajax.ajaxurl,
             data: {
-                id      : e.params.data.id,
-                action  :'slap'
+                id      : ui.item.id,
+                action  :'ws_slap'
             },
               success: function (data) {
-                jQuery('.retail_slab_sys_txt').val(data);
+                           
+                var str = '<td class="td_id">'+'1'+'</td><td class="stock_prod">' + ui.item.product_name + '</td><td class="slap_stock">'+ data +'</td><input type="hidden" name="ws_slab_sys_txt" value="'+ data +'"  class="ws_slab_sys_txt"/>';                
+                jQuery('.stock_table_body').html(str);
 
             }
-        });       
+        }); 
+
+
+
+        console.log( "id: " + ui.item.id);
+      }
     });
-
-    jQuery('.retail_unit').focus();
 }
-
-function formatStateBillCreate (state) {
-    if (!state.id) {
-        return state.id;
-    }
-    var $state = jQuery(
-    '<span><b>Brand Name  :</b>' +
-    state.brand_name +
-    '</span><br/>' +
-    '<span><b>Product Name : </b>' +
-    state.product_name +
-    '</span>'
-   
-    );
-    return $state;
-};
-
-function formatStateBillCreate1 (state) {
-    if (!state.id) {
-        return state.id;
-    }
-    var $state = jQuery(
-    '<span>' +
-    state.product_name +
-    '</span><br/>'
-   
-    );
-    return $state;
-};
 
 
 function rowCalculate() {
@@ -717,23 +657,25 @@ function rowCalculate() {
     };
     var sub_tot=parseFloat(0);
     jQuery('.customer_table_retail').each(function() { 
-    var row_sub         = parseFloat('0.00');
-    var row_discount    = parseFloat(jQuery(this).find('.sub_discount').val());
-    var row_mrp         = parseFloat(jQuery(this).find('.sub_price').val());
-    unit                = parseFloat(jQuery(this).find('.sub_unit').val());
+    var row_sub                 = parseFloat('0.00');
+    var row_discount            = parseFloat(jQuery(this).find('.retail_sub_discount').val());
+    var row_mrp                 = parseFloat(jQuery(this).find('.sub_price').val());
+    unit                        = parseFloat(jQuery(this).find('.retail_sub_unit').val());
+    var cgst                    = parseFloat(jQuery(this).find('.sub_cgst').val());
+    var sgst                    = parseFloat(jQuery(this).find('.sub_sgst').val());
     if( row_discount == row_mrp  || jQuery(this).find('.discount_type').val() == 'whole' ) {
-         var sub_tot1    = (parseFloat(jQuery(this).find('.sub_price').val()) * parseFloat(jQuery(this).find('.sub_unit').val()));
-       
+        var whole_unit_total    = row_mrp * unit;
         if(jQuery('.discount_per:checked').val() == 'percentage') {    
-            count               = parseFloat(discount / existing_count);
-            sub                 = (sub_tot1 *  count)/100;
-            var row_dis_new     = (sub / unit);
-            var unit_price      = row_mrp - row_dis_new;
+
+            
+            var whole_dis           = (whole_unit_total  * discount)/100;
+            var unit_total          = whole_unit_total - whole_dis;
+            var unit_price      = (unit_total / unit);
+           
         } else {
-            unit                = parseFloat(jQuery(this).find('.sub_unit').val());
-            count               = parseFloat(discount / existing_count);
-            sub                 = sub_tot1 -  count;
-            var unit_price      = (sub / unit);
+            count               = parseFloat(discount / existing_count);    
+            var unit_total      = whole_unit_total -  count;
+            var unit_price      = (unit_total / unit);
         }
 
         jQuery(this).find('.discount_type').val('whole');
@@ -741,18 +683,19 @@ function rowCalculate() {
     }
     else {
 
-        var unit_price    = row_discount;
+        var unit_price          = parseFloat(row_discount);
+        var unit_count          = parseFloat(jQuery(this).find('.retail_sub_unit').val());
+        var unit_total          = (unit_price * unit_count);
     }
    
-        jQuery(this).find('.sub_discount').val(unit_price.toFixed(2));
-        var unit_price          = parseFloat(jQuery(this).find('.sub_discount').val());
-        var unit_count          = parseFloat(jQuery(this).find('.sub_unit').val());
-        var cgst                = parseFloat(jQuery(this).find('.sub_cgst').val());
-        var sgst                = parseFloat(jQuery(this).find('.sub_sgst').val());
-        var unit_total          = (unit_price * unit_count);
-        var row_per_cgst        = ( (cgst * unit_total) / 100 );
-        var row_per_sgst        = ( (sgst * unit_total) / 100 );
-        var amt = unit_total - (row_per_cgst + row_per_sgst); 
+        var diviser         = 100 + cgst + sgst ;
+        var amt             = (unit_total *  100)/(diviser);
+        var full_gst        = unit_total - amt;
+        var row_per_cgst    = full_gst/2;
+        var row_per_sgst    = full_gst/2;
+
+        jQuery(this).find('.retail_sub_discount').val(unit_price.toFixed(2));
+
         unit_total               = (isNaN(unit_total) ? '0.00' : unit_total);
 
         jQuery(this).find('.td_subtotal').text(unit_total.toFixed(2)); 
@@ -842,3 +785,31 @@ function populateReturnProductsRetail(selector) {
 }
 
  
+function formatStateBillCreate (state) {
+    if (!state.id) {
+        return state.id;
+    }
+    var $state = jQuery(
+    '<span><b>Brand Name  :</b>' +
+    state.brand_name +
+    '</span><br/>' +
+    '<span><b>Product Name : </b>' +
+    state.product_name +
+    '</span>'
+   
+    );
+    return $state;
+};
+
+function formatStateBillCreate1 (state) {
+    if (!state.id) {
+        return state.id;
+    }
+    var $state = jQuery(
+    '<span>' +
+    state.product_name +
+    '</span><br/>'
+   
+    );
+    return $state;
+};

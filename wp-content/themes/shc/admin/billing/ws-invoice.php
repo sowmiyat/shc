@@ -12,7 +12,7 @@
             $bill_ldata = $bill_data['ordered_data'];
             $bill_rdata = $bill_data['returned_data'];
             $invoice_id['inv_id'] = $bill_fdata->inv_id;
-            $home_delivery = getHomedelivery($bill_fdata->home_delivery_id);
+
         }
         else {
              echo "<script>alert('INVOICE NOT FOUND!!! Try another number');</script>";

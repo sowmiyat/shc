@@ -9,7 +9,7 @@
 		$bill_fdata = $bill_data['bill_data'];
 		$bill_ldata = $bill_data['ordered_data'];
 
-		$delivery 						= getHomedelivery($_GET['id']);
+		
 		$invoice_id['invoice_id']       = $bill_fdata->id;
 
 
@@ -20,64 +20,16 @@
 
 ?>
 <style>
-.old_user_bill,.new_customer {
-    display: none;
-    font-size: 11px;
-}
-
-.old_user_bill, .new_user_bill,.new_customer{
-    cursor: pointer;
-    font-size: 11px;
-}
-.tooltip {
-    position: relative;
-    display: inline-block;
-    border-bottom: 1px dotted black;
-}
-
-.tooltip .tooltiptext {
-    visibility: hidden;
-    width: 240px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-
-    /* Position the tooltip */
-    position: absolute;
-    z-index: 1;
-}
-.stock_system{
-	position: relative;
-}
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-}
-.weight-original-block {
-    position: relative;
-}
-.weight_cal_tooltip {
-    width: 30px;
-    position: absolute;
-    right: 0
-}
 
 .billing-structure {
     border: 2px solid red;
-    padding: 20px;
+    padding: 10px;
 }
 
 .billing-structure .balance_amount {
     font-weight: bold;
 }
 
-.retailer_add-button {
-	margin-left: 45%;
-    margin-top: 15px;
-
-
-}
 
 #bill_lot_add_retail .sub_unit {
 	border: 0;
@@ -85,16 +37,15 @@
 }
 
 
-.sub_delete{
+.retail_sub_delete{
     color: #0073aa;
     text-decoration: underline;
 }
- .sub_delete:hover {
+ .retail_sub_delete:hover {
     color:#0073aa;
     cursor: pointer; 
     cursor: hand;
 }
-
 
 #bill_lot_add_retail .sub_discount {
 	border: 0;
@@ -109,7 +60,16 @@
 .cheque_date {
 	margin-top: 10px;
 }
-
+.stock_bal_table thead {
+	background: #58606b;
+    color: #fff;
+}
+.form-control-feedback{
+	color: #000;
+}
+.secondary_mobile, .landline_mobile {
+	display: none;
+}
 
 
 
@@ -142,84 +102,124 @@
 									<!-- /.col -->
 								</div>
 								<!-- info row -->
-								<div class="row invoice-info">
 									<!-- /.col -->
 
-									<div class="row invoice-info">
-										<div class="col-md-4 col-sm-4 col-xs-12">
-											<div class="form-group">
-												<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Name <span class="required">*</span>
-												</label>
-												<div class="col-md-6 col-sm-6 col-xs-12">
-													<input type="text" id="billing_customer" name="name" required value="<?php if(isset($bill_fdata)){ echo $bill_fdata->customer_name; } ?>" <?php if(isset($bill_fdata)){  echo 'readonly'; } ?>  >
-												</div>
+								<div class="row invoice-info">
+									<div class="col-md-4 col-sm-4 col-xs-12">
+										<div class="form-group">
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Name
+											</label>
+											<div class="col-md-6 col-sm-6 col-xs-12">
+												<input type="text" id="billing_customer" name="name" required value="<?php if(isset($bill_fdata)){ echo $bill_fdata->customer_name; } ?>"  >
 											</div>
 										</div>
-										<div class="col-md-4 col-sm-4 col-xs-12">
-											<div class="form-group">
-												<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Mobile<span class="required">*</span>
-												</label>
-												<div class="col-md-6 col-sm-6 col-xs-12">
-													<input type="tel" id="billing_mobile" name="mobile" class="mobile_check"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->mobile; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
-												</div>
+									</div>
+									<div class="col-md-4 col-sm-4 col-xs-12">
+										<div class="form-group">
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Primary Mobile<span class="required">*</span>
+											</label>
+											<div class="col-md-6 col-sm-6 col-xs-12">
+												<input type="tel" id="billing_mobile" name="mobile" class="form-control has-feedback-left"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->mobile; } ?>" style="padding-right: 5px;">
+												<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+91</span> 
 											</div>
 										</div>
-										<div class="col-md-4 col-sm-4 col-xs-12">
-											<div class="form-group">
-												<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Address<span class="required">*</span>
-												</label>
-												<div class="col-md-6 col-sm-6 col-xs-12">
-													<input type="text" id="billing_address" name="address" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->address; } ?>" <?php if(isset($bill_fdata)){ echo  'readonly'; } ?> >
-												</div>
+									</div>
+									<div class="col-md-4 col-sm-4 col-xs-12 secondary_mobile">
+										<div class="form-group">
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Secondary Mobile<span class="required">*</span>
+											</label>
+											<div class="col-md-6 col-sm-6 col-xs-12">
+												<input type="tel" id="billing_secondary_mobile" name="secondary_mobile" class="form-control has-feedback-left"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->secondary_mobile; } ?>">
+												<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+0</span>
 											</div>
 										</div>
-
+									</div>
+									<div class="col-md-4 col-sm-4 col-xs-12 landline_mobile">
+										<div class="form-group">
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Landline<span class="required">*</span>
+											</label>
+											<div class="col-md-6 col-sm-6 col-xs-12">
+												<input type="tel" id="billing_landline_mobile" name="landline" class="form-control has-feedback-left"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->landline; } ?>" >
+												<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+044</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4 col-sm-4 col-xs-12">
+										<div class="form-group">
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Address
+											</label>
+											<div class="col-md-6 col-sm-6 col-xs-12">
+												<input type="text" id="billing_address" name="address" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->address; } ?>" >
+											</div>
+										</div>
+									</div>
 										<input type="hidden" name="ws_user_type" value="new" class="ws_user_type"/>
 						                <input type="hidden" name="old_customer_id" class="old_customer_id" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->customer_id;} else { echo '0'; } ?>"/>
+								</div>
+								<div class="row invoice-info">
+
+									<div class="col-md-4 col-sm-4 col-xs-12">
+
+										<div class="form-group">
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Product Name <span class="required">*</span>
+											</label>
+											<div class="col-md-6 col-sm-6 col-xs-12">
+												<input type="text" name="lot_number" class="lot_id" id="lot_id" />
+												<input type="hidden" name="retail_lot_id_orig" class="retail_lot_id_orig">
+												<input type="hidden" name="retail_product" class="retail_product" /> 
+												<input type="hidden" name="retail_unit_price" class="retail_unit_price"/>
+												<input type="hidden" name="retail_hsn" class="retail_hsn"/>
+												<input type="hidden" name="retail_cgst" class="retail_cgst_percentage"/>
+												<input type="hidden" name="retail_sgst" class="retail_sgst_percentage"/>
+												
+											</div>
+										</div>
+
+										<div class="form-group">
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Unit(Quantity):<span class="required">*</span>
+											</label>
+											<div class="col-md-6 col-sm-6 col-xs-12">
+												<input type="number" name="retail_unit" id="retail_unit" class="retail_unit" min="1"/>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Discounted Price:<span class="required">*</span>
+											</label>
+											<div class="col-md-6 col-sm-6 col-xs-12">
+												<input type="number" name="retail_discount" value="0.00" id="retail_discount" class="retail_discount"/>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name"><span class="required"></span>
+											</label>
+											<div class="col-md-6 col-sm-6 col-xs-12">
+												<button class="btn btn-success retailer_add-button"  id="">ADD</button>
+											</div>
+										</div>
+										<input type="hidden" name="invoice_id" class="invoice_id" id="invoice_id" autocomplete="off" value="<?php echo $invoice_id['invoice_id']; ?>">
+										<input type="hidden" name="year" value="<?php echo $year; ?>" class="year"/> 
 									</div>
 
+									<div class="col-md-8 col-sm-8 col-xs-12">
+										<div class="stock_bal_table">
+											<table class="table table-bordered">
+												<thead>
+													<th>#S.No</th>
+													<th>Product Name</th>
+													<th>Stock</th>
+												</thead>
+												<tbody class="stock_table_body">
+													<tr>
+														
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
 
-
+								</div>
 									
-									<!-- /.col -->
-									<div class="col-sm-4 invoice-col">
-										<b>
-											<input type="hidden" name="invoice_id" class="invoice_id" id="invoice_id" autocomplete="off" value="<?php echo  $invoice_id['invoice_id']; ?>">
-											<input type="hidden" name="year" value="<?php echo $year; ?>" class="year"/> 
-										</b>
-										<br>
-										<br>
-									</div>
-									<!-- /.col -->
-								</div>
-								<!-- /.row -->
-								<div class="row">
-									<B>Product Name :</B>									
-									<select name="lot_number" class="retail_lot_id" id="retail_lot_id" tabindex="-1" aria-hidden="true" />
-									</select>
-
-
-									<input type="hidden" name="retail_product" class="retail_product" /> 
-									<input type="hidden" name="retail_unit_price" class="retail_unit_price"/>
-									<input type="hidden" name="retail_hsn" class="retail_hsn"/>
-									<input type="hidden" name="retail_cgst" class="retail_cgst_percentage"/>
-									<input type="hidden" name="retail_sgst" class="retail_sgst_percentage"/>
-									<input type="hidden" name="retail_stock" class="retail_slab_sys_txt"/>
-
-									<span style="margin-left: 10%;">
-										<B>Unit(Quantity):</B>
-										<input type="number" name="unit"  id="retail_unit" class="retail_unit" min="1"/>
-									</span>	
-									<span style="margin-left: 10%;">
-										<B>Discounted Price:</B>
-										<input type="number" name="retail_main_discount" value="0.00" id="retail_discount" min="0" class="retail_discount"/>
-									</span>
-								</div>
-								<div class="row"> 
-									<div class="">
-										<button class="btn btn-success retailer_add-button"  id="">ADD</button>
-									</div>
-								</div>
 								<!-- Table row -->
 								<div class="row">
 									<div class="col-xs-12 table">
@@ -232,7 +232,6 @@
 														<th>Product Name</th>
 														<th>HSN Code</th>
 														<th>Unit</th>
-														<th>Stock</th>
 														<th>MRP</th>
 														<th>Discounted Price</th>
 														<th>Amount</th>
@@ -254,17 +253,17 @@
  															<td class="td_id">'.$i.'</td> <input type="hidden" value="'.$c_value->lot_id.'" name="customer_detail['.$i.'][id]" class="sub_id" />
  															<td class="td_product">' .$c_value->product_name. '</td> <input type="hidden" value = "'.$c_value->product_name. '" name="customer_detail['.$i.'][product]" class="sub_product"/>
  															<td class="td_hsn">' .$c_value->hsn. '</td> <input type="hidden" value = "'.$c_value->hsn. '" name="customer_detail['.$i.'][hsn]" class="sub_hsn"/>
- 															<td class=""><input type="text" value = "'.$c_value->sale_unit. '" name="customer_detail['.$i.'][unit]" class="sub_unit"/> </td> 
- 															<td class="td_stock"></td> <input type="hidden" value = "" name="customer_detail['.$i.'][stock]" class="sub_stock"/>
+ 															<td class=""><input type="text" value = "'.$c_value->sale_unit. '" name="customer_detail['.$i.'][unit]" class="retail_sub_unit"/> </td> 
+ 															<input type="hidden" value = "" name="customer_detail['.$i.'][stock]" class="retail_sub_stock"/>
  															<td class="td_price">' .$c_value->unit_price. '</td> <input type="hidden" value = "'.$c_value->unit_price. '" name="customer_detail['.$i.'][price]" class="sub_price"/> 
- 															<td><input type="text" value ="'.$c_value->discount.'" name="customer_detail['.$i.'][discount]" class="sub_discount"/></td>
+ 															<td><input type="text" value ="'.$c_value->discount.'" name="customer_detail['.$i.'][discount]" class="retail_sub_discount"/></td>
  															<input type="hidden" value ="each" name="customer_detail['.$i.'][discount_type]" class="discount_type"/>
  															<td class="td_amt">' .$c_value->amt. '</td> <input type="hidden" value = "'.$c_value->amt. '" name="customer_detail['.$i.'][amt]" class="sub_amt"/>
  															<td class="td_cgst">' .$c_value->cgst. '  %' . '</td> <input type="hidden" value = "'.$c_value->cgst. '" name="customer_detail['.$i.'][cgst]" class="sub_cgst"/> 
  															<td class="td_cgst_value">'.$c_value->cgst_value.'</td> <input type="hidden" value = "'.$c_value->cgst_value.'" name="customer_detail['.$i.'][cgst_value]" class="sub_cgst_value"/>
  															<td class="td_sgst">' .$c_value->sgst. '  %' . '</td> <input type="hidden" value = "'.$c_value->sgst. '" name="customer_detail['.$i.'][sgst]" class="sub_sgst"/>
  															<td class="td_sgst_value">'.$c_value->sgst_value.'</td> <input type="hidden" value = "'.$c_value->sgst_value.'" name="customer_detail['.$i.'][sgst_value]" class="sub_sgst_value"/>
- 															<td class="td_subtotal">'.$c_value->sub_total.'</td> <input type="hidden" value ="'.$c_value->sub_total.'" name="customer_detail['.$i.'][subtotal]" class="sub_total"/><td><span class="sub_delete">Delete</span></td></tr>';
+ 															<td class="td_subtotal">'.$c_value->sub_total.'</td> <input type="hidden" value ="'.$c_value->sub_total.'" name="customer_detail['.$i.'][subtotal]" class="sub_total"/><td><span class="retail_sub_delete">Delete</span></td></tr>';
 															
 															$i++;
 
@@ -286,9 +285,79 @@
 								<div class="row billing-repeater-extra">
 									<!-- accepted payments column -->
 									<div class="col-xs-6">
-										<div class="billing-structure">Payment Due From Previous Bills:<span class="balance_amount"></span></div>
-										<input type="hidden" value="0.00" name="balance_amount_val" class="balance_amount_val"/>
+										
+										<div class="billing-structure">Payment Due From Previous Bills:<span class="balance_amount"></span>
+											<input type="hidden" value="0.00" name="balance_amount_val" class="balance_amount_val"/>
+										</div>
+
+
+										<div class="payment_options">
+											<div class="payment_status">
+												Payment Type : <?php 
+													if(isset($_GET['id'])) { 
+														$payment_type = $bill_fdata->payment_type;
+														echo $payment_type; 
+														echo "<br>";
+														echo $bill_fdata->payment_details;
+													} else {
+													?>
+														<div class="row">
+															<div class="col-md-2">
+																<input type="radio" name="payment_pay_type" value="cash" class="payment_pay_type" checked/> Cash
+															</div>
+															<div class="col-md-2">
+																<input type="radio" name="payment_pay_type" value="card" class="payment_pay_type"/> Card
+															</div>
+															<div class="col-md-3">
+																<input type="radio" name="payment_pay_type" value="cheque" class="payment_pay_type"/> Cheque
+															</div>
+															<div class="col-md-5">
+																<input type="radio" name="payment_pay_type" value="Internet Banking" class="payment_pay_type"/>Internet Banking
+															</div>
+															<div class="col-md-5">
+																<input type="radio" name="payment_pay_type" value="credit" class="payment_pay_type"/>Credit
+															</div>
+														</div>
+														<div>
+															<div class="payment_details_card"><input type="textarea" name="card_number" value=""  placeholder="Card Details" class="card_number"/> </div>
+															<div class="payment_details_cheque">
+																<input type="textarea" name="cheque_number" value="" placeholder="Cheque Details"  class="cheque_number"/>
+																<input type="textarea" name="cheque_date" value="" placeholder="Cheque Date"  class="cheque_date"/>
+															</div>
+															<div class="payment_details_internet">
+																<textarea  name="internet_banking_details" class="internet_banking_details" placeholder="Bank Details" style="width:100%;"></textarea>
+															</div> 
+														</div>
+													<?php
+													}
+												?>
+											</div>
+										</div>
+										<div>
+											<div>
+												Home Delivery: 
+											</div>
+											<div>
+												<?php if(isset($_GET['id'])) { 
+													$payment_type = $bill_fdata->payment_type; ?>
+													<div>
+														
+														<input type="text" name="delivery_name" class="delivery_name" placeholder="Name" value="<?php echo $bill_fdata->home_delivery_name; ?>" style="height: 40px;"/>
+														<input type="text" name="delivery_phone" class="delivery_phone" placeholder="Phone" value="<?php echo $bill_fdata->home_delivery_mobile; ?>" style="height: 40px;"/>
+														<textarea  placeholder="Address" name="delivery_address" class="delivery_address" style="width:100%;"><?php echo $bill_fdata->home_delivery_address; ?></textarea>	
+													</div>
+												<?php } else { ?>
+													<div>
+
+														<input type="text" name="delivery_name" class="delivery_name" placeholder="Name" style="height: 40px;"/>
+														<input type="text" name="delivery_phone" class="delivery_phone" placeholder="Phone" style="height: 40px;"/>
+														<textarea  placeholder="Address" name="delivery_address" class="delivery_address" style="width:100%;"></textarea>
+													</div>
+												<?php } ?>
+											</div>
+										</div>
 									</div>
+
 									<!-- /.col -->
 									<div class="col-xs-6">
 										
@@ -357,70 +426,6 @@
 																<span class="fa fa-inr form-control-feedback right" aria-hidden="true"></span>
 															</div>
 														</td>
-													</tr>
-													<tr>
-													<th>Payment Type: <br/></th>
-													<?php if(isset($_GET['id'])) { 
-														$payment_type = $bill_fdata->payment_type; ?>
-														<td>
-														<?php 	echo $payment_type; 
-																echo '<br/>';
-																echo $bill_fdata->payment_details;
-														 ?>
-														</td>
-													<?php } else { ?>
-														<td>
-															<table>
-																<tr><td><input type="radio" name="ws_payment_pay_type" value="cash" class="payment_pay_type" checked/> Cash</td></tr>
-																<tr><td><input type="radio" name="ws_payment_pay_type" value="card" class="payment_pay_type"/> Card</td></tr>
-																<tr><td class="payment_details_card"><input type="textarea" name="card_number" value=""  placeholder="Card Details" class="card_number"/> </td></tr>
-																<tr><td><input type="radio" name="ws_payment_pay_type" value="cheque" class="payment_pay_type"/> Cheque</td> </tr>
-																<tr>
-																	<td class="payment_details_cheque">
-																		<input type="textarea" name="cheque_number" value="" placeholder="Cheque Details"  class="cheque_number"/>
-
-																		<input type="textarea" name="cheque_date" value="" placeholder="Cheque Date"  class="cheque_date"/>
-																	 </td> 
-																	
-																	 	
-																	
-																</tr>
-																<tr>
-																	<td>
-																		<input type="radio" name="ws_payment_pay_type" value="Internet Banking" class="payment_pay_type"/>Internet Banking
-																	</td>
-																</tr>
-																<tr>
-																	<td class="payment_details_internet">
-																		<textarea  name="internet_banking_details" class="internet_banking_details" placeholder="Bank Details" ></textarea>
-																	</td>
-																</tr>
-																<tr>
-																	<td>
-																		<input type="radio" name="ws_payment_pay_type" value="credit" class="payment_pay_type"/>Credit
-																	</td>
-																</tr>
-															</table>
-														</td>
-															<?php } ?>
-													</tr>
-													<tr>
-													<th>Home Delivery: <input type ="hidden" value="wholesale_customer" class="customer_type"/><br/></th>
-
-													<?php if(isset($_GET['id'])) { 
-														$payment_type = $bill_fdata->payment_type; ?>
-														<td>
-															<input type="text" name="delivery_name" class="delivery_name" placeholder="Name" value="<?php echo $bill_fdata->home_delivery_name; ?>"/>
-															<input type="text" name="delivery_phone" class="delivery_phone" placeholder="Phone" value="<?php echo $bill_fdata->home_delivery_mobile; ?>"/>
-															<textarea  placeholder="Address" name="delivery_address" class="delivery_address"><?php echo $bill_fdata->home_delivery_address; ?></textarea>	
-														</td>
-													<?php } else { ?>
-														<td>
-															<input type="text" name="delivery_name" class="delivery_name" placeholder="Name"/>
-															<input type="text" name="delivery_phone" class="delivery_phone" placeholder="Phone"/>
-															<textarea  placeholder="Address" name="delivery_address" class="delivery_address"></textarea>
-														</td>
-															<?php } ?>
 													</tr>
 												</tbody>
 											</table>

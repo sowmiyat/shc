@@ -2563,7 +2563,7 @@ legend {
 }
 
 .form-control-feedback {
-    margin-top: 8px;
+    margin-top: 3px;
     height: 23px;
     color: #bbb;
     line-height: 24px;
@@ -4949,7 +4949,7 @@ ul.notifications {
 
 
     .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
-        padding: 4px;
+        padding: 3px;
     }
 
     dd, li {
