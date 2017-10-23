@@ -1,212 +1,232 @@
 jQuery(document).ready(function () {
 
-     jQuery('.submit_form').on('click',function(){
-        if(jQuery('form')[0].checkValidity()) {
-                jQuery('.submit_form').css('display','none');
-                jQuery('#lightbox').css('display','block');
-            }
-
-    });
 
     jQuery('#customer_name').focus();
     jQuery('#name').focus();
 
+
+    jQuery.validator.setDefaults({
+      debug: true,
+      success: "valid"
+    });
+
+
+    jQuery( ".wholesale_submit" ).validate({
+        rules: {
+            customer_name: {
+                nameValidite : true,
+            },
+            company_name : {
+                nameValidite : true
+            },
+            mobile: {
+                required: true,
+                minlength: 10,
+                maxlength: 10,
+                uniqueUserMobile: true
+            },
+            secondary_mobile: {
+                minlength: 10,
+            },
+            landline: {
+                minlength: 6,
+                maxlength: 8,
+            },
+            address: {
+                addressValidate : true,
+            },
+            gst_number : {
+                required: true,
+                gstValidate : true,
+                minlength: 15,
+                maxlength: 15,
+            }
+        },
+        messages: {
+            customer_name: {
+                nameValidite: "Special Characters Not Allowed!",
+            },
+            company_name : {
+                nameValidite : "Special Characters Not Allowed!",
+            },
+            mobile: {
+                required: "Please Enter Valid Mobile Number!",
+                minlength: "Mobile Number Must Be 10 Numbers!",
+                maxlength: "Mobile Number Must Be 10 Numbers!",
+                uniqueUserMobile : "Mobile Number Already Exist!",
+            },
+            secondary_mobile : {
+                minlength: "Please Enter Valid Mobile Number!",
+            },
+            landline : {
+                minlength: "Please Enter Valid Landline Number!",
+                maxlength: "Please Enter Valid Landline Number!",
+            },
+            address: {
+                addressValidate : "Please Enter Valid Address",
+            },
+            gst_number : {
+                required: "Please Enter Valid GST Number!",
+                gstValidate : "GST Numbers Does Not Contain Special Characters!",
+                minlength: "GST Number Must Be 15 Letters!",
+                maxlength: "GST Number Must Be 15 Letters!",
+            }
+
+        }
+    });
+
+
+
     /*Add Lot Form Submit*/
     jQuery("#create_customer").bind('submit', function (e) {
-       
-        jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                action : jQuery('.customer_action').val(),
-                data : jQuery('#create_customer :input').serialize()
-            },
-            success: function (data) {
-                clearPopup();
-                jQuery('#lightbox').css('display','none');
+        
 
-                if(data.redirect != 0) { 
-                    setTimeout(function() {
-                        managePopupContent(data);
-                    }, 1000);
-                }
+        var valid = jQuery(".wholesale_submit").valid();
+        if(valid) {
+            jQuery('#lightbox').css('display','block');
+            jQuery.ajax({
+                type: "POST",
+                dataType : "json",
+                url: frontendajax.ajaxurl,
+                data: {
+                    action : jQuery('.customer_action').val(),
+                    data : jQuery('#create_customer :input').serialize()
+                },
+                success: function (data) {
+                    clearPopup();
+                    jQuery('#lightbox').css('display','none');
 
-                if(data.success == 0) {
-                    popItUp('Error', data.msg);
-                } else {
-                    popItUp('Success', data.msg);
+                    if(data.redirect != 0) { 
+                        setTimeout(function() {
+                            managePopupContent(data);
+                        }, 1000);
+                    }
+
+                    if(data.success == 0) {
+                        popItUp('Error', data.msg);
+                    } else {
+                        popItUp('Success', data.msg);
+                    }
+                
                 }
-            
-            }
-        });
+            });  
+        }
         e.preventDefault();
         return false;
     });
 
-    jQuery('.mobile_check').on('change',function() {
 
-        var mobile_num = jQuery('.mobile_check').val();
-        if(MobileValidate(mobile_num)) { 
-
+    var response = true;
+    jQuery.validator.addMethod(
+        "uniqueUserMobile", 
+        function(value, element) {
             jQuery.ajax({
                 type: "POST",
                 dataType : "json",
+                async: false,
                 url: frontendajax.ajaxurl,
                 data: {
-                    action       : 'check_unique_mobile',
-                    mobile       : jQuery('.mobile_check').val()
+                    action       : jQuery('.unique_mobile_action').val(),
+                    mobile       : value,
                 },
-                success: function (data) {
-                   if(data != 0){
-                    alert('Mobile Already Exists!!!');
-                    jQuery('.mobile_check').val('').focus();
-
-                }
-                
-                }
-            });
-        }
-        else {
-             alert("It is not valid mobile number.Enter 10 digits number!");
-             jQuery('.mobile_check').val().focus();
-        }
-    });
-
-    jQuery('.mobile_check_wholesale').on('change',function() {
-
-        var mobile_num = jQuery('.mobile_check_wholesale').val();
-        if(MobileValidate(mobile_num)) {  
-            jQuery.ajax({
-                type: "POST",
-                dataType : "json",
-                url: frontendajax.ajaxurl,
-                data: {
-                    action       : 'check_unique_mobile_wholesale',
-                    mobile       : jQuery('.mobile_check_wholesale').val()
-                },
-                success: function (data) {
-                   if(data != 0){
-                    alert('Mobile Already Exists!!!');
-                    jQuery('.mobile_check_wholesale').focus();
-
-                }
-                
+                success: function (msg) {
+                    if( msg === 1 ) {
+                        response = false;
+                    } else {
+                        response =  true;
+                    }
                 }
             });
+            return response;
+        },
+        "Username is Already Taken"
+    );
 
-            jQuery('.alert_primary_number').css('display','none'); 
+
+    jQuery.validator.addMethod(
+        "addressValidate", 
+        function(value, element) {
+            var alphanumers = /^[a-zA-Z0-9\s,\(\)\/#'-]*$/;
+            if(!alphanumers.test(value)){
+                return false
+            }
+            return true;
         }
-        else {
+    );
 
-             jQuery('.mobile_check_wholesale').focus();
-             jQuery('.alert_primary_number').css('display','block'); 
 
+    jQuery.validator.addMethod(
+        "gstValidate", 
+        function(value, element) {
+            var alphanumers = /^[a-zA-Z0-9]*$/;
+            if(!alphanumers.test(value)){
+                return false
+            }
+            return true;
         }
+    );
 
-    });
-//<-----------customer name validation--------->
-
-    jQuery('.wholesale_cus').keypress(function(e) {
-         var capital_str = jQuery('.wholesale_cus').val();
-//for validation
-
-        var code =e.keyCode || e.which;
-        if((code<65 || code>90)&&(code<97 || code>122)&&code!=32&&code!=46)  
-        {
-
-            jQuery("#customer_name").focus();
-            jQuery('.alert_cus_name').css('display','block'); 
-            return false;
+    jQuery.validator.addMethod(
+        "nameValidite", 
+        function(value, element) {
+            var alphanumers = /^[a-zA-Z0-9\s\(\),-]*$/;
+            if(!alphanumers.test(value)){
+                return false
+            }
+            return true;
         }
+    );
+    
 
-        else {
-            jQuery('.alert_cus_name').css('display','none');
-        }
-//for display name in captialized
 
-        if(isUpperCase(capital_str)){
-             var product = capital_str;
-          } 
-        else {
-           
-            capital_str = capital_str.toLowerCase().replace(/\b[a-z]/g, function(letter) {
-                return letter.toUpperCase();
-            });
-        }
 
-        jQuery('.wholesale_cus').val(capital_str);
 
-    });
+
 //<-----------company name validation--------->
-    jQuery('.wholesale_company').keypress(function(e) {
-        var capital_str = jQuery('.wholesale_company').val();
-        var code =e.keyCode || e.which;
-        if((code<65 || code>90)&&(code<97 || code>122)&&code!=32&&code!=46)  
-        {
+    jQuery('.customer_check').on('change', function(e) {
+        var capital_str = jQuery(this).val();
 
-            jQuery("#company_name").focus();
-            jQuery('.alert_company_name').css('display','block'); 
-            return false;
-        }
-        else {
-            jQuery('.alert_company_name').css('display','none');
-        }
+        var res = capital_str.split(" ");
+        var full_str = '';
+        jQuery.each(res, function(e, value){
+             if(isUpperCase(value)){
+                 full_str = full_str + value + ' ';
+             } 
+             else {
+                value = value.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+                        return letter.toUpperCase();
+                });
+                full_str = full_str + value + ' ';
+             }
+        });
 
-        if(isUpperCase(capital_str)){
-             var product = capital_str;
-          } 
-        else {
-
-            
-            capital_str = capital_str.toLowerCase().replace(/\b[a-z]/g, function(letter) {
-                return letter.toUpperCase();
-            });
-        }
-
-        jQuery('.wholesale_company').val(capital_str);
-
+        jQuery(this).val(full_str.trim());
     });
 
-//<------- Secondary mobile validation ------->
-    jQuery('#secondarymobile').on('change',function() {
-        var mobile_num = jQuery(this).val();
-            if(!MobileValidate(mobile_num)) { 
-                jQuery('.alert_secondary_number').css('display','block');
-                jQuery('#secondarymobile').focus();
-            }
-            else {
-                jQuery('.alert_secondary_number').css('display','none');
-            }
-
-
-    });
-//<------- Address validation--->
-    jQuery("#address").keypress(function(){
-        var alphanumers = /^[a-zA-Z0-9\s,'-]*$/;
-        if(!alphanumers.test(jQuery("#address").val())){
-            jQuery('.alert_address').css('display','block');
-            jQuery("#address").focus();
+    jQuery('#mobile, #secondarymobile, #landline').unbind('keyup change input paste').bind('keyup change input paste',function(e){
+        var this_val = jQuery(this).val();
+        var valLength = this_val.length;
+        var maxCount = jQuery(this).attr('maxlength');
+        if(valLength>maxCount){
+            this_val = this_val.substring(0,maxCount);
         }
-        else {
-            jQuery('.alert_address').css('display','none');
-        }
-
+        jQuery(this).val(this_val);
     });
-//<------- GST Validation --->
-jQuery('#gst_number').unbind('keyup change input paste').bind('keyup change input paste',function(e){
-    var this_val = jQuery(this);
-    var val = this_val.val();
-    var valLength = val.length;
-    var maxCount = this_val.attr('maxlength');
-    if(valLength>maxCount){
-        this_val.val(this_val.val().substring(0,maxCount));
-        jQuery('.alert_gst').css('display','block');
-    }
-    else {
-        jQuery('.alert_gst').css('display','none');
-    }
-}); 
+
+    //<------- GST Validation --->
+    jQuery('#gst_number').unbind('keyup change input paste').bind('keyup change input paste',function(e){
+        var this_val = jQuery(this);
+        var val = this_val.val();
+        var valLength = val.length;
+        var maxCount = this_val.attr('maxlength');
+        if(valLength>maxCount){
+            var gst_num = val.substring(0,maxCount);
+            this_val.val(gst_num.toUpperCase());
+        }
+        this_val.val(val.toUpperCase());
+    }); 
+
+
 });
 
 

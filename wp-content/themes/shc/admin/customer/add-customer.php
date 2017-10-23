@@ -99,7 +99,6 @@ jQuery("#name").on('change',function(){
     	alert("name can have only alphabets and numbers.");
     	jQuery("#name").val('');
 	}
-
 });
 
 </script>

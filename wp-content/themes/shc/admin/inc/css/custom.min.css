@@ -4968,7 +4968,7 @@ ul.notifications {
         background: #779f16;
     }
 
-    a.list_update,a.bill_view {
+    a.list_update,a.bill_view,a.list_delete {
         min-width: 50px;
     }
 
@@ -4981,7 +4981,10 @@ ul.notifications {
         margin: 0px;
         border: 1px solid rgba(31,181,172,1.0);
     }
-
     .invoice .table {
         margin-bottom: 8px;
+    }
+    .error {
+        color: #ff2424;
+        font-weight: 500;
     }
