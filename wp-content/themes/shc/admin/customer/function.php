@@ -117,11 +117,12 @@ function update_wholesale_customer() {
 	unset($params['action']);
 	unset($params['customer_id']);
 
-	if(get_customer($customer_id)) {
+	if(get_wholesale_customer($customer_id)) {
 		$customer_table = $wpdb->prefix. 'shc_wholesale_customer';
 		$wpdb->update($customer_table, $params, array('id' => $customer_id));
 		$data['success'] = 1;
 		$data['msg'] = 'Customer Detail Updated!';
+		$data['redirect'] = network_admin_url( 'admin.php?page=wholesale_customer' );
 	}
 
 	echo json_encode($data);
