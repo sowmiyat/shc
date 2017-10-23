@@ -45,11 +45,6 @@ jQuery(document).ready(function () {
                 } else {
                     popItUp('Success', data.msg);
                 }
-            
-
-                /*setTimeout(function() {
-                    managePopupContent(data);
-                }, 4000);*/
             }
         });
         e.preventDefault();
@@ -60,27 +55,6 @@ jQuery(document).ready(function () {
 jQuery('.unique_brand').on('change',function() {
     this.value = this.value.toUpperCase();
     jQuery('.unique_brand').val(this.value);
-    
-
-        //     jQuery.ajax({
-        //     type: "POST",
-        //     dataType : "json",
-        //     url: frontendajax.ajaxurl,
-        //     data: {
-        //         action      : 'check_unique_brand',
-        //         brandname   : this.value
-        //     },
-        //     success: function (data) {
-        //        if(data == 1){
-        //         alert('Brand name Already Exists!!!');
-        //         jQuery('.unique_brand').val('').focus();
-
-        //     }
-            
-        //     }
-        // });
-    
-
 });
 
 
@@ -120,18 +94,28 @@ jQuery('.unique_product').on('change',function() {
 
 });
 
-jQuery('#cgst').on('change',function() {
-    var cgst = jQuery('#cgst').val();
-    jQuery('#sgst').val(cgst);
+    jQuery('#cgst').on('change',function() {
+        var cgst = jQuery('#cgst').val();
+        jQuery('#sgst').val(cgst);
+
+    });
+
+
+//<-------Delete Lot------->
+
+  jQuery('.delete-lot').live( "click", function() {
+    if(confirm('Are you sure you want to delete this element?')){
+      var data=jQuery(this).attr("data-id");
+      console.log(data);
+      window.location.replace('admin.php?page=list_lots&delete_id='+data+'&action=delete');
+    }
+
+  });
+  //<-------End Delete Lot------->
+
+
 
 });
-
-
-});
-
-  // function isUpperCase(str) {
-  //   return str === str.toUpperCase();
-  //   }
 
 
 

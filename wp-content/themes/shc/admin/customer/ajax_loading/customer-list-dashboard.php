@@ -28,7 +28,7 @@
                             <th class="column-title">Address </th>
                             <th class="column-title">Sale Total </th>
                             <th class="column-title">Registered On </th>
-                            <th class="column-title">Action </th>
+                            <!-- <th class="column-title">Action </th> -->
                         </tr>
                     </thead>
 
@@ -50,7 +50,7 @@
                                     </td>
                                     <td class=""><?php echo $c_value->sale_total; ?></td>
                                     <td class=""><?php echo $c_value->created_at; ?></td>
-                                    <td><a href="<?php echo menu_page_url( 'new_customer', 0 )."&id=${customer_id}"; ?>">Update</a></td>
+                                    <!-- <td><a href="<?php //echo admin_url('admin.php?page=new_customer')."&id=${customer_id}"; ?>">Update</a></td> -->
                                 </tr>
                     <?php
                                 $i++;

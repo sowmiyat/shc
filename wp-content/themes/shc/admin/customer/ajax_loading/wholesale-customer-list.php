@@ -1,4 +1,13 @@
 <?php
+
+   global $wpdb;
+    $customer_table              = $wpdb->prefix.'shc_wholesale_customer';
+
+    if($_GET['action']=='delete'){
+        $id = $_GET['delete_id'];
+        $data_delete=$wpdb->update( $customer_table ,array( 'active' =>'0' ),array( 'id' => $id ));
+    }
+
     $ppage = false;
     if(!$customer) {
         $customer = new Customer();
@@ -51,7 +60,10 @@
                                     <td class=""><?php echo $c_value->gst_number; ?> </td>
                                     <td class=""><?php echo $c_value->sale_total; ?></td>
                                     <td class=""><?php echo $c_value->created_at; ?></td>
-                                    <td><a href="<?php echo menu_page_url( 'new_wholesale_customer', 0 )."&id=${customer_id}"; ?>" class="list_update">Update</a></td>
+                                    <td>
+                                        <a href="<?php echo admin_url('admin.php?page=new_wholesale_customer')."&id=${customer_id}"; ?>" class="list_update">Update</a> / 
+                                        <a href = "#" class="list_delete delete-ws-cus" data-id="<?php echo $c_value->id; ?>">Delete</a>
+                                    </td>
                                 </tr>
                     <?php
                                 $i++;
@@ -78,3 +90,18 @@
                <?php  echo $customer_list['status_txt']; ?>
             </div>
         </div>
+<script>
+//<-------Delete Lot------->
+
+  jQuery('.delete-ws-cus').live( "click", function() {
+    if(confirm('Are you sure you want to delete this element?')){
+      var data=jQuery(this).attr("data-id");
+      console.log(data);
+      window.location.replace('admin.php?page=wholesale_customer&delete_id='+data+'&action=delete');
+    }
+
+  });
+  //<-------End Delete Lot------->
+
+
+</script>

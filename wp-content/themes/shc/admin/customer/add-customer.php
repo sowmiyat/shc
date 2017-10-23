@@ -34,7 +34,7 @@ input[type=number]::-webkit-outer-spin-button {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Primary Mobile <span class="required">*</span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="text" id="mobile" name="mobile" required="required" class="form-control col-md-7 col-xs-12 has-feedback-left" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->mobile : ''; ?>">
+								<input type="text" id="mobile" name="mobile" required="required" class="form-control col-md-7 col-xs-12 has-feedback-left mobile_check" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->mobile : ''; ?>">
 								<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+91</span> 
 							</div>
 						</div>

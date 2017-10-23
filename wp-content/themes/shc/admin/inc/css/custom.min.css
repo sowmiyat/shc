@@ -4968,9 +4968,11 @@ ul.notifications {
         background: #779f16;
     }
 
-    a.list_update,a.bill_view {
+    a.list_update,a.bill_view,a.list_delete {
         min-width: 50px;
     }
+
+
 
     input[type=radio] {
         width: 15px;
