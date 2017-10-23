@@ -28,13 +28,17 @@ input[type=number]::-webkit-outer-spin-button {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Customer Name</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<input type="text" id="customer_name" name="customer_name" class="form-control col-md-7 col-xs-12 wholesale_cus" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->customer_name : ''; ?>">
+								<br/>
+								<br/><div class="alert_cus_name" style="display:none;color:red;" >This fields only contains Alphanumeric characters</div>
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Company Name
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="text" id="company_name" name="company_name" class="form-control col-md-7 col-xs-12 wholesale_company" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->company_name : ''; ?>">
+								<input type="text" id="company_name" name="company_name"  class="form-control col-md-7 col-xs-12 wholesale_company" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->company_name : ''; ?>">
+								<br/>
+								<br/><div class="alert_company_name" style="display:none;color:red;" >This fields only contains Alphanumeric characters</div>
 							</div>
 						</div>
 						<div class="divider-dashed"></div>
@@ -44,6 +48,9 @@ input[type=number]::-webkit-outer-spin-button {
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<input type="text" id="mobile" name="mobile" required="required" class="form-control col-md-7 col-xs-12 has-feedback-left mobile_check_wholesale" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->mobile : ''; ?>">
 								<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+91</span> 
+								<br/>
+								<br/>
+								<div class="alert_primary_number" style="display:none;color:red"> It is not valid mobile number.Enter 10 digits number! </div>
 							</div>
 						</div>
 						<div class="divider-dashed"></div>
@@ -51,8 +58,11 @@ input[type=number]::-webkit-outer-spin-button {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Secondary Mobile <span class="required">*</span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="text" id="secondary mobile" name="secondary mobile" required="required" class="form-control col-md-7 col-xs-12 has-feedback-left mobile_check_wholesale" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->secondary_mobile : ''; ?>">
+								<input type="text" id="secondarymobile" name="secondary mobile" required="required" class="form-control col-md-7 col-xs-12 has-feedback-left" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->secondary_mobile : ''; ?>">
 								<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">0</span>
+								<br/>
+								<br/>
+								<div class="alert_secondary_number" style="display:none;color:red"> It is not valid mobile number.Enter 10 digits number! </div>
 							</div>
 						</div>
 						<div class="divider-dashed"></div>
@@ -62,6 +72,7 @@ input[type=number]::-webkit-outer-spin-button {
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<input type="text" id="landline" name="landline" required="required" class="form-control col-md-7 has-feedback-left col-xs-12" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->landline : ''; ?>">
 								<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">044</span>
+								
 							</div>
 						</div>
 						<div class="divider-dashed"></div>
@@ -70,6 +81,9 @@ input[type=number]::-webkit-outer-spin-button {
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<textarea id="address" name="address" required="required" class="form-control col-md-7 col-xs-12" autocomplete="off"><?php echo ($wholesale_customer) ? $wholesale_customer->address : ''; ?></textarea>
+								<br/>
+								<br/>
+								<div class="alert_address" style="display:none;color:red"> Address does not conatins any special charcters. </div>
 							</div>
 						</div>
 						<div class="divider-dashed"></div>
@@ -77,7 +91,10 @@ input[type=number]::-webkit-outer-spin-button {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">GST Number <span class="required">*</span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="number" id="gst_number" name="gst_number" required="required" class="form-control col-md-7 col-xs-12" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->gst_number : ''; ?>">
+								<input type="text" id="gst_number" name="gst_number" required="required" maxlength="15" class="form-control col-md-7 col-xs-12" autocomplete="off"   value="<?php echo ($wholesale_customer) ? $wholesale_customer->gst_number : ''; ?>">
+								<br/>
+								<br/>
+								<div class="alert_gst" style="display:none;color:red"> GST Only contains 15 charcters. </div>
 							</div>
 						</div>
 						<div class="divider-dashed"></div>
@@ -103,26 +120,3 @@ input[type=number]::-webkit-outer-spin-button {
 		</div>
 	</div>
 </div>
-
-
-<script>
-
-jQuery("#customer_name").on('change',function(){
-	var alphanumers =/^[a-zA-Z0-9 ]+$/; 
-	if(!alphanumers.test(jQuery("#customer_name").val())){
-    	alert("name can have only alphabets and numbers.");
-    	jQuery("#customer_name").focus();
-	}
-
-});
-
-jQuery("#company_name").on('change',function(){
-	var alphanumers = /^[a-zA-Z0-9 ]+$/;
-	if(!alphanumers.test(jQuery("#company_name").val())){
-    	alert("name can have only alphabets and numbers.");
-    	jQuery("#company_name").focus();
-	}
-
-});
-
-</script>

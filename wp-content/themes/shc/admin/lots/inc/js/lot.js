@@ -129,9 +129,9 @@ jQuery('#cgst').on('change',function() {
 
 });
 
-  function isUpperCase(str) {
-    return str === str.toUpperCase();
-    }
+  // function isUpperCase(str) {
+  //   return str === str.toUpperCase();
+  //   }
 
 
 

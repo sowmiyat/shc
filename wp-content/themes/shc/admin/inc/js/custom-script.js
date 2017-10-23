@@ -73,3 +73,17 @@ function managePopupContent( data ) {
 
       return true;
    }
+
+    function isUpperCase(str) {
+        return str === str.toUpperCase();
+    }
+
+    function MobileValidate(mobile) {
+        var pattern = /^\d{10}$/;
+        if (pattern.test(mobile)) {
+           
+            return true;
+        }
+       
+        return false;
+    }
