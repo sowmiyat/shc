@@ -291,7 +291,7 @@ jQuery('#ws_billing_mobile').live('keydown', function(e){
                 
                 jQuery('.ws_balance_amount').text(data);
                 jQuery('.ws_balance_amount_val').val(data);
-               
+
 
             }
         });

@@ -67,27 +67,6 @@ jQuery(document).ready(function () {
 
 
 
-    // jQuery('#pro_number').keydown(function(){
-    //     var product_name = jQuery('#pro_number').val();
-    //         jQuery.ajax({
-    //         type: "POST",
-    //         dataType : "json",
-    //         url: frontendajax.ajaxurl,
-    //         data: {
-    //             action : 'search_lot',
-    //             data : product_name,
-    //         },
-    //         success: function (data) {
-    //            jQuery('#livesearch').text(data.product_name);
-            
-
-    //         }
-    //     });
-
-
-
-    // });
-
     /*Add stock Form Submit*/
     jQuery("#add_stock").bind('submit', function (e) {
         jQuery('#lightbox').css('display','block');
@@ -132,7 +111,17 @@ jQuery(document).ready(function () {
 
     });
 
+//<-------Delete Stock------->
 
+  jQuery('.delete-stock').live( "click", function() {
+    if(confirm('Are you sure you want to delete this element?')){
+      var data=jQuery(this).attr("data-id");
+      console.log(data);
+      window.location.replace('admin.php?page=list_stocks&delete_id='+data+'&action=delete');
+    }
+
+  });
+  //<-------End Delete Stock------->
 
 
 });

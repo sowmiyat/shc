@@ -27,8 +27,7 @@ jQuery('.retail_unit').live('change keyup',function(){
 });
 
 
-
-
+//<-------- display secondary and landline textboxes----->
 jQuery('#billing_secondary_mobile').live('keydown', function(e){
     var keyCode = e.keyCode || e.which; 
     if (keyCode == 40) { 
@@ -68,27 +67,7 @@ jQuery('#billing_landline_mobile').live('keydown', function(e){ console.log(e);
     });
 
 
-
-
-    // jQuery("#billing_customer").on('change',function(){
-    //     var alphanumers = /^[a-zA-Z0-9]+$/;
-    //     if(!alphanumers.test(jQuery("#billing_customer").val())){
-    //         alert("name can have only alphabets and numbers.");
-    //         jQuery("#billing_customer").val('');
-    //     }
-
-    // });
-
-    // jQuery("#billing_address").on('change',function(){
-    //     var alphanumers = /^[a-zA-Z0-9]+$/;
-    //     if(!alphanumers.test(jQuery("#billing_address").val())){
-    //         alert("address can have only alphabets and numbers.");
-    //         jQuery("#billing_address").val('');
-    //     }
-
-    // });
-
-    
+ //<-------- search customer using name and mobile------>   
 jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
       source: function( request, response ) {
         var billing_field = jQuery(this.element).attr('id');
@@ -130,8 +109,6 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
       minLength: 2,
       select: function( event, ui ) {
 
-
-
          jQuery.ajax({
             type: "POST",
             dataType : "json",
@@ -149,7 +126,7 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
             }
         });
 
-         if(ui.item.identification == 'mobile' ) {
+        if(ui.item.identification == 'mobile' ) {
             jQuery('#billing_mobile').val(ui.item.value);
             jQuery('#billing_customer').val(ui.item.name);
         } else {
@@ -231,9 +208,9 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
     });
 
 
-
+//<----- Payment type JS------>
   jQuery('.payment_pay_type').on('click',function(){
-    if(jQuery('.payment_pay_type:checked').val() == 'Internet Banking'){
+    if(jQuery('.payment_pay_type:checked').val() == 'internet_banking'){
         jQuery('.payment_details_card').css("display","none");
         jQuery('.payment_details_cheque').css("display","none");
         jQuery('.payment_details_internet').css("display","block");

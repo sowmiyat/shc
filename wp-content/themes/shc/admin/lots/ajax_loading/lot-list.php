@@ -1,4 +1,13 @@
 <?php
+
+   global $wpdb;
+    $lot_table              = $wpdb->prefix.'shc_lots';
+
+    if($_GET['action']=='delete'){
+        $id = $_GET['delete_id'];
+        $data_delete=$wpdb->update( $lot_table ,array( 'active' =>'0' ),array( 'id' => $id ));
+    }
+  
     $result_args = array(
         'orderby_field' => 'id',
         'page' => $lots->cpage,
@@ -7,6 +16,8 @@
         'condition' => '',
     );
     $lot_list = $lots->lot_list_pagination($result_args);
+
+  
 ?>
         <div class="x_content">
             <div class="table-responsive">
@@ -46,7 +57,11 @@
                                     <td class=""><?php echo $l_value->cgst; ?></td>
                                     <td class=""><?php echo $l_value->sgst; ?></td>
                                     <td class=""><?php echo $l_value->hsn; ?></td>
-                                    <td class=""><a href="<?php echo menu_page_url( 'add_lot', 0 )."&id=${lot_id}"; ?>" class="list_update">Update</a></td>
+
+                                    <td class="">
+                                        <a href="<?php echo admin_url('admin.php?page=add_lot')."&id=${lot_id}"; ?>" class="list_update">Update</a> / 
+                                        <a href = "#" class="list_delete delete-lot" data-id="<?php echo $l_value->id; ?>">Delete</a>
+                                    </td>
                                 </tr>
                     <?php
                                 $i++;

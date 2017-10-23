@@ -297,9 +297,37 @@
 													if(isset($_GET['id'])) { 
 														$payment_type = $bill_fdata->payment_type;
 														echo $payment_type; 
-														echo "<br>";
-														echo $bill_fdata->payment_details;
-													} else {
+														//echo "<br>";
+														//echo $bill_fdata->payment_details; ?>
+														<div class="row">
+															<div class="col-md-2">
+																<input type="radio" name="payment_pay_type" value="cash" class="payment_pay_type" <?php echo ($payment_type == 'cash') ? 'Checked' : ''; ?>/> Cash
+															</div>
+															<div class="col-md-2">
+																<input type="radio" name="payment_pay_type" value="card" class="payment_pay_type" <?php echo ($payment_type == 'card') ? 'Checked' : ''; ?> /> Card
+															</div>
+															<div class="col-md-3">
+																<input type="radio" name="payment_pay_type" value="cheque" class="payment_pay_type" <?php echo ($payment_type == 'cheque') ? 'Checked' : ''; ?> /> Cheque
+															</div>
+															<div class="col-md-5">
+																<input type="radio" name="payment_pay_type" value="internet_banking" class="payment_pay_type" <?php echo ($payment_type == 'internet_banking') ? 'Checked' : ''; ?> />Internet Banking
+															</div>
+															<div class="col-md-5">
+																<input type="radio" name="payment_pay_type" value="credit" class="payment_pay_type" <?php echo ($payment_type == 'credit') ? 'Checked' : ''; ?> />Credit
+															</div>
+														</div>
+														<div>
+															<div class="payment_details_card"><input type="textarea" name="card_number" placeholder="Card Details" class="card_number" value="<?php echo ($payment_type == 'card') ? $bill_fdata->payment_details : ''; ?>"/> </div>
+															<div class="payment_details_cheque">
+																<input type="textarea" name="cheque_number" placeholder="Cheque Details"  class="cheque_number" value="<?php echo ($payment_type == 'cheque') ? $bill_fdata->payment_details : ''; ?>" />
+																<input type="textarea" name="cheque_date" placeholder="Cheque Date"  class="cheque_date" value="<?php echo ($payment_type == 'cheque') ? $bill_fdata->payment_date : ''; ?>" />
+															</div>
+															<div class="payment_details_internet">
+																<textarea  name="internet_banking_details" class="internet_banking_details" placeholder="Bank Details"  style="width:100%;"><?php echo ($payment_type == 'internet_banking') ? $bill_fdata->payment_details : ''; ?></textarea>
+															</div> 
+														</div>
+
+												<?php 	} else {
 													?>
 														<div class="row">
 															<div class="col-md-2">
@@ -312,7 +340,7 @@
 																<input type="radio" name="payment_pay_type" value="cheque" class="payment_pay_type"/> Cheque
 															</div>
 															<div class="col-md-5">
-																<input type="radio" name="payment_pay_type" value="Internet Banking" class="payment_pay_type"/>Internet Banking
+																<input type="radio" name="payment_pay_type" value="internet_banking" class="payment_pay_type"/>Internet Banking
 															</div>
 															<div class="col-md-5">
 																<input type="radio" name="payment_pay_type" value="credit" class="payment_pay_type"/>Credit

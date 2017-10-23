@@ -243,20 +243,20 @@ function create_order() {
 		$customer_id = $wpdb->insert_id;
 	}
 
-	if($params['ws_payment_pay_type'] == 'cash'){
+	if($params['payment_pay_type'] == 'cash'){
 		$payment_details = '';
 		$payment_date = '';
 	}
-	else if($params['ws_payment_pay_type'] == 'card'){
+	else if($params['payment_pay_type'] == 'card'){
 		$payment_details = $params['card_number'];
 		$payment_date = '';
 	}
-	else if($params['ws_payment_pay_type'] == 'cheque'){
+	else if($params['payment_pay_type'] == 'cheque'){
 		$payment_details = $params['cheque_number'];
 		$payment_date = $params['cheque_date'];
 	}
 
-	else if($params['ws_payment_pay_type'] == 'credit'){
+	else if($params['payment_pay_type'] == 'credit'){
 		$payment_details = '';
 		$payment_date = '';
 	}
@@ -266,19 +266,19 @@ function create_order() {
 	}
 
 	$sale_update = array(
-		'customer_id' 			=>  $customer_id, 
-		'order_id' 				=> $order_id,
+		'customer_id' 				=> $customer_id, 
+		'order_id' 					=> $order_id,
 		'home_delivery_name' 		=> $params['delivery_name'],
 		'home_delivery_mobile' 		=> $params['delivery_phone'],
 		'home_delivery_address' 	=> $params['delivery_address'],
-		'sub_total' 			=> $params['fsub_total'], 
-		'discount' 				=> $params['retail_main_discount'],
-		'discount_type'			=> $params['discount_per'],
-		'paid_amount' 			=> $params['paid_amount'],
-		'return_amt' 			=> $params['return_amt'],
-		'payment_type'         	=> $params['ws_payment_pay_type'],
-		'payment_details'       => $payment_details,
-		'payment_date'       	=> $payment_date,
+		'sub_total' 				=> $params['fsub_total'], 
+		'discount' 					=> $params['retail_main_discount'],
+		'discount_type'				=> $params['discount_per'],
+		'paid_amount' 				=> $params['paid_amount'],
+		'return_amt' 				=> $params['return_amt'],
+		'payment_type'         		=> $params['payment_pay_type'],
+		'payment_details'       	=> $payment_details,
+		'payment_date'       		=> $payment_date,
 	);
 	$wpdb->update($sale_table, $sale_update, array('id' => $invoice_id));
 	$query = "SELECT * from ${sale_table} where id = ${invoice_id}";
@@ -480,7 +480,27 @@ function update_order() {
 
 		$customer_id = $wpdb->insert_id;
 	}
+	if($params['payment_pay_type'] == 'cash'){
+		$payment_details = '';
+		$payment_date = '';
+	}
+	else if($params['payment_pay_type'] == 'card'){
+		$payment_details = $params['card_number'];
+		$payment_date = '';
+	}
+	else if($params['payment_pay_type'] == 'cheque'){
+		$payment_details = $params['cheque_number'];
+		$payment_date = $params['cheque_date'];
+	}
 
+	else if($params['payment_pay_type'] == 'credit'){
+		$payment_details = '';
+		$payment_date = '';
+	}
+	else {
+		$payment_details = $params['internet_banking_details'];
+		$payment_date = '';
+	}
 
 	$sale_update = array(
 		'customer_id' 				=>  $customer_id, 
@@ -492,6 +512,9 @@ function update_order() {
 		'discount_type'				=> $params['discount_per'],
 		'paid_amount' 				=> $params['paid_amount'],
 		'return_amt' 				=> $params['return_amt'],
+		'payment_type'         		=> $params['payment_pay_type'],
+		'payment_details'       	=> $payment_details,
+		'payment_date'       		=> $payment_date,
 	);
 
 	
@@ -599,7 +622,26 @@ function ws_update_order() {
 
 		$customer_id = $wpdb->insert_id;
 	}
-
+	if($params['ws_payment_pay_type'] == 'cash'){ 
+		$payment_details = '';
+		$payment_date = '';
+	}
+	else if($params['ws_payment_pay_type'] == 'card'){
+		$payment_details = $params['card_number'];
+		$payment_date = '';
+	}
+	else if($params['ws_payment_pay_type'] == 'cheque'){
+		$payment_details = $params['cheque_number'];
+		$payment_date = $params['cheque_date'];
+	}
+	else if($params['ws_payment_pay_type'] == 'credit'){
+		$payment_details = '';
+		$payment_date = '';
+	}
+	else {
+		$payment_details = $params['internet_banking_details'];
+		$payment_date = '';
+	}
 
 	$sale_update = array(
 		'customer_id' 				=>  $customer_id, 
@@ -610,6 +652,9 @@ function ws_update_order() {
 		'discount' 					=> $params['ws_discount'],
 		'paid_amount' 				=> $params['ws_paid_amount'],
 		'return_amt' 				=> $params['ws_return_amt'],
+		'payment_type'         		=> $params['ws_payment_pay_type'],
+		'payment_details'       	=> $payment_details,
+		'payment_date'       		=> $payment_date,
 	);
 
 
@@ -643,7 +688,8 @@ function ws_update_order() {
 
 			$wpdb->insert($sale_detail_table, $sale_detail_data);
 
-		} else {
+		} 
+		else {
 			if($s_value['id'] != '') {
 
 				$sale_detail_data = array(
@@ -888,14 +934,13 @@ function customer_balance() {
 	global $wpdb;
 	$id 			= $_POST['id'];
     $lot_table 		=  $wpdb->prefix.'shc_sale';
-    $query 			=  "SELECT 
-						(case when 
-						(sum(final_total)-sum(paid_amount))  is NULL Then  '0.00' else (sum(final_total)-sum(paid_amount)) end ) as balance
-
- 						FROM ${lot_table} WHERE customer_id = $id and active=1";
+    $query 			=  "SELECT (case 
+							when (sum(sub_total)-sum(paid_amount))  is NULL Then  '0.00' 
+							else (sum(sub_total)-sum(paid_amount)) end ) as balance
+							FROM ${lot_table} WHERE customer_id = $id and active=1";
     $data = $wpdb->get_row($query);
-var_dump($query);
-die();
+// var_dump($query);
+// die();
 	echo json_encode($data->balance);
 	die();
 
@@ -911,9 +956,9 @@ function ws_customer_balance() {
     $query 			=  "SELECT 
 						(case
 						when 
-						(sum(final_total)-sum(paid_amount))  is NULL Then  '0.00' else (sum(final_total)-sum(paid_amount)) end ) as balance
+						(sum(sub_total)-sum(paid_amount))  is NULL Then  '0.00' else (sum(sub_total)-sum(paid_amount)) end ) as balance
 
-			 			FROM wp_shc_ws_sale WHERE customer_id = $id and active=1";
+			 			FROM ${lot_table} WHERE customer_id = $id and active=1";
     
     $data = $wpdb->get_row($query);
    

@@ -1,4 +1,15 @@
 <?php
+
+   global $wpdb;
+    $stock_table              = $wpdb->prefix.'shc_stock';
+
+    if($_GET['action']=='delete'){
+        $id = $_GET['delete_id'];
+        $data_delete=$wpdb->update( $stock_table ,array( 'active' =>'0' ),array( 'id' => $id ));
+    }
+  
+
+
     $result_args = array(
         'orderby_field' => 'brand_name',
         'page' => $stocks->cpage,
@@ -43,7 +54,11 @@
                                     <td class=""><?php echo $s_value->stock_count; ?></td>
                                     <td class=""><?php echo $s_value->selling_total; ?></td>
                                     <td class=""><?php echo $s_value->stock_created; ?></td>
-                                    <td class=""><a href="<?php echo menu_page_url( 'add_stocks', 0 )."&stock_id=${stock_id}"; ?>"  class="list_update">Update</a></td>
+                                    <td class="">
+                                        <a href="<?php echo admin_url('admin.php?page=add_stocks')."&stock_id=${stock_id}"; ?>"  class="list_update">Update</a> / 
+                                        <a href = "#" class="list_delete delete-stock" data-id="<?php echo $s_value->stock_id; ?>">Delete</a>
+                                    </td>
+                                    
                                 </tr>
                     <?php
                                 $i++;

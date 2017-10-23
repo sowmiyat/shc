@@ -346,7 +346,7 @@
 																<input type="radio" name="ws_payment_pay_type" value="cheque" class="payment_pay_type"/> Cheque
 															</div>
 															<div class="col-md-5">
-																<input type="radio" name="ws_payment_pay_type" value="Internet Banking" class="payment_pay_type"/>Internet Banking
+																<input type="radio" name="ws_payment_pay_type" value="internet_banking" class="payment_pay_type"/>Internet Banking
 															</div>
 															<div class="col-md-5">
 																<input type="radio" name="ws_payment_pay_type" value="credit" class="payment_pay_type"/>Credit
