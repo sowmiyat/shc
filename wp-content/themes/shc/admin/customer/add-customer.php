@@ -21,12 +21,12 @@ input[type=number]::-webkit-outer-spin-button {
 					<div class="clearfix"></div>
 				</div>
 				<div class="x_content">
-					<form class="form-horizontal form-label-left" id="create_customer">
+					<form class="form-horizontal form-label-left retail_submit" id="create_customer">
 						<div class="form-group">
-							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Customer Name <span class="required">*</span>
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Customer Name 
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="text" id="name" name="name" required="required" class="form-control col-md-7 col-xs-12" autocomplete="off" value="<?php echo ($customer) ? $customer->name : ''; ?>">
+								<input type="text" id="name" name="name" class="form-control col-md-7 col-xs-12 customer_check" autocomplete="off" value="<?php echo ($customer) ? $customer->name : ''; ?>">
 							</div>
 						</div>
 						<div class="divider-dashed"></div>
@@ -34,40 +34,41 @@ input[type=number]::-webkit-outer-spin-button {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Primary Mobile <span class="required">*</span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="text" id="mobile" name="mobile" required="required" class="form-control col-md-7 col-xs-12 has-feedback-left mobile_check" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->mobile : ''; ?>">
-								<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+91</span> 
+								<input type="text" id="mobile" maxlength="10"   <?php if(!$customer){ echo 'name="mobile"'; } else { echo 'readonly'; }?>  class="form-control col-md-7 col-xs-12 has-feedback-left required minlength" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($customer) ? $customer->mobile : ''; ?>">
+								<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+91</span>
+								<?php if(!$customer){ echo '<input type="hidden" class="unique_mobile_action" value="check_unique_mobile"/>'; } ?> 
 							</div>
 						</div>
 						<div class="divider-dashed"></div>
 						<div class="form-group">
-							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Secondary Mobile <span class="required">*</span>
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Secondary Mobile 
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="text" id="secondary mobile" name="secondary mobile" required="required" class="form-control col-md-7 col-xs-12 has-feedback-left" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->secondary_mobile : ''; ?>">
+								<input type="text" id="secondarymobile" maxlength="10" name="secondary_mobile" class="form-control col-md-7 col-xs-12 has-feedback-left" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($customer) ? $customer->secondary_mobile : ''; ?>">
 								<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">0</span>
 							</div>
 						</div>
 						<div class="divider-dashed"></div>
 						<div class="form-group">
-							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Landline <span class="required">*</span>
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Landline 
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="text" id="landline" name="landline" required="required" class="form-control col-md-7 has-feedback-left col-xs-12" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->landline : ''; ?>">
+								<input type="text" id="landline" name="landline" maxlength="8" class="form-control col-md-7 has-feedback-left col-xs-12" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($customer) ? $customer->landline : ''; ?>">
 								<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">044</span>
 							</div>
 						</div>
 						<div class="divider-dashed"></div>
 						<div class="form-group">
-							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Address <span class="required">*</span>
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Address 
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<textarea id="address" name="address" required="required" class="form-control col-md-7 col-xs-12" autocomplete="off"><?php echo ($customer) ? $customer->address : ''; ?></textarea>
+								<textarea id="address" name="address" class="form-control col-md-7 col-xs-12" autocomplete="off"><?php echo ($customer) ? $customer->address : ''; ?></textarea>
 							</div>
 						</div>
 						<div class="divider-dashed"></div>
 						<div class="form-group">
 							<div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-3">
-								<button type="submit" class="btn btn-success submit_form">Submit</button>
+								<button type="submit" class="btn btn-success submit_form1">Submit</button>
 	                          	<button class="btn btn-primary" type="button"  onclick="window.location = '<?php echo admin_url('admin.php?page=customer_list'); ?>';">Cancel</button>
 							  	<button class="btn btn-primary" type="reset">Reset</button>
 	                          	
@@ -89,16 +90,3 @@ input[type=number]::-webkit-outer-spin-button {
 
 </div>
 
-
-<script>
-
-
-jQuery("#name").on('change',function(){
-	var alphanumers = /^[a-zA-Z0-9 ]+$/;
-	if(!alphanumers.test(jQuery("#name").val())){
-    	alert("name can have only alphabets and numbers.");
-    	jQuery("#name").val('');
-	}
-});
-
-</script>

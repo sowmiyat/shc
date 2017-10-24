@@ -30,8 +30,6 @@ input[type=number]::-webkit-outer-spin-button {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Customer Name</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<input type="text" id="customer_name" name="customer_name" class="form-control col-md-7 col-xs-12 customer_check" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->customer_name : ''; ?>">
-								<br/>
-								<br/><div class="alert_cus_name" style="display:none;color:red;" >This fields only contains Alphanumeric characters</div>
 							</div>
 						</div>
 						<div class="form-group">
@@ -39,8 +37,7 @@ input[type=number]::-webkit-outer-spin-button {
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<input type="text" id="company_name" name="company_name"  class="form-control col-md-7 col-xs-12 customer_check" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->company_name : ''; ?>">
-								<br/>
-								<br/><div class="alert_company_name" style="display:none;color:red;" >This fields only contains Alphanumeric characters</div>
+								
 							</div>
 						</div>
 						<div class="divider-dashed"></div>
@@ -48,9 +45,10 @@ input[type=number]::-webkit-outer-spin-button {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Primary Mobile <span class="required">*</span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="text" id="mobile" name="mobile" maxlength="10" required="required" class="form-control col-md-7 col-xs-12 has-feedback-left required minlength" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->mobile : ''; ?>">
+								<input type="text" id="mobile"  maxlength="10" name="mobile" class="form-control col-md-7 col-xs-12 has-feedback-left" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->mobile : ''; ?>">
 								<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+91</span> 
-								<input type="hidden" class="unique_mobile_action" value="check_unique_mobile_wholesale">
+								<input type="hidden" class="customer_id" value="<?php echo ($wholesale_customer) ? $wholesale_customer->mobile : '0'; ?>"/>
+								<input type="hidden" class="unique_mobile_action" value="check_unique_mobile_wholesale"/>
 							</div>
 						</div>
 						<div class="divider-dashed"></div>
@@ -93,7 +91,7 @@ input[type=number]::-webkit-outer-spin-button {
 							<div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-3">
 								<button type="submit" class="btn btn-success submit_form1">Submit</button>
 	                          	<button class="btn btn-primary" type="button"  onclick="window.location = '<?php echo admin_url('admin.php?page=wholesale_customer'); ?>';">Cancel</button>
-							  	<button class="btn btn-primary" type="reset">Reset</button>
+							  	<button class="btn btn-primary reset_button_ws_cus" type="reset">Reset</button>
 	                          
 	                          	<?php 
 									if( $wholesale_customer) {

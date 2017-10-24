@@ -152,16 +152,17 @@ add_action( 'wp_ajax_nopriv_wholesale_customer_filter', 'wholesale_customer_filt
 function check_unique_mobile() {
 
 	global $wpdb;
-	$mobile 		= $_POST['mobile'];
-    $lot_table 		=  $wpdb->prefix.'shc_customers';
-    $query 			=  $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM ${lot_table} WHERE mobile ='$mobile' and active=1") );
-
-	echo json_encode($query);
+	$mobile 				= $_POST['mobile'];
+    $retail_customer 		=  $wpdb->prefix.'shc_customers';
+    $query 					= "SELECT mobile FROM ${retail_customer} WHERE mobile ='$mobile' and active=1";
+    $result 				=  $wpdb->get_row( $query );
+    if($result) {
+    	$data = 1;
+    } else {
+    	$data = 0;
+    }
+	echo json_encode($data);
 	die();
-
-
-
-
 }
 add_action( 'wp_ajax_check_unique_mobile', 'check_unique_mobile' );
 add_action( 'wp_ajax_nopriv_check_unique_mobile', 'check_unique_mobile' );

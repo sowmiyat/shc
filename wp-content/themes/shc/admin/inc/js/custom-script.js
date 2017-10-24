@@ -44,6 +44,122 @@ jQuery(document).ready(function(){
         });
     });
 	
+//<------ Validation function------->
+    var response = true;
+    jQuery.validator.addMethod(
+        "uniqueUserMobile", 
+        function(value, element) {
+
+            jQuery.ajax({
+                type: "POST",
+                dataType : "json",
+                async: false,
+                url: frontendajax.ajaxurl,
+                data: {
+                    action       : jQuery('.unique_mobile_action').val(),
+                    mobile       : value,
+                },
+                success: function (msg) {
+                    if( msg === 1 ) {
+                        response = false;
+                    } else {
+                        response =  true;
+                    }
+                }
+            });
+            return response;
+        },
+        "Username is Already Taken"
+    );
+
+
+    jQuery.validator.addMethod(
+        "addressValidate", 
+        function(value, element) {
+            var alphanumers = /^[a-zA-Z0-9\s,\(\)\/#'-]*$/;
+            if(!alphanumers.test(value)){
+                return false
+            }
+            return true;
+        }
+    );
+
+
+    jQuery.validator.addMethod(
+        "gstValidate", 
+        function(value, element) {
+            var alphanumers = /^[a-zA-Z0-9]*$/;
+            if(!alphanumers.test(value)){
+                return false
+            }
+            return true;
+        }
+    );
+
+    jQuery.validator.addMethod(
+        "nameValidite", 
+        function(value, element) {
+            var alphanumers = /^[a-zA-Z0-9\s\(\),-]*$/;
+            if(!alphanumers.test(value)){
+                return false
+            }
+            return true;
+        }
+    );
+    
+
+
+
+
+
+//<-----------company name and customer name validation--------->
+    jQuery('.customer_check').on('change', function(e) {
+        var capital_str = jQuery(this).val();
+
+        var res = capital_str.split(" ");
+        var full_str = '';
+        jQuery.each(res, function(e, value){
+             if(isUpperCase(value)){
+                 full_str = full_str + value + ' ';
+             } 
+             else {
+                value = value.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+                        return letter.toUpperCase();
+                });
+                full_str = full_str + value + ' ';
+             }
+        });
+
+        jQuery(this).val(full_str.trim());
+    });
+//<---- maxlength validation----->
+    jQuery('#mobile, #secondarymobile, #landline').unbind('keyup change input paste').bind('keyup change input paste',function(e){
+        var this_val = jQuery(this).val();
+        var valLength = this_val.length;
+        var maxCount = jQuery(this).attr('maxlength');
+        if(valLength>maxCount){
+            this_val = this_val.substring(0,maxCount);
+        }
+        jQuery(this).val(this_val);
+    });
+
+    //<------- GST Validation --->
+    jQuery('#gst_number').unbind('keyup change input paste').bind('keyup change input paste',function(e){
+        var this_val = jQuery(this);
+        var val = this_val.val();
+        var valLength = val.length;
+        var maxCount = this_val.attr('maxlength');
+        if(valLength>maxCount){
+            var gst_num = val.substring(0,maxCount);
+            this_val.val(gst_num.toUpperCase());
+        }
+        this_val.val(val.toUpperCase());
+    }); 
+
+
+//<------ End Validation function------->
+
+
 });
 
 
