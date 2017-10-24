@@ -91,7 +91,7 @@ jQuery(document).ready(function(){
         function(value, element) {
             var alphanumers = /^[a-zA-Z0-9]*$/;
             if(!alphanumers.test(value)){
-                return false
+                return false;
             }
             return true;
         }
@@ -107,14 +107,9 @@ jQuery(document).ready(function(){
             return true;
         }
     );
-    
-
-
-
-
 
 //<-----------company name and customer name validation--------->
-    jQuery('.customer_check').on('change', function(e) {
+    jQuery('.customer_check,.unique_product').on('change', function(e) {
         var capital_str = jQuery(this).val();
 
         var res = capital_str.split(" ");
@@ -134,7 +129,7 @@ jQuery(document).ready(function(){
         jQuery(this).val(full_str.trim());
     });
 //<---- maxlength validation----->
-    jQuery('#mobile, #secondarymobile, #landline').unbind('keyup change input paste').bind('keyup change input paste',function(e){
+    jQuery('#mobile, #secondarymobile, #landline,#stock_count').unbind('keyup change input paste').bind('keyup change input paste',function(e){
         var this_val = jQuery(this).val();
         var valLength = this_val.length;
         var maxCount = jQuery(this).attr('maxlength');
@@ -192,10 +187,12 @@ function managePopupContent( data ) {
 
     function isNumberKeyWithDot(evt)
    {
-      var charCode = (evt.which) ? evt.which : evt.keyCode;
-      if (charCode > 31 && (charCode < 48 || charCode > 57))
-         return false;
-      return true;
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+             return false;
+
+        return true;
    }
 
     function isUpperCase(str) {

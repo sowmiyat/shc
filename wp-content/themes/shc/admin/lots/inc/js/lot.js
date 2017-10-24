@@ -10,82 +10,127 @@ jQuery(document).ready(function () {
         jQuery('#brand_name').focus();
       } 
     });
+
+
+ jQuery.validator.setDefaults({
+      debug: true,
+      success: "valid"
+    });
+
+    jQuery( ".lot_submit" ).validate({
+        rules: {
+            brand_name: {
+                required: true,
+                nameValidite : true,
+            },
+            product_name : {
+                required: true,
+                nameValidite : true,
+                uniqueProducts : true,
+
+            },
+            selling_price: {
+                 required: true,
+            },
+            purchase_price: {
+                 required: true,
+            },
+            hsn : {
+                 required: true,
+            }
+        },
+        messages: {
+            brand_name: {
+                required: 'Please Enter Brand Name!',
+                nameValidite: "Special Characters Not Allowed!",
+            },
+            product_name : {
+                required: 'Please Enter Product Name!',
+                nameValidite : "Special Characters Not Allowed!",
+                uniqueProducts : "Product name Already Exists !!!",
+            },
+            purchase_price : {
+                 required: "Please Enter Purchase Price!",
+            },
+            selling_price: {
+                required: "Please Enter Selling Price!",
+            },
+            hsn : {
+                required: "Please Enter HSN code!",
+            }
+            
+        }
+    });
+
+    var response = true;
+    jQuery.validator.addMethod(
+          "uniqueProducts", 
+          function(value, element) {
+              jQuery.ajax({
+                type: "POST",
+                dataType : "json",
+                url: frontendajax.ajaxurl,
+                data: {
+                    action          : 'check_unique_product',
+                    productname     : value,
+                    brandname       : jQuery('.unique_brand').val()
+                },
+                success: function (msg) {
+                    if( msg === 1 ) {
+                        response = false;
+                    } else {
+                        response =  true;
+                    }
+                }
+            });
+              return response;
+          }
+      );
+ 
     /*Add Lot Form Submit*/
     jQuery("#create_lot").bind('submit', function (e) {
-       
-        jQuery('#lightbox').css('display','block');
-        jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                action : jQuery('.lot_action').val(),
-                data : jQuery('#create_lot :input').serialize()
-            },
-            success: function (data) {
-                jQuery("#create_lot")[0].reset();
-                clearPopup();
-                jQuery('#lightbox').css('display','none');
+       var valid = jQuery(".lot_submit").valid();
 
-                if(data.redirect != 0) { 
-                    setTimeout(function() {
-                        managePopupContent(data);
-                    }, 1000);
-                }
 
-                if(data.success == 0) {
-                    popItUp('Error', data.msg);
-                } else {
-                    popItUp('Success', data.msg);
-                }
-            }
-        });
+       if( valid ) {
+          jQuery('#lightbox').css('display','block');
+          jQuery.ajax({
+              type: "POST",
+              dataType : "json",
+              url: frontendajax.ajaxurl,
+              data: {
+                  action : jQuery('.lot_action').val(),
+                  data : jQuery('#create_lot :input').serialize()
+              },
+              success: function (data) {
+                  jQuery("#create_lot")[0].reset();
+                  clearPopup();
+                  jQuery('#lightbox').css('display','none');
+
+                  if(data.redirect != 0) { 
+                      setTimeout(function() {
+                          managePopupContent(data);
+                      }, 1000);
+                  }
+
+                  if(data.success == 0) {
+                      popItUp('Error', data.msg);
+                  } else {
+                      popItUp('Success', data.msg);
+                  }
+              }
+          });
+        }
         e.preventDefault();
         return false;
     });
 
 
-// jQuery('.unique_brand').on('change',function() {
-//     this.value = this.value.toUpperCase();
-//     jQuery('.unique_brand').val(this.value);
-// });
-
-
-jQuery('.unique_product').on('change',function() {
-    var capital_str = jQuery('.unique_product').val();
-
-  if(isUpperCase(capital_str)){
-     var product = capital_str;
-  } 
-  else {
-
-     capital_str = capital_str.toLowerCase().replace(/\b[a-z]/g, function(letter) {
-            return letter.toUpperCase();
-    });
-    var product = jQuery('.unique_product').val(capital_str);
-
-  }
-       jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                action          : 'check_unique_product',
-                productname     : capital_str,
-                brandname       : jQuery('.unique_brand').val()
-            },
-            success: function (data) {
-               if(data == 1){
-                alert('Product name Already Exists!!!');
-                jQuery('.unique_product').val('').focus();
-
-            }
-            
-            }
-        });
-    
-
+jQuery('.unique_brand').keyup(function() {
+    this.value = this.value.toUpperCase();
+    jQuery('.unique_brand').val(this.value);
 });
+
 
     jQuery('#cgst').on('change',function() {
         var cgst = jQuery('#cgst').val();
@@ -106,80 +151,6 @@ jQuery('.unique_product').on('change',function() {
   });
   //<-------End Delete Lot------->
 
-
-
-//<---  validation for Lot--->
-
-
-
- jQuery.validator.setDefaults({
-      debug: true,
-      success: "valid"
-    });
-
-    jQuery( ".wholesale_submit" ).validate({
-        rules: {
-            customer_name: {
-                nameValidite : true,
-            },
-            company_name : {
-                nameValidite : true
-            },
-            mobile: {
-                required: true,
-                minlength: 10,
-                maxlength: 10,
-                uniqueUserMobile: true
-            },
-            secondary_mobile: {
-                minlength: 10,
-            },
-            landline: {
-                minlength: 6,
-                maxlength: 8,
-            },
-            address: {
-                addressValidate : true,
-            },
-            gst_number : {
-                required: true,
-                gstValidate : true,
-                minlength: 15,
-                maxlength: 15,
-            }
-        },
-        messages: {
-            customer_name: {
-                nameValidite: "Special Characters Not Allowed!",
-            },
-            company_name : {
-                nameValidite : "Special Characters Not Allowed!",
-            },
-            mobile: {
-                required: "Please Enter Valid Mobile Number!",
-                minlength: "Mobile Number Must Be 10 Numbers!",
-                maxlength: "Mobile Number Must Be 10 Numbers!",
-                uniqueUserMobile : "Mobile Number Already Exist!",
-            },
-            secondary_mobile : {
-                minlength: "Please Enter Valid Mobile Number!",
-            },
-            landline : {
-                minlength: "Please Enter Valid Landline Number!",
-                maxlength: "Please Enter Valid Landline Number!",
-            },
-            address: {
-                addressValidate : "Please Enter Valid Address",
-            },
-            gst_number : {
-                required: "Please Enter Valid GST Number!",
-                gstValidate : "GST Numbers Does Not Contain Special Characters!",
-                minlength: "GST Number Must Be 15 Letters!",
-                maxlength: "GST Number Must Be 15 Letters!",
-            }
-
-        }
-    });
 
 
 });

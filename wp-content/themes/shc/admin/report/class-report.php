@@ -53,20 +53,7 @@
 		    }
 		    
 
-		    // $query 				= "SELECT tab.lot_id,sum(tab.bal_qty) as bal_qty,sum(tab.cgst_value) as cgst_value,sum(tab.sgst_value) as sgst_value,tab.brand_name,tab.product_name,tab.hsn,sum(tab.sub_total) as sub_total,tab.sgst,tab.cgst,tab.sale_update from 
-						// 			(SELECT sale.lot_id,sale.brand_name,sale.product_name,sale.hsn,sale.quantity,rtn.return_unit,sale.cgst,sale.sgst,sale.sale_update,
-						// 			(sale.quantity - (case when rtn.return_unit is null then 0 else rtn.return_unit END)) as bal_qty,
-						// 			(sale.cgst_value - (case when rtn.return_cgst_val is null then 0 else rtn.return_cgst_val END)) as cgst_value,
-						// 			(sale.sgst_value - (case when rtn.return_sgst_val is null then 0 else rtn.return_sgst_val END)) as sgst_value,
-						// 			(sale.sub_total - (case when rtn.return_sub_tot is null then 0 else rtn.return_sub_tot END)) as sub_total
-						// 			from ( SELECT s.lot_id,sum(s.cgst_value) as cgst_value,sum(s.sgst_value) as sgst_value,sum(s.sub_total) as sub_total,sum(s.sale_unit) as quantity,l.brand_name,l.product_name,l.hsn,l.cgst,l.sgst,s.sale_update FROM ${ws_sale_details} as s left join ${lot_table} as l on l.id = s.lot_id WHERE s.active = 1 GROUP by s.lot_id ) as sale left join (SELECT sr.lot_id,sum(sr.return_unit ) as return_unit,sum(sr.cgst_value) as return_cgst_val,sum(sr.sgst_value) as return_sgst_val,sum(sr.sub_total) as return_sub_tot FROM ${ws_return_table} as sr WHERE sr.active = 1 GROUP by sr.lot_id ) as rtn on rtn.lot_id = sale.lot_id 
-						// 			UNION all
-						// 			SELECT sale.lot_id,sale.brand_name,sale.product_name,sale.hsn,sale.quantity,rtn.return_unit,sale.cgst,sale.sgst,sale.sale_update,
-						// 			(sale.quantity - (case when rtn.return_unit is null then 0 else rtn.return_unit END)) as bal_qty,
-						// 			(sale.cgst_value - (case when rtn.return_cgst_val is null then 0 else rtn.return_cgst_val END)) as cgst_value,
-						// 			(sale.sgst_value - (case when rtn.return_sgst_val is null then 0 else rtn.return_sgst_val END)) as sgst_value,
-						// 			(sale.sub_total - (case when rtn.return_sub_tot is null then 0 else rtn.return_sub_tot END)) as sub_total
-						// 			from ( SELECT s.lot_id,sum(s.cgst_value) as cgst_value,sum(s.sgst_value) as sgst_value,sum(s.sub_total) as sub_total,sum(s.sale_unit) as quantity,l.brand_name,l.product_name,l.hsn,l.cgst,l.sgst,s.sale_update FROM ${sale_details} as s left join ${lot_table} as l on l.id = s.lot_id WHERE s.active = 1 GROUP by s.lot_id ) as sale left join (SELECT sr.lot_id,sum(sr.return_unit ) as return_unit,sum(sr.cgst_value) as return_cgst_val,sum(sr.sgst_value) as return_sgst_val,sum(sr.sub_total) as return_sub_tot FROM ${return_table} as sr WHERE sr.active = 1 GROUP by sr.lot_id ) as rtn on rtn.lot_id = sale.lot_id ) as tab where tab.lot_id > 0 ${condition} group by tab.lot_id ";
+		  
 			$query = "SELECT  report.*,lot.brand_name,lot.product_name,lot.hsn from (SELECT 
 					(sum(final_ws_sale.bal_cgst)) as cgst_value,
 				    (sum(final_ws_sale.bal_total)) as total,

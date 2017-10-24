@@ -29,12 +29,9 @@ function search_lot() {
 
 	$query = "SELECT * FROM {$lot_table} WHERE product_name like '%${search_term}%' AND active = 1";
 
-	if( $data['items'] = $wpdb->get_results( $query, ARRAY_A ) ) {
+	if( $data['result'] = $wpdb->get_results( $query, ARRAY_A ) ) {
 		$data['success'] = 1;
-		
 	}
-
-
 	echo json_encode($data);
 	die();
 }
@@ -126,4 +123,25 @@ function stock_filter_total() {
 }
 add_action( 'wp_ajax_stock_filter_total', 'stock_filter_total' );
 add_action( 'wp_ajax_nopriv_stock_filter_total', 'stock_filter_total' );
+
+function productCheck(){
+	global $wpdb;
+	$product_name 					= $_POST['productname'];
+    $lot_table 						=  $wpdb->prefix.'shc_lots';
+    $query = "SELECT product_name FROM ${lot_table} WHERE product_name ='$product_name' and active=1";
+
+    $result 			=  $wpdb->get_row( $query );
+    if($result) {
+    	$data = 0;
+    } else {
+    	$data = 1;
+    }
+	echo json_encode($data);
+	die();
+}
+
+add_action( 'wp_ajax_productCheck', 'productCheck' );
+add_action( 'wp_ajax_nopriv_productCheck', 'productCheck' );
+
+
 ?>

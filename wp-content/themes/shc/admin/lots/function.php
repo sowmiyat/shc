@@ -93,11 +93,16 @@ function check_unique_product() {
 	$brandname 		= $_POST['brandname'];
 
     $lot_table 		=  $wpdb->prefix.'shc_lots';
-    $query 			=  $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM ${lot_table} WHERE brand_name='$brandname' and product_name ='$productname'  and active=1") );
+    $query 			=  "SELECT * FROM ${lot_table} WHERE brand_name='$brandname' and product_name ='$productname' and active=1";
+    $result 		=  $wpdb->get_row( $query );
 
-	echo json_encode($query);
+    if($result) {
+    	$data = 1;
+    } else {
+    	$data = 0;
+    }
+	echo json_encode($data);
 	die();
-		
 }
 add_action( 'wp_ajax_check_unique_product', 'check_unique_product' );
 add_action( 'wp_ajax_nopriv_check_unique_product', 'check_unique_product' );

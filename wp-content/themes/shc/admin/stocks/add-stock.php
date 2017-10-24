@@ -16,19 +16,13 @@ if(isset($_GET['stock_id']) && $stock = get_stock($_GET['stock_id']) ) {
 					<div class="clearfix"></div>
 				</div>
 				<div class="x_content">
-					<form class="form-horizontal form-label-left" id="add_stock">
+					<form class="form-horizontal form-label-left stock_validation" id="add_stock">
 						<div class="form-group">
 							<input type="hidden" name="lot_number" class="lot_number" id="lot_number" value="<?php if($stock) { echo $stock->lot_number; }?>"/>
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Product Name <span class="required">*</span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<select name="pro_number" id="pro_number" required="required" tabindex="-1" aria-hidden="true">
-									<?php if($stock){
-										echo '<option selected value="'.$stock->id.'">'.$stock->product_name.'</option>';
-									} ?>
-								</select> 
-								<!-- input type="text" id="pro_number" name="pro_number" required="required" class="form-control col-md-7 col-xs-12"  value="<?php echo ($stock) ? $stock->product_name : ''; ?>">
-								<div id="livesearch"></div> -->
+								<input type="text" id="pro_number" name="pro_number" required="required" class="form-control col-md-7 col-xs-12 pro_number"  value="<?php echo ($stock) ? $stock->product_name : ''; ?>">
 							</div>
 						</div>
 						<div class="divider-dashed"></div>
@@ -36,7 +30,7 @@ if(isset($_GET['stock_id']) && $stock = get_stock($_GET['stock_id']) ) {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Count / Unit <span class="required">*</span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="number" id="stock_count" name="stock_count" required="required" min="1" class="form-control col-md-7 col-xs-12 stock_count"  value="<?php echo ($stock) ? $stock->stock_count : ''; ?>">
+								<input type="text" id="stock_count" name="stock_count" required="required" onkeypress="return isNumberKey(event)" maxlength="10" class="form-control col-md-7 col-xs-12 stock_count"   value="<?php echo ($stock) ? $stock->stock_count : ''; ?>">
 							</div>
 						</div>
 						<div class="divider-dashed"></div>
@@ -47,15 +41,6 @@ if(isset($_GET['stock_id']) && $stock = get_stock($_GET['stock_id']) ) {
 								<input type="text" id="brand_name" readonly class="form-control col-md-7 col-xs-12" value="<?php echo ($stock) ? $stock->brand_name : ''; ?>">
 							</div>
 						</div>
-						<!-- 
-						<div class="divider-dashed"></div>
-							<div class="form-group">
-							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Product Name <span class="required"></span>
-							</label>
-							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="text" id="product_name" readonly class="form-control col-md-7 col-xs-12" value="<?php echo ($stock) ? $stock->product_name : ''; ?>">
-							</div>
-						</div> -->
 						<div class="divider-dashed"></div>
 						<div class="form-group">
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Selling Price <span class="required"></span>

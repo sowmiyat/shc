@@ -121,7 +121,7 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
                 
                 jQuery('.balance_amount').text(data);
                 jQuery('.balance_amount_val').val(data);
-               
+                rowCalculate();
 
             }
         });
@@ -458,31 +458,6 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
     });
 
 
-    
-    jQuery('.mobile_check').live('change',function() {
-
-       jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                action       : 'check_unique_mobile_bill',
-                mobile       : jQuery('.mobile_check').val()
-            },
-            success: function (data) {
-               if(data != 0){
-                alert('Mobile Already Exists!!!');
-                jQuery('.mobile_check').val('').focus();
-
-            }
-            
-            }
-        });
-    
-
-    });
-
-
 
 //<--------- Return Submit--->
    jQuery('.add-button-return-retail').live('click',function() {
@@ -579,7 +554,7 @@ function populateSelect2(selector, v) {
                 }
             }));
           }
-        } );
+        });
       },
       minLength: 2,
       select: function( event, ui ) {

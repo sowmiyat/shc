@@ -25,20 +25,15 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 					<div class="clearfix"></div>
 				</div>
 				<div class="x_content">
-					<form class="form-horizontal form-label-left" id="create_lot">
-						<input type="hidden" id="lot_no" name="lot_no" required="required" class="form-control col-md-7 col-xs-12" autocomplete="off" value="<?php echo ($lot) ? $lot->lot_no : '0'; ?>">
-
-
-
-
-
+					<form class="form-horizontal form-label-left lot_submit" id="create_lot">
+						<input type="hidden" id="lot_no" name="lot_no" class="form-control col-md-7 col-xs-12" autocomplete="off" value="<?php echo ($lot) ? $lot->lot_no : '0'; ?>">
 						<div class="row">
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<div class="form-group">
 									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Brand Name <span class="required">*</span>
 									</label>
 									<div class="col-md-6 col-sm-6 col-xs-12">
-										<input type="text" id="brand_name" name="brand_name" required="required" class="form-control col-md-7 col-xs-12 unique_brand" autocomplete="off" value="<?php echo ($lot) ? $lot->brand_name : ''; ?>">
+										<input type="text" id="brand_name" name="brand_name" class="form-control col-md-7 col-xs-12 unique_brand" autocomplete="off" value="<?php echo ($lot) ? $lot->brand_name : ''; ?>">
 									</div>
 								</div>
 							</div>
@@ -47,7 +42,7 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Product Name <span class="required">*</span>
 									</label>
 									<div class="col-md-6 col-sm-6 col-xs-12">
-										<input type="text" id="product_name" name="product_name" required="required" class="form-control col-md-7 col-xs-12 unique_product"  autocomplete="off" value="<?php echo ($lot) ? $lot->product_name : ''; ?>">
+										<input type="text" id="product_name" name="product_name"  class="form-control col-md-7 col-xs-12 unique_product"  autocomplete="off" value="<?php echo ($lot) ? $lot->product_name : ''; ?>">
 									</div>
 								</div>
 							</div>
@@ -61,7 +56,7 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Selling Price<span class="required">*</span>
 									</label>
 									<div class="col-md-6 col-sm-6 col-xs-12">
-										<input type="text" id="selling_price" name="selling_price"  required="required" class="form-control col-md-7 col-xs-12" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($lot) ? $lot->selling_price : ''; ?>">
+										<input type="text" id="selling_price" name="selling_price"  class="form-control col-md-7 col-xs-12" onkeypress="return isNumberKeyWithDot(event)" autocomplete="off" value="<?php echo ($lot) ? $lot->selling_price : ''; ?>">
 									</div>
 								</div>
 							</div>
@@ -70,7 +65,7 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Purchase Price <span class="required">*</span>
 									</label>
 									<div class="col-md-6 col-sm-6 col-xs-12">
-										<input type="text" id="purchase_price" name="purchase_price"  required="required" class="form-control col-md-7 col-xs-12" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($lot) ? $lot->purchase_price : ''; ?>">
+										<input type="text" id="purchase_price" name="purchase_price"  class="form-control col-md-7 col-xs-12" onkeypress="return isNumberKeyWithDot(event)" autocomplete="off" value="<?php echo ($lot) ? $lot->purchase_price : ''; ?>">
 									</div>
 								</div>
 							</div>
@@ -115,7 +110,7 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">HSN Code <span class="required">*</span>
 									</label>
 									<div class="col-md-6 col-sm-6 col-xs-12">
-										<input type="text" id="hsn" name="hsn" required="required" class="form-control col-md-7 col-xs-12" autocomplete="off"  onkeypress="return isNumberKey(event)" value="<?php echo ($lot) ? $lot->hsn : ''; ?>">
+										<input type="text" id="hsn" name="hsn" class="form-control col-md-7 col-xs-12" autocomplete="off"  onkeypress="return isNumberKey(event)" value="<?php echo ($lot) ? $lot->hsn : ''; ?>">
 									</div>
 								</div>
 							</div>
@@ -125,7 +120,7 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 						<div class="divider-dashed"></div>
 						<div class="form-group">
 							<div style="text-align:center;">
-								<button type="submit" class="btn btn-success sub_form">Submit</button>
+								<button type="submit" class="btn btn-success">Submit</button>
 	                          	<button class="btn btn-primary" type="button" onclick="window.location = '<?php echo admin_url('admin.php?page=list_lots'); ?>';">Cancel</button>
 							  	<button class="btn btn-primary reset_button" type="reset" >Reset</button>
 	                          	

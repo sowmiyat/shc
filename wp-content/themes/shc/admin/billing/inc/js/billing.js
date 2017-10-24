@@ -14,32 +14,6 @@ jQuery('#ws_billing_mobile').live('keydown', function(e){
 
         }
     });
-    jQuery('#ws_billing_secondary_mobile').live('keydown', function(e){
-        var keyCode = e.keyCode || e.which; 
-        if (keyCode == 40) { 
-            e.preventDefault(); 
-            jQuery('.landline_mobile').css('display', 'block');
-            jQuery('#ws_billing_landline_mobile').focus();
-        }
-        if (keyCode == 38) { 
-            e.preventDefault(); 
-            jQuery('.secondary_mobile').css('display', 'none');
-            jQuery('#ws_billing_secondary_mobile').val('');
-            jQuery('#ws_billing_mobile').focus();
-        }
-    });
-
-
-    jQuery('#ws_billing_landline_mobile').live('keydown', function(e){ console.log(e);
-        var keyCode = e.keyCode || e.which; 
-        if (keyCode == 38) { 
-            e.preventDefault(); 
-            jQuery('.landline_mobile').css('display', 'none');
-            jQuery('#ws_billing_landline_mobile').val('');
-            jQuery('#ws_billing_secondary_mobile').focus();
-        }
-    });
-
 
     jQuery("#ws_submit_payment").on('keydown',  function(e) { 
       var keyCode = e.keyCode || e.which; 
@@ -64,70 +38,6 @@ jQuery('#ws_billing_mobile').live('keydown', function(e){
         jQuery(".ui-datepicker-month").hide();
     });
 
-    jQuery("#ws_billing_customer").on('change',function(){
-        var alphanumers = /^[a-zA-Z0-9 ]+$/;
-        if(!alphanumers.test(jQuery("#ws_billing_customer").val())){
-            alert("name can have only alphabets and numbers.");
-            jQuery("#ws_billing_customer").val('');
-        }
-
-    });
-
-    
-
-     jQuery("#ws_billing_company").on('change',function(){
-        var alphanumers = /^[a-zA-Z0-9 ]+$/;
-        if(!alphanumers.test(jQuery("#ws_billing_company").val())){
-            alert("Company name can have only alphabets and numbers.");
-            jQuery("#ws_billing_company").val('');
-        }
-
-    });
-
-
-//<-------- Mobile Number Check With Database --->
-    jQuery('.mobile_check_wholesale').live('change',function() {
-       jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                action       : 'check_unique_mobile_wholesale_bill',
-                mobile       : jQuery('.mobile_check_wholesale').val()
-            },
-            success: function (data) {
-               if(data != 0){
-                alert('Mobile Number Already Exists!!!');
-                jQuery('.mobile_check_wholesale').val('').focus();
-
-            }
-            
-            }
-        });
-    
-
-    });
-//<-------- End Mobile Number Check With Database --->
-
-
-//<-------- Popup Display for Home Delivery Click  --->
-    jQuery('.home_delivery').on('change',function() {
-        var delivery = jQuery(".home_delivery:checked").val(); 
-        if(delivery == 'yes') {
-            jQuery('.ws_delivery_name').css('display','block');
-            jQuery('.ws_delivery_phone').css('display','block');
-            jQuery('.ws_delivery_address').css('display','block');
-
-
-        }
-        else {
-            jQuery('.ws_delivery_name').css('display','none');
-            jQuery('.ws_delivery_phone').css('display','none');
-            jQuery('.ws_delivery_address').css('display','none');
-        }
-
-    });
-//<-------- End  Popup Display for Home Delivery Click  --->
 
       /*WS Submit Payment*/
     jQuery('#ws_billing_container #ws_submit_payment').on('click', function() {
@@ -291,6 +201,7 @@ jQuery('#ws_billing_mobile').live('keydown', function(e){
                 
                 jQuery('.ws_balance_amount').text(data);
                 jQuery('.ws_balance_amount_val').val(data);
+                ws_rowCalculate();
 
 
             }

@@ -1,101 +1,162 @@
 jQuery(document).ready(function () {
-     jQuery('#pro_number').live('keyup');
 
-     jQuery('.submit_form').on('click',function(){
-        if(jQuery('form')[0].checkValidity()) {
-                jQuery('.submit_form').css('display','none');
-                jQuery('#lightbox').css('display','block');
-            }
+    jQuery('#pro_number').focus();
 
-    });
     jQuery(".stock_cancel").on('keydown',  function(e) { 
-      var keyCode = e.keyCode || e.which; 
+        var keyCode = e.keyCode || e.which; 
 
-      if (keyCode == 9) { 
-        e.preventDefault(); 
-        jQuery('#pro_number').live('keyup');
-      } 
-    });  
-   
-    jQuery("#pro_number").select2({
-        allowClear: true,
-        width: '100%',
-        multiple: true,
-        minimumInputLength: 1,
-        maximumSelectionLength: 1,
-        ajax: {
-        type: 'POST',
-        url: frontendajax.ajaxurl,
-        delay: 250,
-        dataType: 'json',
-            data: function(params) {
+        if (keyCode == 9) { 
+            e.preventDefault(); 
+            jQuery('#pro_number').focus();
+        } 
+    }); 
+
+    //<-------- Select Product----->   
+jQuery( "#pro_number" ).autocomplete ({
+      source: function( request, response ) {
+
+        jQuery.ajax( {
+          url: frontendajax.ajaxurl,
+          type: 'POST',
+          dataType: "json",
+          data: {
+            action: 'search_lot',
+            search_key: request.term
+          },
+          success: function( data ) {
+            response(jQuery.map( data.result, function( item ) {
+
                 return {
-                    action: 'search_lot', // search term
-                    page: 1,
-                    search_key: params.term,
-                };
-            },
-            processResults: function(data) {
-                console.log(data);
-                var results = [];
-                return {
-                    results: jQuery.map(data.items, function(obj) {
-                        return { id: obj.id, lot_no:obj.lot_no, brand_name: obj.brand_name, product_name:obj.product_name, selling_price:obj.selling_price };
-                    })
-                };
-            },
-            cache: false
-        },
-        initSelection: function (element, callback) {
-            callback({ id: jQuery(element).val(), product_name: jQuery(element).find(':selected').text() });
-        },
-        templateResult: formatStateStockCreate,
-        templateSelection: formatStateStockCreate1
-    }).on("select2:select", function (e) { 
-        jQuery('#brand_name').val(e.params.data.brand_name);
-        jQuery('.lot_number').val(e.params.data.id);
-        jQuery('#product_name').val(e.params.data.product_name);
-        jQuery('#unit_price').val(e.params.data.selling_price);
-        jQuery('#selling_price').val(e.params.data.selling_price);
+                    id              : item.id,
+                    value           : item.product_name,
+                    selling_price   : item.selling_price,
+                    brand_name      : item.brand_name,
+
+                }
+            }));
+          }
+        });
+      },
+      minLength: 2,
+      select: function( event, ui ) {
+
+       jQuery('#brand_name').val(ui.item.brand_name);
+        jQuery('.lot_number').val(ui.item.id);
+        jQuery('#product_name').val(ui.item.value);
+        jQuery('#unit_price').val(ui.item.selling_price);
+        jQuery('#selling_price').val(ui.item.selling_price);
 
         jQuery('#stock_count').focus();
-        var tmpStr = jQuery('#stock_count').val();
-        jQuery('#stock_count').val('');
-        jQuery('#stock_count').val(tmpStr);
 
+
+
+
+        
+      }
+    });                                               
+//<------- Validation Function --------> 
+   
+ jQuery.validator.setDefaults({
+      debug: true,
+      success: "valid"
     });
 
+    jQuery( ".stock_validation" ).validate({
+        rules: {
+            pro_number: {
+                required: true,
+                productCheck : true,
+            },
+            stock_count : {
+                required: true,
+                stockCheck : true,
+                maxlength: 10,
+            },
+           
+        },
+        messages: {
+            pro_number: {
+                required: 'Please Enter Product Name!',
+                productCheck: "Select Products! New Products are not allowed Here!!!",
+            },
+            stock_count : {
+                required: 'Please Enter Stock Count!',
+                stockCheck : 'Please Enter Stock!',
+                maxlength : 'This Field Allowed Maximum 10 digits!!'
+            },
+          
+        }
+    });
+
+    var response = true;
+    jQuery.validator.addMethod(
+          "productCheck", 
+          function(value, element) {
+              jQuery.ajax({
+                type: "POST",
+                dataType : "json",
+                url: frontendajax.ajaxurl,
+                data: {
+                    action          : 'productCheck',
+                    productname     : value,
+                },
+                success: function (msg) {
+                    if( msg === 1 ) {
+                        response = false;
+                    } else {
+                        response =  true;
+                    }
+                }
+            });
+              return response;
+          }
+      );
+    jQuery.validator.addMethod(
+        "stockCheck", 
+        function(value, element) {
+            if(value > 0){
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+    );
 
 
     /*Add stock Form Submit*/
     jQuery("#add_stock").bind('submit', function (e) {
-        jQuery('#lightbox').css('display','block');
-        jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                action : jQuery('.stock_action').val(),
-                data : jQuery('#add_stock :input').serialize()
-            },
-            success: function (data) {
-                clearPopup();
-                jQuery('#lightbox').css('display','none');
 
-                if(data.redirect != 0) { 
-                    setTimeout(function() {
-                        managePopupContent(data);
-                    }, 1000);
-                }
+        var valid = jQuery(".stock_validation").valid();
+        if( valid ) { 
+            jQuery('#lightbox').css('display','block');
+            jQuery.ajax({
+                type: "POST",
+                dataType : "json",
+                url: frontendajax.ajaxurl,
+                data: {
+                    action : jQuery('.stock_action').val(),
+                    data : jQuery('#add_stock :input').serialize()
+                },
+                success: function (data) {
+                    clearPopup();
+                    jQuery('#lightbox').css('display','none');
 
-                if(data.success == 0) {
-                    popItUp('Error', data.msg);
-                } else {
-                    popItUp('Success', data.msg);
+                    if(data.redirect != 0) { 
+                        setTimeout(function() {
+                            managePopupContent(data);
+                        }, 1000);
+                    }
+
+                    if(data.success == 0) {
+                        popItUp('Error', data.msg);
+                    } else {
+                        popItUp('Success', data.msg);
+                    }
+                
                 }
-            
-            }
-        });
+            });
+        }
         e.preventDefault();
         return false;
     });
@@ -105,7 +166,7 @@ jQuery(document).ready(function () {
         var change_count = jQuery('.stock_count').val();
         var selling = jQuery('#unit_price').val();
         var stock_count = selling * change_count;
-         jQuery('#selling_price').val(stock_count);
+        jQuery('#selling_price').val(stock_count);
 
 
 
@@ -126,34 +187,4 @@ jQuery(document).ready(function () {
 
 });
 
-function formatStateStockCreate (state) {
-  if (!state.id) {
-    return state.id;
-  }
-  var $state = jQuery(
-    '<span><b>Brand Name &nbsp;&nbsp;&nbsp;&nbsp;:</b>' +
-      state.brand_name +
-    '</span><br/>' +
-    '<span><b>Product Name &nbsp;:</b>' +
-      state.product_name +
-    '</span>'
-  );
-  return $state;
-};
-
-
-
-
-function formatStateStockCreate1 (state) {
-    if (!state.id) {
-        return state.id;
-    }
-    var $state = jQuery(
-    '<span>' +
-    state.product_name +
-    '</span><br/>'
-   
-    );
-    return $state;
-};
 
