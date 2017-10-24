@@ -58,6 +58,7 @@ jQuery(document).ready(function(){
                 data: {
                     action       : jQuery('.unique_mobile_action').val(),
                     mobile       : value,
+                    customer_id   :jQuery('.customer_id').val(),
                 },
                 success: function (msg) {
                     if( msg === 1 ) {

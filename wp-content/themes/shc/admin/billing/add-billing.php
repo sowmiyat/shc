@@ -249,7 +249,7 @@
 
 														$i = 1;
 														foreach ($bill_ldata as $c_value) {
- 															echo '<tr data-randid='.getToken().' data-productid='.$c_value->sale_id.' class="customer_table_retail" >
+ 															echo '<tr data-randid='.getToken().' data-productid='.$c_value->lot_id.' class="customer_table_retail" >
  															<td class="td_id">'.$i.'</td> <input type="hidden" value="'.$c_value->lot_id.'" name="customer_detail['.$i.'][id]" class="sub_id" />
  															<td class="td_product">' .$c_value->product_name. '</td> <input type="hidden" value = "'.$c_value->product_name. '" name="customer_detail['.$i.'][product]" class="sub_product"/>
  															<td class="td_hsn">' .$c_value->hsn. '</td> <input type="hidden" value = "'.$c_value->hsn. '" name="customer_detail['.$i.'][hsn]" class="sub_hsn"/>
