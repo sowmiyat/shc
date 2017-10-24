@@ -47,7 +47,7 @@ input[type=number]::-webkit-outer-spin-button {
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<input type="text" id="mobile"  maxlength="10" name="mobile" class="form-control col-md-7 col-xs-12 has-feedback-left" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->mobile : ''; ?>">
 								<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+91</span> 
-								<input type="hidden" class="customer_id" value="<?php echo ($wholesale_customer) ? $wholesale_customer->mobile : '0'; ?>"/>
+								<input type="hidden" class="customer_id" value="<?php echo ($wholesale_customer) ? $wholesale_customer->id : '0'; ?>"/>
 								<input type="hidden" class="unique_mobile_action" value="check_unique_mobile_wholesale"/>
 							</div>
 						</div>

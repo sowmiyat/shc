@@ -13,6 +13,15 @@ jQuery(document).ready(function () {
       } 
     });
 
+    jQuery(".reset_button_cus").on('keydown',  function(e) { 
+      var keyCode = e.keyCode || e.which; 
+
+      if (keyCode == 9) { 
+        e.preventDefault(); 
+        jQuery('#name').focus();
+      } 
+    });
+
 
     jQuery.validator.setDefaults({
       debug: true,

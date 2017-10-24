@@ -184,10 +184,17 @@ function managePopupContent( data ) {
    function isNumberKey(evt)
    {
       var charCode = (evt.which) ? evt.which : evt.keyCode;
-      if (charCode != 46 && charCode > 31 
-        && (charCode < 48 || charCode > 57))
+      if ((charCode < 48 || charCode > 57))
          return false;
 
+      return true;
+   }
+
+    function isNumberKeyWithDot(evt)
+   {
+      var charCode = (evt.which) ? evt.which : evt.keyCode;
+      if (charCode > 31 && (charCode < 48 || charCode > 57))
+         return false;
       return true;
    }
 
@@ -195,12 +202,3 @@ function managePopupContent( data ) {
         return str === str.toUpperCase();
     }
 
-    function MobileValidate(mobile) {
-        var pattern = /^\d{10}$/;
-        if (pattern.test(mobile)) {
-           
-            return true;
-        }
-       
-        return false;
-    }

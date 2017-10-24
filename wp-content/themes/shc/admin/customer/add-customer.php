@@ -34,9 +34,10 @@ input[type=number]::-webkit-outer-spin-button {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Primary Mobile <span class="required">*</span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="text" id="mobile" maxlength="10"   <?php if(!$customer){ echo 'name="mobile"'; } else { echo 'readonly'; }?>  class="form-control col-md-7 col-xs-12 has-feedback-left required minlength" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($customer) ? $customer->mobile : ''; ?>">
+								<input type="text" id="mobile" maxlength="10"  name="mobile"  class="form-control col-md-7 col-xs-12 has-feedback-left required minlength" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($customer) ? $customer->mobile : ''; ?>">
 								<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+91</span>
-								<?php if(!$customer){ echo '<input type="hidden" class="unique_mobile_action" value="check_unique_mobile"/>'; } ?> 
+								<input type="hidden" class="customer_id" value="<?php echo ($customer) ? $customer->id : '0'; ?>"/>
+								<input type="hidden" class="unique_mobile_action" value="check_unique_mobile"/>
 							</div>
 						</div>
 						<div class="divider-dashed"></div>
@@ -70,7 +71,7 @@ input[type=number]::-webkit-outer-spin-button {
 							<div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-3">
 								<button type="submit" class="btn btn-success submit_form1">Submit</button>
 	                          	<button class="btn btn-primary" type="button"  onclick="window.location = '<?php echo admin_url('admin.php?page=customer_list'); ?>';">Cancel</button>
-							  	<button class="btn btn-primary" type="reset">Reset</button>
+							  	<button class="btn btn-primary reset_button_cus" type="reset">Reset</button>
 	                          	
 	                          	<?php 
 									if( $customer) {

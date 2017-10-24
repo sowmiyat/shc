@@ -2,13 +2,6 @@ jQuery(document).ready(function () {
 
  jQuery('#brand_name').focus();
 
-    jQuery('.sub_form').on('click',function() {
-        if(jQuery('form')[0].checkValidity()) {
-            jQuery('.sub_form').css('display','none');
-            jQuery('#lightbox').css('display','block');
-        }
-
-    });
     jQuery(".reset_button").on('keydown',  function(e) { 
       var keyCode = e.keyCode || e.which; 
 
@@ -52,10 +45,10 @@ jQuery(document).ready(function () {
     });
 
 
-jQuery('.unique_brand').on('change',function() {
-    this.value = this.value.toUpperCase();
-    jQuery('.unique_brand').val(this.value);
-});
+// jQuery('.unique_brand').on('change',function() {
+//     this.value = this.value.toUpperCase();
+//     jQuery('.unique_brand').val(this.value);
+// });
 
 
 jQuery('.unique_product').on('change',function() {
@@ -113,6 +106,80 @@ jQuery('.unique_product').on('change',function() {
   });
   //<-------End Delete Lot------->
 
+
+
+//<---  validation for Lot--->
+
+
+
+ jQuery.validator.setDefaults({
+      debug: true,
+      success: "valid"
+    });
+
+    jQuery( ".wholesale_submit" ).validate({
+        rules: {
+            customer_name: {
+                nameValidite : true,
+            },
+            company_name : {
+                nameValidite : true
+            },
+            mobile: {
+                required: true,
+                minlength: 10,
+                maxlength: 10,
+                uniqueUserMobile: true
+            },
+            secondary_mobile: {
+                minlength: 10,
+            },
+            landline: {
+                minlength: 6,
+                maxlength: 8,
+            },
+            address: {
+                addressValidate : true,
+            },
+            gst_number : {
+                required: true,
+                gstValidate : true,
+                minlength: 15,
+                maxlength: 15,
+            }
+        },
+        messages: {
+            customer_name: {
+                nameValidite: "Special Characters Not Allowed!",
+            },
+            company_name : {
+                nameValidite : "Special Characters Not Allowed!",
+            },
+            mobile: {
+                required: "Please Enter Valid Mobile Number!",
+                minlength: "Mobile Number Must Be 10 Numbers!",
+                maxlength: "Mobile Number Must Be 10 Numbers!",
+                uniqueUserMobile : "Mobile Number Already Exist!",
+            },
+            secondary_mobile : {
+                minlength: "Please Enter Valid Mobile Number!",
+            },
+            landline : {
+                minlength: "Please Enter Valid Landline Number!",
+                maxlength: "Please Enter Valid Landline Number!",
+            },
+            address: {
+                addressValidate : "Please Enter Valid Address",
+            },
+            gst_number : {
+                required: "Please Enter Valid GST Number!",
+                gstValidate : "GST Numbers Does Not Contain Special Characters!",
+                minlength: "GST Number Must Be 15 Letters!",
+                maxlength: "GST Number Must Be 15 Letters!",
+            }
+
+        }
+    });
 
 
 });

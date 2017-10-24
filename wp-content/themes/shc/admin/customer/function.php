@@ -70,6 +70,7 @@ function update_customer() {
 		$wpdb->update($customer_table, $params, array('id' => $customer_id));
 		$data['success'] = 1;
 		$data['msg'] = 'Customer Detail Updated!';
+		$data['redirect'] = network_admin_url( 'admin.php?page=customer_list' );
 	}
 
 	echo json_encode($data);
@@ -153,9 +154,15 @@ function check_unique_mobile() {
 
 	global $wpdb;
 	$mobile 				= $_POST['mobile'];
+	$customer_id    		= $_POST['customer_id'];
     $retail_customer 		=  $wpdb->prefix.'shc_customers';
-    $query 					= "SELECT mobile FROM ${retail_customer} WHERE mobile ='$mobile' and active=1";
-    $result 				=  $wpdb->get_row( $query );
+   if($customer_id == 0){
+    	$query = "SELECT mobile FROM ${retail_customer} WHERE mobile ='$mobile' and active=1";
+    } else {
+    	$query = "SELECT mobile FROM ${retail_customer} WHERE mobile ='$mobile' and id != '$customer_id' and active=1";
+    }
+    
+    $result 	=  $wpdb->get_row( $query );
     if($result) {
     	$data = 1;
     } else {
@@ -171,8 +178,14 @@ add_action( 'wp_ajax_nopriv_check_unique_mobile', 'check_unique_mobile' );
 function check_unique_mobile_wholesale() {
 	global $wpdb;
 	$mobile 		= $_POST['mobile'];
+	$customer_id    = $_POST['customer_id'];
     $wholesale_customer 		=  $wpdb->prefix.'shc_wholesale_customer';
-    $query = "SELECT mobile FROM ${wholesale_customer} WHERE mobile ='$mobile' and active=1";
+    if($customer_id == 0){
+    	$query = "SELECT mobile FROM ${wholesale_customer} WHERE mobile ='$mobile' and active=1";
+    } else {
+    	$query = "SELECT mobile FROM ${wholesale_customer} WHERE mobile ='$mobile' and id != '$customer_id' and active=1";
+    }
+    
     $result 			=  $wpdb->get_row( $query );
     if($result) {
     	$data = 1;
