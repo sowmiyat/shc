@@ -161,7 +161,7 @@
 												<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">GST No.<span class="required">*</span>
 												</label>
 												<div class="col-md-6 col-sm-6 col-xs-12">
-													<input id="ws_billing_gst" type="number" name="gst" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->gst_number; } ?>">
+													<input id="ws_billing_gst" type="text" name="gst" maxlength="15" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->gst_number; } ?>">
 												</div>
 											</div>
 										</div>
@@ -275,14 +275,6 @@
 														<tbody class="bill_lot_add" id="bill_lot_add">
 															<?php 
 															if($bill_data['ordered_data']) {
-
-																// if( jQuery('.customer_table[data-productid='+ product_id +']').length != 0 ) {
-																// 	// var selector = jQuery('.customer_table[data-productid='+ product_id +']');
-													   //  //             var actual_unit = selector.find('.sub_unit').val();
-													   //  //             var final_unit = parseFloat(unit) + parseFloat(actual_unit);
-													   //  //             selector.find('.sub_unit').val(final_unit);
-													   //          }
-													   //          else {
 															
 																	$i = 1;
 																	foreach ($bill_ldata as $c_value) {
@@ -305,7 +297,6 @@
 		 															$i++;
 
 																	}
-																//}
 															}
 														?>
 														</tbody>													
@@ -386,8 +377,8 @@
 														<div>
 
 															<input type="text" name="ws_delivery_name" class="ws_delivery_name" placeholder="Name" style="height: 40px;"/>
-															<input type="text" name="ws_delivery_phone" class="ws_delivery_phone" placeholder="Phone" style="height: 40px;"/>
-															<textarea  placeholder="Address" name="ws_delivery_address" class="ws_delivery_address" style="width:100%;"></textarea>
+															<input type="text" name="ws_delivery_phone" class="ws_delivery_phone" placeholder="Phone" onkeypress="return isNumberKey(event)"  maxlength="10" style="height: 40px;"/>
+															<textarea  placeholder="Address" name="ws_delivery_address" class="ws_delivery_address"  style="width:100%;"></textarea>
 														</div>
 													<?php } ?>
 												</div>
@@ -404,7 +395,7 @@
 															<td>
 																<div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
 																	<input type="text" class="form-control ws_discount" value="<?php 
-																	echo ( $bill_data && $bill_fdata ) ? $bill_fdata->discount : 0;  ?>" name="ws_discount" style="margin: 0;">									
+																	echo ( $bill_data && $bill_fdata ) ? $bill_fdata->discount : 0;  ?>" name="ws_discount" onkeypress="return isNumberKeyWithDot(event)"  style="margin: 0;">									
 																	<span class="fa fa-percent form-control-feedback right ws_dis_fa_per"></span>
 																		
 																</div>
@@ -425,7 +416,7 @@
 															<th>Paid Amount:</th>
 															<td>
 																<div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
-																	<input type="text" class="form-control ws_paid_amount" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->paid_amount : 0;  ?>" name="ws_paid_amount" style="margin: 0;">
+																	<input type="text" class="form-control ws_paid_amount" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->paid_amount : 0;  ?>" onkeypress="return isNumberKey(event)"  name="ws_paid_amount" style="margin: 0;">
 																	<span class="fa fa-inr form-control-feedback right" aria-hidden="true"></span>
 																</div>
 															</td>

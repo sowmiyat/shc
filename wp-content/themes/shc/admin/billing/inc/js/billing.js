@@ -38,37 +38,131 @@ jQuery('#ws_billing_mobile').live('keydown', function(e){
         jQuery(".ui-datepicker-month").hide();
     });
 
+    //<------- Validation Function --------> 
+   
+ jQuery.validator.setDefaults({
+      debug: true,
+      success: "valid"
+    });
+
+//<---  validation for whole sale--->
+    jQuery( ".ws_billing_validation" ).validate({
+        rules: {
+            name: {
+                nameValidite : true,
+            },
+            company_name : {
+                nameValidite : true
+            },
+            mobile: { 
+                minlength: 10,
+                maxlength: 10,
+                uniqueUserMobile: true
+            },
+            secondary_mobile: {
+                minlength: 10,
+                maxlength: 10,
+            },
+            landline: {
+                minlength: 6,
+                maxlength: 8,
+            },
+            address: {
+                addressValidate : true,
+            },
+            gst : {
+                gstValidate : true,
+                minlength: 15,
+                maxlength: 15,
+            },
+            ws_delivery_phone: {
+                minlength: 10,
+                maxlength: 10,
+            },
+            ws_delivery_address : {
+                addressValidate : true,
+            }
+
+        },
+        messages: {
+            name: {
+                nameValidite: "Special Characters Not Allowed!",
+            },
+            company_name : {
+                nameValidite : "Special Characters Not Allowed!",
+            },
+            mobile: {  
+                minlength: "Mobile Number Must Be 10 Numbers!",
+                maxlength: "Mobile Number Must Be 10 Numbers!",
+                uniqueUserMobile : "Mobile Number Already Exist!",
+            },
+            secondary_mobile : {
+                minlength: "Please Enter Valid  Number!",
+                maxlength: "Please Enter Valid  Number!",
+            },
+            landline : {
+                minlength: "Please Enter Valid Landline Number!",
+                maxlength: "Please Enter Valid Landline Number!",
+            },
+            address: {
+                addressValidate : "Please Enter Valid Address",
+            },
+            gst : {
+                gstValidate : "GST Numbers Does Not Contain Special Characters!",
+                minlength: "GST Number Must Be 15 Letters!",
+                maxlength: "GST Number Must Be 15 Letters!",
+            },
+            ws_delivery_phone : {
+                minlength: "Please Enter Valid  Number!",
+                maxlength: "Please Enter Valid  Number!",
+            },
+             ws_delivery_address: {
+                addressValidate : "Please Enter Valid Address",
+            },
+
+        }
+    });
+
+
+
+
+
 
       /*WS Submit Payment*/
     jQuery('#ws_billing_container #ws_submit_payment').on('click', function() {
 
-        var existing_count = parseInt( jQuery('#bill_lot_add tr').length );
-        if(existing_count != 0 ){
+        var valid = jQuery(".ws_billing_validation").valid();
+        if( valid ) {
 
-            var bill_update_url = bill_updatews.updateurlws;
-            jQuery('#lightbox').css('display','block');
-            jQuery.ajax({
-                type: "POST",
-                dataType : "json",
-                url: frontendajax.ajaxurl,
-                data: {
-                    action : 'ws_create_order',
-                    data   : jQuery('#ws_billing_container :input').serialize()
-                },
-                success: function (data) {
-                    clearPopup();
-                    popItUp('Success', 'Bill Created!');
-                    jQuery('#lightbox').css('display','none');
-                    console.log("efklf");
-                    console.log(data);
-                  window.location = bill_update_url+'&id='+data.inv_id;
+            var existing_count = parseInt( jQuery('#bill_lot_add tr').length );
+            if(existing_count != 0 ) {
 
-                }
-            });
+                var bill_update_url = bill_updatews.updateurlws;
+                jQuery('#lightbox').css('display','block');
+                jQuery.ajax({
+                    type: "POST",
+                    dataType : "json",
+                    url: frontendajax.ajaxurl,
+                    data: {
+                        action : 'ws_create_order',
+                        data   : jQuery('#ws_billing_container :input').serialize()
+                    },
+                    success: function (data) {
+                        clearPopup();
+                        popItUp('Success', 'Bill Created!');
+                        jQuery('#lightbox').css('display','none');
+                        console.log("efklf");
+                        console.log(data);
+                      window.location = bill_update_url+'&id='+data.inv_id;
+
+                    }
+                });
+            }
+            else {
+                alert('Please Add Atleast One Product!!! Empty Bill Can'+"'"+'t Submit');
+            }
         }
-        else {
-            alert('Please Add Atleast One Product!!! Empty Bill Can'+" ' "+'t Submit');
-        }
+        return false;
     });
 
    

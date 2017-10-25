@@ -140,7 +140,7 @@ jQuery(document).ready(function(){
     });
 
     //<------- GST Validation --->
-    jQuery('#gst_number').unbind('keyup change input paste').bind('keyup change input paste',function(e){
+    jQuery('#gst_number,#ws_billing_gst').unbind('keyup change input paste').bind('keyup change input paste',function(e){
         var this_val = jQuery(this);
         var val = this_val.val();
         var valLength = val.length;
