@@ -4990,3 +4990,8 @@ ul.notifications {
         color: #ff2424;
         font-weight: 500;
     }
+
+    .control_error {
+        color: #ff2424;
+        font-weight: 500;
+    }

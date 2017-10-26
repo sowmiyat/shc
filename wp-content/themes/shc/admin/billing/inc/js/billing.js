@@ -19,8 +19,8 @@ jQuery('#ws_billing_mobile').live('keydown', function(e){
       var keyCode = e.keyCode || e.which; 
 
       if (keyCode == 9) { 
-        e.preventDefault(); 
-        jQuery('#ws_billing_customer').focus();
+            e.preventDefault(); 
+            jQuery('#ws_billing_customer').focus();
       } 
 
     });
@@ -682,10 +682,7 @@ jQuery( document ).ready(function() {
             jQuery(this).parent().parent().find('.sub_discount').focus();
             jQuery(this).parent().parent().find('.sub_discount').val('1');
         }
-        
-             ws_rowCalculate();
-       
-        
+        ws_rowCalculate(); 
     });
     jQuery('.ws_discount').live('change keyup',function() {
         ws_rowCalculate();
@@ -696,7 +693,6 @@ jQuery( document ).ready(function() {
 
     jQuery('.add-button').live('click',function() {
 
-       
 
         var product_id          = jQuery('.ws_lot_id_orig').val();
         var product_name        = jQuery('.ws_product').val();
@@ -708,6 +704,7 @@ jQuery( document ).ready(function() {
         var cgst                = jQuery('.cgst_percentage').val();
         var sgst                = jQuery('.sgst_percentage').val();
 
+
        if( !!product_id && unit !='0' &&  unit != '' && discount != '0.00' &&  discount != '' && discount != '0') {
             var existing_count = parseInt( jQuery('#bill_lot_add tr').length );
             var current_row = existing_count + 1;
@@ -717,22 +714,43 @@ jQuery( document ).ready(function() {
                 var final_unit = parseFloat(unit) + parseFloat(actual_unit);
                 selector.find('.sub_unit').val(final_unit);
 
-                
+                addFromProductControl();
+                jQuery('.product_control_error').remove();
             } else {
                 var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="customer_table" ><td class="td_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="customer_detail['+current_row+'][id]" class="sub_id" /><td class="td_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="customer_detail['+current_row+'][product]" class="sub_product"/><td class="td_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="customer_detail['+current_row+'][hsn]" class="sub_hsn"/><td class=""><input type="text" value = "'+ unit + '" name="customer_detail['+current_row+'][unit]" class="sub_unit"/> </td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][stock]" class="sub_stock"/><td class="td_price">' + price + '</td> <input type="hidden" value = "'+ price + '" name="customer_detail['+current_row+'][price]" class="sub_price"/> <td><input type="text" value ="'+discount +'" name="customer_detail['+current_row+'][discount]" class="sub_discount"/></td><input type="hidden" value ="each" name="customer_detail['+current_row+'][discount_type]" class="discount_type"/><td class="td_amt">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][amt]" class="sub_amt"/><td class="td_cgst">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="customer_detail['+current_row+'][cgst]" class="sub_cgst"/> <td class="td_cgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][cgst_value]" class="sub_cgst_value"/><td class="td_sgst">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="customer_detail['+current_row+'][sgst]" class="sub_sgst"/><td class="td_sgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][sgst_value]" class="sub_sgst_value"/><td class="td_subtotal"></td> <input type="hidden" value ="" name="customer_detail['+current_row+'][subtotal]" class="sub_total"/><td><span class="sub_delete">Delete</span></td></tr>';                
                 jQuery('#bill_lot_add').append(str);
 
-                    jQuery('.ws_lot_id').val('');
-                    jQuery('.ws_lot_id').text('');
-
-                    jQuery('.unit').val('0');
-                    jQuery('.discount').val('0.00');
+                addFromProductControl();
+                jQuery('.product_control_error').remove();
             }
             // jQuery('.ws_bill_submit').css('display','block');
              ws_rowCalculate();
-           
-        } 
-        else if(product_id == ''){
+        } else {
+            var product_name_selector = jQuery('#ws_lot_id');
+            var lot_id_selector = jQuery('.ws_lot_id_orig');
+            var unit_selector = jQuery('#unit');
+            var discount_selector = jQuery('#discount');
+
+            var product_name = product_name_selector.val();
+            var lot_id = lot_id_selector.val();
+            var unit = unit_selector.val();
+            var discount = discount_selector.val();
+            jQuery('.product_control_error').remove();
+
+            if(product_name == '' || lot_id == '' || lot_id <= 0  ) { 
+                product_name_selector.after('<div class="product_control_error control_error">Please Enter Valid Product!</div>');
+                product_name_selector.focus();
+            }
+            if(unit == '' || unit <= 0) {
+                unit_selector.after('<div class="product_control_error control_error">Unit Must be above 0</div>');
+                unit_selector.focus();
+            }
+            if(discount == '' || discount <= 0) {
+                discount_selector.after('<div class="product_control_error control_error">Please Enter Valid Discounted Price!</div>');
+                discount_selector.focus();
+            }
+        }
+        /*else if(product_id == ''){
             alert_popup('Select Product !!!');
         }
         else if ( unit == '0' & unit == ''){
@@ -740,22 +758,26 @@ jQuery( document ).ready(function() {
             alert_popup('Enter Unit !!!');
         }
         else {
-          
             alert_popup('Enter Discounted Price !!!');
-        }
+        }*/
 
-      
     
     });
 
     jQuery('.sub_delete').live('click',function(){
        jQuery(this).parent().parent().remove();
         ws_rowCalculate();
-
-        
     });
 
 });
+
+function addFromProductControl() {
+    jQuery('.ws_lot_id').val('');
+    jQuery('.ws_lot_id_orig').val('');
+    jQuery('.unit').val('');
+    jQuery('.discount').val('');
+    jQuery('#ws_lot_id').focus();
+}
 
 
 function makeid() {

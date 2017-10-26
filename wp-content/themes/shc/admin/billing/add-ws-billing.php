@@ -182,7 +182,7 @@
 
 									<!-- <form class="add_submit"> -->
 										<!-- info row -->
-										<div class="row invoice-info">
+										<div class="row invoice-info product_control">
 
 											<div class="col-md-4 col-sm-4 col-xs-12">
 
@@ -205,7 +205,7 @@
 													<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Unit(Quantity):<span class="required">*</span>
 													</label>
 													<div class="col-md-6 col-sm-6 col-xs-12">
-														<input type="number" name="unit" id="unit" class="unit" min="1"/>
+														<input type="number" name="unit" id="unit" class="unit"/>
 													</div>
 												</div>
 
@@ -213,7 +213,7 @@
 													<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Discounted Price:<span class="required">*</span>
 													</label>
 													<div class="col-md-6 col-sm-6 col-xs-12">
-														<input type="number" name="discount" value="0.00" id="discount" class="discount"/>
+														<input type="number" name="discount" value="" id="discount" class="discount"/>
 													</div>
 												</div>
 												<div class="form-group">

@@ -29,7 +29,7 @@
 </style>
 <div class="container">
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12 print-hide">
       <div class="x_panel">
         <div class="x_title">
             <form action="<?php menu_page_url( 'ws_invoice' ); ?>" method="GET">
@@ -376,3 +376,586 @@
     </div>
   </div>
 </div>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+  @media screen {
+  }
+  /** Fix for Chrome issue #273306 **/
+  @media print {
+    #adminmenumain, #wpfooter, .print-hide {
+      display: none;
+    }
+    body, html {
+      height: auto;
+      padding:0px;
+    }
+    html.wp-toolbar {
+      padding:0;
+    }
+    #wpcontent {
+      background: white;
+      box-shadow: 0 .5mm 2mm rgba(0,0,0,.3);
+      margin: 1mm;
+      display: block;
+      padding: 0;
+    }
+  }
+
+  @page { margin: 0;padding: 0; }
+  .sheet {
+    margin: 0;
+    page-break-after: always;
+  }
+
+
+/*  body .A3           .sheet { width: 297mm; height: 419mm }
+  body .A3.landscape .sheet { width: 420mm; height: 296mm }
+  body .A4           .sheet { width: 210mm; }
+  body .A4.landscape .sheet { width: 297mm; height: 209mm }
+  body .A5           .sheet { width: 148mm; height: 209mm }
+  body .A5.landscape .sheet { width: 210mm; height: 147mm }
+
+  .sheet.padding-10mm { padding: 5mm }
+  .sheet.padding-15mm { padding: 15mm }
+  .sheet.padding-20mm { padding: 20mm }
+  .sheet.padding-25mm { padding: 25mm }
+*/
+
+
+
+      .inner-container {
+        padding-left: 60px;
+        padding-right: 60px;
+        width: 210mm;
+      }
+      .left-float {
+        float: left;
+      }
+      .top-left {
+        width: 160px;
+      }
+      .top-center {
+        width: 284px;
+      }
+      .top-right {
+        width: 190px;
+      }
+      .left-logo img, .right-logo img {
+        width: 100%;
+      }
+      .comp-detail {
+        padding-left: 5px;
+      }
+
+      .comp-detail-in .detail-left {
+        width: 55px;
+      }
+
+      .customer-detail-left {
+        width: 400px;
+      }
+      .company-detail-left {
+        width: 444px;
+      }
+      .company-detail-left .company-name h3 {
+          font-family: serif;
+          font-weight: bold;
+          font-size: 24px;
+          margin-bottom: 3px;
+      }
+      .company-detail-left .company-address {
+          font-size: 13px;
+          font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+      }
+
+      .customer-detail-right {
+        width: 234px;
+      }
+
+      .text-center {
+        text-align: center;
+      }
+      .text-rigth {
+        text-align: right;
+      }
+        .table td, .table th {
+          background-color: transparent !important;
+        }
+        .bill-detail {
+          height: 650px;
+        }
+
+      .footer {
+        position: fixed;
+              bottom: 0px;
+              left: 0px;
+      }
+      .footer .foot {
+          background-color: #67a3b7 !important;
+          -webkit-print-color-adjust: exact;
+      }
+
+      .table>tbody>tr>td {
+        padding: 0 3px;
+        height: 20px;
+      }
+      .table-bordered>tbody>tr>td, .table-bordered>thead>tr>th {
+        border: 1px solid #000 !important;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .billing-title {
+        text-align: center;
+        font-weight: bold;
+        font-size: 14px;
+          text-decoration: underline;
+      }
+      h3 {
+        margin-top: 0px;
+      }
+
+
+
+
+
+
+
+
+  .company-logo {
+    width: 70mm;
+  }
+  .company-address {
+    width: 70mm;
+  }
+  .invoice-detail {
+    width: 70mm;
+  }
+
+</style>
+
+
+
+  <div class="A4">
+    <div class="sheet padding-10mm">
+
+
+
+
+
+
+
+
+
+
+<table> 
+  <thead>
+    <tr>
+      <td>
+        <div class="customer-detail inner-container" style="margin-top: 20px;margin-bottom:2px;">
+            <table>
+              <tr>
+                <td>
+                  <div class="company-logo">sdrf</div>
+                </td>
+                <td>
+                  <div class="company-address">sdrf</div>
+                </td>
+                <td>
+                  <div class="invoice-detail">sdrf</div>
+                </td>
+              </tr>
+            </table>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="customer-detail inner-container" style="margin-top: 20px;margin-bottom:2px;">
+          <div class="billing-title">
+            TAX INVOICE
+          </div>
+        </div>
+      </td>
+    </tr>
+  </thead>
+  <tbody>
+
+
+<?php
+$bill_data = array('fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg' );
+  $pages = false;
+  $per_page = 16;
+  $pieces = false;
+  $tota_row = 0;
+
+  if($bill_data) {
+    $pages = ceil(count($bill_data)/$per_page);
+    $pieces = array_chunk($bill_data, $per_page);
+    $tota_row = count($bill_data);
+    $reminder = ($tota_row % $per_page);
+  }
+
+
+
+  $page_total[-1] = 0;
+  for ($i = 0; $i < $pages; $i++) { 
+    $tot_tmp = 0;
+    foreach ($pieces[$i] as $key => $h_value) {
+      $tot_tmp = $tot_tmp + $h_value->hiring_amt;
+    }
+    $page_total[$i] = $page_total[$i-1] + $tot_tmp;
+  }
+
+
+      for ($i = 0; $i < $pages; $i++) { 
+        $page_start = ( $i * $per_page ) + 1;
+        $current_page = ($i + 1);
+    ?>
+      <tr>
+        <td>
+          <div class="inner-container" style="margin-top: 0px;">
+            <div class="bill-detail">
+              <table class="table table-bordered" style="margin-bottom: 2px;">
+                <thead>
+                  
+                  <tr>
+                    <th style="width:35px;padding:0" class="center-th" rowspan="2">
+                      <div class="text-center">S.No</div>
+                    </th>
+                    <th class="center-th" style="" rowspan="2">
+                      <div class="text-center">Description</div>
+                    </th>
+                    <th class="center-th" style="width:35px;padding:0;" rowspan="2">
+                      <div class="text-center">Qty</div>
+                    </th>
+                    <th class="center-th" style="padding: 0;" colspan="3">
+                      <div class="text-center">Peroid</div>
+                    </th>
+                    <th class="center-th" style="padding: 0;">
+                      <div class="text-center">Rate/Day</div>
+                    </th>
+                    <th class="center-th" style="padding: 0;width: 80px;">
+                      <div class="text-center">Amount</div>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th style="padding: 0;width: 70px;"><div class="text-center">From</div></th>
+                    <th style="padding: 0;width: 70px;"><div class="text-center">To</div></th>
+                    <th style="padding: 0;width: 35px;"><div class="text-center">No of Days</div></th>
+                    <th style="padding: 0;width: 65px;"><div class="text-right">Rs Ps</div></th>
+                    <th style="padding: 0;width: 35px;"><div class="text-right">Rs Ps</div></th>
+                  </tr>
+                </thead>
+
+
+                <?php
+                if($current_page > 1) {
+                ?>
+                  <tr>
+                    <td></td>
+                    <td>
+                      <div class="text-center">BF / TOTAL</div>
+                    </td>
+                    <td><div class="text-center">-</div></td>
+                    <td><div class="text-center">-</div></td>
+                    <td><div class="text-center">-</div></td>
+                    <td><div class="text-center">-</div></td>
+                    <td><div class="text-right">-</div></td>
+                    <td>
+                      <div class="text-right">
+                        jhgjjhgj
+                      </div>
+                    </td>
+                  </tr>
+                <?php
+                }
+                foreach ($pieces[$i] as $key => $value) {
+                ?>
+                  <tr>
+                    <td>
+                      <div class="text-center">
+                        <?php echo $page_start ?>
+                      </div>
+                    </td>
+                    <td>
+                      <?php echo $value?>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        45
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center" style="text-align: right;">
+                        ghgf
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        657
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-center">
+                        gfj
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-rigth">
+                        sada
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-rigth">
+                        fdgf
+                      </div>
+                    </td>
+                  </tr>
+
+
+                <?php
+                  $page_start++;
+                }
+                  if($pages == $current_page) {
+                ?>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td colspan="7"><div class="text-center">Total (Hire Charges)</div></td>
+                      <td>
+                        <div class="text-rigth">
+                          100
+                        </div>
+                      </td>
+                    </tr>
+                    
+                    <table>
+                      <tr>
+                        <td>Amount Chargable (in words)</td>
+                      </tr>
+                      <tr>
+                        <td><b>INR fghfghfg</b></td>
+                      </tr>
+                    </table>
+
+
+                          <table class="table table-bordered" style="margin-top:10px;margin-bottom: 5px;">
+                            <thead>
+                              <tr>
+                                <th class="center-th" style="" rowspan="2">
+                                  <div class="text-center">HSN</div>
+                                </th>
+                                <th class="center-th" style="width:90px;padding:0;" rowspan="2">
+                                  <div class="text-center">Taxable Value</div>
+                                </th>
+                                <th class="center-th" style="padding: 0;" colspan="2">
+                                  <div class="text-center">CGST</div>
+                                </th>
+                                <th class="center-th" style="padding: 0;" colspan="2">
+                                  <div class="text-center">SGST</div>
+                                </th>
+                              </tr>
+                              <tr>
+                                    <th style="padding: 0;width: 70px;"><div class="text-center">Rate</div></th>
+                                    <th style="padding: 0;width: 70px;"><div class="text-center">Amount</div></th>
+                                    <th style="padding: 0;width: 70px;"><div class="text-center">Rate</div></th>
+                                    <th style="padding: 0;width: 70px;"><div class="text-center">Amount</div></th>
+                  
+                              </tr>
+                            </thead>
+                            <tbody>
+                                  <tr>
+                                    <td>
+                                      <div class="text-center">
+                                        dfsdf
+                                      </div>
+                                    </td>
+                                    <td>
+                                      <div class="text-right">
+                                        567567
+                                      </div>
+                                    </td>
+                                        <td>
+                                          <div class="text-right">
+                                            9%
+                                          </div>
+                                        </td>
+                                        <td>
+                                          <div class="text-right">
+                                            454
+                                          </div>
+                                        </td>
+                                        <td>
+                                          <div class="text-right">
+                                            9%
+                                          </div>
+                                        </td>
+                                        <td>
+                                          <div class="text-right">
+                                            45
+                                          </div>
+                                        </td>
+                                  </tr>
+                            </tbody>
+                          </table>
+                        <table>
+                          <tr>
+                            <td>Tax Amount (in words)</td>
+                          </tr>
+                          <tr>
+                            <td><b>INR hgjhj</b></td>
+                          </tr>
+                        </table>
+                <?php
+                  } else {
+                ?>
+                    <tr>
+                      <td colspan="7">
+                        <div class="text-center">CF / TOTAL</div>
+                      </td>
+                      <td>
+                        <div class="text-right">
+                          45435
+                        </div>
+                      </td>
+                    </tr>
+                <?php
+                  }
+
+                ?>
+                
+              </table>
+            </div>
+          </div>
+        </td>
+      </tr>
+    <?php
+      }
+    ?>
+  </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+<?php //require get_template_directory().'/admin/billing/inline_invoice/ws-invoice.php';  ?>

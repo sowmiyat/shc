@@ -395,8 +395,6 @@ dd {  padding: 0 0 0.5em 0; }
       </table>
         Tax Amount (in words)<br/>
         <?php echo ucwords($result_cgst) . "Rupees & ". ucwords($points_cgst). " Paises  Only "; ?><br/><br/>
-
-
                 <?php
                   }
                 ?>
