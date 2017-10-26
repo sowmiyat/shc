@@ -1,7 +1,7 @@
  jQuery(document).ready(function (argument) {
     //** Customer Select billing **//
 jQuery('#billing_customer').focus();
-    populateReturnProductsRetail('.rtn_lot_id');
+    // populateReturnProductsRetail('.rtn_lot_id');
 
 
 jQuery('#billing_mobile').live('keydown', function(e){
@@ -392,11 +392,71 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
         
     });
 
+
+
+
+
+ //<------- Return invoice start---------->
+    jQuery('.return_inv_id').focus();
+    jQuery('.invoice_id').focus();
+
+ //<-----After keydown submit using tab goto first text box in Return billing--->
+    jQuery("#return_submit,#return_update").on('keydown',  function(e) { 
+        var keyCode = e.keyCode || e.which; 
+
+        if (keyCode == 9) { 
+            e.preventDefault(); 
+            jQuery('.return_inv_id').focus();
+        } 
+
+    });
+
+    //<-----After keydown submit using tab goto first text box in Return billing View--->
+    jQuery(".return_print").on('keydown',  function(e) { 
+        var keyCode = e.keyCode || e.which; 
+
+        if (keyCode == 9) { 
+            e.preventDefault(); 
+            jQuery('.invoice_id').focus();
+        } 
+
+    });
+
+
+
+      //<-----After keydown submit using tab goto first text box in Return billing View--->
+    jQuery(".ws_return_print").on('keydown',  function(e) { 
+        var keyCode = e.keyCode || e.which; 
+
+        if (keyCode == 9) { 
+            e.preventDefault(); 
+            jQuery('.invoice_id').focus();
+        } 
+
+    });
+//<-------return quantity check ------>
+    jQuery('.return_qty_ret').live('change',function(){
+        var bal_qty =parseFloat(jQuery(this).parent().parent().find('.return_bal_qty').val());
+        var return_qty = parseFloat(jQuery(this).parent().parent().find('.return_qty_ret').val());
+
+        if(  bal_qty < return_qty ){
+            alert('Please Enter Return quantity as below as avalible quantity!!!');
+            jQuery(this).parent().parent().find('.return_qty_ret').val('1');
+            var balance = bal_qty - 1;
+        } else {
+            var balance = bal_qty - return_qty;
+        }
+        
+        jQuery(this).parent().parent().find('.return_bal_qty_td').text(balance);
+        jQuery(this).parent().parent().find('.return_bal').val(balance);
+        Return_rowCalculate();
+    });
+
       /*Update Return Payment*/
     jQuery('#return_billing_container #return_update_payment').on('click', function() {
       
 
-        var bill_invoice_url = bill_return_list.return_items;
+        var bill_invoice_url = bill_return.return_page;
         jQuery('#lightbox').css('display','block');
         jQuery.ajax({
             type: "POST",
@@ -442,65 +502,33 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
     });
 
 
-
-    jQuery('.new_user_bill').on('click', function() {
-        jQuery('.new_user_bill,.billing_customer_div').css('display', 'none');
-        jQuery('.old_user_bill,.new_customer').css('display', 'block');
-        jQuery('.user_type').val('new'); 
-        jQuery('.popup-add-customer').trigger('click');
-
-    });
-
-    jQuery('.old_user_bill').on('click', function() {
-        jQuery('.new_user_bill,.billing_customer_div').css('display', 'block');
-        jQuery('.old_user_bill,.new_customer').css('display', 'none');
-       jQuery('.user_type').val('old');
-    });
-
-
-
-//<--------- Return Submit--->
-   jQuery('.add-button-return-retail').live('click',function() {
-
-        var product_id          = jQuery('.rtn_lot_id').val();
-        var product_name        = jQuery('.rtn_ws_product').val();
-        var hsn_code            = jQuery('.rtn_ws_hsn').val();
-        var discount            = jQuery('.rtn_discount_amt').val();
-        var unit                = jQuery('.qty').val();
-        var rtn_qty             = jQuery('.return_qty').val();
-        var cgst                = jQuery('.rtn_cgst_percentage').val();
-        var sgst                = jQuery('.rtn_sgst_percentage').val();
-
-       if( rtn_qty != '0'   ) {
-            var existing_count = parseInt( jQuery('#rtn_bill_lot_add tr').length );
-            var current_row = existing_count + 1;
-            if( jQuery('.rtn_customer_tab[data-productid='+ product_id +']').length != 0 ) {
-                var selector = jQuery('.rtn_customer_tab[data-productid='+ product_id +']');
-                selector.find('.td_rtn_qty').text(rtn_qty);
-                selector.find('.td_rtn_unit').text(unit);
-                selector.find('.sub_rtn_qty').val(rtn_qty);
-                selector.find('.rtn_sub_unit').val(unit);
-
-                
-            } else {
-                var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="rtn_customer_tab" ><td class="td_rtn_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="rtn_customer_table['+current_row+'][id]" class="rtn_sub_id" /><td class="td_rtn_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="rtn_customer_table['+current_row+'][product]" class="rtn_sub_product"/><td class="td_rtn_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="rtn_customer_table['+current_row+'][hsn]" class="rtn_sub_hsn"/><td class="td_rtn_unit">'+ unit + ' </td><input type="hidden" value = "'+ unit + '" name="rtn_customer_table['+current_row+'][unit]" class="rtn_sub_unit"/> <td class="td_rtn_qty">' + rtn_qty + '</td> <input type="hidden" value = "'+ rtn_qty + '" name="rtn_customer_table['+current_row+'][rtn_qty]" class="sub_rtn_qty"/><td class="td_rtn_discount">'+ discount +'</td><input type="hidden" value ="'+discount +'" name="rtn_customer_table['+current_row+'][mrp]" class="rtn_sub_discount"/><td class="td_rtn_amt"></td> <input type="hidden" value = "" name="rtn_customer_table['+current_row+'][amt]" class="rtn_sub_amt"/><td class="td_rtn_cgst">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="rtn_customer_table['+current_row+'][cgst]" class="rtn_sub_cgst"/> <td class="td_rtn_cgst_value"></td> <input type="hidden" value = "" name="rtn_customer_table['+current_row+'][cgst_value]" class="rtn_sub_cgst_value"/><td class="td_rtn_sgst">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="rtn_customer_table['+current_row+'][sgst]" class="rtn_sub_sgst"/><td class="td_rtn_sgst_value"></td> <input type="hidden" value = "" name="rtn_customer_table['+current_row+'][sgst_value]" class="rtn_sub_sgst_value"/><td class="td_rtn_subtotal"></td> <input type="hidden" value ="" name="rtn_customer_table['+current_row+'][subtotal]" class="rtn_sub_total"/><td><span class="sub_delete">Delete</span></td></tr>';                
-                jQuery('#rtn_bill_lot_add').append(str);
-            }
-
-             wsReturn_rowCalculate();
-           
-        } else {
-
-            alert_popup('Enter All Fields !!!');
-        }
-
-        jQuery('.qty').val('0');
-        jQuery('.return_qty').val('0');
-    
-    });
-
   //<------- Goods Return Items ---->
-    jQuery('#ws_billing_return #return_submit').on('click', function() {
+    jQuery('#billing_return #return_submit').on('click', function() {
+
+        var bill_update_url = bill_return.return_page;
+        jQuery('#lightbox').css('display','block');
+        jQuery.ajax({
+            type: "POST",
+            dataType : "json",
+            url: frontendajax.ajaxurl,
+            data: {
+                action : 'create_return',
+                data   : jQuery('#billing_return :input').serialize(),
+                year   : jQuery( ".year" ).val(),
+            },
+            success: function (data) {
+                clearPopup();
+                popItUp('Success', 'Bill Created!');
+                jQuery('#lightbox').css('display','none');
+
+              window.location = bill_update_url+'&return_id='+data.id+'&id='+data.invoice_id+'&year='+data.year;
+
+            }
+        });
+    });
+
+    //<------- Goods Return Items Update ---->
+    jQuery('#billing_return #return_update').on('click', function() {
 
         var bill_update_url = bill_return_view.returnview;
         jQuery('#lightbox').css('display','block');
@@ -509,8 +537,9 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
             dataType : "json",
             url: frontendajax.ajaxurl,
             data: {
-                action : 'create_return',
-                data   : jQuery('#ws_billing_return :input').serialize()
+                action : 'update_return',
+                data   : jQuery('#billing_return :input').serialize(),
+                year   : jQuery( ".year" ).val(),
             },
             success: function (data) {
                 clearPopup();
@@ -522,6 +551,106 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
             }
         });
     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   jQuery('#ws_billing_return #ws_return_submit').on('click', function() {
+
+        var bill_update_url = ws_bill_return.ws_return_page;
+        jQuery('#lightbox').css('display','block');
+        jQuery.ajax({
+            type: "POST",
+            dataType : "json",
+            url: frontendajax.ajaxurl,
+            data: {
+                action : 'ws_create_return',
+                data   : jQuery('#ws_billing_return :input').serialize(),
+                year   : jQuery( ".year" ).val(),
+            },
+            success: function (data) {
+                clearPopup();
+                popItUp('Success', 'Bill Created!');
+                jQuery('#lightbox').css('display','none');
+
+              window.location = bill_update_url+'&return_id='+data.id+'&id='+data.invoice_id+'&year='+data.year;
+
+            }
+        });
+    });
+
+    //<------- Goods Return Items Update ---->
+    jQuery('#ws_billing_return #ws_return_update').on('click', function() {
+
+        var bill_update_url = bill_return_viewws.returnviewws;
+        jQuery('#lightbox').css('display','block');
+        jQuery.ajax({
+            type: "POST",
+            dataType : "json",
+            url: frontendajax.ajaxurl,
+            data: {
+                action : 'ws_update_return',
+                data   : jQuery('#ws_billing_return :input').serialize(),
+                year   : jQuery( ".year" ).val(),
+            },
+            success: function (data) {
+                clearPopup();
+                popItUp('Success', 'Bill Created!');
+                jQuery('#lightbox').css('display','none');
+
+              window.location = bill_update_url+'&id='+data.id;
+
+            }
+        });
+    });
+
+
+
+ //<------- Return invoice start---------->
+    jQuery('.ws_return_inv_id').focus();
+
+ //<-----After keydown submit using tab goto first text box in Return billing--->
+    jQuery("#ws_return_submit,#ws_return_update").on('keydown',  function(e) { 
+        var keyCode = e.keyCode || e.which; 
+
+        if (keyCode == 9) { 
+            e.preventDefault(); 
+            jQuery('.ws_return_inv_id').focus();
+        } 
+
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 });
 
@@ -669,72 +798,7 @@ function rowCalculate() {
     jQuery('.paid_amount').trigger('change');
 
 }
-function populateReturnProductsRetail(selector) {
 
-   jQuery(selector).select2({
-
-        allowClear: true,
-        width: '15%',
-
-        multiple: true,
-        minimumInputLength: 1,
-        maximumSelectionLength: 1,
-        ajax: {
-        type: 'POST',
-        url: frontendajax.ajaxurl,
-        delay: 250,
-        dataType: 'json',
-            data: function(params) {
-                return {
-                    action: 'get_return_lot_data_retail', // search term
-                    page: 1,
-                    search_key: params.term,
-                    inv_id  : jQuery('.return_invoice_id_retail').val()
-                   
-                };
-            },
-
-            processResults: function(data) {
-                var results = [];
-
-                return {
-                    results: jQuery.map(data.items, function(obj) {
-                        return { id: obj.lot_id, sale_unit:obj.sale_unit, brand_name: obj.brand_name, product_name:obj.product_name,hsn:obj.hsn, bal_qty:obj.bal_qty, unit_price:obj.selling_price, cgst:obj.cgst,sgst:obj.sgst, discount:obj.discount };
-                    })
-                };
-            },
-            cache: true
-        },
-        initSelection: function (element, callback) {
-          callback({ id: jQuery(element).val(), product_name: jQuery(element).find(':selected').text() });
-        },
-        templateResult: formatStateBillCreate,
-        templateSelection: formatStateBillCreate1
-    }).on("select2:select", function (e) {  
-
-        jQuery("select2:select").next('.return_qty').focus(); 
-
-        if( (e.params.data.bal_qty) == 0 ) {
-            alert("This Product is Already Fully Return.Please Select Correct Product");
-        } else {
-
-       
-        jQuery('.rtn_lot_id').val(e.params.data.id);  
-        jQuery('.rtn_ws_product').val(e.params.data.product_name);  
-        jQuery('.rtn_ws_unit_price').val(e.params.data.unit_price);
-        jQuery('.rtn_discount').val(e.params.data.unit_price);
-        jQuery('.rtn_ws_hsn').val(e.params.data.hsn);
-        jQuery('.rtn_cgst_percentage').val(e.params.data.cgst);
-        jQuery('.rtn_sgst_percentage').val(e.params.data.sgst);
-        jQuery('.rtn_discount_amt').val(e.params.data.discount);
-        jQuery('.qty').val(e.params.data.bal_qty); 
-        jQuery('.qty_hidden').val(e.params.data.bal_qty); 
-
-         }
-    });
-
-   
-}
 
  
 function formatStateBillCreate (state) {
@@ -765,3 +829,45 @@ function formatStateBillCreate1 (state) {
     );
     return $state;
 };
+
+function Return_rowCalculate() {
+    console.log("hfh");
+    var sub_tot=parseFloat(0);
+   
+    jQuery('.rtn_bill_lot_add').each(function() { 
+        var unit_price          = parseFloat(jQuery(this).find('.return_mrp').val());
+        var unit_count          = parseFloat(jQuery(this).find('.return_qty_ret').val());
+        var cgst                = parseFloat(jQuery(this).find('.return_cgst').val());
+        var sgst                = parseFloat(jQuery(this).find('.return_sgst').val());
+        var unit_total          = (unit_price * unit_count);
+        var row_per_cgst        = ( (cgst * unit_total) / 100 );
+        var row_per_sgst        = ( (sgst * unit_total) / 100 );
+
+
+        var diviser         = 100 + cgst + sgst ;
+        var amt             = (unit_total *  100)/(diviser);
+        var full_gst        = unit_total - amt;
+        var row_per_cgst    = full_gst/2;
+        var row_per_sgst    = full_gst/2;
+
+
+
+        unit_total               = (isNaN(unit_total) ? '0.00' : unit_total);
+
+        jQuery(this).find('.return_sub_total_td').text(unit_total.toFixed(2)); 
+        jQuery(this).find('.return_sub_total').val(unit_total.toFixed(2));
+
+        jQuery(this).find('.return_amt_td').text(amt.toFixed(2)); 
+        jQuery(this).find('.return_amt').val(amt.toFixed(2));
+
+        jQuery(this).find('.return_cgst_value').val(row_per_cgst.toFixed(2));
+        jQuery(this).find('.return_sgst_value').val(row_per_sgst.toFixed(2));
+
+        jQuery(this).find('.return_cgst_value_td').text(row_per_cgst.toFixed(2));
+        jQuery(this).find('.return_sgst_value_td').text(row_per_sgst.toFixed(2));
+        sub_tot = sub_tot + parseFloat(jQuery(this).find('.return_sub_total').val());
+         
+    });
+        jQuery('.rtn_fsub_total').val(sub_tot);
+
+}

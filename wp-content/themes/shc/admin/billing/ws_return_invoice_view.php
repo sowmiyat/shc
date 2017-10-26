@@ -22,7 +22,19 @@
         <div class="col-md-12">
             <div class="x_panel">
                 <div class="x_title">
-                    
+                     <div class="x_title">
+                        <form action="<?php menu_page_url( 'ws_return_items_view' ); ?>" method="GET">
+                              <h2>Return ID 
+                                  <input type="hidden" name="page" value="ws_return_items_view">
+                                  <input type="text" name="id" class="invoice_id" value="<?php echo $_GET['id']; ?>" required autocomplete="off"> 
+                                           
+                                  <input class="btn btn-success" type="submit" style="height: 38px;margin-left: 20px;">
+                              </h2>
+                            <button class="btn btn-default pull-right ws_return_print" style="border-color: #bc2323;"><i class="fa fa-print"></i> Print</button>
+                            <button class="btn btn-primary pull-right generate_bill" style="margin-right: 5px;"><i class="fa fa-file-pdf-o"></i> Generate PDF</button>
+                        </form>
+                        <div class="clearfix"></div>
+                </div>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
@@ -233,7 +245,6 @@
                                 <!-- this row will not appear when printing -->
                                 <div class="row no-print">
                                     <div class="col-xs-12">
-                                        <button class="btn btn-default pull-right ws_return_print" style="border-color: #bc2323;"><i class="fa fa-print"></i> Print</button>
                                     </div>
                                 </div>
                             </section>

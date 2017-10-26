@@ -26,6 +26,20 @@
                 </div>
                 <div class="x_content">
 
+                    <div class="x_title">
+                        <form action="<?php menu_page_url( 'return_items_view' ); ?>" method="GET">
+                              <h2>Return ID 
+                                  <input type="hidden" name="page" value="return_items_view">
+                                  <input type="text" name="id" class="invoice_id" value="<?php echo $_GET['id']; ?>" required autocomplete="off"> 
+                                           
+                                  <input class="btn btn-success" type="submit" style="height: 38px;margin-left: 20px;">
+                              </h2>
+                            <button class="btn btn-default pull-right return_print" style="border-color: #bc2323;"><i class="fa fa-print"></i> Print</button>
+                            <button class="btn btn-primary pull-right generate_bill" style="margin-right: 5px;"><i class="fa fa-file-pdf-o"></i> Generate PDF</button>
+                        </form>
+                        <div class="clearfix"></div>
+                </div>
+
                     <?php
                         if($bill_data) {
                     ?>
@@ -144,7 +158,7 @@
                                     <div class="col-sm-4 invoice-col">
                                         <b>
                                             <input type="hidden" name="invoice_id" class="invoice_id" id="invoice_id" autocomplete="off" value="<?php echo $invoice_id ?>">
-                                            <b>Invoice Id : </b> <?php echo $invoice_id; ?><br/>
+                                            <b>Invoice Id : </b> <?php echo 'INV'.$invoice_id; ?><br/>
                                             <b>Return Id : </b> <?php echo 'GR'.$bill_fdata->id; ?>
                                         </b>
                                         <br>
@@ -232,7 +246,7 @@
                                 <!-- this row will not appear when printing -->
                                 <div class="row no-print">
                                     <div class="col-xs-12">
-                                        <button class="btn btn-default pull-right return_print" style="border-color: #bc2323;"><i class="fa fa-print"></i> Print</button>
+                                        
                                     </div>
                                 </div>
                             </section>

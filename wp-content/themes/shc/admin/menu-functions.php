@@ -49,7 +49,7 @@ global $src_capabilities;
 	add_submenu_page('billing_list', 'Invoice', 'Invoice', $src_capabilities['billing']['permission']['add_billing'], 'invoice', 'invoice' );
 	add_submenu_page('billing_list', 'Return Items', 'Return Items', $src_capabilities['billing']['permission']['add_billing'], 'return_items', 'return_items' );
 	add_submenu_page('billing_list', 'Return Items List', 'Return Items List', $src_capabilities['billing']['permission']['add_billing'], 'return_items_list', 'return_items_list' );
-	add_submenu_page('billing_list', '', '', $src_capabilities['billing']['permission']['add_billing'], 'return_items_view', 'return_items_view' );
+	add_submenu_page('billing_list', 'Invoice Return', 'Invoice Return', $src_capabilities['billing']['permission']['add_billing'], 'return_items_view', 'return_items_view' );
 	add_menu_page(
 	    __( 'WS Billing', 'shc'),
 	    'WS Billing',
@@ -64,7 +64,7 @@ global $src_capabilities;
 	add_submenu_page('ws_billing_list', 'Invoice', 'Invoice', $src_capabilities['billing']['permission']['add_billing'], 'ws_invoice', 'ws_invoice' );
 	add_submenu_page('ws_billing_list', 'Return Items', 'Return Items', $src_capabilities['billing']['permission']['add_billing'], 'ws_return_items', 'ws_return_items' );
 	add_submenu_page('ws_billing_list', 'Return Items List', 'Return Items List', $src_capabilities['billing']['permission']['add_billing'], 'ws_return_items_list', 'ws_return_items_list' );
-	add_submenu_page('ws_billing_list', '', '', $src_capabilities['billing']['permission']['add_billing'], 'ws_return_items_view', 'ws_return_items_view' );
+	add_submenu_page('ws_billing_list', 'Invoice Return', 'Invoice Return', $src_capabilities['billing']['permission']['add_billing'], 'ws_return_items_view', 'ws_return_items_view' );
 
 
 	add_menu_page(
