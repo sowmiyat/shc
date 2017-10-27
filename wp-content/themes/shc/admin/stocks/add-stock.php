@@ -79,22 +79,20 @@ if(isset($_GET['stock_id']) && $stock = get_stock($_GET['stock_id']) ) {
 </div>
 
 <SCRIPT language=Javascript>
+	jQuery.extend(jQuery.expr[':'], {
+	    focusable: function (el, index, selector) {
+	        return jQuery(el).is('a, button, :input, [tabindex]');
+	    }
+	});
 
-jQuery.extend(jQuery.expr[':'], {
-    focusable: function (el, index, selector) {
-        return jQuery(el).is('a, button, :input, [tabindex]');
-    }
-});
-
-jQuery(document).on('keypress', 'input,select', function (e) {
-    if (e.which == 13) {
-        e.preventDefault();
-        // Get all focusable elements on the page
-        var $canfocus = jQuery(':focusable');
-        var index = $canfocus.index(document.activeElement) + 1;
-        if (index >= $canfocus.length) index = 0;
-        $canfocus.eq(index).focus();
-    }
-});
-
+	jQuery(document).on('keypress', 'input,select', function (e) {
+	    if (e.which == 13) {
+	        e.preventDefault();
+	        // Get all focusable elements on the page
+	        var $canfocus = jQuery(':focusable');
+	        var index = $canfocus.index(document.activeElement) + 1;
+	        if (index >= $canfocus.length) index = 0;
+	        $canfocus.eq(index).focus();
+	    }
+	});
 </SCRIPT>

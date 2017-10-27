@@ -21,10 +21,7 @@ $stocks = new Stocks();
                             </th>
                             <th class="column-title">Brand Name </th>
                             <th class="column-title">Product Name </th>
-                            <th class="column-title">Stock Qty </th>
-                            <th class="column-title">Sale Qty </th>
-                            <th class="column-title">Balance Stock </th>
-                            <th class="column-title">Stock Added </th> 
+                            <th class="column-title">Available Stock </th>
                         </tr>
                     </thead>
 
@@ -42,10 +39,7 @@ $stocks = new Stocks();
                                     </td>
                                     <td class=""><?php echo $s_value->brand_name; ?></td>
                                     <td class=""><?php echo $s_value->product_name; ?></td>
-                                    <td class=""><?php echo $s_value->stock_in; ?></td>
-                                    <td class=""><?php echo $s_value->bal_qty; ?></td>
                                     <td class=""><?php echo $s_value->final_stock; ?></td>
-                                    <td class=""><?php echo $s_value->created_at; ?></td>
                                 </tr>
                     <?php
                                 $i++;

@@ -56,58 +56,6 @@ function remove_admin_bar() {
 function remove_footer_admin() 
 {
 
-	global $wpdb;
-  	$stock_table =  $wpdb->prefix.'shc_stock';
-    $lots_table =  $wpdb->prefix.'shc_lots';
-    $sale_details = $wpdb->prefix.'shc_sale_detail';
-    $sale =$wpdb->prefix.'shc_sale';
-	$query = "SELECT  count(*) from (SELECT count(*) as avl_stock from
-(SELECT l.*, s.id as stock_id, s.stock_count, s.selling_total, s.created_at as stock_created FROM {$stock_table} as s JOIN {$lots_table} as l ON s.lot_number = l.id WHERE s.active = 1) as stock_table
-LEFT JOIN 
-(SELECT  t1.lot_number, 
-( CASE 
-WHEN t1.stock_qty IS NULL
-THEN 0
-ELSE t1.stock_qty
-END ) as stock_qty,
-( CASE 
-WHEN t2.sale_qty IS NULL
-THEN 0
-ELSE t2.sale_qty
-END ) as sale_qty,
-
-(
-    ( CASE 
-    WHEN t1.stock_qty IS NULL
-    THEN 0
-    ELSE t1.stock_qty
-    END )
-    - 
-    ( CASE 
-    WHEN t2.sale_qty IS NULL
-    THEN 0
-    ELSE t2.sale_qty
-    END )
-
-) as bal_stock 
-
-FROM 
-(
-SELECT st.lot_number, SUM(st.stock_count) as stock_qty FROM {$stock_table} as st WHERE st.active = 1 GROUP BY st.lot_number
-) as t1
-LEFT JOIN
-(
-SELECT sd.lot_id, SUM(sd.sale_unit) as sale_qty FROM {$sale_details} as sd JOIN {$sale} as s ON sd.sale_id = s.id WHERE sd.active = 1 AND s.active = 1 GROUP BY sd.lot_id
-) as t2
-ON t1.lot_number = t2.lot_id) as balance_table
-ON stock_table.id = balance_table.lot_number where stock_table.active = 1 and balance_table.bal_stock>0 GROUP by `id`) as count_table";
-$avalible_stock              = $wpdb->get_var( $query );
-
-$lot_query = "SELECT COUNT(*) FROM {$lots_table} WHERE active = 1";
-$lot_count              = $wpdb->get_var( $lot_query );
-
-
-$unavalible_stock = $lot_count - $avalible_stock ;
 ?>
 <div class="conform-box1" style="display:none;">Choose the action!</div>
 <span id="footer-thankyou">
@@ -117,15 +65,15 @@ $unavalible_stock = $lot_count - $avalible_stock ;
 				<div class="footer-nav">
 					<ul>
 						<li>
-							<a href="<?php echo admin_url('admin.php?page=total_stock_list')?>">
+							<a href="<?php echo admin_url('admin.php?page=total_stock_list&ppage=50&brand_name&product_name&stock_from&stock_to&comparison=less_than&count=0&cpage=1')?>">
 								<span class="footer-button new-order"></span>Available Stocks 
-								<span class="ticket-counter"><?php echo $avalible_stock ?></span>
+								
 							</a>
 						</li>
 						<li>
-							<a href="http://localhost/src/wp-admin/admin.php?page=total_stock_list">
+							<a href="<?php echo admin_url('admin.php?page=total_stock_list&ppage=50&brand_name&product_name&stock_from&stock_to&comparison=greater_than&count=0&cpage=1')?>">
 								<span class="footer-button open-tickets"></span>Unavailable Stocks 
-								<span class="task-counter"><?php echo $unavalible_stock ?></span>
+								
 							</a>
 						</li>
 					</ul>
