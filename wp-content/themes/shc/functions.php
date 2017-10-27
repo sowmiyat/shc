@@ -361,4 +361,72 @@ function invoiceDownload($str='', $outfile = '')
 
 }
 
+
+
+
+
+
+
+function splitCurrency($price = 0.00) {
+	$datas = explode( '.', $price );
+	$data['rs'] = (isset($datas[0])) ? $datas[0] : 0;
+	$data['ps'] = (isset($datas[1])) ? $datas[1] : 00;
+	return $data;
+}
+function convert_number_to_words_full($number) {
+    $n_substr = splitCurrency($number);
+    $rs = $n_substr['rs'];
+    $ps = $n_substr['ps'];
+    $con = '';
+    $ps_txt = '';
+    $rs_txt = '';
+
+
+    $rs_txt = convert_number_to_words($rs);
+
+    if($ps && $ps != '00' ) {
+      $con = ' and ';
+      if(strlen($ps) < 2) {
+      	$ps = $ps.'0';
+      }
+      $ps_txt = convert_number_to_words($ps).' Paisa';
+    } 
+
+    return $rs_txt . $con . $ps_txt .' Only';
+}
+
+function convert_number_to_words($num) {
+	if (strlen($num) > 9) {
+		return 'overflow';
+	}
+	$num = '000000000'.$num;
+
+	$a = ['','one ','two ','three ','four ', 'five ','six ','seven ','eight ','nine ','ten ','eleven ','twelve ','thirteen ','fourteen ','fifteen ','sixteen ','seventeen ','eighteen ','nineteen '];
+	$b = ['', '', 'twenty','thirty','forty','fifty', 'sixty','seventy','eighty','ninety'];
+
+	preg_match('/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/', substr($num,-9), $numbers);
+
+	$str = '';
+
+
+	$first = ($a[intval($numbers[1])]) ? $a[intval($numbers[1])] : ($b[$numbers[1][0]].' '.$a[$numbers[1][1]]);
+	$str .= ($numbers[1] != 0) ? ($second . 'crore ') : '';
+
+	$second = ($a[intval($numbers[2])]) ? $a[intval($numbers[2])] : ($b[$numbers[2][0]].' '.$a[$numbers[2][1]]);
+	$str .= ($numbers[2] != 0) ? ($second . 'lakh ') : '';
+
+	$third = ($a[intval($numbers[3])]) ? $a[intval($numbers[3])] : ($b[$numbers[3][0]].' '.$a[$numbers[3][1]]);
+	$str .= ($numbers[3] != 0) ? ($third . 'thousand ') : '';
+
+	$fourth = ($a[intval($numbers[4])]) ? $a[intval($numbers[4])] : ($b[$numbers[4][0]].' '.$a[$numbers[4][1]]);
+	$str .= ($numbers[4] != 0) ? ($fourth . 'hundred ') : '';
+
+	$fifth = (($str != '') ? 'and ' : '');
+	$fifth .= ($a[intval($numbers[5])]) ? $a[intval($numbers[5])] : ($b[$numbers[5][0]].' '.$a[$numbers[5][1]]);
+	$str .= ($numbers[5] != 0) ? $fifth : '';
+
+
+    return $str;
+
+}
 ?>
