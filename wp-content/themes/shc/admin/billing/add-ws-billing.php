@@ -108,22 +108,22 @@
 										</div>
 										<div class="col-md-4 col-sm-4 col-xs-12">
 											<div class="form-group">
-												<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Primary Mobile<span class="required">*</span>
+												<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Primary Mobile
 												</label>
 												<div class="col-md-6 col-sm-6 col-xs-12">
 													<input type="text" id="ws_billing_mobile" name="mobile" class="form-control has-feedback-left" onkeypress="return isNumberKey(event)" maxlength="10"   value="<?php if(isset($bill_fdata)){ echo $bill_fdata->mobile; } ?>" style="padding-right: 5px;">
 													<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">+91</span> 
-													<input type="hidden" class="customer_id" value="<?php echo ($wholesale_customer) ? $wholesale_customer->id : '0'; ?>"/>
+													<input type="hidden" class="customer_id" value="<?php echo ($bill_fdata) ? $bill_fdata->customer_id : '0'; ?>"/>
 													<input type="hidden" class="unique_mobile_action" value="check_unique_mobile_wholesale"/>
 												</div>
 											</div>
 										</div>
 										<div class="col-md-4 col-sm-4 col-xs-12 secondary_mobile">
 											<div class="form-group">
-												<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Secondary Mobile<span class="required">*</span>
+												<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Secondary Mobile
 												</label>
 												<div class="col-md-6 col-sm-6 col-xs-12">
-													<input type="text" id="ws_billing_secondary_mobile" name="secondary_mobile" class="form-control has-feedback-left" onkeypress="return isNumberKey(event)"  maxlength="10"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->secondary_mobile; } ?>">
+													<input type="text" id="ws_billing_secondary_mobile" name="secondary_mobile" autocomplete="off" class="form-control has-feedback-left" onkeypress="return isNumberKey(event)"  maxlength="10"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->secondary_mobile; } ?>">
 													<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">0</span>
 												</div>
 											</div>
@@ -133,7 +133,7 @@
 												<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Landline<span class="required">*</span>
 												</label>
 												<div class="col-md-6 col-sm-6 col-xs-12">
-													<input type="text" id="ws_billing_landline_mobile" name="landline" class="form-control has-feedback-left" onkeypress="return isNumberKey(event)" maxlength="8"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->landline; } ?>" >
+													<input type="text" id="ws_billing_landline_mobile" name="landline" autocomplete="off" class="form-control has-feedback-left" onkeypress="return isNumberKey(event)" maxlength="8"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->landline; } ?>" >
 													<span class="form-control-feedback left" aria-hidden="true" style="margin-top: 2px;">044</span>
 												</div>
 											</div>
@@ -152,16 +152,16 @@
 												<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Company Name
 												</label>
 												<div class="col-md-6 col-sm-6 col-xs-12">
-													<input type="text" id="ws_billing_company" name="company" class="customer_check" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->company_name; } ?>" >
+													<input type="text" id="ws_billing_company" name="company" autocomplete="off" class="customer_check" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->company_name; } ?>" >
 												</div>
 											</div>
 										</div>
 										<div class="col-md-4 col-sm-4 col-xs-12">
 											<div class="form-group">
-												<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">GST No.<span class="required">*</span>
+												<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">GST No.
 												</label>
 												<div class="col-md-6 col-sm-6 col-xs-12">
-													<input id="ws_billing_gst" type="text" name="gst" maxlength="15" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->gst_number; } ?>">
+													<input id="ws_billing_gst" type="text" name="gst" maxlength="15" autocomplete="off" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->gst_number; } ?>">
 												</div>
 											</div>
 										</div>
@@ -292,7 +292,7 @@
 			 															<td class="td_cgst_value">'.$c_value->cgst_value.'</td> <input type="hidden" value = "'.$c_value->cgst_value.'" name="customer_detail['.$i.'][cgst_value]" class="sub_cgst_value"/>
 			 															<td class="td_sgst">' .$c_value->sgst. '  %' . '</td> <input type="hidden" value = "'.$c_value->sgst. '" name="customer_detail['.$i.'][sgst]" class="sub_sgst"/>
 			 															<td class="td_sgst_value">'.$c_value->sgst_value.'</td> <input type="hidden" value = "'.$c_value->sgst_value.'" name="customer_detail['.$i.'][sgst_value]" class="sub_sgst_value"/>
-			 															<td class="td_subtotal">'.$c_value->sub_total.'</td> <input type="hidden" value ="'.$c_value->sub_total.'" name="customer_detail['.$i.'][subtotal]" class="sub_total"/><td><span class="sub_delete">Delete</span></td></tr>';
+			 															<td class="td_subtotal">'.$c_value->sub_total.'</td> <input type="hidden" value ="'.$c_value->sub_total.'" name="customer_detail['.$i.'][subtotal]" class="sub_total"/><td><a href="#" class="sub_delete">Delete</a></td></tr>';
 		 															
 		 															$i++;
 
@@ -406,7 +406,7 @@
 															<td>
 																<div class="form-horizontal form-label-left input_mask" style="position:relative;">
 																	<div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
-																		<input type="text" class="form-control ws_fsub_total" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->sub_total : 0;  ?>" readonly name="ws_fsub_total" style="margin: 0;">
+																		<input type="text" class="form-control ws_fsub_total" tabindex="-1" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->sub_total : 0;  ?>" readonly name="ws_fsub_total" style="margin: 0;">
 																		<span class="fa fa-inr form-control-feedback right" aria-hidden="true"></span>
 																	</div>
 																</div>

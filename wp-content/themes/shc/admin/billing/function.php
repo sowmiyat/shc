@@ -35,11 +35,11 @@ function getBillData($inv_id = 0, $year = 0) {
 
 	$bill_query = "SELECT s.*,
 ( CASE WHEN c.id IS NULL THEN 0 ELSE c.id END ) as customer_id,
-( CASE WHEN c.name IS NULL THEN 'Nil' ELSE c.name END ) as customer_name,
-( CASE WHEN c.mobile IS NULL THEN 'Nil' ELSE c.mobile END ) as mobile,
-( CASE WHEN c.secondary_mobile IS NULL THEN 'Nil' ELSE c.secondary_mobile END ) as secondary_mobile,
-( CASE WHEN c.landline IS NULL THEN 'Nil' ELSE c.landline END ) as landline,
-( CASE WHEN c.address IS NULL THEN 'Nil' ELSE c.address END ) as address
+( CASE WHEN c.name IS NULL THEN '' ELSE c.name END ) as customer_name,
+( CASE WHEN c.mobile IS NULL THEN '' ELSE c.mobile END ) as mobile,
+( CASE WHEN c.secondary_mobile IS NULL THEN '' ELSE c.secondary_mobile END ) as secondary_mobile,
+( CASE WHEN c.landline IS NULL THEN '' ELSE c.landline END ) as landline,
+( CASE WHEN c.address IS NULL THEN '' ELSE c.address END ) as address
 FROM ${sale_table} as s LEFT JOIN ${customer_table} as c ON s.customer_id = c.id WHERE s.inv_id = ${inv_id} and s.financial_year = ${year} AND s.locked = 1";
 
 	$data['bill_data'] = $wpdb->get_row($bill_query);
@@ -67,13 +67,13 @@ function getBillDataws($inv_id = 0, $year = 0) {
 
 	$bill_query = "SELECT s.*,
 ( CASE WHEN c.id IS NULL THEN 0 ELSE c.id END ) as customer_id,
-( CASE WHEN c.gst_number IS NULL THEN 0 ELSE c.gst_number END ) as gst_number,
-( CASE WHEN c.company_name IS NULL THEN 0 ELSE c.company_name END ) as company_name,
-( CASE WHEN c.customer_name IS NULL THEN 'Nil' ELSE c.customer_name END ) as customer_name,
-( CASE WHEN c.mobile IS NULL THEN 'Nil' ELSE c.mobile END ) as mobile,
-( CASE WHEN c.secondary_mobile IS NULL THEN 'Nil' ELSE c.secondary_mobile END ) as secondary_mobile,
-( CASE WHEN c.landline IS NULL THEN 'Nil' ELSE c.landline END ) as landline,
-( CASE WHEN c.address IS NULL THEN 'Nil' ELSE c.address END ) as address
+( CASE WHEN c.gst_number IS NULL THEN '' ELSE c.gst_number END ) as gst_number,
+( CASE WHEN c.company_name IS NULL THEN '' ELSE c.company_name END ) as company_name,
+( CASE WHEN c.customer_name IS NULL THEN '' ELSE c.customer_name END ) as customer_name,
+( CASE WHEN c.mobile IS NULL THEN '' ELSE c.mobile END ) as mobile,
+( CASE WHEN c.secondary_mobile IS NULL THEN '' ELSE c.secondary_mobile END ) as secondary_mobile,
+( CASE WHEN c.landline IS NULL THEN '' ELSE c.landline END ) as landline,
+( CASE WHEN c.address IS NULL THEN '' ELSE c.address END ) as address
 FROM ${sale_table} as s LEFT JOIN ${customer_table} as c ON s.customer_id = c.id WHERE s.inv_id = ${inv_id} and s.financial_year = ${year} AND s.locked = 1";
 
 	$data['bill_data'] = $wpdb->get_row($bill_query);
@@ -235,17 +235,19 @@ function create_order() {
 
 	}
 	else {
-		$customer_update = array(
-		'name' 						=> $params['name'], 
-		'mobile' 					=> $params['mobile'],
-		'secondary_mobile' 			=> $params['secondary_mobile'],
-		'landline' 					=> $params['landline'],
-		'address' 					=> $params['address']
-		);
-			
-		$wpdb->insert($customer_table, $customer_update);
-
-		$customer_id = $wpdb->insert_id;
+		if( $params['name'] = '' || $params['mobile'] ){ 
+			$customer_update = array(
+			'name' 						=> $params['name'], 
+			'mobile' 					=> $params['mobile'],
+			'secondary_mobile' 			=> $params['secondary_mobile'],
+			'landline' 					=> $params['landline'],
+			'address' 					=> $params['address']
+			);
+				
+			$wpdb->insert($customer_table, $customer_update);
+			$customer_id = $wpdb->insert_id;
+		}
+		$customer_id = 0;
 	}
 
 	if($params['payment_pay_type'] == 'cash'){
@@ -349,34 +351,36 @@ function ws_create_order() {
 
 	if($params['ws_old_customer_id'] != '0')
 	{
-		$customer_id = $params['ws_old_customer_id'];
-		$customer_update = array(
-		'customer_name' 			=> $params['name'], 
-		'company_name' 				=> $params['company'],
-		'mobile' 					=> $params['mobile'],
-		'secondary_mobile' 			=> $params['secondary_mobile'],
-		'landline' 					=> $params['landline'],
-		'address' 					=> $params['address'], 
-		'gst_number' 				=> $params['gst']
-		);
-		$wpdb->update($customer_table, $customer_update,array('id' => $customer_id));
-
+		
+			$customer_id = $params['ws_old_customer_id'];
+			$customer_update = array(
+			'customer_name' 			=> $params['name'], 
+			'company_name' 				=> $params['company'],
+			'mobile' 					=> $params['mobile'],
+			'secondary_mobile' 			=> $params['secondary_mobile'],
+			'landline' 					=> $params['landline'],
+			'address' 					=> $params['address'], 
+			'gst_number' 				=> $params['gst']
+			);
+			$wpdb->update($customer_table, $customer_update,array('id' => $customer_id));
+		
 	}
 	else {
-		$customer_update = array(
-		'customer_name' 			=> $params['name'], 
-		'company_name' 				=> $params['company'],
-		'mobile' 					=> $params['mobile'],
-		'secondary_mobile' 			=> $params['secondary_mobile'],
-		'landline' 					=> $params['landline'],
-		'address' 					=> $params['address'], 
-		'gst_number' 				=> $params['gst']
-		);
-			
-		$wpdb->insert($customer_table, $customer_update);
-
-
-		$customer_id = $wpdb->insert_id;
+		if( $params['name'] != '' || $params['mobile'] != '') {
+			$customer_update = array(
+			'customer_name' 			=> $params['name'], 
+			'company_name' 				=> $params['company'],
+			'mobile' 					=> $params['mobile'],
+			'secondary_mobile' 			=> $params['secondary_mobile'],
+			'landline' 					=> $params['landline'],
+			'address' 					=> $params['address'], 
+			'gst_number' 				=> $params['gst']
+			);
+				
+			$wpdb->insert($customer_table, $customer_update);
+			$customer_id = $wpdb->insert_id;
+			}
+		$customer_id = 0;
 	}
 	if($params['ws_payment_pay_type'] == 'cash'){ 
 		$payment_details = '';
@@ -471,17 +475,19 @@ function update_order() {
 
 	}
 	else {
-		$customer_update = array(
-		'name' 						=> $params['name'], 
-		'mobile' 					=> $params['mobile'],
-		'secondary_mobile' 			=> $params['secondary_mobile'],
-		'landline' 					=> $params['landline'],
-		'address' 					=> $params['address']
-		);
-			
-		$wpdb->insert($customer_table, $customer_update);
-
-		$customer_id = $wpdb->insert_id;
+		if( $params['name'] = '' || $params['mobile'] ) { 
+			$customer_update = array(
+			'name' 						=> $params['name'], 
+			'mobile' 					=> $params['mobile'],
+			'secondary_mobile' 			=> $params['secondary_mobile'],
+			'landline' 					=> $params['landline'],
+			'address' 					=> $params['address']
+			);
+				
+			$wpdb->insert($customer_table, $customer_update);
+			$customer_id = $wpdb->insert_id;
+		}
+		$customer_id = 0;
 	}
 	if($params['payment_pay_type'] == 'cash'){
 		$payment_details = '';
@@ -611,19 +617,22 @@ function ws_update_order() {
 
 	}
 	else {
-		$customer_update = array(
-		'customer_name' 			=> $params['name'], 
-		'company_name' 				=> $params['company'],
-		'mobile' 					=> $params['mobile'],
-		'secondary_mobile' 			=> $params['secondary_mobile'],
-		'landline' 					=> $params['landline'],
-		'address' 					=> $params['address'], 
-		'gst_number' 				=> $params['gst']
-		);
-			
-		$wpdb->insert($customer_table, $customer_update);
+		if( $params['name'] != '' || $params['mobile'] != '') {
+			$customer_update = array(
+			'customer_name' 			=> $params['name'], 
+			'company_name' 				=> $params['company'],
+			'mobile' 					=> $params['mobile'],
+			'secondary_mobile' 			=> $params['secondary_mobile'],
+			'landline' 					=> $params['landline'],
+			'address' 					=> $params['address'], 
+			'gst_number' 				=> $params['gst']
+			);
+				
+			$wpdb->insert($customer_table, $customer_update);
 
-		$customer_id = $wpdb->insert_id;
+			$customer_id = $wpdb->insert_id;
+		}
+	$customer_id = 0;
 	}
 	if($params['ws_payment_pay_type'] == 'cash'){ 
 		$payment_details = '';
@@ -784,23 +793,6 @@ function isValidInvoiceReturnws($invoice_id = 0){
     }
     return false;
 
-}
-
-function 
-ws($invoice_id = 0, $lock_check = 0){
-	global $wpdb;
-	$table =  $wpdb->prefix.'shc_ws_sale';
-
-	if($lock_check) {
-    	$query  = "SELECT * FROM ${table} WHERE active = 1 AND inv_id=".$invoice_id." AND locked=1";
-	} else {
-    	$query  = "SELECT * FROM ${table} WHERE active = 1 AND inv_id=".$invoice_id." AND locked=0";
-	}
-    
-    if( $inv_result = $wpdb->get_row($query) ) {
-    	return true;
-    }
-    return false;
 }
 
 
@@ -1166,58 +1158,58 @@ function getToken()
     return $token;
 }
 
-function get_return_lot_data() {
-	$data['success'] = 0;
-	global $wpdb;
-	$params = array();
-	parse_str($_POST['data'], $params);
-	$id = $_POST['id'];
+// function get_return_lot_data() {
+// 	$data['success'] = 0;
+// 	global $wpdb;
+// 	$params = array();
+// 	parse_str($_POST['data'], $params);
+// 	$id = $_POST['id'];
 
-	$sale_table = $wpdb->prefix. 'shc_ws_sale_detail';
-	$lot_table = $wpdb->prefix. 'shc_lots';
-	$return_table = $wpdb->prefix. 'shc_ws_return_items_details';
-	$id = $_POST['inv_id'];
-	$search_term = $_POST['search_key'];
-	//$query = "SELECT * FROM {$sale_table} as s left join {$lot_table} as l on l.id = s.lot_id WHERE s.sale_id = '$id' and l.product_name like '%${search_term}%' and s.active = 1";
-	$query ="SELECT sale.*, (sale.sale_unit - (case when rtn.return_unit is null then 0 else rtn.return_unit END)) as bal_qty from (SELECT s.*, l.brand_name, l.product_name,l.hsn,l.selling_price FROM {$sale_table} as s left join {$lot_table} as l on l.id = s.lot_id WHERE s.sale_id = '$id' and l.product_name like '%$search_term%' and s.active = 1 ) as sale left join (SELECT sum(sr.return_unit ) as return_unit ,sr.lot_id FROM {$return_table} as sr WHERE sr.sale_id = '$id' and sr.active = 1 group by sr.lot_id) as rtn on rtn.lot_id = sale.lot_id";
+// 	$sale_table = $wpdb->prefix. 'shc_ws_sale_detail';
+// 	$lot_table = $wpdb->prefix. 'shc_lots';
+// 	$return_table = $wpdb->prefix. 'shc_ws_return_items_details';
+// 	$id = $_POST['inv_id'];
+// 	$search_term = $_POST['search_key'];
+// 	//$query = "SELECT * FROM {$sale_table} as s left join {$lot_table} as l on l.id = s.lot_id WHERE s.sale_id = '$id' and l.product_name like '%${search_term}%' and s.active = 1";
+// 	$query ="SELECT sale.*, (sale.sale_unit - (case when rtn.return_unit is null then 0 else rtn.return_unit END)) as bal_qty from (SELECT s.*, l.brand_name, l.product_name,l.hsn,l.selling_price FROM {$sale_table} as s left join {$lot_table} as l on l.id = s.lot_id WHERE s.sale_id = '$id' and l.product_name like '%$search_term%' and s.active = 1 ) as sale left join (SELECT sum(sr.return_unit ) as return_unit ,sr.lot_id FROM {$return_table} as sr WHERE sr.sale_id = '$id' and sr.active = 1 group by sr.lot_id) as rtn on rtn.lot_id = sale.lot_id";
 
-	if( $data['items'] = $wpdb->get_results( $query, ARRAY_A ) ) {
-		$data['success'] = 1;
+// 	if( $data['items'] = $wpdb->get_results( $query, ARRAY_A ) ) {
+// 		$data['success'] = 1;
 		
-	}
-	echo json_encode($data);
-	die();
-}
-add_action( 'wp_ajax_get_return_lot_data', 'get_return_lot_data' );
-add_action( 'wp_ajax_nopriv_get_return_lot_data', 'get_return_lot_data' );
+// 	}
+// 	echo json_encode($data);
+// 	die();
+// }
+// add_action( 'wp_ajax_get_return_lot_data', 'get_return_lot_data' );
+// add_action( 'wp_ajax_nopriv_get_return_lot_data', 'get_return_lot_data' );
 
 
 
 
-function get_return_lot_data_retail() {
-	$data['success'] = 0;
-	global $wpdb;
-	$params = array();
-	parse_str($_POST['data'], $params);
-	$id = $_POST['id'];
+// function get_return_lot_data_retail() {
+// 	$data['success'] = 0;
+// 	global $wpdb;
+// 	$params = array();
+// 	parse_str($_POST['data'], $params);
+// 	$id = $_POST['id'];
 
-	$sale_table = $wpdb->prefix. 'shc_sale_detail';
-	$lot_table = $wpdb->prefix. 'shc_lots';
-	$return_table = $wpdb->prefix. 'shc_return_items_details';
-	$id = $_POST['inv_id'];
-	$search_term = $_POST['search_key'];
-	//$query = "SELECT * FROM {$sale_table} as s left join {$lot_table} as l on l.id = s.lot_id WHERE s.sale_id = '$id' and l.product_name like '%${search_term}%' and s.active = 1";
-	$query ="SELECT sale.*, (sale.sale_unit - (case when rtn.return_unit is null then 0 else rtn.return_unit END)) as bal_qty from (SELECT s.*, l.brand_name, l.product_name,l.hsn,l.selling_price FROM {$sale_table} as s left join {$lot_table} as l on l.id = s.lot_id WHERE s.sale_id = '$id' and l.product_name like '%$search_term%' and s.active = 1 ) as sale left join (SELECT sum(sr.return_unit ) as return_unit ,sr.lot_id FROM {$return_table} as sr WHERE sr.sale_id = '$id' and sr.active = 1 group by sr.lot_id) as rtn on rtn.lot_id = sale.lot_id";
+// 	$sale_table = $wpdb->prefix. 'shc_sale_detail';
+// 	$lot_table = $wpdb->prefix. 'shc_lots';
+// 	$return_table = $wpdb->prefix. 'shc_return_items_details';
+// 	$id = $_POST['inv_id'];
+// 	$search_term = $_POST['search_key'];
+// 	//$query = "SELECT * FROM {$sale_table} as s left join {$lot_table} as l on l.id = s.lot_id WHERE s.sale_id = '$id' and l.product_name like '%${search_term}%' and s.active = 1";
+// 	$query ="SELECT sale.*, (sale.sale_unit - (case when rtn.return_unit is null then 0 else rtn.return_unit END)) as bal_qty from (SELECT s.*, l.brand_name, l.product_name,l.hsn,l.selling_price FROM {$sale_table} as s left join {$lot_table} as l on l.id = s.lot_id WHERE s.sale_id = '$id' and l.product_name like '%$search_term%' and s.active = 1 ) as sale left join (SELECT sum(sr.return_unit ) as return_unit ,sr.lot_id FROM {$return_table} as sr WHERE sr.sale_id = '$id' and sr.active = 1 group by sr.lot_id) as rtn on rtn.lot_id = sale.lot_id";
 
-	if( $data['items'] = $wpdb->get_results( $query, ARRAY_A ) ) {
-		$data['success'] = 1;
+// 	if( $data['items'] = $wpdb->get_results( $query, ARRAY_A ) ) {
+// 		$data['success'] = 1;
 		
-	}
-	echo json_encode($data);
-	die();
-}
-add_action( 'wp_ajax_get_return_lot_data_retail', 'get_return_lot_data_retail' );
-add_action( 'wp_ajax_nopriv_get_return_lot_data_retail', 'get_return_lot_data_retail' );
+// 	}
+// 	echo json_encode($data);
+// 	die();
+// }
+// add_action( 'wp_ajax_get_return_lot_data_retail', 'get_return_lot_data_retail' );
+// add_action( 'wp_ajax_nopriv_get_return_lot_data_retail', 'get_return_lot_data_retail' );
 
 
 //Invoice Number Generate Function
@@ -1265,10 +1257,6 @@ function ws_create_return() {
 	);
 
 	$wpdb->update($sale_table, $id_update,array( 'id' => $return_id));
-		var_dump($wpdb->last_query);
-	die();
-
-
 
 	$data['invoice_id'] = $params['inv_id'];
 	$data['year'] = $_POST['year'];
@@ -1296,8 +1284,6 @@ function ws_create_return() {
 			);
 			$wpdb->insert( $sale_detail_table, $sale_detail_data);
 			$data['success'] = 1;
-
-			
 		 }
 	}	
 
@@ -1390,7 +1376,7 @@ function update_return() {
 	$sale_update = array(
 		'customer_id' 			=> $params['customer_id'], 
 		'inv_id' 				=> $params['inv_id'], 
-		'return_id' 			=>  'GR'.$params['id'],
+		'return_id' 			=>  'GR'.$params['return_id'],
 		'total_amount' 			=> $params['rtn_fsub_total'], 
 	);
 
@@ -1444,11 +1430,10 @@ function ws_update_return() {
 	parse_str($_POST['data'], $params);
 
 
-
 	$sale_update = array(
 		'customer_id' 			=> $params['customer_id'], 
 		'inv_id' 				=> $params['inv_id'], 
-		'return_id' 			=>  'GR'.$params['id'],
+		'return_id' 			=>  'GR'.$params['return_id'],
 		'total_amount' 			=> $params['rtn_fsub_total'], 
 	);
 
@@ -1491,6 +1476,39 @@ function ws_update_return() {
 }
 add_action( 'wp_ajax_ws_update_return', 'ws_update_return' );
 add_action( 'wp_ajax_nopriv_ws_update_return', 'ws_update_return' );
+
+
+
+
+
+function product_delivery() {
+
+	global $wpdb;
+	$params = array();
+	parse_str($_POST['data'], $params);
+	$id = $_POST['id'];
+	$delivery = $_POST['delivery'];
+
+	$lot_detail_table = $wpdb->prefix. 'shc_sale_detail';
+	$currentdate_time = date('Y-m-d H:i:s');
+
+
+
+	$delivery_data = array(
+		'is_delivery' 		=> $delivery,
+		'delivery_date' 	=> $currentdate_time
+		);
+
+
+	$wpdb->update($lot_detail_table,$delivery_data,array('id' => $id));
+
+	//$data['success'] = 1;
+	echo json_encode($data);
+	die();
+
+}
+add_action( 'wp_ajax_product_delivery', 'product_delivery');
+add_action( 'wp_ajax_nopriv_product_delivery', 'product_delivery');
 
 ?>
 

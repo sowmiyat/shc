@@ -1,7 +1,59 @@
  jQuery(document).ready(function (argument) {
+
     //** Customer Select billing **//
 jQuery('#billing_customer').focus();
     // populateReturnProductsRetail('.rtn_lot_id');
+
+
+
+
+
+             jQuery('.delivery_check').on('click',function(){
+                var delivery_check = jQuery(this).parent().parent().find('.delivery_check').val();
+                if(delivery_check){
+                    var delivery = 1;
+                } else {
+                    var delivery = 0;
+                }
+                var delivery_id = jQuery(this).parent().parent().find('.delivery_id').val();
+                jQuery.ajax({
+                    type: "POST",
+                    dataType : "json",
+                    url: frontendajax.ajaxurl,
+                    data: {
+                        action      :'product_delivery',
+                        id          : delivery_id,
+                        delivery    : delivery,
+                    },
+                    success: function (data) {
+                        clearPopup();
+                        console.log(data);
+                        // popItUp('Success', 'Bill Created!');
+                        // jQuery('#lightbox').css('display','none');
+
+                    }
+                });
+
+             });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 jQuery('#billing_mobile').live('keydown', function(e){
@@ -270,34 +322,44 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
                 var final_unit = parseFloat(unit) + parseFloat(actual_unit);
                 selector.find('.retail_sub_unit').val(final_unit);
 
+                addFromProductControlRetail();
+                jQuery('.product_control_error_retail').remove();
                 
             } else {
-                var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="customer_table_retail" ><td class="td_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="customer_detail['+current_row+'][id]" class="sub_id" /><td class="td_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="customer_detail['+current_row+'][product]" class="sub_product"/><td class="td_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="customer_detail['+current_row+'][hsn]" class="sub_hsn"/><td class=""><input type="text" value = "'+ unit + '" name="customer_detail['+current_row+'][unit]" class="retail_sub_unit"/> </td>  <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][stock]" class="retail_sub_stock"/><td class="td_price">' + price + '</td> <input type="hidden" value = "'+ price + '" name="customer_detail['+current_row+'][price]" class="sub_price"/> <td><input type="text" value ="'+ discount +'" name="customer_detail['+current_row+'][discount]" class="retail_sub_discount"/></td><input type="hidden" value ="each" name="customer_detail['+current_row+'][discount_type]" class="discount_type"/><td class="td_amt">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][amt]" class="sub_amt"/><td class="td_cgst">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="customer_detail['+current_row+'][cgst]" class="sub_cgst"/> <td class="td_cgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][cgst_value]" class="sub_cgst_value"/><td class="td_sgst">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="customer_detail['+current_row+'][sgst]" class="sub_sgst"/><td class="td_sgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][sgst_value]" class="sub_sgst_value"/><td class="td_subtotal"></td> <input type="hidden" value ="" name="customer_detail['+current_row+'][subtotal]" class="sub_total"/><td><span class="retail_sub_delete">Delete</span></td></tr>';                
+                var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="customer_table_retail" ><td class="td_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="customer_detail['+current_row+'][id]" class="sub_id" /><td class="td_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="customer_detail['+current_row+'][product]" class="sub_product"/><td class="td_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="customer_detail['+current_row+'][hsn]" class="sub_hsn"/><td class=""><input type="text" value = "'+ unit + '" name="customer_detail['+current_row+'][unit]" class="retail_sub_unit"/> </td>  <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][stock]" class="retail_sub_stock"/><td class="td_price">' + price + '</td> <input type="hidden" value = "'+ price + '" name="customer_detail['+current_row+'][price]" class="sub_price"/> <td><input type="text" value ="'+ discount +'" name="customer_detail['+current_row+'][discount]" class="retail_sub_discount"/></td><input type="hidden" value ="each" name="customer_detail['+current_row+'][discount_type]" class="discount_type"/><td class="td_amt">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][amt]" class="sub_amt"/><td class="td_cgst">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="customer_detail['+current_row+'][cgst]" class="sub_cgst"/> <td class="td_cgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][cgst_value]" class="sub_cgst_value"/><td class="td_sgst">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="customer_detail['+current_row+'][sgst]" class="sub_sgst"/><td class="td_sgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][sgst_value]" class="sub_sgst_value"/><td class="td_subtotal"></td> <input type="hidden" value ="" name="customer_detail['+current_row+'][subtotal]" class="sub_total"/><td><a  href="#" class="retail_sub_delete">Delete</a></td></tr>';                
                 jQuery('#bill_lot_add_retail').append(str);
+
+                addFromProductControlRetail();
+                jQuery('.product_control_error_retail').remove();
             }
             rowCalculate();
-            jQuery('.retail_unit').val('0');
-            jQuery('.retail_discount').val('0.00');
-            jQuery('.lot_id').text('');
-            jQuery('.lot_id').val('');
+
           
          } 
        
         else {
-            if(discount == '0.00')  {
-                alert_popup('Enter Discounted Price !!!');
+            var product_name_selector = jQuery('#lot_id');
+            var lot_id_selector = jQuery('.retail_lot_id_orig');
+            var unit_selector = jQuery('#retail_unit');
+            var discount_selector = jQuery('#retail_discount');
+
+            var product_name = product_name_selector.val();
+            var lot_id = lot_id_selector.val();
+            var unit = unit_selector.val();
+            var discount = discount_selector.val();
+            jQuery('.product_control_error_retail').remove();
+
+            if(product_name == '' || lot_id == '' || lot_id <= 0  ) { 
+                product_name_selector.after('<div class="product_control_error_retail control_error">Please Enter Valid Product!</div>');
+                product_name_selector.focus();
             }
-            else if(discount == ''){
-                alert_popup('Enter Discounted Price !!!');
-                jQuery('.lot_id').text('');
-                jQuery('.lot_id').val('');
+            if(unit == '' || unit <= 0) {
+                unit_selector.after('<div class="product_control_error_retail control_error">Unit Must be above 0</div>');
+                unit_selector.focus();
             }
-             else if ( unit == '0' && unit == '') {
-                alert_popup('Enter Unit !!!');
-            }
-            else 
-            {
-                alert_popup('Select Products!!!');
+            if(discount == '' || discount <= 0) {
+                discount_selector.after('<div class="product_control_error_retail control_error">Please Enter Valid Discounted Price!</div>');
+                discount_selector.focus();
             }
         }
 
@@ -327,68 +389,159 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
        rowCalculate();
     });
 
+
+
+
+
+
+
+ //<------- Validation Function --------> 
+   
+ jQuery.validator.setDefaults({
+      debug: true,
+      success: "valid"
+    });
+
+//<---  validation for whole sale--->
+    jQuery( ".billing_validation" ).validate({
+        rules: {
+            name: {
+                nameValidite : true,
+            },
+            mobile: { 
+                minlength: 10,
+                maxlength: 10,
+                uniqueUserMobile: true
+            },
+            secondary_mobile: {
+                minlength: 10,
+                maxlength: 10,
+            },
+            landline: {
+                minlength: 6,
+                maxlength: 8,
+            },
+            address: {
+                addressValidate : true,
+            },
+            delivery_name: {
+                nameValidite : true,
+            },
+            delivery_phone: {
+                minlength: 10,
+                maxlength: 10,
+            },
+            delivery_address : {
+                addressValidate : true,
+            }
+
+        },
+        messages: {
+            name: {
+                nameValidite: "Special Characters Not Allowed!",
+            },
+            mobile: {  
+                minlength: "Mobile Number Must Be 10 Numbers!",
+                maxlength: "Mobile Number Must Be 10 Numbers!",
+                uniqueUserMobile : "Mobile Number Already Exist!",
+            },
+            secondary_mobile : {
+                minlength: "Please Enter Valid  Number!",
+                maxlength: "Please Enter Valid  Number!",
+            },
+            landline : {
+                minlength: "Please Enter Valid Landline Number!",
+                maxlength: "Please Enter Valid Landline Number!",
+            },
+            address: {
+                addressValidate : "Please Enter Valid Address",
+            },
+            delivery_name : {
+                nameValidite: "Special Characters Not Allowed!",
+            },
+            delivery_phone : {
+                minlength: "Please Enter Valid  Number!",
+                maxlength: "Please Enter Valid  Number!",
+            },
+             delivery_address: {
+                addressValidate : "Please Enter Valid Address",
+            },
+
+        }
+    });
+
+
+
     /*Submit Payment*/
     jQuery('#billing_container #submit_payment').on('click', function() {
+        var valid = jQuery(".billing_validation").valid();
+        if( valid ) {
+            var existing_count = parseInt( jQuery('#bill_lot_add_retail tr').length );
+            if(existing_count != 0 ) {
 
-        var existing_count = parseInt( jQuery('#bill_lot_add_retail tr').length );
-        if(existing_count != 0 ) {
+                var bill_update_url = bill_update.updateurl;
+                jQuery('#lightbox').css('display','block');
+                jQuery.ajax({
+                    type: "POST",
+                    dataType : "json",
+                    url: frontendajax.ajaxurl,
+                    data: {
+                        action : 'create_order',
+                        data : jQuery('#billing_container :input').serialize()
+                    },
+                    success: function (data) {
+                        clearPopup();
+                        popItUp('Success', 'Bill Created!');
+                        jQuery('#lightbox').css('display','none');
+                        console.log("efklf");
+                        console.log(data);
+                        window.location = bill_update_url+'&id='+data.inv_id;
 
-            var bill_update_url = bill_update.updateurl;
-            jQuery('#lightbox').css('display','block');
-            jQuery.ajax({
-                type: "POST",
-                dataType : "json",
-                url: frontendajax.ajaxurl,
-                data: {
-                    action : 'create_order',
-                    data : jQuery('#billing_container :input').serialize()
-                },
-                success: function (data) {
-                    clearPopup();
-                    popItUp('Success', 'Bill Created!');
-                    jQuery('#lightbox').css('display','none');
-                    console.log("efklf");
-                    console.log(data);
-                    window.location = bill_update_url+'&id='+data.inv_id;
-
-                }
-            });
+                    }
+                });
+            }
+            else {
+                alert('Please Add Atleast One Product!!! Empty Bill Can'+"'"+'t Submit');
+            }
         }
-        else {
-            alert('Please Add Atleast One Product!!! Empty Bill Can'+" ' "+'t Submit');
-        }
+        return false;
     });
 
 
      /*Update Payment*/
     jQuery('#billing_container #update_payment').on('click', function(){
 
-        var existing_count = parseInt( jQuery('#bill_lot_add_retail tr').length );
-        if(existing_count != 0 ) {
+        var valid = jQuery(".billing_validation").valid();
+        if( valid ) {
 
-            var bill_invoice_url = bill_invoice.invoiceurl;
-            jQuery('#lightbox').css('display','block');
-            jQuery.ajax({
-                type: "POST",
-                dataType : "json",
-                url: frontendajax.ajaxurl,
-                data: {
-                    action : 'update_order',
-                    data : jQuery('#billing_container :input').serialize()
-                },
-                success: function (data) {
-                    clearPopup();
-                    popItUp('Success', 'Successfully Updated!');
-                    jQuery('#lightbox').css('display','none');
+            var existing_count = parseInt( jQuery('#bill_lot_add_retail tr').length );
+            if(existing_count != 0 ) {
 
-                    window.location = bill_invoice_url+'&id='+data.inv_id + '&year='+ data.year;
+                var bill_invoice_url = bill_invoice.invoiceurl;
+                jQuery('#lightbox').css('display','block');
+                jQuery.ajax({
+                    type: "POST",
+                    dataType : "json",
+                    url: frontendajax.ajaxurl,
+                    data: {
+                        action : 'update_order',
+                        data : jQuery('#billing_container :input').serialize()
+                    },
+                    success: function (data) {
+                        clearPopup();
+                        popItUp('Success', 'Successfully Updated!');
+                        jQuery('#lightbox').css('display','none');
 
-                }
-            });
+                        window.location = bill_invoice_url+'&id='+data.inv_id + '&year='+ data.year;
+
+                    }
+                });
+            }
+            else {
+                alert('Please Add Atleast One Product!!! Empty Bill Can'+"'"+'t Submit');
+            }
         }
-        else {
-            alert('Please Add Atleast One Product!!! Empty Bill Can'+" ' "+'t Submit');
-        }
+        return false;
         
     });
 
@@ -411,7 +564,7 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
 
     });
 
-    //<-----After keydown submit using tab goto first text box in Return billing View--->
+    //<-----After keydown submit using tab goto first text box in Return billing View in Retail Return--->
     jQuery(".return_print").on('keydown',  function(e) { 
         var keyCode = e.keyCode || e.which; 
 
@@ -424,7 +577,7 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
 
 
 
-      //<-----After keydown submit using tab goto first text box in Return billing View--->
+      //<-----After keydown submit using tab goto first text box in Return billing View in Wholesale Return--->
     jQuery(".ws_return_print").on('keydown',  function(e) { 
         var keyCode = e.keyCode || e.which; 
 
@@ -453,31 +606,30 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
     });
 
       /*Update Return Payment*/
-    jQuery('#return_billing_container #return_update_payment').on('click', function() {
+    // jQuery('#return_billing_container #return_update_payment').on('click', function() {
       
 
-        var bill_invoice_url = bill_return.return_page;
-        jQuery('#lightbox').css('display','block');
-        jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                action : 'return_order',
-                data : jQuery('#return_billing_container :input').serialize()
-            },
-            success: function (data) {
-                clearPopup();
-                popItUp('Success', 'Successfully Updated!');
-                jQuery('#lightbox').css('display','none');
+    //     var bill_invoice_url = bill_return.return_page;
+    //     jQuery('#lightbox').css('display','block');
+    //     jQuery.ajax({
+    //         type: "POST",
+    //         dataType : "json",
+    //         url: frontendajax.ajaxurl,
+    //         data: {
+    //             action : 'return_order',
+    //             data : jQuery('#return_billing_container :input').serialize()
+    //         },
+    //         success: function (data) {
+    //             clearPopup();
+    //             popItUp('Success', 'Successfully Updated!');
+    //             jQuery('#lightbox').css('display','none');
 
-                window.location = bill_invoice_url+'&id='+data.invoice_id;
+    //             window.location = bill_invoice_url+'&id='+data.invoice_id;
 
-            }
-        });
+    //         }
+    //     });
         
-    });
-
+    // });
 
 
 
@@ -551,103 +703,6 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
             }
         });
     });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   jQuery('#ws_billing_return #ws_return_submit').on('click', function() {
-
-        var bill_update_url = ws_bill_return.ws_return_page;
-        jQuery('#lightbox').css('display','block');
-        jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                action : 'ws_create_return',
-                data   : jQuery('#ws_billing_return :input').serialize(),
-                year   : jQuery( ".year" ).val(),
-            },
-            success: function (data) {
-                clearPopup();
-                popItUp('Success', 'Bill Created!');
-                jQuery('#lightbox').css('display','none');
-
-              window.location = bill_update_url+'&return_id='+data.id+'&id='+data.invoice_id+'&year='+data.year;
-
-            }
-        });
-    });
-
-    //<------- Goods Return Items Update ---->
-    jQuery('#ws_billing_return #ws_return_update').on('click', function() {
-
-        var bill_update_url = bill_return_viewws.returnviewws;
-        jQuery('#lightbox').css('display','block');
-        jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                action : 'ws_update_return',
-                data   : jQuery('#ws_billing_return :input').serialize(),
-                year   : jQuery( ".year" ).val(),
-            },
-            success: function (data) {
-                clearPopup();
-                popItUp('Success', 'Bill Created!');
-                jQuery('#lightbox').css('display','none');
-
-              window.location = bill_update_url+'&id='+data.id;
-
-            }
-        });
-    });
-
-
-
- //<------- Return invoice start---------->
-    jQuery('.ws_return_inv_id').focus();
-
- //<-----After keydown submit using tab goto first text box in Return billing--->
-    jQuery("#ws_return_submit,#ws_return_update").on('keydown',  function(e) { 
-        var keyCode = e.keyCode || e.which; 
-
-        if (keyCode == 9) { 
-            e.preventDefault(); 
-            jQuery('.ws_return_inv_id').focus();
-        } 
-
-    });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -800,38 +855,7 @@ function rowCalculate() {
 }
 
 
- 
-function formatStateBillCreate (state) {
-    if (!state.id) {
-        return state.id;
-    }
-    var $state = jQuery(
-    '<span><b>Brand Name  :</b>' +
-    state.brand_name +
-    '</span><br/>' +
-    '<span><b>Product Name : </b>' +
-    state.product_name +
-    '</span>'
-   
-    );
-    return $state;
-};
-
-function formatStateBillCreate1 (state) {
-    if (!state.id) {
-        return state.id;
-    }
-    var $state = jQuery(
-    '<span>' +
-    state.product_name +
-    '</span><br/>'
-   
-    );
-    return $state;
-};
-
 function Return_rowCalculate() {
-    console.log("hfh");
     var sub_tot=parseFloat(0);
    
     jQuery('.rtn_bill_lot_add').each(function() { 
@@ -870,4 +894,11 @@ function Return_rowCalculate() {
     });
         jQuery('.rtn_fsub_total').val(sub_tot);
 
+}
+function addFromProductControlRetail() {
+    jQuery('.lot_id').val('');
+    jQuery('.retail_lot_id_orig').val('');
+    jQuery('.retail_unit').val('');
+    jQuery('.retail_discount').val('');
+    jQuery('#lot_id').focus();
 }

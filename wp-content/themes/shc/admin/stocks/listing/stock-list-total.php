@@ -38,10 +38,13 @@
                   <input type="text" name="product_name" class="product_name" value="<?php echo $stocks->product_name; ?>" placeholder="Product Name">
                 </div>
                 <div class="col-md-2">
-                  <input type="text" name="stock_from" class="stock_from" value="<?php echo $stocks->stock_from; ?>" placeholder="Stock From">
+                 <select name="comparison" class="comparison">
+                    <option value='less_than' <?php echo ($stocks->comparison == 'less_than') ? 'selected' : '' ?>>less than</option>
+                    <option value='greater_than' <?php echo ($stocks->comparison == 'greater_than') ? 'selected' : '' ?>>greater than</option>
+                  </select>
                 </div>
                 <div class="col-md-2">
-                  <input type="text" name="stock_to" class="stock_to" value="<?php echo $stocks->stock_to; ?>" placeholder="Stock To">
+                  <input type="text" name="count" class="count" value="<?php echo $stocks->stock_to; ?>" placeholder="Count">
                 </div>
               </div>
               <input type="hidden" name="filter_action" class="filter_action" value="stock_filter_total">

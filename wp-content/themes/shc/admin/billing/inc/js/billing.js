@@ -2,7 +2,7 @@ jQuery(document).ready(function (argument) {
 
 jQuery('#ws_billing_customer').focus();
 
-jQuery('#ws_billing_mobile').live('keydown', function(e){
+    jQuery('#ws_billing_mobile').live('keydown', function(e){
         var keyCode = e.keyCode || e.which; 
         if (keyCode == 40) { 
 
@@ -14,6 +14,31 @@ jQuery('#ws_billing_mobile').live('keydown', function(e){
 
         }
     });
+    //<-------- display secondary and landline textboxes----->
+    jQuery('#ws_billing_secondary_mobile').live('keydown', function(e){
+        var keyCode = e.keyCode || e.which; 
+        if (keyCode == 40) { 
+            e.preventDefault(); 
+            jQuery('.landline_mobile').css('display', 'block');
+            jQuery('#ws_billing_landline_mobile').focus();
+        }
+        if (keyCode == 38) { 
+            e.preventDefault(); 
+            jQuery('.secondary_mobile').css('display', 'none');
+            jQuery('#ws_billing_secondary_mobile').val('');
+            jQuery('#ws_billing_mobile').focus();
+        }
+    });
+    jQuery('#ws_billing_landline_mobile').live('keydown', function(e){ console.log(e);
+        var keyCode = e.keyCode || e.which; 
+        if (keyCode == 38) { 
+            e.preventDefault(); 
+            jQuery('.landline_mobile').css('display', 'none');
+            jQuery('#ws_billing_landline_mobile').val('');
+            jQuery('#ws_billing_secondary_mobile').focus();
+        }
+    });
+//<----------- End mobile textboxes------>
 
     jQuery("#ws_submit_payment").on('keydown',  function(e) { 
       var keyCode = e.keyCode || e.which; 
@@ -32,10 +57,6 @@ jQuery('#ws_billing_mobile').live('keydown', function(e){
             var year = jQuery("#ui-datepicker-div .ui-datepicker-year :selected").val();
             jQuery(this).datepicker('setDate', new Date(year, 1));
         }
-    });
-
-    jQuery(".year").focus(function () {
-        jQuery(".ui-datepicker-month").hide();
     });
 
     //<------- Validation Function --------> 
@@ -75,6 +96,9 @@ jQuery('#ws_billing_mobile').live('keydown', function(e){
                 minlength: 15,
                 maxlength: 15,
             },
+            delivery_name: {
+                nameValidite : true,
+            },
             ws_delivery_phone: {
                 minlength: 10,
                 maxlength: 10,
@@ -111,6 +135,9 @@ jQuery('#ws_billing_mobile').live('keydown', function(e){
                 gstValidate : "GST Numbers Does Not Contain Special Characters!",
                 minlength: "GST Number Must Be 15 Letters!",
                 maxlength: "GST Number Must Be 15 Letters!",
+            },
+            delivery_name : {
+                nameValidite: "Special Characters Not Allowed!",
             },
             ws_delivery_phone : {
                 minlength: "Please Enter Valid  Number!",
@@ -169,6 +196,11 @@ jQuery('#ws_billing_mobile').live('keydown', function(e){
     /*WS Update Payment*/
     jQuery('#ws_billing_container #ws_update_payment').on('click', function() {
 
+        var valid = jQuery(".ws_billing_validation").valid();
+        if( valid ) {
+            var existing_count = parseInt( jQuery('#bill_lot_add tr').length );
+            if(existing_count != 0 ) {
+
         var bill_invoice_url = bill_invoicews.invoiceurlws;
         jQuery('#lightbox').css('display','block');
         jQuery.ajax({
@@ -188,62 +220,16 @@ jQuery('#ws_billing_mobile').live('keydown', function(e){
 
             }
         });
-        
-    });
-
-//<------- Goods Return Items ---->
-    jQuery('#ws_billing_return #ws_return_submit').on('click', function() {
-
-        var bill_update_url = bill_return_viewws.returnviewws;
-        jQuery('#lightbox').css('display','block');
-        jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                action : 'ws_create_return',
-                data   : jQuery('#ws_billing_return :input').serialize()
-            },
-            success: function (data) {
-                console.log(data);
-                clearPopup();
-                popItUp('Success', 'Bill Created!');
-                jQuery('#lightbox').css('display','none');
-
-              window.location = bill_update_url+'&id='+data.id;
-
-            }
-        });
-    });
-
-     /*Update Wholesale Return Payment*/
-
-    jQuery('#ws_return_billing_container #ws_return_update_payment').on('click', function(){
-      
-
-        var bill_invoice_url = bill_return_listws.return_itemsws;
-        jQuery('#lightbox').css('display','block');
-        jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                action : 'ws_return_order',
-                data : jQuery('#ws_return_billing_container :input').serialize()
-            },
-            success: function (data) {
-                clearPopup();
-                popItUp('Success', 'Successfully Updated!');
-                jQuery('#lightbox').css('display','none');
-
-                window.location = bill_invoice_url+'&id='+data.invoice_id;
-
-            }
-        });
-        
+        }
+        else {
+            alert('Please Add Atleast One Product!!! Empty Bill Can'+"'"+'t Submit');
+        }
+    }
+       return false; 
     });
 
 
+//<---- Billing mobile and customer search------->
      jQuery( "#ws_billing_customer, #ws_billing_mobile" ).autocomplete ({
       source: function( request, response ) {
         var billing_field = jQuery(this.element).attr('id');
@@ -385,46 +371,7 @@ jQuery('#ws_billing_mobile').live('keydown', function(e){
 
      //<---- End Generate Print and Download Page ---> 
 
-     //<---- New and Old Customer Link In billing --->
 
-    jQuery('.ws_new_user_bill').on('click', function() {
-        jQuery('.ws_new_user_bill,.ws_billing_customer_div').css('display', 'none');
-        jQuery('.ws_old_user_bill,.ws_new_customer').css('display', 'block');
-        jQuery('.ws_user_type').val('new'); 
-        jQuery('.ws_popup-add-customer').trigger('click');
-
-    });
-
-    jQuery('.ws_old_user_bill').on('click', function() {
-        jQuery('.ws_new_user_bill,.ws_billing_customer_div').css('display', 'block');
-        jQuery('.ws_old_user_bill,.ws_new_customer').css('display', 'none');
-       jQuery('.ws_user_type').val('old');
-    });
- //<---- End New and Old Customer Link In billing --->
-
-//<----- Pop up For Customers and home delivery--->
-
-    jQuery('.popup-add-customer').live('click', function() {
-        create_popup('get_customer_create_form_popup', 'Add New Customer');
-    });
-
-
-    jQuery('.ws_popup-add-customer').live('click', function() {
-        create_popup('ws_get_customer_create_form_popup', 'Add New Customer');
-    });
-
-
-
-    jQuery('.popup-add-homedelivery').live('click', function() {
-        create_popup('get_homedelivery_create_form_popup', 'Add Home Delivery Address');
-    });
-
-    jQuery('a.customer_edit').live('click', function(e) {
-        e.preventDefault();
-        jQuery('#src_info_box').bPopup();
-    });
-
-//<----- End Pop up For Customers and home delivery--->
 //<--- Display Balance -----> 
     jQuery('.ws_paid_amount').on('change',function() {
         var prev_bal = parseFloat(jQuery('.ws_balance_amount_val').val());
@@ -491,33 +438,6 @@ function clear_main_popup() {
   jQuery('#popup-content').html('');              
 }
 
-function formatCustomerName (state) {
-  if (!state.id) {
-    return state.id;
-  }
-
-  var $state = jQuery(
-    '<span>' +
-      state.mobile +
-    '</span>'
-  );
-  return $state;
-};
-
-function formatCustomerNameResult(data) {
-  if (!data.id) { // adjust for custom placeholder values
-    return 'Searching ...';
-  }
-  var $state = jQuery(
-    '<span>Name : ' +
-      data.customer_name +
-    '</span>' +
-    '<br><span> Mobile : ' +
-      data.mobile +
-    '</span>'
-  );
-  return $state;
-}
 
 
 
@@ -672,7 +592,7 @@ jQuery( document ).ready(function() {
         
     });
 
-    jQuery('.sub_discount').live('change keyup',function(){
+    jQuery('.sub_discount').live('change',function(){
 
         jQuery(this).parent().parent().find('.discount_type').val('each');
         var unit = jQuery(this).parent().parent().find('.sub_discount').val();
@@ -717,13 +637,13 @@ jQuery( document ).ready(function() {
                 addFromProductControl();
                 jQuery('.product_control_error').remove();
             } else {
-                var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="customer_table" ><td class="td_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="customer_detail['+current_row+'][id]" class="sub_id" /><td class="td_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="customer_detail['+current_row+'][product]" class="sub_product"/><td class="td_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="customer_detail['+current_row+'][hsn]" class="sub_hsn"/><td class=""><input type="text" value = "'+ unit + '" name="customer_detail['+current_row+'][unit]" class="sub_unit"/> </td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][stock]" class="sub_stock"/><td class="td_price">' + price + '</td> <input type="hidden" value = "'+ price + '" name="customer_detail['+current_row+'][price]" class="sub_price"/> <td><input type="text" value ="'+discount +'" name="customer_detail['+current_row+'][discount]" class="sub_discount"/></td><input type="hidden" value ="each" name="customer_detail['+current_row+'][discount_type]" class="discount_type"/><td class="td_amt">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][amt]" class="sub_amt"/><td class="td_cgst">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="customer_detail['+current_row+'][cgst]" class="sub_cgst"/> <td class="td_cgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][cgst_value]" class="sub_cgst_value"/><td class="td_sgst">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="customer_detail['+current_row+'][sgst]" class="sub_sgst"/><td class="td_sgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][sgst_value]" class="sub_sgst_value"/><td class="td_subtotal"></td> <input type="hidden" value ="" name="customer_detail['+current_row+'][subtotal]" class="sub_total"/><td><span class="sub_delete">Delete</span></td></tr>';                
+                var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="customer_table" ><td class="td_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="customer_detail['+current_row+'][id]" class="sub_id" /><td class="td_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="customer_detail['+current_row+'][product]" class="sub_product"/><td class="td_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="customer_detail['+current_row+'][hsn]" class="sub_hsn"/><td class=""><input type="text" value = "'+ unit + '" name="customer_detail['+current_row+'][unit]" class="sub_unit"/> </td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][stock]" class="sub_stock"/><td class="td_price">' + price + '</td> <input type="hidden" value = "'+ price + '" name="customer_detail['+current_row+'][price]" class="sub_price"/> <td><input type="text" value ="'+discount +'" name="customer_detail['+current_row+'][discount]" class="sub_discount"/></td><input type="hidden" value ="each" name="customer_detail['+current_row+'][discount_type]" class="discount_type"/><td class="td_amt">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][amt]" class="sub_amt"/><td class="td_cgst">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="customer_detail['+current_row+'][cgst]" class="sub_cgst"/> <td class="td_cgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][cgst_value]" class="sub_cgst_value"/><td class="td_sgst">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="customer_detail['+current_row+'][sgst]" class="sub_sgst"/><td class="td_sgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][sgst_value]" class="sub_sgst_value"/><td class="td_subtotal"></td> <input type="hidden" value ="" name="customer_detail['+current_row+'][subtotal]" class="sub_total"/><td><a href="#" class="sub_delete">Delete</a></td></tr>';                
                 jQuery('#bill_lot_add').append(str);
 
                 addFromProductControl();
                 jQuery('.product_control_error').remove();
             }
-            // jQuery('.ws_bill_submit').css('display','block');
+            
              ws_rowCalculate();
         } else {
             var product_name_selector = jQuery('#ws_lot_id');
@@ -839,7 +759,7 @@ function ws_rowCalculate() {
         var row_per_sgst    = full_gst/2;
 
 
-        jQuery(this).find('.sub_discount').val(unit_price);
+        jQuery(this).find('.sub_discount').val(unit_price.toFixed(2));
       
         unit_total   = (isNaN(unit_total) ? '0.00' : unit_total);
 
@@ -873,90 +793,72 @@ function ws_rowCalculate() {
 
 jQuery(document).ready(function (argument) {
 
-     populateReturnProducts('.rtn_ws_lot_id');
 
-    jQuery('.return_qty').on('change',function() {
-        var unit                = parseFloat(jQuery('.qty_hidden').val());
-        var return_qty          = parseFloat(jQuery('.return_qty').val());
-        if( unit >= return_qty){
-            var bal_qty = unit - return_qty;
-            jQuery('.qty').val(bal_qty);
-        }
-        else {
-            alert('Please Enter Return quantity as small as Quantity!!!');
-            jQuery('.return_qty').val('0');
-            jQuery('.qty').val(unit);
-        }
+       jQuery('#ws_billing_return #ws_return_submit').on('click', function() {
 
-    });
-
-
-
-    jQuery('.add-button-return').live('click',function() {
-
-        var product_id          = jQuery('.rtn_ws_lot_id').val();
-        var product_name        = jQuery('.rtn_ws_product').val();
-        var hsn_code            = jQuery('.rtn_ws_hsn').val();
-        var discount            = jQuery('.rtn_discount_amt').val();
-        var unit                = jQuery('.qty').val();
-        var rtn_qty             = jQuery('.return_qty').val();
-        var cgst                = jQuery('.rtn_cgst_percentage').val();
-        var sgst                = jQuery('.rtn_sgst_percentage').val();
-
-       if( rtn_qty != '0'   ) {
-            var existing_count = parseInt( jQuery('#rtn_bill_lot_add tr').length );
-            var current_row = existing_count + 1;
-            if( jQuery('.rtn_customer_tab[data-productid='+ product_id +']').length != 0 ) {
-                var selector = jQuery('.rtn_customer_tab[data-productid='+ product_id +']');
-                selector.find('.td_rtn_qty').text(rtn_qty);
-                selector.find('.td_rtn_unit').text(unit);
-                selector.find('.sub_rtn_qty').val(rtn_qty);
-                selector.find('.rtn_sub_unit').val(unit);
-
-                
-            } else {
-                var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="rtn_customer_tab" ><td class="td_rtn_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="rtn_customer_table['+current_row+'][id]" class="rtn_sub_id" /><td class="td_rtn_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="rtn_customer_table['+current_row+'][product]" class="rtn_sub_product"/><td class="td_rtn_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="rtn_customer_table['+current_row+'][hsn]" class="rtn_sub_hsn"/><td class="td_rtn_unit">'+ unit + ' </td><input type="hidden" value = "'+ unit + '" name="rtn_customer_table['+current_row+'][unit]" class="rtn_sub_unit"/> <td class="td_rtn_qty">' + rtn_qty + '</td> <input type="hidden" value = "'+ rtn_qty + '" name="rtn_customer_table['+current_row+'][rtn_qty]" class="sub_rtn_qty"/><td class="td_rtn_discount">'+ discount +'</td><input type="hidden" value ="'+discount +'" name="rtn_customer_table['+current_row+'][mrp]" class="rtn_sub_discount"/><td class="td_rtn_amt"></td> <input type="hidden" value = "" name="rtn_customer_table['+current_row+'][amt]" class="rtn_sub_amt"/><td class="td_rtn_cgst">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="rtn_customer_table['+current_row+'][cgst]" class="rtn_sub_cgst"/> <td class="td_rtn_cgst_value"></td> <input type="hidden" value = "" name="rtn_customer_table['+current_row+'][cgst_value]" class="rtn_sub_cgst_value"/><td class="td_rtn_sgst">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="rtn_customer_table['+current_row+'][sgst]" class="rtn_sub_sgst"/><td class="td_rtn_sgst_value"></td> <input type="hidden" value = "" name="rtn_customer_table['+current_row+'][sgst_value]" class="rtn_sub_sgst_value"/><td class="td_rtn_subtotal"></td> <input type="hidden" value ="" name="rtn_customer_table['+current_row+'][subtotal]" class="rtn_sub_total"/><td><span class="sub_delete">Delete</span></td></tr>';                
-                jQuery('#rtn_bill_lot_add').append(str);
-            }
-
-             wsReturn_rowCalculate();
-           
-        } else {
-
-            alert_popup('Enter All Fields !!!');
-        }
-
-        jQuery('.qty').val('0');
-        jQuery('.return_qty').val('0');
-    
-    });
-
-
-    jQuery('#ws_return_billing_container #ws_return_update_payment').on('click', function(){
-      
-
-        var bill_invoice_url = bill_return_listws.return_itemsws;
-
+        var bill_update_url = ws_bill_return.ws_return_page;
         jQuery('#lightbox').css('display','block');
         jQuery.ajax({
             type: "POST",
             dataType : "json",
             url: frontendajax.ajaxurl,
             data: {
-                action : 'ws_return_order',
-                data : jQuery('#ws_return_billing_container :input').serialize()
+                action : 'ws_create_return',
+                data   : jQuery('#ws_billing_return :input').serialize(),
+                year   : jQuery( ".year" ).val(),
             },
             success: function (data) {
                 clearPopup();
-                popItUp('Success', 'Successfully Updated!');
+                popItUp('Success', 'Bill Created!');
                 jQuery('#lightbox').css('display','none');
 
-                window.location = bill_invoice_url+'&id='+data.invoice_id;
+              window.location = bill_update_url+'&return_id='+data.id+'&id='+data.invoice_id+'&year='+data.year;
 
             }
         });
-        
     });
+
+    //<------- Goods Return Items Update ---->
+    jQuery('#ws_billing_return #ws_return_update').on('click', function() {
+
+        var bill_update_url = bill_return_viewws.returnviewws;
+        jQuery('#lightbox').css('display','block');
+        jQuery.ajax({
+            type: "POST",
+            dataType : "json",
+            url: frontendajax.ajaxurl,
+            data: {
+                action : 'ws_update_return',
+                data   : jQuery('#ws_billing_return :input').serialize(),
+                year   : jQuery( ".year" ).val(),
+            },
+            success: function (data) {
+                clearPopup();
+                popItUp('Success', 'Bill Created!');
+                jQuery('#lightbox').css('display','none');
+
+              window.location = bill_update_url+'&id='+data.id;
+
+            }
+        });
+    });
+
+
+
+ //<------- Return invoice start---------->
+    jQuery('.ws_return_inv_id').focus();
+
+ //<-----After keydown submit using tab goto first text box in Return billing--->
+    jQuery("#ws_return_submit,#ws_return_update").on('keydown',  function(e) { 
+        var keyCode = e.keyCode || e.which; 
+
+        if (keyCode == 9) { 
+            e.preventDefault(); 
+            jQuery('.ws_return_inv_id').focus();
+        } 
+
+    });
+
 
 
 });
@@ -995,98 +897,5 @@ function wsReturn_rowCalculate() {
 
 }
 
-
-function populateReturnProducts(selector) {
-
-   jQuery(selector).select2({
-
-        allowClear: true,
-        width: '15%',
-
-        multiple: true,
-        minimumInputLength: 1,
-        maximumSelectionLength: 1,
-        ajax: {
-        type: 'POST',
-        url: frontendajax.ajaxurl,
-        delay: 250,
-        dataType: 'json',
-            data: function(params) {
-                return {
-                    action: 'get_return_lot_data', // search term
-                    page: 1,
-                    search_key: params.term,
-                    inv_id  : jQuery('.return_invoice_id').val()
-                   
-                };
-            },
-
-            processResults: function(data) {
-                var results = [];
-
-                return {
-                    results: jQuery.map(data.items, function(obj) {
-                        return { id: obj.lot_id, lot_no:obj.lot_no,sale_unit:obj.sale_unit, brand_name: obj.brand_name, product_name:obj.product_name,hsn:obj.hsn, bal_qty:obj.bal_qty, unit_price:obj.selling_price, cgst:obj.cgst,sgst:obj.sgst, discount:obj.discount };
-                    })
-                };
-            },
-            cache: true
-        },
-        initSelection: function (element, callback) {
-          callback({ id: jQuery(element).val(), product_name: jQuery(element).find(':selected').text() });
-        },
-        templateResult: formatStateBillCreate,
-        templateSelection: formatStateBillCreate1
-    }).on("select2:select", function (e) {  
-
-        jQuery("select2:select").next('.return_qty').focus(); 
-
-        if( (e.params.data.bal_qty) == 0 ){
-            alert("This Product is Already Fully Return.Please Select Correct Product");
-        } else {
-
-       
-        jQuery('.rtn_ws_lot_id').val(e.params.data.id);  
-        jQuery('.rtn_ws_product').val(e.params.data.product_name);  
-        jQuery('.rtn_ws_unit_price').val(e.params.data.unit_price);
-        jQuery('.rtn_discount').val(e.params.data.unit_price);
-        jQuery('.rtn_ws_hsn').val(e.params.data.hsn);
-        jQuery('.rtn_cgst_percentage').val(e.params.data.cgst);
-        jQuery('.rtn_sgst_percentage').val(e.params.data.sgst);
-        jQuery('.rtn_discount_amt').val(e.params.data.discount);
-        jQuery('.qty').val(e.params.data.bal_qty); 
-        jQuery('.qty_hidden').val(e.params.data.sale_unit); 
-
-         }
-    });
-
-   
-}
-
-function delivery_create_submit_popup(action = '', length = 0) {
-    jQuery.ajax({
-        dataType : "json",
-        type: "POST",
-        url: frontendajax.ajaxurl,
-        data: {
-            key         : 'post_popup_content',
-            data        : jQuery("#add_delivery").serialize(),
-            length      : length,
-            action      : action
-        },
-        success: function (data) {
-                jQuery('.delivery_id').val(data.id);
-                jQuery('.ws_delivery_name').text(data.delivery_name);
-                jQuery('.ws_delivery_phone').text(data.delivery_mobile);
-                jQuery('.ws_delivery_address').text(data.delivery_address);
-                jQuery('.list_customers').html(data);
-                clear_main_popup();
-                jQuery('#src_info_box').bPopup().close();
-                alert_popup('<span class="success_msg">Delivery Added Successfully!</span>', 'Success');
-                
-
-        }
-    });
-}
 
 //jQuery('form')[0].checkValidity()
