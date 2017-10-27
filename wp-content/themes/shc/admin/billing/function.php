@@ -740,6 +740,26 @@ function isValidInvoice($invoice_id = 0, $lock_check = 0){
     }
     return false;
 }
+
+
+function isValidInvoicews($invoice_id = 0, $lock_check = 0){
+	global $wpdb;
+	$table =  $wpdb->prefix.'shc_ws_sale';
+
+	if($lock_check) {
+    	$query  = "SELECT * FROM ${table} WHERE active = 1 AND inv_id=".$invoice_id." AND locked=1";
+	} else {
+    	$query  = "SELECT * FROM ${table} WHERE active = 1 AND inv_id=".$invoice_id." AND locked=0";
+	}
+    
+    if( $inv_result = $wpdb->get_row($query) ) {
+    	return true;
+    }
+    return false;
+}
+
+
+
 function isValidInvoiceReturn($invoice_id = 0){
 
 	global $wpdb;
