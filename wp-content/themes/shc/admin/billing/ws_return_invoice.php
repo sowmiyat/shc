@@ -47,7 +47,7 @@
                     <form action="<?php menu_page_url('ws_return_items'); ?>" method="GET">
                         <h2>Invoice
                             <input type="hidden" name="page" value="ws_return_items">
-                            <input type="text" name="id" class="return_inv_id" value="<?php echo $invoice_id['inv_id']; ?>" autocomplete="off" >
+                            <input type="text" name="id" class="ws_return_inv_id" value="<?php echo $invoice_id['inv_id']; ?>" autocomplete="off" >
                             <!-- <input type="hidden" name="rtn_id" class="return_invoice_id_retail" value="<?php echo $bill_fdata->id; ?>"> -->
 
                     Year

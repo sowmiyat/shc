@@ -398,14 +398,39 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
 
  //<------- Return invoice start---------->
     jQuery('.return_inv_id').focus();
+    jQuery('.invoice_id').focus();
 
  //<-----After keydown submit using tab goto first text box in Return billing--->
-    jQuery("#return_submit").on('keydown',  function(e) { 
+    jQuery("#return_submit,#return_update").on('keydown',  function(e) { 
         var keyCode = e.keyCode || e.which; 
 
         if (keyCode == 9) { 
             e.preventDefault(); 
             jQuery('.return_inv_id').focus();
+        } 
+
+    });
+
+    //<-----After keydown submit using tab goto first text box in Return billing View--->
+    jQuery(".return_print").on('keydown',  function(e) { 
+        var keyCode = e.keyCode || e.which; 
+
+        if (keyCode == 9) { 
+            e.preventDefault(); 
+            jQuery('.invoice_id').focus();
+        } 
+
+    });
+
+
+
+      //<-----After keydown submit using tab goto first text box in Return billing View--->
+    jQuery(".ws_return_print").on('keydown',  function(e) { 
+        var keyCode = e.keyCode || e.which; 
+
+        if (keyCode == 9) { 
+            e.preventDefault(); 
+            jQuery('.invoice_id').focus();
         } 
 
     });
@@ -596,6 +621,19 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
 
 
 
+ //<------- Return invoice start---------->
+    jQuery('.ws_return_inv_id').focus();
+
+ //<-----After keydown submit using tab goto first text box in Return billing--->
+    jQuery("#ws_return_submit,#ws_return_update").on('keydown',  function(e) { 
+        var keyCode = e.keyCode || e.which; 
+
+        if (keyCode == 9) { 
+            e.preventDefault(); 
+            jQuery('.ws_return_inv_id').focus();
+        } 
+
+    });
 
 
 

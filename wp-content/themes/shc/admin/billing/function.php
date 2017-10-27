@@ -1235,7 +1235,7 @@ function ws_create_return() {
 	);
 
 	$wpdb->insert($sale_table, $sale_update);
-	
+
 
 	$return_id  = $wpdb->insert_id;
 	$data['id'] = $wpdb->insert_id;
@@ -1245,6 +1245,9 @@ function ws_create_return() {
 	);
 
 	$wpdb->update($sale_table, $id_update,array( 'id' => $return_id));
+		var_dump($wpdb->last_query);
+	die();
+
 
 
 	$data['invoice_id'] = $params['inv_id'];
