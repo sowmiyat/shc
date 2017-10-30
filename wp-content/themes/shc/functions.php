@@ -394,4 +394,15 @@ function convert_number_to_words($num) {
     return $str;
 
 }
+
+
+define('PDF_CLASS_ROOT', dirname(__FILE__) . '/');
+
+function external_class_autoload($class_name) {
+    require PDF_CLASS_ROOT . 'MPDF57/mpdf.php';
+}
+
+// register function for autoloading required classes
+spl_autoload_register('external_class_autoload');
+
 ?>
