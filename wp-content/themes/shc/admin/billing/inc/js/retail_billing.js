@@ -450,9 +450,12 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
     /*Submit Payment*/
     jQuery('#billing_container #submit_payment').on('click', function() {
         var valid = jQuery(".billing_validation").valid();
-        if( valid ) {
+        var prevent = jQuery(".form_submit_prevent_r_bill").val();
+        if( valid) {
+          
             var existing_count = parseInt( jQuery('#bill_lot_add_retail tr').length );
-            if(existing_count != 0 ) {
+            if(existing_count != 0 && prevent == "off" ) {
+                jQuery(".form_submit_prevent_r_bill").val('on');
 
                 var bill_update_url = bill_update.updateurl;
                 jQuery('#lightbox').css('display','block');
@@ -487,11 +490,11 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
     jQuery('#billing_container #update_payment').on('click', function(){
 
         var valid = jQuery(".billing_validation").valid();
+        var prevent = jQuery(".form_submit_prevent_r_bill").val();
         if( valid ) {
-
             var existing_count = parseInt( jQuery('#bill_lot_add_retail tr').length );
-            if(existing_count != 0 ) {
-
+            if(existing_count != 0  && prevent == "off" ) {
+                jQuery(".form_submit_prevent_r_bill").val('on');
                 var bill_invoice_url = bill_invoice.invoiceurl;
                 jQuery('#lightbox').css('display','block');
                 jQuery.ajax({
@@ -650,6 +653,16 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
         var year = jQuery('.year').val();
         var inv_id = jQuery('.invoice_id').val();
         var datapass =   home_page.url+'invoice-download/?id='+inv_id+'&year='+year;
+
+        // billing_list_single
+        var thePopup = window.open( datapass, "Billing Invoice","" );
+       
+    });
+
+//download page
+    jQuery('.return_generate_bill').on('click',function(){
+        var id = jQuery('.invoice_id').val();
+        var datapass =   home_page.url+'goods-return-download/?id='+id;
 
         // billing_list_single
         var thePopup = window.open( datapass, "Billing Invoice","" );

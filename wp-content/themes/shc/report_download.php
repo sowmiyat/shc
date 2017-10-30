@@ -15,6 +15,12 @@ $slap = isset($_GET['slap']) ? $_GET['slap'] : '';
 $url = site_url( 'report-print/?bill_form=' ).$bill_form.'&bill_to='.$bill_to.'&slap='.$slap;
 
 $content =   file_get_contents($url,0,null,null);
-invoiceDownload($content, 'report.pdf');
 
+
+$mpdf = new mPDF(); 
+$mpdf->SetDisplayMode('fullpage');
+//$mpdf->WriteHTML($stylesheet,1);
+$mpdf->WriteHTML($content);
+$mpdf->Output();
+exit;
  

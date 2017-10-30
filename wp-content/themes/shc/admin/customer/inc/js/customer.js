@@ -146,13 +146,16 @@ jQuery(document).ready(function () {
 
         if(jQuery(this).hasClass('retail_submit')) {
             var valid = jQuery(".retail_submit").valid();
+            var prevent = jQuery(".form_submit_prevent_customer").val();
         }
         if(jQuery(this).hasClass('wholesale_submit')) {
             var valid = jQuery(".wholesale_submit").valid();
+            var prevent = jQuery(".form_submit_prevent_ws_customer").val();
         }
-
-
-        if( valid ) {
+        
+       if( valid && prevent == "off") {
+            jQuery(".form_submit_prevent_customer").val('on');
+            jQuery(".form_submit_prevent_ws_customer").val('on');
             jQuery('#lightbox').css('display','block');
             jQuery.ajax({
                 type: "POST",

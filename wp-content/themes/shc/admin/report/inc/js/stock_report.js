@@ -47,6 +47,18 @@ jQuery(document).ready(function (argument) {
        
     });
 
+       jQuery('.return_report_download').on('click',function() {
+
+        var slap = jQuery('.slap').val(); 
+        var bill_form = jQuery('.bill_from').val();
+        var bill_to = jQuery('.bill_to').val();
+        var datapass =   home_page.url+'return-report-download/?bill_form='+bill_form+'&bill_to='+bill_to + '&slap='+slap;
+
+        // billing_list_single
+        var thePopup = window.open( datapass, "Download Report","" );
+       
+    });
+
      jQuery('.stock_print').on('click',function(){
      	var slap = jQuery('.slap').val();
      	 var bill_form = jQuery('.bill_from').val();

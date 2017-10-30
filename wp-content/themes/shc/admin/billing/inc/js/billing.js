@@ -199,11 +199,11 @@ jQuery('#ws_billing_customer').focus();
     jQuery('#ws_billing_container #ws_submit_payment').on('click', function() {
 
         var valid = jQuery(".ws_billing_validation").valid();
-        if( valid ) {
-
+        var prevent = jQuery(".form_submit_prevent_ws_bill").val();
+       if( valid) {
             var existing_count = parseInt( jQuery('#bill_lot_add tr').length );
-            if(existing_count != 0 ) {
-
+            if(existing_count != 0 && prevent == "off") {
+                jQuery(".form_submit_prevent_ws_bill").val('on');
                 var bill_update_url = bill_updatews.updateurlws;
                 jQuery('#lightbox').css('display','block');
                 jQuery.ajax({
@@ -237,30 +237,32 @@ jQuery('#ws_billing_customer').focus();
     jQuery('#ws_billing_container #ws_update_payment').on('click', function() {
 
         var valid = jQuery(".ws_billing_validation").valid();
-        if( valid ) {
+        var prevent = jQuery(".form_submit_prevent_ws_bill").val();
+       if( valid ) {
+          
             var existing_count = parseInt( jQuery('#bill_lot_add tr').length );
-            if(existing_count != 0 ) {
+            if(existing_count != 0 && prevent == "off") {
+                jQuery(".form_submit_prevent_ws_bill").val('on');
+                var bill_invoice_url = bill_invoicews.invoiceurlws;
+                jQuery('#lightbox').css('display','block');
+                jQuery.ajax({
+                    type: "POST",
+                    dataType : "json",
+                    url: frontendajax.ajaxurl,
+                    data: {
+                        action : 'ws_update_order',
+                        data : jQuery('#ws_billing_container :input').serialize()
+                    },
+                    success: function (data) {
+                        clearPopup();
+                        popItUp('Success', 'Successfully Updated!');
+                        jQuery('#lightbox').css('display','none');
 
-        var bill_invoice_url = bill_invoicews.invoiceurlws;
-        jQuery('#lightbox').css('display','block');
-        jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                action : 'ws_update_order',
-                data : jQuery('#ws_billing_container :input').serialize()
-            },
-            success: function (data) {
-                clearPopup();
-                popItUp('Success', 'Successfully Updated!');
-                jQuery('#lightbox').css('display','none');
+                        window.location = bill_invoice_url+'&id='+ data.inv_id + '&year='+ data.year;
 
-                window.location = bill_invoice_url+'&id='+ data.inv_id + '&year='+ data.year;
-
+                    }
+                });
             }
-        });
-        }
         else {
             alert('Please Add Atleast One Product!!! Empty Bill Can'+"'"+'t Submit');
         }
@@ -372,6 +374,16 @@ jQuery('#ws_billing_customer').focus();
         var inv_id = jQuery('.invoice_id').val();
         var year = jQuery('.year').val();
         var datapass =   home_page.url+'ws-download/?id='+inv_id+'&year='+year;
+
+        // billing_list_single
+        var thePopup = window.open( datapass, "Billing Invoice","" );
+       
+    });
+
+    //download page
+    jQuery('.ws_return_generate_bill').on('click',function() {
+        var id = jQuery('.invoice_id').val();
+        var datapass =   home_page.url+'ws-goods-return-download/?id='+id;
 
         // billing_list_single
         var thePopup = window.open( datapass, "Billing Invoice","" );
@@ -901,6 +913,46 @@ jQuery(document).ready(function (argument) {
     });
 
 	//<-------Delete Bill------->
+
+ //<-----After keydown submit using tab goto first text box in Return billing--->
+    jQuery(".bill_retail_print").on('keydown',  function(e) { 
+        var keyCode = e.keyCode || e.which; 
+
+        if (keyCode == 9) { 
+            e.preventDefault(); 
+            jQuery('.invoice_id').focus();
+        } 
+
+    });
+
+       //<-----After keydown submit using tab goto first text box in Return billing--->
+    jQuery('.ws_return_bill_submit').live('keydown', function(e) { 
+        console.log("dd");
+
+        if(jQuery(this).parent().parent().next('tr').length == 0) {
+            console.log("kdowd");
+            var keyCode = e.keyCode || e.which; 
+            if (keyCode == 9) { 
+                e.preventDefault(); 
+                // call custom function here
+                jQuery('.ws_return_inv_id').focus();
+            } 
+        }
+        else {
+            jQuery(this).parent().parent().next('tr').focus();
+        }
+    });
+
+    jQuery('#ws_return_submit').live('keydown', function(e) { 
+            var keyCode = e.keyCode || e.which; 
+            if (keyCode == 9) { 
+                e.preventDefault(); 
+                // call custom function here
+                jQuery('.ws_return_inv_id').focus()
+            } 
+    });
+
+
 
   jQuery('.delete-ws-bill').live( "click", function() {
     if(confirm('Are you sure you want to delete this element?')){

@@ -53,6 +53,7 @@ function add_stock(){
 	parse_str($_POST['data'], $params);
 	unset($params['action']);
 	unset($params['pro_number']);
+	unset($params['form_submit_prevent']);
 
 	$lot_id = $params['lot_number'];
 	$stock_count = $params['stock_count'];
@@ -91,6 +92,7 @@ function update_stock(){
 	unset($params['action']);
 	unset($params['stock_id']);
 	unset($params['pro_number']);
+	unset($params['form_submit_prevent']);
 
 	$lot_id = $params['lot_number'];
 	$stock_count = $params['stock_count'];

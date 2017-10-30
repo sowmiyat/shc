@@ -40,8 +40,8 @@ window.print();
                                            
                                   <input class="btn btn-success" type="submit" style="height: 38px;margin-left: 20px;">
                               </h2>
-                            <button class="btn btn-default pull-right" onclick="print_current_page();" 	 style="border-color: #bc2323;"><i class="fa fa-print"></i> Print</button>
-                            <button class="btn btn-primary pull-right generate_bill" style="margin-right: 5px;"><i class="fa fa-file-pdf-o"></i> Generate PDF</button>
+                            <button class="btn btn-default pull-right " onclick="print_current_page();" 	 style="border-color: #bc2323;"><i class="fa fa-print"></i> Print</button>
+                            <button class="btn btn-primary pull-right return_generate_bill" style="margin-right: 5px;"><i class="fa fa-file-pdf-o"></i> Generate PDF</button>
                         </form>
                         <div class="clearfix"></div>
                 </div>
@@ -473,7 +473,7 @@ window.print();
                     <tr>
                       <td>
                         <div class="company-logo">
-                          /* <img style="width:165px" src="<?php echo get_template_directory_uri().'/admin/billing/inc/images/tax.png'; ?>">  */
+                          <img style="width:165px" src="<?php echo get_template_directory_uri().'/admin/billing/inc/images/tax.png'; ?>">  
                         </div>
                       </td>
                       <td>

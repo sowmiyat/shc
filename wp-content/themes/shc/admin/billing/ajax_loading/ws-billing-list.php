@@ -62,8 +62,8 @@
                                     <td>
                                         <a href="<?php echo admin_url('admin.php?page=ws_invoice')."&id=${inv_id}&year=$b_value->financial_year"; ?>" class="bill_view">View</a>/
                                         <a href="<?php echo admin_url('admin.php?page=ws_new_billing')."&id=${bill_id}"; ?>" class="bill_view">Update</a>/
-                                        <a href="#" class="ws_print_bill">Print</a>/
-										<a href="#" class="print_bill_delete delete-ws-bill" style="width:50px;" data-id="<?php echo $b_value->id; ?>">Delete</a>
+                                        <a href="#" class="ws_print_bill bill_view">Print</a>/
+										<a href="#" class="print_bill_delete delete-ws-bill bill_view" style="width:50px;" data-id="<?php echo $b_value->id; ?>">Delete</a>
                                         <input type="hidden" name="year" class="year" value = "<?php echo $b_value->financial_year; ?>"/>
                                         <input type="hidden" name="invoice_id" class="invoice_id" value="<?php echo $b_value->inv_id; ?>"/>
 

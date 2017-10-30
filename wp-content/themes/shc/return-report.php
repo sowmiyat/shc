@@ -96,7 +96,7 @@ left join
 
     <div class="col-xs-12 invoice-header">
         <h4 style="margin-left: -15px;">
-           Accountant Report
+           Return Report
             <small class="pull-right">Date: <?php echo date("d/m/Y"); ?></small>
         </h4>
     </div>

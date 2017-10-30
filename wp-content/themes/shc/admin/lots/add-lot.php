@@ -26,6 +26,7 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 				</div>
 				<div class="x_content">
 					<form class="form-horizontal form-label-left lot_submit" id="create_lot">
+						<input type="hidden" value="off" name="form_submit_prevent" class="form_submit_prevent_lot" id="form_submit_prevent_lot"/>
 						<input type="hidden" id="lot_no" name="lot_no" class="form-control col-md-7 col-xs-12" autocomplete="off" value="<?php echo ($lot) ? $lot->lot_no : '0'; ?>">
 						<div class="row">
 							<div class="col-md-6 col-sm-6 col-xs-12">

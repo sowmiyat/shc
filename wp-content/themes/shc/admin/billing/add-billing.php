@@ -96,6 +96,8 @@
 										<div class="row">
 											<div class="col-xs-12 invoice-header">
 												<h4>Customer Details</h4>
+												<input type="hidden" value="off" name="form_submit_prevent" class="form_submit_prevent_r_bill" id="form_submit_prevent_r_bill"/>
+
 											</div>
 										<!-- /.col -->
 										</div>

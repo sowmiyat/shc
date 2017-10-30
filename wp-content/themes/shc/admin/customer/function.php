@@ -33,6 +33,7 @@ function create_customer() {
 	$params = array();
 	parse_str($_POST['data'], $params);
 	unset($params['action']);
+	unset($params['form_submit_prevent']);
 
 	$customer_table = $wpdb->prefix. 'shc_customers';
 	$wpdb->insert($customer_table, $params);
@@ -64,6 +65,7 @@ function update_customer() {
 
 	unset($params['action']);
 	unset($params['customer_id']);
+	unset($params['form_submit_prevent']);
 
 	if(get_customer($customer_id)) {
 		$customer_table = $wpdb->prefix. 'shc_customers';
@@ -88,6 +90,7 @@ function create_wholesale_customer() {
 	$params = array();
 	parse_str($_POST['data'], $params);
 	unset($params['action']);
+	unset($params['form_submit_prevent']);
 
 	$customer_table = $wpdb->prefix. 'shc_wholesale_customer';
 	$wpdb->insert($customer_table, $params);
@@ -117,6 +120,7 @@ function update_wholesale_customer() {
 
 	unset($params['action']);
 	unset($params['customer_id']);
+	unset($params['form_submit_prevent']);
 
 	if(get_wholesale_customer($customer_id)) {
 		$customer_table = $wpdb->prefix. 'shc_wholesale_customer';

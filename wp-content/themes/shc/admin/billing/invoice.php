@@ -58,8 +58,9 @@ window.print();
                       
                       <input type="submit" style="height: 38px;margin-left: 20px;" class="btn btn-success">
                   </h2>
-                <button class="btn btn-default pull-right" onclick="print_current_page();"><i class="fa fa-print"></i> Print</button>
+                
                 <button class="btn btn-primary pull-right generate_bill" style="margin-right: 5px;"><i class="fa fa-file-pdf-o"></i> Generate PDF</button>
+                <button class="btn btn-default pull-right bill_retail_print" onclick="print_current_page();"><i class="fa fa-print"></i> Print</button>
             </form>
             <div class="clearfix"></div>
         </div>

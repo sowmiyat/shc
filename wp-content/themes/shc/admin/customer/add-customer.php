@@ -23,6 +23,8 @@ input[type=number]::-webkit-outer-spin-button {
 				<div class="x_content">
 					<form class="form-horizontal form-label-left retail_submit" id="create_customer">
 						<div class="form-group">
+						<input type="hidden" value="off" name="form_submit_prevent" class="form_submit_prevent_customer" id="form_submit_prevent_customer"/>
+
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Customer Name 
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">

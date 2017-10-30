@@ -94,6 +94,7 @@
 											<h4>Customer Details</h4>
 										</div> -->
 										<!-- /.col -->
+										<input type="hidden" value="off" name="form_submit_prevent" class="form_submit_prevent_ws_bill" id="form_submit_prevent_ws_bill"/>
 									</div>
 									<!-- info row -->
 									<div class="row invoice-info">

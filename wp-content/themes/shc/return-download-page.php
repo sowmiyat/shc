@@ -1,7 +1,6 @@
 <?php
 /**
- * Template Name: SRC Return Print
- *
+ * Template Name: Goods Return Download Page
  * @package WordPress
  * @subpackage SHC
  */
@@ -10,20 +9,60 @@
     $invoice_id = '';
      if(isset($_GET['id']) && $_GET['id'] != '' ) {                                               
 
-        if(isValidInvoiceReturnws($_GET['id'])) {
+        if(isValidInvoiceReturn($_GET['id'])) {
 
 
             $update = true;
             $invoice_id = $_GET['id'];
-            $bill_data = getBillDataReturnws($invoice_id);
+            $bill_data = getBillDataReturn($invoice_id);
             $bill_fdata = $bill_data['bill_data'];
             $bill_ldata = $bill_data['ordered_data'];
 
 
         }
     }
+
+  $number =$bill_fdata->total_amount;
+    $no = round($number);
+    $point = round($number - $no, 2) * 100;
+    $hundred = null;
+    $digits_1 = strlen($no);
+    $i = 0;
+    $str = array();
+    $words = array('0' => '', '1' => 'one', '2' => 'two',
+    '3' => 'three', '4' => 'four', '5' => 'five', '6' => 'six',
+    '7' => 'seven', '8' => 'eight', '9' => 'nine',
+    '10' => 'ten', '11' => 'eleven', '12' => 'twelve',
+    '13' => 'thirteen', '14' => 'fourteen',
+    '15' => 'fifteen', '16' => 'sixteen', '17' => 'seventeen',
+    '18' => 'eighteen', '19' =>'nineteen', '20' => 'twenty',
+    '30' => 'thirty', '40' => 'forty', '50' => 'fifty',
+    '60' => 'sixty', '70' => 'seventy',
+    '80' => 'eighty', '90' => 'ninety');
+    $digits = array('', 'hundred', 'thousand', 'lakh', 'crore');
+    while ($i < $digits_1) {
+     $divider = ($i == 2) ? 10 : 100;
+     $number = floor($no % $divider);
+     $no = floor($no / $divider);
+     $i += ($divider == 10) ? 1 : 2;
+     if ($number) {
+        $plural = (($counter = count($str)) && $number > 9) ? 's' : null;
+        $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
+        $str [] = ($number < 21) ? $words[$number] .
+            " " . $digits[$counter] . $plural . " " . $hundred
+            :
+            $words[floor($number / 10) * 10]
+            . " " . $words[$number % 10] . " "
+            . $digits[$counter] . $plural . " " . $hundred;
+      } else $str[] = null;
+    } 
+    $str = array_reverse($str);
+    $result = implode('', $str);
+    $points = ($point) ?
+    "" . $words[$point / 10] . " " . 
+          $words[$point = $point % 10] : '';
 ?>
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html>
 <head>
   <link rel='stylesheet' id='bootstrap-min-css'  href="<?php echo get_template_directory_uri(); ?>'/admin/inc/css/bootstrap.min.css'" type='text/css' media='all' />
@@ -71,6 +110,12 @@ dd {  padding: 0 0 0.5em 0; }
         <?php
             if($bill_data) {
         ?>
+<!-- <div class="col-xs-12 invoice-header">
+    <h4 style="margin-left: -15px;">
+        Invoice. #<?php echo $bill_fdata->inv_id; ?>
+        <small class="pull-right">Date: <?php echo date("d/m/Y"); ?></small>
+    </h4>
+</div> -->
   <div class="title"><div style="margin-left: 40%;margin-bottom: 10px;margin-top: 10px;"><b>GOODS RETURN CHALLAN</b></div></div>
 
   <div class="body_style">
@@ -84,7 +129,7 @@ dd {  padding: 0 0 0.5em 0; }
           <br/>GST No - 33BMDPA4840E1ZP
           <td valign='top' WIDTH='50%'>
               <table>
-                <tr><td>Return Number</td><td>: <?php echo 'GR'.$bill_fdata->return_id; ?></td></tr>
+                <tr><td>Return Number</td><td>: <?php echo $bill_fdata->return_id; ?></td></tr>
                 <tr><td>Date</td><td>: <?php echo date("d/m/Y"); ?></td></tr>
                 <tr><td>State</td><td>: TAMILNADU</td></tr>
                 <tr><td>State Code</td><td>: 33</td></tr>
@@ -112,6 +157,14 @@ dd {  padding: 0 0 0.5em 0; }
       </table>
 
       <br />
+
+      <!-- <table cellspacing='3' cellpadding='3' WIDTH='100%'>
+      <tr>
+      <td valign='top' WIDTH='50%'><b>Order number</b>: <?php //echo $bill_fdata->order_id; ?></td>
+      <td valign='top' WIDTH='50%'><b>Order date:</b> <?php //echo $bill_fdata->created_at; ?></td>
+      <td valign='top' WIDTH='33%'></td>
+      </tr>
+      </table> -->
 
       <br/>
 
@@ -164,7 +217,7 @@ dd {  padding: 0 0 0.5em 0; }
       </table>
 
       Amount Chargable ( In Words)<br/>
-      <?php echo ucwords(convert_number_to_words_full($bill_fdata->total_amount)); ?>
+      <?php echo ucwords($result) . "Rupees & ". ucwords($points). " Paises  Only "; ?>
  
        <br/>
         <?php

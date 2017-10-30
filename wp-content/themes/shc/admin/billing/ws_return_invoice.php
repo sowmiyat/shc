@@ -65,7 +65,7 @@
                                     } 
                             ?>
                         </select>
-                            <input type="submit" class="btn btn-success" style="height: 38px;margin-left: 20px;">
+                            <input type="submit" class="btn btn-success ws_return_bill_submit" style="height: 38px;margin-left: 20px;">
                         </h2>
                     </form>
                     <div class="clearfix"></div>
@@ -259,7 +259,7 @@
                                                         <td class="return_bal_qty_td"><?php if($update ) { echo $table_data->new_bal_qty;  } else {  echo $table_data->balance_unit; }?></td>
                                                         <input type="hidden" name="customer_detail[<?php echo $i; ?>][return_bal_qty]" id="return_bal_qty" class="return_bal_qty" value="<?php echo $table_data->balance_unit; ?>" />
                                                         <input type="hidden" name="customer_detail[<?php echo $i; ?>][return_bal]" id="return_bal" class="return_bal" value="<?php echo $table_data->balance_unit; ?>" />
-                                                        <td><input type="text" name="customer_detail[<?php echo $i; ?>][return_qty_ret]" class="return_qty_ret" style="width: 80px;" value="<?php if($update){ echo $table_data->return_unit; } else { echo 0; } ?>"/></td>
+                                                        <td><input type="text" name="customer_detail[<?php echo $i; ?>][return_qty_ret]" class="return_qty_ret" onkeypress="return isNumberKey(event)" style="width: 80px;" value="<?php if($update){ echo $table_data->return_unit; } else { echo 0; } ?>"/></td>
                                                         <td><?php echo $table_data->discount; ?> </td><input type="hidden" value="<?php echo $table_data->discount; ?>" name="customer_detail[<?php echo $i; ?>][return_mrp]" class="return_mrp" />
                                                         <td class="return_amt_td"> <?php if($update) { echo $table_data->amt; } ?></td><input type="hidden" value="<?php echo $table_data->amt; ?>" name="customer_detail[<?php echo $i; ?>][return_amt]" class="return_amt" value="<?php if($update){ echo $table_data->amt; } ?>" />
                                                         <td><?php  echo $table_data->cgst;   ?> </td><input type="hidden" value="<?php echo $table_data->cgst; ?>" name="customer_detail[<?php echo $i; ?>][return_cgst]" class="return_cgst" value="<?php if($update){ echo $table_data->cgst; } ?>" />

@@ -18,6 +18,7 @@ if(isset($_GET['stock_id']) && $stock = get_stock($_GET['stock_id']) ) {
 				<div class="x_content">
 					<form class="form-horizontal form-label-left stock_validation" id="add_stock">
 						<div class="form-group">
+							<input type="hidden" value="off" name="form_submit_prevent" class="form_submit_prevent_stock" id="form_submit_prevent_stock"/>
 							<input type="hidden" name="lot_number" class="lot_number" id="lot_number" value="<?php if($stock) { echo $stock->lot_number; }?>"/>
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Product Name <span class="required">*</span>
 							</label>
@@ -38,7 +39,7 @@ if(isset($_GET['stock_id']) && $stock = get_stock($_GET['stock_id']) ) {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Brand Name <span class="required"></span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="text" id="brand_name" readonly class="form-control col-md-7 col-xs-12" value="<?php echo ($stock) ? $stock->brand_name : ''; ?>">
+								<input type="text" id="brand_name" readonly class="form-control col-md-7 col-xs-12" tabindex="-1" value="<?php echo ($stock) ? $stock->brand_name : ''; ?>">
 							</div>
 						</div>
 						<div class="divider-dashed"></div>
@@ -46,7 +47,7 @@ if(isset($_GET['stock_id']) && $stock = get_stock($_GET['stock_id']) ) {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Selling Price <span class="required"></span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="text" id="selling_price" name="selling_total" readonly class="form-control col-md-7 col-xs-12" value="<?php echo ($stock) ? $stock->selling_total : ''; ?>">
+								<input type="text" id="selling_price" name="selling_total" tabindex="-1" readonly class="form-control col-md-7 col-xs-12" value="<?php echo ($stock) ? $stock->selling_total : ''; ?>">
 								<input type="hidden" id="unit_price" name="selling_price"  readonly class="form-control col-md-7 col-xs-12" value="<?php echo ($stock) ? $stock->selling_price : ''; ?>">
 							
 							</div>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: SRC Return Print
+ * Template Name: Ws Goods Return Download page
  *
  * @package WordPress
  * @subpackage SHC

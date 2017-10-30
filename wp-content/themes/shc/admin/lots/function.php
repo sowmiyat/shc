@@ -27,6 +27,7 @@ function create_lot(){
 	$params = array();
 	parse_str($_POST['data'], $params);
 	unset($params['action']);
+	unset($params['form_submit_prevent']);
 	$lot_table = $wpdb->prefix. 'shc_lots';
 	$wpdb->insert($lot_table, $params);
 	$create_id 			= $wpdb->insert_id;
@@ -60,7 +61,7 @@ function update_lot(){
 
 	unset($params['action']);
 	unset($params['lot_id']);
-
+	unset($params['form_submit_prevent']);
 	$lot_table = $wpdb->prefix. 'shc_lots';
 	if($lot_id != '' && get_lot($lot_id)) {
 		$wpdb->update($lot_table, $params, array('id' => $lot_id));

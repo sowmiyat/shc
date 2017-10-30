@@ -136,7 +136,7 @@
 
     <div class="col-xs-12 invoice-header">
         <h4 style="margin-left: -15px;">
-           Accountant Report
+           Stock Report
             <small class="pull-right">Date: <?php echo date("d/m/Y"); ?></small>
         </h4>
     </div>

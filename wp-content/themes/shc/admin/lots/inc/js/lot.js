@@ -87,12 +87,15 @@ jQuery(document).ready(function () {
           }
       );
  
+
+
+
     /*Add Lot Form Submit*/
     jQuery("#create_lot").bind('submit', function (e) {
-       var valid = jQuery(".lot_submit").valid();
-
-
-       if( valid ) {
+        var valid = jQuery(".lot_submit").valid();
+        var prevent = jQuery(".form_submit_prevent_lot").val();
+       if( valid && prevent == "off") {
+          jQuery(".form_submit_prevent_lot").val('on');
           jQuery('#lightbox').css('display','block');
           jQuery.ajax({
               type: "POST",
