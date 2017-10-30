@@ -129,7 +129,8 @@ jQuery( "#pro_number" ).autocomplete ({
 
         var valid = jQuery(".stock_validation").valid();
         if( valid ) { 
-            jQuery('#lightbox').css('display','block');
+		jQuery('.submit_form').css('display','none');
+            /* jQuery('#lightbox').css('display','block'); */
             jQuery.ajax({
                 type: "POST",
                 dataType : "json",
@@ -139,7 +140,7 @@ jQuery( "#pro_number" ).autocomplete ({
                     data : jQuery('#add_stock :input').serialize()
                 },
                 success: function (data) {
-                    clearPopup();
+                   /*  clearPopup();
                     jQuery('#lightbox').css('display','none');
 
                     if(data.redirect != 0) { 
@@ -152,7 +153,7 @@ jQuery( "#pro_number" ).autocomplete ({
                         popItUp('Error', data.msg);
                     } else {
                         popItUp('Success', data.msg);
-                    }
+                    } */
                 
                 }
             });

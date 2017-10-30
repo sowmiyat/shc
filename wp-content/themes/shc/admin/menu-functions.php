@@ -127,6 +127,7 @@ global $src_capabilities;
 	    9
 	);
 	add_submenu_page('list_report', 'Stock Reports', 'Stock Reports',  $src_capabilities['roles']['permission']['add_roles'], 'list_report', 'list_report' );
+	add_submenu_page('list_report', 'Goods Return Report', 'Goods Retrun Report',  $src_capabilities['roles']['permission']['add_roles'], 'list_return', 'list_return' );
 	add_submenu_page('list_report', 'Accountant Report', 'Accountant Report',  $src_capabilities['roles']['permission']['add_roles'], 'list_report_account', 'list_report_account' );
 
 
@@ -225,6 +226,10 @@ function list_roles() {
 
 function list_report() {
     require 'report/listing/stock-list.php';
+}
+
+function list_return() {
+    require 'report/listing/return-list.php';
 }
 
 function list_report_account() {

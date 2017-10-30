@@ -3,56 +3,31 @@
     //** Customer Select billing **//
 jQuery('#billing_customer').focus();
     // populateReturnProductsRetail('.rtn_lot_id');
+//delivery check products
+     jQuery('.delivery_check').on('click',function(){
+        var delivery_check = jQuery(this).parent().parent().find('.delivery_check').is(":checked");
+        if(delivery_check){
+            var delivery = 1;
+        } else {
+            var delivery = 0;
+        }
+        var delivery_id = jQuery(this).parent().parent().find('.delivery_id').val();
+        jQuery.ajax({
+            type: "POST",
+            dataType : "json",
+            url: frontendajax.ajaxurl,
+            data: {
+                action      :'product_delivery',
+                id          : delivery_id,
+                delivery    : delivery,
+            },
+            success: function (data) {
+                clearPopup();     
 
+            }
+        });
 
-
-
-
-             jQuery('.delivery_check').on('click',function(){
-                var delivery_check = jQuery(this).parent().parent().find('.delivery_check').val();
-                if(delivery_check){
-                    var delivery = 1;
-                } else {
-                    var delivery = 0;
-                }
-                var delivery_id = jQuery(this).parent().parent().find('.delivery_id').val();
-                jQuery.ajax({
-                    type: "POST",
-                    dataType : "json",
-                    url: frontendajax.ajaxurl,
-                    data: {
-                        action      :'product_delivery',
-                        id          : delivery_id,
-                        delivery    : delivery,
-                    },
-                    success: function (data) {
-                        clearPopup();
-                        console.log(data);
-                        // popItUp('Success', 'Bill Created!');
-                        // jQuery('#lightbox').css('display','none');
-
-                    }
-                });
-
-             });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+     });
 
 
 
@@ -313,7 +288,7 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
 
        
     
-       if( !!product_id && unit !='0' &&  unit != '' && discount != '0.00' &&  discount != '' && discount != '0') {
+       if( !!product_id && unit !='0' &&  unit != '' && unit > 0 && discount != '0.00' &&  discount != '' && discount != '0') {
             var existing_count = parseInt( jQuery('#bill_lot_add_retail tr').length );
             var current_row = existing_count + 1;
             if( jQuery('.customer_table_retail[data-productid='+ product_id +']').length != 0 ) {
@@ -564,8 +539,36 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
 
     });
 
+	
+	//<-------Delete Bill------->
+
+  jQuery('.delete-bill').live( "click", function() {
+    if(confirm('Are you sure you want to delete this element?')){
+      var data=jQuery(this).attr("data-id");
+      console.log(data);
+      window.location.replace('admin.php?page=billing_list&delete_id='+data+'&action=delete');
+    }
+
+  });
+  //<-------End Delete Bill------->
+  	//<-------Delete Return Bill------->
+
+  jQuery('.delete-return-bill').live( "click", function() {
+    if(confirm('Are you sure you want to delete this element?')){
+      var data=jQuery(this).attr("data-id");
+      console.log(data);
+      window.location.replace('admin.php?page=return_items_list&delete_id='+data+'&action=delete');
+    }
+
+  });
+  //<-------End Delete Return Bill------->
+
+	
+	
+	
+	
     //<-----After keydown submit using tab goto first text box in Return billing View in Retail Return--->
-    jQuery(".return_print").on('keydown',  function(e) { 
+  /*   jQuery(".return_print").on('keydown',  function(e) { 
         var keyCode = e.keyCode || e.which; 
 
         if (keyCode == 9) { 
@@ -573,12 +576,12 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
             jQuery('.invoice_id').focus();
         } 
 
-    });
+    }); */
 
 
 
       //<-----After keydown submit using tab goto first text box in Return billing View in Wholesale Return--->
-    jQuery(".ws_return_print").on('keydown',  function(e) { 
+    /* jQuery(".ws_return_print").on('keydown',  function(e) { 
         var keyCode = e.keyCode || e.which; 
 
         if (keyCode == 9) { 
@@ -586,7 +589,7 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
             jQuery('.invoice_id').focus();
         } 
 
-    });
+    }); */
 //<-------return quantity check ------>
     jQuery('.return_qty_ret').live('change',function(){
         var bal_qty =parseFloat(jQuery(this).parent().parent().find('.return_bal_qty').val());
@@ -634,8 +637,8 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
 
 
     jQuery('.print_bill').on('click',function() {
-        var inv_id = jQuery('.invoice_id').val();
-        var year = jQuery('.year').val();
+        var inv_id = jQuery(this).parent().parent().find('.invoice_id').val();
+        var year = jQuery(this).parent().parent().find('.year').val();
         var datapass =   home_page.url+'invoice/?id='+inv_id+'&year='+year;
 
         // billing_list_single
@@ -667,13 +670,14 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
                 action : 'create_return',
                 data   : jQuery('#billing_return :input').serialize(),
                 year   : jQuery( ".year" ).val(),
+				search_inv_id : jQuery(".return_inv_id").val(),
             },
             success: function (data) {
                 clearPopup();
                 popItUp('Success', 'Bill Created!');
                 jQuery('#lightbox').css('display','none');
 
-              window.location = bill_update_url+'&return_id='+data.id+'&id='+data.invoice_id+'&year='+data.year;
+              window.location = bill_update_url+'&return_id='+data.id+'&id='+data.search_inv_id+'&year='+data.year;
 
             }
         });

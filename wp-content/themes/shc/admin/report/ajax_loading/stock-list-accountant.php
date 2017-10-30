@@ -9,7 +9,6 @@
     );
     $stock_report = $report->stock_report_pagination_accountant($result_args);
 ?>
-
         <div class="x_content">
             <div class="table-responsive">
                 <table class="table table-striped jambo_table bulk_action">
@@ -78,3 +77,7 @@
         $('#welcome-panel').after($('#custom-id').show());
     });
 </script>
+
+
+
+

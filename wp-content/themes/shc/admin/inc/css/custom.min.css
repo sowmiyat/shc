@@ -4968,8 +4968,8 @@ ul.notifications {
         background: #779f16;
     }
 
-    a.list_update,a.bill_view,a.list_delete {
-        min-width: 50px;
+    a.list_update,a.bill_view,a.list_delete,a.ws_print_bill,a.print_bill,a.ws_return_print,a.return_print,a.bill_view_update,a.print_bill_delete {
+        min-width: 50px !important;
     }
 
 

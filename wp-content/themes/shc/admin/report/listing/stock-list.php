@@ -35,22 +35,22 @@
 
                     
                     <div class="col-md-1 form-group">
-                        <b>Slab</b>
+                        <b></b>
                         <select name="slap" class="slap">
-                        <option value="" >select</option>
+                        <option value="" >slab</option>
                         <option value="0.00" <?php echo ($billing->slap == '0.00') ? 'selected' : '' ?>>0.00</option>
-                        <option value="2.50" <?php echo ($billing->slap == '2.50') ? 'selected' : '' ?>>2.50</option>
-                        <option value="6.00" <?php echo ($billing->slap == '6.00') ? 'selected' : '' ?>>6.00</option>
-                        <option value="9.00" <?php echo ($billing->slap == '9.00') ? 'selected' : '' ?>>9.00</option>
-                        <option value="14.00" <?php echo ($billing->slap == '14.00') ? 'selected' : '' ?>>14.00</option>
+                        <option value="2.50" <?php echo ($billing->slap == '2.50') ? 'selected' : '' ?>>5.00</option>
+                        <option value="6.00" <?php echo ($billing->slap == '6.00') ? 'selected' : '' ?>>12.00</option>
+                        <option value="9.00" <?php echo ($billing->slap == '9.00') ? 'selected' : '' ?>>18.00</option>
+                        <option value="14.00" <?php echo ($billing->slap == '14.00') ? 'selected' : '' ?>>28.00</option>
                       </select>
                     </div>
                     <div class="col-md-2 form-group">
-                         <b>From</b><input type="text" name="bill_from" class="bill_from form-control" value="<?php echo date('Y-m-d'); ?>" placeholder="Bill From">
+                         <b></b><input type="text" name="bill_from" class="bill_from form-control" value="<?php echo date('Y-m-d'); ?>" placeholder="Bill From">
                     </div>
 
                     <div class="col-md-2 form-group">
-                        <b>To</b> <input type="text" name="bill_to" class="bill_to form-control" value="<?php echo date('Y-m-d'); ?>" placeholder="Bill To">
+                        <b></b> <input type="text" name="bill_to" class="bill_to form-control" value="<?php echo date('Y-m-d'); ?>" placeholder="Bill To">
                     </div>
                     <div class="col-md-6 form-group">
                         <button class="btn btn-default stock_print pull-right"><i class="fa fa-print"></i> Print</button>

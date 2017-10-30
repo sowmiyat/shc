@@ -30,7 +30,7 @@ if(isset($_GET['stock_id']) && $stock = get_stock($_GET['stock_id']) ) {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> Count / Unit <span class="required">*</span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="text" id="stock_count" name="stock_count" required="required" onkeypress="return isNumberKey(event)" maxlength="10" class="form-control col-md-7 col-xs-12 stock_count"   value="<?php echo ($stock) ? $stock->stock_count : ''; ?>">
+								<input type="text" id="stock_count" name="stock_count" required="required" autocomplete="off" onkeypress="return isNumberKey(event)" maxlength="10" class="form-control col-md-7 col-xs-12 stock_count"   value="<?php echo ($stock) ? $stock->stock_count : ''; ?>">
 							</div>
 						</div>
 						<div class="divider-dashed"></div>

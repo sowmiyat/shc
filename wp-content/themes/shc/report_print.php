@@ -154,19 +154,13 @@
 
     <br />
 
-    <!-- <table cellspacing='3' cellpadding='3' WIDTH='100%'>
-    <tr>
-    <td valign='top' WIDTH='50%'><b>Order number</b>: <?php echo $bill_fdata->order_id; ?></td>
-    <td valign='top' WIDTH='50%'><b>Order date:</b> <?php echo $bill_fdata->created_at; ?></td>
-    <td valign='top' WIDTH='33%'></td>
-    </tr>
-    </table> -->
-
     <br/>
 
     <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped">
     <tr>
         <th>SNO</th>
+		<th>Brand Name</th>
+		<th>Product Name</th>
         <th>Number of Goods Sold</th>
         <th>CGST</th>
         <th>SGST</th>
@@ -182,6 +176,8 @@
     ?>
             <tr>
                 <td class=""><?php echo $i; ?></td>
+				<td class=""><?php echo $b_value->product_name; ?></td>
+				<td class=""><?php echo $b_value->brand_name; ?></td>
                 <td class=""><?php echo round($b_value->total_unit); ?></td>
                 <td class=""><?php echo $b_value->gst; ?> </td>
                 <td class=""><?php echo $b_value->gst; ?> </td>

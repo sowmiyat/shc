@@ -174,6 +174,116 @@
 		    return $data;
 
 	}
+	
+	function return_report_pagination( $args ) {
+		    global $wpdb;
+		  
+		    $return_table = $wpdb->prefix.'shc_return_items_details';
+			$ws_return_table = $wpdb->prefix.'shc_ws_return_items_details';
+		    
+		    
+		    $lot_table = $wpdb->prefix.'shc_lots';
+		    $customPagHTML      = "";
+
+			$page_arg = [];
+			$page_arg['ppage'] = $args['items_per_page'];
+	    	$page_arg['product_name'] = $this->product_name;
+	    	$page_arg['bill_from'] = $this->bill_from;
+	    	$page_arg['bill_to'] = $this->bill_to;
+		    $page_arg['cpage'] = '%#%';
+
+		    $condition = '';  
+
+
+		    $bill_from = $this->bill_from;
+		    $bill_to   = $this->bill_to;
+   			if($this->slap != '') {
+		    	$condition .= " WHERE cgst = ".$this->slap;
+		    }
+		    
+
+		  
+			$query = "SELECT * from 
+(select 
+ full_return_tab.lot_id,
+ sum(full_return_tab.return_cgst) as cgst_value,
+ sum(full_return_tab.return_amt) as amt,sum(full_return_tab.return_unit) as return_unit,
+ sum(full_return_tab.return_total) as subtotal from 
+ (SELECT return_details.cgst,return_details.lot_id, 
+  sum(return_details.cgst_value) as return_cgst, 
+  sum(return_details.sgst_value) as return_sgst, 
+  sum(return_details.sub_total) as return_total , 
+  sum(return_details.return_unit) as return_unit, 
+  sum(return_details.amt) as return_amt 
+  FROM  ${return_table} as return_details 
+  WHERE return_details.active = 1 AND DATE(return_details.modified_at) >= date('$bill_from') AND DATE(return_details.modified_at) <= date('$bill_to') group by return_details.lot_id
+union all
+SELECT 
+  ws_return_details.cgst,
+  ws_return_details.lot_id, 
+  sum(ws_return_details.cgst_value) as return_cgst, 
+  sum(ws_return_details.sgst_value) as return_sgst, 
+  sum(ws_return_details.sub_total) as return_total , 
+  sum(ws_return_details.return_unit) as return_unit, 
+  sum(ws_return_details.amt) as return_amt 
+  FROM  ${ws_return_table} as ws_return_details 
+  WHERE ws_return_details.active = 1 AND DATE(ws_return_details.modified_at) >= date('$bill_from') AND DATE(ws_return_details.modified_at) <= date('$bill_to') group by ws_return_details.lot_id
+ ) as full_return_tab group by full_return_tab.lot_id) as r_table 
+left join 
+(select id,cgst,sgst,product_name,brand_name from ${lot_table} WHERE active=1) as lot_tab on lot_tab.id =r_table.lot_id where lot_tab.id>1 ${condition}";
+		    $total_query        = "SELECT COUNT(1) FROM (${query}) AS combined_table";
+
+	        $status_query       = "SELECT SUM(cgst_value) as total_cgst,sum(return_unit) as sold_qty,sum(subtotal) as sub_tot FROM (${query}) AS combined_table";
+			$data['s_result']   = $wpdb->get_row( $status_query );
+		    $data['total']      = $wpdb->get_var( $total_query );
+
+		    //$page               = isset( $_GET['cpage'] ) ? abs( (int) $_GET['cpage'] ) : abs( (int) $args['page'] );
+		    $page               = $this->cpage;
+		    $ppage 				= $this->ppage;
+		    $offset             = ( $page * $args['items_per_page'] ) - $args['items_per_page'] ;
+
+		    $data['result']         = $wpdb->get_results( $query . " ORDER BY ${args['orderby_field']} ${args['order_by']} LIMIT ${offset}, ${args['items_per_page']}" );
+		    $totalPage         = ceil($data['total'] / $args['items_per_page']);
+
+		    if($totalPage > 1){
+		        $data['start_count'] = ($ppage * ($page-1));
+
+		        $pagination = paginate_links( array(
+		                'base' => add_query_arg( $page_arg , admin_url('admin.php?page=list_return')),
+		                'format' => '',
+		                'type' => 'array',
+		                'prev_text' => __('prev'),
+		                'next_text' => __('next'),
+		                'total' => $totalPage,
+		                'current' => $page
+		                )
+		            );
+		        if ( ! empty( $pagination ) ) : 
+		            $customPagHTML .= '<ul class="paginate pag3 clearfix"><li class="single">Page '.$page.' of '.$totalPage.'</li>';
+		            foreach ($pagination as $key => $page_link ) {
+		                if( strpos( $page_link, 'current' ) !== false ) {
+		                    $customPagHTML .=  '<li class="current">'.$page_link.'</li>';
+		                } else {
+		                    $customPagHTML .=  '<li>'.$page_link.'</li>';
+		                }
+		            }
+		            $customPagHTML .=  '</ul>';
+		        endif;
+		    }
+
+		    $data['pagination'] = $customPagHTML;
+		    $end_count = $data['start_count'] + count($data['result']);
+
+		    if( $end_count == 0){
+		    	$start_count = 0;
+		    }
+		    else {
+		    	$start_count = $data['start_count'] + 1;
+		    }
+		    $data['status_txt'] = "<div class='dataTables_info' role='status' aria-live='polite'>Showing ".$start_count." to ".$end_count." of ".$data['total']." entries</div>";
+		    return $data;
+
+	}
 
 
 			function stock_report_pagination_accountant( $args ) {
@@ -264,6 +374,8 @@
 							on ws_sale_table.cgst = ws_return_table.cgst
 				            ) as final_ws_sale 
 				            on final_sale.gst = final_ws_sale.gst  group by final_ws_sale.gst";
+
+				            
 
 
 		    $total_query        = "SELECT COUNT(1) FROM (${query}) AS combined_table";

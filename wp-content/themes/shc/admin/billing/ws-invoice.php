@@ -11,8 +11,10 @@
             $bill_fdata = $bill_data['bill_data'];
             $bill_ldata = $bill_data['ordered_data'];
             $bill_rdata = $bill_data['returned_data'];
+            $bill_id = $bill_fdata->id;
             $invoice_id['inv_id'] = $bill_fdata->inv_id;
-
+            $gst_slab = gst_group($bill_id);
+            $gst_data = $gst_slab['gst_data'];
         }
         else {
              echo "<script>alert('INVOICE NOT FOUND!!! Try another number');</script>";
@@ -20,13 +22,12 @@
     }
 
 ?>
-<style>
-.ui-widget-header{
-    color:#575f6c;
+<script>
+function print_current_page()
+{
+window.print();
 }
-.ui-datepicker-calendar { display: none; }
-
-</style>
+</script>
 <div class="container">
   <div class="row">
     <div class="col-md-12 print-hide">
@@ -38,24 +39,23 @@
                       <input type="text" name="id" class="invoice_id" value="<?php echo $invoice_id['inv_id']; ?>" autocomplete="off">
                        Year
                       <select name="year" class="year">
-                        <option value="2017">2017</option>
-                        <option value="2018">2018</option>
-                        <option value="2019">2019</option>
-                        <option value="2020">2020</option>
-                        <option value="2021">2021</option>
-                        <option value="2022">2022</option>
-                        <option value="2023">2023</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                        <option value="2026">2026</option>
-                        <option value="2027">2027</option>
-                        <option value="2028">2028</option>
-                        <option value="2029">2029</option>
-                        <option value="2030">2030</option>
-                      </select>
+                            <?php   $current_year = date('Y');
+                                    $display_year = $current_year - 30;
+                                    $added_year = 0;
+                                    for($i=0;$i<60;$i++) {
+                                        echo $years = $display_year + $added_year;
+                                        if($years == $current_year ){ $selected = 'selected'; } else {
+                                           $selected = ''; 
+                                        }
+                                        echo '<option value="'.$years.'"'.$selected.'>'.$years.'</option>';
+                                        $added_year++;
+                                    } 
+                            ?>
+                        </select>
                       <input type="submit" style="height: 38px;margin-left: 20px;" class="btn btn-success">
                   </h2>
-                <button class="btn btn-default ws_print_bill pull-right"><i class="fa fa-print"></i> Print</button>
+                  <!-- ws_print_bill -->
+                <button class="btn btn-default  pull-right" onclick="print_current_page();"><i class="fa fa-print"></i> Print</button>
                 <button class="btn btn-primary pull-right ws_generate_bill" style="margin-right: 5px;"><i class="fa fa-file-pdf-o" href=""></i> Generate PDF</button>
             </form>
             <div class="clearfix"></div>
@@ -117,6 +117,7 @@
                   <thead>
                     <tr>
                       <th style="width:50px;">S.No</th>
+                       <th style="width:50px;">DELIVERY</th>
                       <th style="width:300px;">PRODUCT</th>
                       <th style="width:300px;">HSN CODE</th>
                       <th style="width:80px;">QTY</th>
@@ -135,11 +136,21 @@
                         if($bill_data && $bill_ldata && count($bill_ldata)>0) {
                             $i = 1;
                             foreach ($bill_ldata as $d_value) {
+                               $is_delivery =$d_value->is_delivery;
+                                if($is_delivery == 1){
+                                  $checked = 'checked';
+                                }
+                                else {
+                                  $checked = '';
+                                }
                     ?>
                         <tr>
                           <td>
                             <div class="rowno"><?php echo $i; ?></div>
                           </td>
+                           <td class="delivery">
+                                <input type="checkbox" class="ws_delivery_check" <?php echo $checked; ?>  style="width: 20px; height: 20px;"/>
+                          </td> <input type="hidden" value="<?php  echo $d_value->id; ?>" class="ws_delivery_id" />
                           <td>
                             <span class="span_product_name"><?php echo $d_value->product_name; ?></span>
                           </td>
@@ -207,97 +218,22 @@
                 </thead>
 
                 <tbody>
-                    <?php
-                        if($bill_data && $bill_ldata && count($bill_ldata)>0) {
-                                $tax_amount_zero            = '0.00';
-                                $tax_amount_five            = '0.00';
-                                $tax_amount_twelve          = '0.00';
-                                $tax_amount_eighteen        = '0.00';
-                                $tax_amount_twentyeight     = '0.00';
-                                $cgst_amount_zero           = '0.00';
-                                $cgst_amount_five           = '0.00';
-                                $cgst_amount_twelve         = '0.00';
-                                $cgst_amount_eighteen       = '0.00';
-                                $cgst_amount_twentyeight    = '0.00';
-                            foreach ($bill_ldata as $d_value) {   
+                    <?php  if(isset($gst_data)) { 
+                      $total_tax=0;
+                            foreach( $gst_data as $g_data) {
 
-                                if($d_value->cgst == '0.00'){
-                                    $tax_amount_zero    = $tax_amount_zero + $d_value->sub_total;
-                                    $cgst_amount_zero   = $cgst_amount_zero + $d_value->cgst_value;
-                                }
-
-                                else if($d_value->cgst == '2.50'){
-                                    $tax_amount_five     = $tax_amount_five  + $d_value->sub_total;
-                                    $cgst_amount_five    = $cgst_amount_five  + $d_value->cgst_value;
-                                    
-                                }
-                                else if($d_value->cgst == '6.00'){
-                                    $tax_amount_twelve    = $tax_amount_twelve + $d_value->sub_total;
-                                    $cgst_amount_twelve   = $cgst_amount_twelve + $d_value->cgst_value;
-                                }
-                                else if($d_value->cgst == '9.00'){
-                                    $tax_amount_eighteen    = $tax_amount_eighteen + $d_value->sub_total;
-                                    $cgst_amount_eighteen   = $cgst_amount_eighteen + $d_value->cgst_value;
-                                }
-                                else if($d_value->cgst == '14.00'){
-                                    $tax_amount_twentyeight    = $tax_amount_twentyeight + $d_value->sub_total;
-                                    $cgst_amount_twentyeight   = $cgst_amount_twentyeight + $d_value->cgst_value;
-                                }
-                                else {
-
-                                    return false;
-                                }
-
+                     ?>
+                    <tr class="">
+                        <td class="amt_zero">Rs. <?php  echo $g_data->sale_amt; ?></td>
+                        <td class="cgst_zero"><?php echo $g_data->cgst; ?> % </td>
+                        <td class="cgst_val_zero"><?php echo $g_data->sale_cgst; ?></td>
+                        <td class="sgst_zero"><?php echo $g_data->cgst; ?> % </td>
+                        <td class="sgst_val_zero"><?php echo $g_data->sale_sgst; ?></td>
+                    </tr>
+                      <?php $total_tax = ( 2 * $g_data->sale_sgst) +$total_tax;
                             }
-
-                            $tax_amount = $tax_amount_zero + $tax_amount_five + $tax_amount_twentyeight + $tax_amount_eighteen + $tax_amount_twelve;
-                            $cgst_amount = $cgst_amount_zero + $cgst_amount_five + $cgst_amount_twelve + $cgst_amount_eighteen + $cgst_amount_twentyeight;
-                        }
-
-
-                    ?>
-                    <?php  if($tax_amount_zero != '0.00'){ ?>
-                    <tr class="zero">
-                        <td class="amt_zero">Rs. <?php  echo $tax_amount_zero; ?></td>
-                        <td class="cgst_zero">0.00 % </td>
-                        <td class="cgst_val_zero"><?php echo $cgst_amount_zero; ?></td>
-                        <td class="sgst_zero">0.00 %</td>
-                        <td class="sgst_val_zero"><?php echo $cgst_amount_zero; ?></td>
-                    </tr>
-                    <?php } if($tax_amount_five != '0.00'){ ?>
-                    <tr class="five">
-                        <td class="amt_five">Rs.<?php  echo $tax_amount_five; ?></td>
-                        <td class="cgst_five">2.50 % </td>
-                        <td class="cgst_val_five"><?php echo $cgst_amount_five; ?></td>
-                        <td class="sgst_five">2.50 %</td>
-                        <td class="sgst_val_five"><?php echo $cgst_amount_five; ?></td>
-                    </tr>
-                    <?php } if($tax_amount_twelve != '0.00'){ ?>
-                    <tr class="twelve">
-                        <td class="amt_twelve">Rs.<?php  echo $tax_amount_twelve; ?></td>
-                        <td class="cgst_twelve">6.00 % </td>
-                        <td class="cgst_val_twelve"><?php echo $cgst_amount_twelve; ?></td>
-                        <td class="sgst_twelve">6.00 %</td>
-                        <td class="sgst_val_twelve"><?php echo $cgst_amount_twelve; ?></td>
-                    </tr>
-                    <?php } if($tax_amount_eighteen != '0.00'){ ?>
-                    <tr class="eighteen">
-                        <td class="amt_eighteen">Rs.<?php  echo $tax_amount_eighteen; ?></td>
-                        <td class="cgst_eighteen">9.00 % </td>
-                        <td class="cgst_val_eighteen"><?php echo $cgst_amount_eighteen; ?></td>
-                        <td class="sgst_eighteen">9.00 %</td>
-                        <td class="sgst_val_eighteen"><?php echo $cgst_amount_eighteen; ?></td>
-                    </tr>
-                    <?php } if($tax_amount_twentyeight != '0.00'){ ?>
-                    <tr class="twentyeight">
-                        <td class="amt_twentyeight">Rs.<?php  echo $tax_amount_twentyeight; ?></td>
-                        <td class="cgst_twentyeight">14.00 % </td>
-                        <td class="cgst_val_twentyeight"><?php echo $cgst_amount_twentyeight; ?></td>
-                        <td class="sgst_twentyeight">14.00 %</td>
-                        <td class="sgst_val_twentyeight"><?php echo $cgst_amount_twentyeight; ?></td>
-                    </tr> 
-                    <?php } ?>
-                    <tr><td></td><td></td><td></td><td>Total Tax</td><td><?php echo $cgst_amount + $cgst_amount; ?></td></tr> 
+                          } ?>
+                    <tr><td></td><td></td><td></td><td>Total Tax</td><td><?php echo $total_tax; ?></td></tr> 
                 
             </table>
               </div>
@@ -314,12 +250,10 @@
                       <tr>
 
                         <th>Discount:</th>
-                        <td><?php if($bill_fdata->discount_type == 'cash') {
-                        echo $bill_fdata->discount; }
-                        else {
+                        <td><?php 
                           echo $bill_fdata->discount + 0;
                           echo '%';
-                        }
+                        
                         ?></td>
                       </tr>
                       <tr>
@@ -667,10 +601,10 @@
                       <td>
                         <div class="invoice-detail company-detail">
                           <div class="company-address-txt">
-                            <div class="invoice-no">INVOICE NO - 3</div>
+                            <div class="invoice-no">INVOICE NO - <?php echo  $_GET['id']; ?></div>
                           </div>
                           <div class="company-address-txt">
-                            <b>DATE - 13/10/2017</b>
+                            <b>DATE - <?PHP echo $bill_fdata->created_at; ?></b>
                           </div>
 
                           <div class="company-address-txt">
@@ -735,10 +669,11 @@
                             <div class="buyer-detail">
                               BUYER,<br>
                               <div class="buyer-address">
-                                RAIN FOREST RESTAURANT,<br>
-                                No: 41-42, 1st Main Road,<br>
-                                Adyar, Chennai - 600020,<br>
-                                <b>GST NO - 33ALCPP8244Q1ZJ</b>
+                               <?php echo $bill_fdata->company_name; ?><br>
+								<?php echo $bill_fdata->customer_name; ?><br>
+								<?php echo $bill_fdata->mobile; ?><br>
+                               <?php echo $bill_fdata->address; ?><br>
+							  <b> GST NO<?php echo $bill_fdata->gst_number; ?></b>
                               </div>
                             </div>
                           </th>
@@ -746,7 +681,9 @@
                             <div class="delivery-detail">
                               DELIVERY ADDRESS,<br>
                               <div class="delivery-address">
-                                
+                                <?php echo $bill_fdata->home_delivery_name; ?><br>
+								<?php echo $bill_fdata->home_delivery_mobile; ?><br>
+								<?php echo $bill_fdata->home_delivery_address; ?><br>
                               </div>
                             </div>
                           </th>
@@ -902,10 +839,19 @@
                           </tr>
                           
                           <tr>
+                            <td colspan="11"><div class="text-center">Discount (Hire Charges)</div></td>
+                            <td>
+                              <div class="text-rigth">
+                                <?php echo $bill_fdata->discount; ?>
+                              </div>
+                            </td>
+                          </tr>
+
+                          <tr>
                             <td colspan="11"><div class="text-center">Total (Hire Charges)</div></td>
                             <td>
                               <div class="text-rigth">
-                                200
+                                <?php echo $final_total = $bill_fdata->sub_total; ?>
                               </div>
                             </td>
                           </tr>
@@ -919,7 +865,7 @@
                             </td>
                             <td>
                               <div class="text-right">
-                                45435
+                                <?php echo $final_total = $bill_fdata->sub_total; ?>
                               </div>
                             </td>
                           </tr>
@@ -941,7 +887,7 @@
 
       <div class="inner-container" style="margin-top: 0px;">
         <div>Amount Chargable (in words)</div>
-        <b>INR <?php echo convert_number_to_words_full('300'); ?></b>
+        <b>Rs <?php echo convert_number_to_words_full($final_total); ?></b>
 
 
         <table class="table table-bordered" style="margin-top:10px;margin-bottom: 5px;width: 120mm;">
@@ -965,142 +911,23 @@
             </tr>
           </thead>
           <tbody>
-                <tr>
-                  <td>
-                    <div class="text-right">
-                      567567
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                      9%
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                      454
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                      9%
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                      45
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="text-right">
-                      567567
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                      9%
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                      454
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                      9%
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                      45
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="text-right">
-                      567567
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                      9%
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                      454
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                      9%
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                      45
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="text-right">
-                      567567
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                      9%
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                      454
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                      9%
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                      45
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="text-right">
-                      567567
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                      9%
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                      454
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                      9%
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                      45
-                    </div>
-                  </td>
-                </tr>
-                <tr>
+
+
+            <?php  if(isset($gst_data)) { 
+                      $total_tax=0;
+                            foreach( $gst_data as $g_data) {
+
+                     ?>
+                    <tr class="">
+                        <td class=""><div class="text-right">Rs. <?php  echo $g_data->sale_amt; ?></div></td>
+                        <td class=""><div class="text-right"><?php echo $g_data->cgst; ?> % </div></td>
+                        <td class=""><div class="text-right"><?php echo $g_data->sale_cgst; ?></div></td>
+                        <td class=""><div class="text-right"><?php echo $g_data->cgst; ?> % </div></td>
+                        <td class=""><div class="text-right"><?php echo $g_data->sale_sgst; ?></div></td>
+                    </tr>
+                      <?php $total_tax = ( 2 * $g_data->sale_sgst) +$total_tax;
+                            }
+                          } ?>
                   <td colspan="4">
                     <div class="text-center">
                       Total Tax
@@ -1108,7 +935,7 @@
                   </td>
                   <td>
                     <div class="text-right">
-                      45454
+                     <?php echo $total_tax; ?>
                     </div>
                   </td>
                 </tr>
@@ -1116,7 +943,7 @@
         </table>
         <table>
           <div>Tax Amount (in words)</div>
-          <b>INR fghfghfg</b>
+          <b>Rupees <?php echo convert_number_to_words_full($total_tax); ?> </b>
         </table>
       </div>
 

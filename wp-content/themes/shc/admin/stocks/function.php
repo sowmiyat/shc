@@ -42,9 +42,9 @@ add_action( 'wp_ajax_nopriv_search_lot', 'search_lot' );
 
 function add_stock(){
 
-	$data['success'] 	= 0;
+	/* $data['success'] 	= 0;
 	$data['msg'] 	= 'Something Went Wrong! Please Try Again!';
-	$data['redirect'] 	= 0;
+	$data['redirect'] 	= 0; */
 
 	global $wpdb;
 	$stock_table = $wpdb->prefix. 'shc_stock';
@@ -60,11 +60,12 @@ function add_stock(){
 	if($lot_id != '') {
 
 		$wpdb->insert($stock_table, $params);
-		if($wpdb->insert_id) {
+		/* if($wpdb->insert_id) {
 			$data['success'] = 1;
 			$data['msg'] 	= 'Stock Added!';
-			$data['redirect'] = network_admin_url( 'admin.php?page=list_stocks' );
-		}
+			
+		} */
+		$data['redirect'] = network_admin_url( 'admin.php?page=list_stocks' );
 		
 	}
 

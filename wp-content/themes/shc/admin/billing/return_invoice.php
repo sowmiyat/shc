@@ -16,6 +16,8 @@
             $bill_ldata                     = $bill_data['return_ordered_data'];
             $bill_rdata                     = $bill_data['return_data'];
             $invoice_id['invoice_id']       = $bill_fdata->inv_id;
+			
+			
 
     } else {                                            
          if(isValidInvoice($_GET['id'], 1)) {

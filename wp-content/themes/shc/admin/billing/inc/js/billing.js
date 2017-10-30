@@ -2,6 +2,36 @@ jQuery(document).ready(function (argument) {
 
 jQuery('#ws_billing_customer').focus();
 
+
+//Ws delivery check products
+     jQuery('.ws_delivery_check').on('click',function(){
+        var delivery_check = jQuery(this).parent().parent().find('.ws_delivery_check').is(":checked");
+        if(delivery_check){
+            var delivery = 1;
+        } else {
+            var delivery = 0;
+        }
+        var delivery_id = jQuery(this).parent().parent().find('.ws_delivery_id').val();
+        jQuery.ajax({
+            type: "POST",
+            dataType : "json",
+            url: frontendajax.ajaxurl,
+            data: {
+                action      :'ws_product_delivery',
+                id          : delivery_id,
+                delivery    : delivery,
+            },
+            success: function (data) {
+                clearPopup();     
+
+            }
+        });
+
+     });
+
+
+
+
     jQuery('#ws_billing_mobile').live('keydown', function(e){
         var keyCode = e.keyCode || e.which; 
         if (keyCode == 40) { 
@@ -41,6 +71,16 @@ jQuery('#ws_billing_customer').focus();
 //<----------- End mobile textboxes------>
 
     jQuery("#ws_submit_payment").on('keydown',  function(e) { 
+      var keyCode = e.keyCode || e.which; 
+
+      if (keyCode == 9) { 
+            e.preventDefault(); 
+            jQuery('#ws_billing_customer').focus();
+      } 
+
+    });
+	
+	 jQuery("#ws_update_payment").on('keydown',  function(e) { 
       var keyCode = e.keyCode || e.which; 
 
       if (keyCode == 9) { 
@@ -341,8 +381,8 @@ jQuery('#ws_billing_customer').focus();
 
 
     jQuery('.ws_print_bill').on('click',function(){
-        var inv_id = jQuery('.invoice_id').val();
-        var year = jQuery('.year').val();
+        var inv_id = jQuery(this).parent().parent().find('.invoice_id').val();
+        var year = jQuery(this).parent().parent().find('.year').val();
         var datapass =   home_page.url+'ws-invoice/?id='+inv_id+'&year='+year;
 
         // billing_list_single
@@ -352,7 +392,7 @@ jQuery('#ws_billing_customer').focus();
 
 
     jQuery('.ws_return_print').on('click',function() {
-        var gr_id = jQuery('.gr_id').val();
+        var gr_id = jQuery(this).parent().parent().find('.gr_id').val();
         var datapass =   home_page.url+'ws-return/?id='+gr_id;
 
         // billing_list_single
@@ -361,7 +401,7 @@ jQuery('#ws_billing_customer').focus();
     });
 
     jQuery('.return_print').on('click',function() {
-        var gr_id = jQuery('.gr_id').val();
+        var gr_id = jQuery(this).parent().parent().find('.gr_id').val();
         var datapass =   home_page.url+'return/?id='+gr_id;
 
         // billing_list_single
@@ -625,7 +665,7 @@ jQuery( document ).ready(function() {
         var sgst                = jQuery('.sgst_percentage').val();
 
 
-       if( !!product_id && unit !='0' &&  unit != '' && discount != '0.00' &&  discount != '' && discount != '0') {
+       if( !!product_id && unit !='0' &&  unit != '' && unit > 0 && discount != '0.00' &&  discount != '' && discount != '0') {
             var existing_count = parseInt( jQuery('#bill_lot_add tr').length );
             var current_row = existing_count + 1;
             if( jQuery('.customer_table[data-productid="'+ product_id +'"]').length != 0 ) {
@@ -806,13 +846,14 @@ jQuery(document).ready(function (argument) {
                 action : 'ws_create_return',
                 data   : jQuery('#ws_billing_return :input').serialize(),
                 year   : jQuery( ".year" ).val(),
+				search_inv_id : jQuery(".ws_return_inv_id").val(),
             },
             success: function (data) {
                 clearPopup();
                 popItUp('Success', 'Bill Created!');
                 jQuery('#lightbox').css('display','none');
 
-              window.location = bill_update_url+'&return_id='+data.id+'&id='+data.invoice_id+'&year='+data.year;
+              window.location = bill_update_url+'&return_id='+data.id+'&id='+data.search_inv_id+'&year='+data.year;
 
             }
         });
@@ -859,6 +900,28 @@ jQuery(document).ready(function (argument) {
 
     });
 
+	//<-------Delete Bill------->
+
+  jQuery('.delete-ws-bill').live( "click", function() {
+    if(confirm('Are you sure you want to delete this element?')){
+      var data=jQuery(this).attr("data-id");
+      console.log(data);
+      window.location.replace('admin.php?page=ws_billing_list&delete_id='+data+'&action=delete');
+    }
+
+  });
+  //<-------End Delete Bill------->
+  	//<-------Delete Return Bill------->
+
+  jQuery('.delete-ws-return-bill').live( "click", function() {
+    if(confirm('Are you sure you want to delete this element?')){
+      var data=jQuery(this).attr("data-id");
+      console.log(data);
+      window.location.replace('admin.php?page=ws_return_items_list&delete_id='+data+'&action=delete');
+    }
+
+  });
+  //<-------End Delete Return Bill------->
 
 
 });

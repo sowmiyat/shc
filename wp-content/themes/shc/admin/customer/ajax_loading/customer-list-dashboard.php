@@ -2,11 +2,11 @@
     $ppage = false;
     if(!$customer) {
         $customer = new Customer();
-        $ppage = 5;
+        $ppage = 10;
     }
 
     $result_args = array(
-        'orderby_field' => 'created_at',
+        'orderby_field' => 'total_buy',
         'page' => $customer->cpage,
         'order_by' => 'DESC',
         'items_per_page' => ($ppage) ? $ppage : $customer->ppage ,
@@ -27,6 +27,7 @@
                             <th class="column-title">Mobile </th>
                             <th class="column-title">Address </th>
                             <th class="column-title">Sale Total </th>
+							<th class="column-title">Balance(to be paid) </th>
                             <th class="column-title">Registered On </th>
                             <!-- <th class="column-title">Action </th> -->
                         </tr>
@@ -48,7 +49,8 @@
                                     <td class=""><?php echo $c_value->mobile; ?></td>
                                     <td class=""><?php echo $c_value->address; ?></i>
                                     </td>
-                                    <td class=""><?php echo $c_value->sale_total; ?></td>
+                                    <td class=""><?php echo $c_value->total_buy; ?></td>
+									<td class=""><?php echo $c_value->balance; ?></td>
                                     <td class=""><?php echo $c_value->created_at; ?></td>
                                     <!-- <td><a href="<?php //echo admin_url('admin.php?page=new_customer')."&id=${customer_id}"; ?>">Update</a></td> -->
                                 </tr>
@@ -67,11 +69,11 @@
 
         <div class="row">
             <div class="col-sm-7">
-                <div class="paging_simple_numbers" id="datatable-fixed-header_paginate">
+               <!--  <div class="paging_simple_numbers" id="datatable-fixed-header_paginate">
                     <?php
                     echo $customer_list['pagination'];
                     ?>
-                </div>
+                </div> -->
             </div>
             <div class="col-sm-5">
                 <div class="dataTables_info" id="datatable-fixed-header_info" role="status" aria-live="polite"></div>

@@ -1,7 +1,7 @@
 <?php
     $report = new report();
 ?>
-<div class="col-md-12 col-sm-12 col-xs-12">
+<div class="col-md-12 col-sm-12 col-xs-12 print-hide">
     <div class="x_panel">
         <div class="x_title">
             <h2>Table design <small>Custom design</small></h2>
@@ -32,11 +32,11 @@
                       </select>
                     </div> -->
                     <div class="col-md-2 form-group">
-                         <b>From</b><input type="text" name="bill_from" class="bill_from form-control" value="<?php echo date('Y-m-01'); ?>" placeholder="Bill From">
+                         <b></b><input type="text" name="bill_from" class="bill_from form-control" value="<?php echo date('Y-m-d'); ?>" placeholder="Bill From">
                     </div>
 
                     <div class="col-md-2 form-group">
-                        <b>To</b> <input type="text" name="bill_to" class="bill_to form-control" value="<?php echo date('Y-m-t'); ?>" placeholder="Bill To">
+                        <b></b> <input type="text" name="bill_to" class="bill_to form-control" value="<?php echo date('Y-m-d'); ?>" placeholder="Bill To">
                     </div>
                     <div class="col-md-8">
                         <button class="btn btn-default accountant_print pull-right"><i class="fa fa-print"></i> Print</button>

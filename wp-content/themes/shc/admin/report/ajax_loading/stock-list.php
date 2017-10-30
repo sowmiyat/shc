@@ -1,4 +1,9 @@
 <?php
+    $ppage = false;
+    if(!$report) {
+        $report = new report();
+        $ppage = 10;
+    }
 
     $result_args = array(
         'orderby_field' => 'gst',

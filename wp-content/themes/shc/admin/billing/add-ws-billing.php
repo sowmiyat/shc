@@ -167,7 +167,7 @@
 										</div>
 
 										<input type="hidden" name="ws_user_type" value="new" class="ws_user_type"/>
-										<input type="hidden" name="ws_old_customer_id" class="ws_old_customer_id" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->customer_id;} else { echo '0'; } ?>"/>
+										<input type="hidden" name="ws_old_customer_id" class="ws_old_customer_id" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->customer_id; } else { echo '0'; } ?>"/>
 										<input type="hidden" name="ws_customer_id_new" class="ws_customer_id_new"/>
 									</div>
 
@@ -444,9 +444,9 @@
 												if($update) {
 											?>
 											<input type="hidden" name="id" class="invoice_id_new" value="<?php echo $invoice_id['invoice_id']; ?>">
-												 <button class="btn btn-default ws_print_bill pull-right"><i class="fa fa-print"></i> Print</button>
+												
 												<button class="btn btn-success pull-right" id="ws_update_payment"><i class="fa fa fa-edit"></i> Update Invoice</button>
-												<button class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-file-pdf-o ws_generate_bill"> Generate PDF</i></button>
+												
 											<?php
 												} else {
 											?>

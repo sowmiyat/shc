@@ -1,4 +1,14 @@
 <?php
+	global $wpdb;
+    $bill_table = $wpdb->prefix.'shc_ws_sale';
+	$bill_detail_table = $wpdb->prefix.'shc_ws_sale_detail';
+
+    if($_GET['action']=='delete'){
+        $id = $_GET['delete_id'];
+        $data_delete=$wpdb->update( $bill_table ,array( 'active' =>'0' ),array( 'id' => $id ));
+		$wpdb->update($bill_detail_table, array('active' => 0), array('sale_id' => $id));
+		
+    }
     $result_args = array(
         'orderby_field' => 'created_at',
         'page' => $billing->cpage,
@@ -37,19 +47,26 @@
 
                             foreach ($billing_list['result'] as $b_value) {
                                 $bill_id = $b_value->id;
-                    ?>
+                                $inv_id = $b_value->inv_id;
+                    ?> 
                                 <tr class="odd pointer">
                                     <td class="a-center ">
                                         <?php echo $i; ?>
                                     </td>
-                                    <td class=""><?php echo $b_value->id; ?></td>
+                                    <td><?php echo $b_value->inv_id; ?></td>
                                     <td class=""><?php echo $b_value->order_id; ?></td>
                                     <td class=""><?php echo $b_value->name; ?> </td>
                                     <td class=""><?php echo $b_value->mobile; ?> </td>
                                     <td class=""><?php echo $b_value->sub_total; ?></td>
                                     <td class=""><?php echo $b_value->created_at; ?></td>
                                     <td>
-                                        <a href="<?php echo admin_url('admin.php?page=ws_invoice')."&id=${bill_id}&year=$b_value->financial_year"; ?>" class="bill_view">View</a>
+                                        <a href="<?php echo admin_url('admin.php?page=ws_invoice')."&id=${inv_id}&year=$b_value->financial_year"; ?>" class="bill_view">View</a>/
+                                        <a href="<?php echo admin_url('admin.php?page=ws_new_billing')."&id=${bill_id}"; ?>" class="bill_view">Update</a>/
+                                        <a href="#" class="ws_print_bill">Print</a>/
+										<a href="#" class="print_bill_delete delete-ws-bill" style="width:50px;" data-id="<?php echo $b_value->id; ?>">Delete</a>
+                                        <input type="hidden" name="year" class="year" value = "<?php echo $b_value->financial_year; ?>"/>
+                                        <input type="hidden" name="invoice_id" class="invoice_id" value="<?php echo $b_value->inv_id; ?>"/>
+
                                     </td>
                                 </tr>
                     <?php

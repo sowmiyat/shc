@@ -251,9 +251,9 @@
 														if($bill_data['ordered_data']) {
 															$i = 1;
 															foreach ($bill_ldata as $c_value) {
+																
 	 															echo '<tr data-randid='.getToken().' data-productid='.$c_value->lot_id.' class="customer_table_retail" >
 	 															<td class="td_id">'.$i.'</td> <input type="hidden" value="'.$c_value->lot_id.'" name="customer_detail['.$i.'][id]" class="sub_id" />
-	 															<td class="delivery"><input type="checkbox" class="delivery_check"  style="width: 20px; height: 20px;"/></td><input type="hidden" value="'. $c_value->id.'" name="customer_detail['.$i.'][delivery_id]" class="delivery_id" />
 	 															<td class="td_product">' .$c_value->product_name. '</td> <input type="hidden" value = "'.$c_value->product_name. '" name="customer_detail['.$i.'][product]" class="sub_product"/>
 	 															<td class="td_hsn">' .$c_value->hsn. '</td> <input type="hidden" value = "'.$c_value->hsn. '" name="customer_detail['.$i.'][hsn]" class="sub_hsn"/>
 	 															<td class=""><input type="text" value = "'.$c_value->sale_unit. '" name="customer_detail['.$i.'][unit]" class="retail_sub_unit"/> </td> 
@@ -472,9 +472,9 @@
 												if($update) {
 											?>
 											<input type="hidden" name="id" class="invoice_id_new" value="<?php echo $bill_fdata->id; ?>">
-												<button class="btn btn-default print_bill pull-right"><i class="fa fa-print"></i> Print</button>
+												
 												<button class="btn btn-success pull-right" id="update_payment"><i class="fa fa fa-edit"></i> Update Invoice</button>
-												<button class="btn btn-primary pull-right " style="margin-right: 5px;"><i class="fa fa-file-pdf-o generate_bill"> Generate PDF</i></button>
+												
 											<?php
 												} else {
 											?>

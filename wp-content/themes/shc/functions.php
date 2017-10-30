@@ -65,7 +65,7 @@ function remove_footer_admin()
 				<div class="footer-nav">
 					<ul>
 						<li>
-							<a href="<?php echo admin_url('admin.php?page=total_stock_list&ppage=50&brand_name&product_name&stock_from&stock_to&comparison=less_than&count=0&cpage=1')?>">
+							<a href="<?php echo admin_url('admin.php?page=total_stock_list&ppage=50&brand_name&product_name&stock_from&stock_to&comparison=less_than&count=1&cpage=1')?>">
 								<span class="footer-button new-order"></span>Available Stocks 
 								
 							</a>
@@ -247,20 +247,37 @@ require get_template_directory() . '/admin/lots/function.php';
 require get_template_directory() . '/admin/stocks/function.php';
 require get_template_directory() . '/admin/billing/function.php';
 
+$date = date('Y-m-d');
+function sales_statistics_widget_today( $post, $callback_args ) {
+	include('admin/billing/ajax_loading/billing-list.php');
+	//admin_url('admin.php?page=billing_list&ppage=20&inv_id&order_id&name&mobile&bill_from='.$date.'&bill_to='.$date.'&cpage=1');
+}
 
 function sales_statistics_widget( $post, $callback_args ) {
-	include('admin/customer/ajax_loading/customer-list-dashboard.php');
+	include('admin/report/ajax_loading/stock-list.php');
+	//admin_url('admin.php?page=list_report&ppage=10&bill_from=&bill_to=&cpage=1');
+}
+function wscutomer( $post, $callback_args ) {
+	include('admin/customer/ajax_loading/wholesale-customer-list.php');
+	//admin_url('admin.php?page=wholesale_customer&ppage=10&name&mobile&customer_from&customer_to&sale_total=999&cpage=1');
+
+}
+function customer( $post, $callback_args ) {
+	include('admin/customer/ajax_loading/customer-list.php');
+	//echo admin_url('admin.php?page=customer_list&ppage=5&name&mobile&customer_from&customer_to&sale_total=999&cpage=1');
+}
+function stock_status_widget( $post, $callback_args ) {
+	include('admin/report/ajax_loading/stock-list.php');
+	//echo admin_url('admin.php?page=list_report&ppage=10&bill_from='.$date.'&bill_to='.$date.'&cpage=1');
 }
 
-function stock_status_widget( $post, $callback_args ) {
-	include('admin/stocks/ajax_loading/stock-list-total.php');
-}
-// function sales_delivery_status_widget( $post, $callback_args ) {
-// 	include('report/sales-delivery-status.php');
-// }
+
 function add_dashboard_widgets() {
-	add_meta_box( 'my_sales_tatistics_widget', 'Sales Statistics', 'sales_statistics_widget', 'dashboard', 'normal', 'high' );
-	add_meta_box( 'my_stock_status_widget', 'Stock Status', 'stock_status_widget', 'dashboard', 'side', 'high' );
+	add_meta_box( 'my_sales_tatistics_widget', 'Today Sales Statistics', 'sales_statistics_widget_today', 'dashboard', 'normal', 'high' );
+	add_meta_box( 'my_sales_statistics_widget', 'Sales Statistics', 'sales_statistics_widget', 'dashboard', 'side', 'high' );
+	add_meta_box( 'my_wscutomer', 'Wholesale Customer  Status', 'wscutomer', 'dashboard', 'normal', 'low' );
+	add_meta_box( 'my_customer', 'Retail Customer Status', 'customer', 'dashboard', 'side', 'low' );
+	add_meta_box( 'my_stock_status_widget', 'Today Sold Stocks ', 'stock_status_widget', 'dashboard', 'side', 'low' );
 	//add_meta_box( 'my_stock_status_widget', 'Stock ', 'sales_delivery_status_widget', 'dashboard', 'normal', 'low' );
 	
 	
@@ -273,41 +290,41 @@ add_action('admin_head', 'mytheme_remove_help_tabs');
 function mytheme_remove_help_tabs() {
     $screen = get_current_screen();
     $screen->remove_help_tabs();
-}
+}	
 
-function invoiceDownload($str='', $outfile = '')
-{
+// function invoiceDownload($str='', $outfile = '')
+// {
 
-	$paper = DOMPDF_DEFAULT_PAPER_SIZE;
-	require_once("wp-pdf-templates/dompdf/dompdf_config.inc.php"); 
-	$dompdf = new DOMPDF();
+// 	$paper = DOMPDF_DEFAULT_PAPER_SIZE;
+// 	require_once("wp-pdf-templates/dompdf/dompdf_config.inc.php"); 
+// 	$dompdf = new DOMPDF();
 
-	global $_dompdf_show_warnings, $_dompdf_debug, $_DOMPDF_DEBUG_TYPES;
+// 	global $_dompdf_show_warnings, $_dompdf_debug, $_DOMPDF_DEBUG_TYPES;
 
-	$options = array();
+// 	$options = array();
 
-	$orientation = "portrait";
-	$save_file = false; # Don't save the file
-
-
-	$dompdf->load_html($str);
-	$dompdf->set_paper($paper, $orientation);
-	$dompdf->render();
-
-	if ( $_dompdf_show_warnings ) {
-		global $_dompdf_warnings;
-		foreach ($_dompdf_warnings as $msg)
-		echo $msg . "\n";
-		echo $dompdf->get_canvas()->get_cpdf()->messages;
-		flush();
-	}
+// 	$orientation = "portrait";
+// 	$save_file = false; # Don't save the file
 
 
-	if ( !headers_sent() ) {
-	$dompdf->stream($outfile, $options);
-	}
+// 	$dompdf->load_html($str);
+// 	$dompdf->set_paper($paper, $orientation);
+// 	$dompdf->render();
 
-}
+// 	if ( $_dompdf_show_warnings ) {
+// 		global $_dompdf_warnings;
+// 		foreach ($_dompdf_warnings as $msg)
+// 		echo $msg . "\n";
+// 		echo $dompdf->get_canvas()->get_cpdf()->messages;
+// 		flush();
+// 	}
+
+
+// 	if ( !headers_sent() ) {
+// 	$dompdf->stream($outfile, $options);
+// 	}
+
+// }
 
 
 

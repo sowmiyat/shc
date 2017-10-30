@@ -43,6 +43,9 @@
                 <div class="col-md-2 form-group">
                   <input type="text" name="customer_to" class="customer_to form-control" value="<?php echo $customer->customer_to; ?>" placeholder="Customer To">
                 </div>
+                 <div class="col-md-2 form-group">
+                  <input type="text" name="sale_total" class="sale_total form-control" value="<?php echo $customer->sale_total; ?>" placeholder="Sale Total"> 
+                </div>
               </div>
               <input type="hidden" name="filter_action" class="filter_action" value="wholesale_customer_filter">
               
