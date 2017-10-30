@@ -9,11 +9,18 @@
 
 $invoice_id = isset($_GET['id']) ? $_GET['id'] : 0;
 $year = isset($_GET['year']) ? $_GET['year'] : 0;
+$url = site_url( 'ws-invoice/?id=' ).$invoice_id.'&year='.$year;
 
-$url = site_url( 'ws-invoice-download/?id=' ).$invoice_id.'&download&year='.$year;
-$content =   file_get_contents($url,0,null,null);
+$content =   file_get_contents($url);
 
-invoiceDownload($content, 'wsinvoice.pdf');
+
+$mpdf = new mPDF(); 
+$mpdf->SetDisplayMode('fullpage');
+//$mpdf->WriteHTML($stylesheet,1);
+$mpdf->WriteHTML($content);
+$mpdf->Output();
+exit;
+
 
 
 
