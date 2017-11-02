@@ -12,8 +12,8 @@
 
             global $wpdb;
             $return_table = $wpdb->prefix.'shc_return_items_details';
-			$ws_return_table = $wpdb->prefix.'shc_ws_return_items_details';
-		    $lot_table = $wpdb->prefix.'shc_lots';
+            $ws_return_table = $wpdb->prefix.'shc_ws_return_items_details';
+            $lot_table = $wpdb->prefix.'shc_lots';
 
             $condition = '';  
 
@@ -52,7 +52,7 @@ SELECT
   WHERE ws_return_details.active = 1 AND DATE(ws_return_details.modified_at) >= date('$bill_from') AND DATE(ws_return_details.modified_at) <= date('$bill_to') group by ws_return_details.lot_id
  ) as full_return_tab group by full_return_tab.lot_id) as r_table 
 left join 
-(select id,cgst,sgst,product_name,brand_name from ${lot_table} WHERE active=1) as lot_tab on lot_tab.id =r_table.lot_id where lot_tab.id>1 ${condition}";
+(select id,cgst,sgst,product_name,brand_name from ${lot_table} WHERE active=1) as lot_tab on lot_tab.id =r_table.lot_id  ${condition}";
 
 
            
@@ -127,8 +127,8 @@ left join
     <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped">
     <tr>
         <th>SNO</th>
-		<th>Product Name</th>
-		<th>Brand Name</td>
+        <th>Product Name</th>
+        <th>Brand Name</td>
         <th>Number of Goods Sold</th>
         <th>CGST</th>
         <th>SGST</th>
@@ -144,10 +144,10 @@ left join
     ?>
             <tr>
                 <td class=""><?php echo $i; ?></td>
-				<td class=""><?php echo $b_value->product_name; ?></td>
-				<td class=""><?php echo $b_value->brand_name; ?></td>
+                <td class=""><?php echo $b_value->product_name; ?></td>
+                <td class=""><?php echo $b_value->brand_name; ?></td>
                 <td class=""><?php echo round($b_value->return_unit); ?></td>
-				<td class=""><?php echo $b_value->amt; ?></td>
+                <td class=""><?php echo $b_value->amt; ?></td>
                 <td class=""><?php echo $b_value->cgst; ?> </td>
                 <td class=""><?php echo $b_value->cgst; ?> </td>
                 <td class=""><?php echo $b_value->cgst_value; ?></td>

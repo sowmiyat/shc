@@ -1,5 +1,7 @@
 <?php
-
+    if(!$stocks) {
+        $stocks = new Stocks();
+    }
    global $wpdb;
     $stock_table              = $wpdb->prefix.'shc_stock';
 

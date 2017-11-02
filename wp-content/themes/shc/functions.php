@@ -15,11 +15,11 @@ function my_footer_shh() {
 	remove_menu_page( 'jetpack' );                    //Jetpack* 
 	remove_menu_page( 'edit.php' );                   //Posts
 	remove_menu_page( 'upload.php' );                 //Media
-	// remove_menu_page( 'edit.php?post_type=page' );    //Pages
+	remove_menu_page( 'edit.php?post_type=page' );    //Pages
 	remove_menu_page( 'edit-comments.php' );          //Comments
 	remove_menu_page( 'themes.php' );                 //Appearance
 	remove_menu_page( 'plugins.php' );                //Plugins
-/*	remove_menu_page( 'users.php' );                  //Users*/
+	remove_menu_page( 'users.php' );                  //Users
 	remove_menu_page( 'tools.php' );                  //Tools
 	remove_menu_page( 'options-general.php' );        //Settings
 }
@@ -65,13 +65,13 @@ function remove_footer_admin()
 				<div class="footer-nav">
 					<ul>
 						<li>
-							<a href="<?php echo admin_url('admin.php?page=total_stock_list&ppage=50&brand_name&product_name&stock_from&stock_to&comparison=less_than&count=1&cpage=1')?>">
+							<a href="<?php echo admin_url('admin.php?page=total_stock_list&ppage=50&brand_name&product_name&stock_from&stock_to&comparison=greater_than&count=0&cpage=1')?>">
 								<span class="footer-button new-order"></span>Available Stocks 
 								
 							</a>
 						</li>
 						<li>
-							<a href="<?php echo admin_url('admin.php?page=total_stock_list&ppage=50&brand_name&product_name&stock_from&stock_to&comparison=greater_than&count=0&cpage=1')?>">
+							<a href="<?php echo admin_url('admin.php?page=total_stock_list&ppage=50&brand_name&product_name&stock_from&stock_to&comparison=less_than&count=1&cpage=1')?>">
 								<span class="footer-button open-tickets"></span>Unavailable Stocks 
 								
 							</a>
@@ -252,7 +252,10 @@ function sales_statistics_widget_today( $post, $callback_args ) {
 	include('admin/billing/ajax_loading/billing-list.php');
 	//admin_url('admin.php?page=billing_list&ppage=20&inv_id&order_id&name&mobile&bill_from='.$date.'&bill_to='.$date.'&cpage=1');
 }
-
+function sales_statistics_widget_today_ws( $post, $callback_args ) {
+	//include('admin/billing/ajax_loading/ws-billing-list.php');
+	//admin_url('admin.php?page=billing_list&ppage=20&inv_id&order_id&name&mobile&bill_from='.$date.'&bill_to='.$date.'&cpage=1');
+}
 function sales_statistics_widget( $post, $callback_args ) {
 	include('admin/report/ajax_loading/stock-list.php');
 	//admin_url('admin.php?page=list_report&ppage=10&bill_from=&bill_to=&cpage=1');
@@ -273,7 +276,8 @@ function stock_status_widget( $post, $callback_args ) {
 
 
 function add_dashboard_widgets() {
-	add_meta_box( 'my_sales_tatistics_widget', 'Today Sales Statistics', 'sales_statistics_widget_today', 'dashboard', 'normal', 'high' );
+	add_meta_box( 'my_sales_tatistics_widget', 'Today Retail Sales Statistics', 'sales_statistics_widget_today', 'dashboard', 'normal', 'high' );
+	add_meta_box( 'my_sales_tatistics_widget_ws', 'Wholesale Today Retail Sales Statistics', 'sales_statistics_widget_today_ws', 'dashboard', 'normal', 'high' );
 	add_meta_box( 'my_sales_statistics_widget', 'Sales Statistics', 'sales_statistics_widget', 'dashboard', 'side', 'high' );
 	add_meta_box( 'my_wscutomer', 'Wholesale Customer  Status', 'wscutomer', 'dashboard', 'normal', 'low' );
 	add_meta_box( 'my_customer', 'Retail Customer Status', 'customer', 'dashboard', 'side', 'low' );

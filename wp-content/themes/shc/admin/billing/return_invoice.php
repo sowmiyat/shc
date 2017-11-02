@@ -5,38 +5,31 @@
      $invoice_id['inv_id'] = '';
      $invoice_id['invoice_id'] = '';
 
-    if(isset($_GET['id']) && $_GET['id'] != '' ) {   
-     if(isset($_GET['return_id']) && $_GET['return_id'] != '' ) {
+    if(isset($_GET['id']) && $_GET['id'] != '' ) {  
 
-            $update                        = true;
+        if(isValidInvoice($_GET['id'], 1)) {
+
             $year                           = $_GET['year'];
             $invoice_id['inv_id']           = $_GET['id'];
             $bill_data                      = getBillDataReturnData($_GET['id'] , $year,$_GET['return_id']);
             $bill_fdata                     = $bill_data['bill_data'];
-            $bill_ldata                     = $bill_data['return_ordered_data'];
+           if(isset($_GET['return_id']) && $_GET['return_id'] != '' ) {
+                $update                        = true;
+                $bill_ldata                     = $bill_data['return_ordered_data'];
+            } else {
+                $display                    = true;
+                $bill_ldata                     = $bill_data['ordered_data'];
+            }
             $bill_rdata                     = $bill_data['return_data'];
             $invoice_id['invoice_id']       = $bill_fdata->inv_id;
+		}
 			
-			
-
-    } else {                                            
-         if(isValidInvoice($_GET['id'], 1)) {
-
-            $display                        = true;
-            $year                           = $_GET['year'];
-            $invoice_id['inv_id']           = $_GET['id'];
-            $bill_data                      = getBillDataReturnData($invoice_id['inv_id'] , $year);
-            $bill_fdata                     = $bill_data['bill_data'];
-            $bill_ldata                     = $bill_data['ordered_data'];
-            $bill_rdata                     = $bill_data['return_data'];
-            $invoice_id['invoice_id']       = $bill_fdata->inv_id;
-
-        }
-        else {
+    else {
              echo "<script>alert('INVOICE NOT FOUND!!! Try another number');</script>";
         }
+    
     }
-}
+
    
 
 ?>

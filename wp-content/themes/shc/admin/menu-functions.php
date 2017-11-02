@@ -31,7 +31,7 @@ global $src_capabilities;
 	);
 	
 	add_submenu_page('list_stocks', 'Stock Added List', 'Stock Added List', $src_capabilities['stocks']['permission']['stock_list'], 'list_stocks', 'list_stocks' );
-	add_submenu_page('list_stocks', 'Stock Total List', 'Stock Total List', $src_capabilities['stocks']['permission']['stock_list'], 'total_stock_list', 'total_stock_list' );
+	add_submenu_page('list_stocks', 'Stock Total List', 'Stock Total List', $src_capabilities['stocks']['permission']['total_stock_list'], 'total_stock_list', 'total_stock_list' );
 	add_submenu_page('list_stocks', 'Add Stock', 'Add Stock', $src_capabilities['stocks']['permission']['add_stock'], 'add_stocks', 'add_stocks' );
 
 
@@ -46,25 +46,25 @@ global $src_capabilities;
 	);
 	add_submenu_page('billing_list', 'Billing List', 'Billing List', $src_capabilities['billing']['permission']['billing_list'], 'billing_list', 'billing_list' );
 	add_submenu_page('billing_list', 'New Billing', 'New Billing', $src_capabilities['billing']['permission']['add_billing'], 'new_billing', 'new_billing' );
-	add_submenu_page('billing_list', 'Invoice', 'Invoice', $src_capabilities['billing']['permission']['add_billing'], 'invoice', 'invoice' );
-	add_submenu_page('billing_list', 'Return Items', 'Return Items', $src_capabilities['billing']['permission']['add_billing'], 'return_items', 'return_items' );
-	add_submenu_page('billing_list', 'Return Items List', 'Return Items List', $src_capabilities['billing']['permission']['add_billing'], 'return_items_list', 'return_items_list' );
-	add_submenu_page('billing_list', 'Invoice Return', 'Invoice Return', $src_capabilities['billing']['permission']['add_billing'], 'return_items_view', 'return_items_view' );
+	add_submenu_page('billing_list', 'Invoice', 'Invoice', $src_capabilities['billing']['permission']['invoice'], 'invoice', 'invoice' );
+	add_submenu_page('billing_list', 'Return Items', 'Return Items', $src_capabilities['billing']['permission']['add_return'], 'return_items', 'return_items' );
+	add_submenu_page('billing_list', 'Return Items List', 'Return Items List', $src_capabilities['billing']['permission']['return_list'], 'return_items_list', 'return_items_list' );
+	add_submenu_page('billing_list', 'Invoice Return', 'Invoice Return', $src_capabilities['billing']['permission']['return_invoice'], 'return_items_view', 'return_items_view' );
 	add_menu_page(
 	    __( 'WS Billing', 'shc'),
 	    'WS Billing',
-	    $src_capabilities['billing']['permission']['billing_list'],
+	    $src_capabilities['billing']['permission']['ws_billing_list'],
 	    'ws_billing_list',
 	    'ws_billing_list',
 	    'dashicons-cart',
 	    8
 	);
-	add_submenu_page('ws_billing_list', 'Billing List', 'Billing List', $src_capabilities['billing']['permission']['billing_list'], 'ws_billing_list', 'ws_billing_list' );
-	add_submenu_page('ws_billing_list', 'New Billing', 'New Billing', $src_capabilities['billing']['permission']['add_billing'], 'ws_new_billing', 'ws_new_billing' );
-	add_submenu_page('ws_billing_list', 'Invoice', 'Invoice', $src_capabilities['billing']['permission']['add_billing'], 'ws_invoice', 'ws_invoice' );
-	add_submenu_page('ws_billing_list', 'Return Items', 'Return Items', $src_capabilities['billing']['permission']['add_billing'], 'ws_return_items', 'ws_return_items' );
-	add_submenu_page('ws_billing_list', 'Return Items List', 'Return Items List', $src_capabilities['billing']['permission']['add_billing'], 'ws_return_items_list', 'ws_return_items_list' );
-	add_submenu_page('ws_billing_list', 'Invoice Return', 'Invoice Return', $src_capabilities['billing']['permission']['add_billing'], 'ws_return_items_view', 'ws_return_items_view' );
+	add_submenu_page('ws_billing_list', 'Billing List', 'Billing List', $src_capabilities['billing']['permission']['ws_billing_list'], 'ws_billing_list', 'ws_billing_list' );
+	add_submenu_page('ws_billing_list', 'New Billing', 'New Billing', $src_capabilities['billing']['permission']['ws_add_billing'], 'ws_new_billing', 'ws_new_billing' );
+	add_submenu_page('ws_billing_list', 'Invoice', 'Invoice', $src_capabilities['billing']['permission']['ws_invoice'], 'ws_invoice', 'ws_invoice' );
+	add_submenu_page('ws_billing_list', 'Return Items', 'Return Items', $src_capabilities['billing']['permission']['ws_add_return'], 'ws_return_items', 'ws_return_items' );
+	add_submenu_page('ws_billing_list', 'Return Items List', 'Return Items List', $src_capabilities['billing']['permission']['ws_return_list'], 'ws_return_items_list', 'ws_return_items_list' );
+	add_submenu_page('ws_billing_list', 'Invoice Return', 'Invoice Return', $src_capabilities['billing']['permission']['ws_return_invoice'], 'ws_return_items_view', 'ws_return_items_view' );
 
 
 	add_menu_page(
@@ -83,52 +83,52 @@ global $src_capabilities;
 	add_menu_page(
 	    __( 'WS Customers', 'shc'),
 	    'WS Customers',
-	    $src_capabilities['customers']['permission']['customer_list'],
+	    $src_capabilities['customers']['permission']['ws_customer_list'],
 	    'wholesale_customer',
 	    'wholesale_customer',
 	    'dashicons-id',
 	    8
 	);
-	add_submenu_page('wholesale_customer', 'Customer List', 'Customer List', $src_capabilities['customers']['permission']['customer_list'], 'wholesale_customer', 'wholesale_customer' );
-	add_submenu_page('wholesale_customer', 'New Customer', 'New Customer', $src_capabilities['customers']['permission']['add_customer'], 'new_wholesale_customer', 'new_wholesale_customer' );
+	add_submenu_page('wholesale_customer', 'Customer List', 'Customer List', $src_capabilities['customers']['permission']['ws_customer_list'], 'wholesale_customer', 'wholesale_customer' );
+	add_submenu_page('wholesale_customer', 'New Customer', 'New Customer', $src_capabilities['customers']['permission']['add_ws_customer'], 'new_wholesale_customer', 'new_wholesale_customer' );
 	
 	add_menu_page(
 	    __( 'Admin Users', 'src'),
 	    'Admins',
 	    $src_capabilities['admin_user']['permission']['add_admin'],
-	    'admin_users',
+	    'add_admin',
 	    'add_admin',
 	    'dashicons-businessman',
 	    9
 	);
-	add_submenu_page('admin_users', 'New Admin User', 'New Admin User', $src_capabilities['admin_user']['permission']['add_admin'], 'add_admin', 'add_admin' );
-	add_submenu_page('admin_users', 'Admin Users List', 'Admin Users List', $src_capabilities['admin_user']['permission']['admin_list'], 'list_admin_users', 'list_admin_users' );
+	add_submenu_page('add_admin', 'New Admin User', 'New Admin User', $src_capabilities['admin_user']['permission']['add_admin'], 'add_admin', 'add_admin' );
+	add_submenu_page('add_admin', 'Admin Users List', 'Admin Users List', $src_capabilities['admin_user']['permission']['admin_list'], 'list_admin_users', 'list_admin_users' );
 
 	add_menu_page(
 	    __( 'Admin Roles', 'src'),
 	    'Roles',
 	    $src_capabilities['roles']['permission']['add_roles'],
-	    'user_roles',
-	    'add_role',
+	    'add_admin_role',
+	    'add_admin_role',
 	    'dashicons-awards',
 	    9
 	);
-	add_submenu_page('user_roles', 'New Role', 'New Role', $src_capabilities['roles']['permission']['add_roles'], 'add_admin_role', 'add_admin_role' );
-	add_submenu_page('user_roles', 'Role List', 'Role List', $src_capabilities['roles']['permission']['role_list'], 'list_roles', 'list_roles' );
+	add_submenu_page('add_admin_role', 'New Role', 'New Role', $src_capabilities['roles']['permission']['add_roles'], 'add_admin_role', 'add_admin_role' );
+	add_submenu_page('add_admin_role', 'Role List', 'Role List', $src_capabilities['roles']['permission']['role_list'], 'list_roles', 'list_roles' );
 
 
 	add_menu_page(
 	    __( 'Stock Report', 'src'),
 	    'Report',
-	     $src_capabilities['roles']['permission']['add_roles'],
+	     $src_capabilities['report']['permission']['stock_report'],
 	    'list_report',
 	    'list_report',
 	    'dashicons-awards',
 	    9
 	);
-	add_submenu_page('list_report', 'Stock Reports', 'Stock Reports',  $src_capabilities['roles']['permission']['add_roles'], 'list_report', 'list_report' );
-	add_submenu_page('list_report', 'Goods Return Report', 'Goods Retrun Report',  $src_capabilities['roles']['permission']['add_roles'], 'list_return', 'list_return' );
-	add_submenu_page('list_report', 'Accountant Report', 'Accountant Report',  $src_capabilities['roles']['permission']['add_roles'], 'list_report_account', 'list_report_account' );
+	add_submenu_page('list_report', 'Stock Report', 'Stock Report',  $src_capabilities['report']['permission']['stock_report'], 'list_report', 'list_report' );
+	add_submenu_page('list_report', 'Goods Return Report', 'Goods Return Report',  $src_capabilities['report']['permission']['return_report'], 'list_return', 'list_return' );
+	add_submenu_page('list_report', 'Accountant Report', 'Accountant Report',  $src_capabilities['report']['permission']['acc_report'], 'list_report_account', 'list_report_account' );
 
 
 

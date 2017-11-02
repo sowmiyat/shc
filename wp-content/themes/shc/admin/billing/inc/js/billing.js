@@ -44,6 +44,24 @@ jQuery('#ws_billing_customer').focus();
 
         }
     });
+
+      jQuery('.ws_bill_return_print').on('keydown', function(e){
+        var keyCode = e.keyCode || e.which; 
+        if (keyCode == 38) { 
+            e.preventDefault();
+            jQuery('.invoice_id').focus();
+
+        }
+    });
+
+    jQuery('.ws_bill_return_print').on('keydown', function(e){
+        var keyCode = e.keyCode || e.which; 
+        if (keyCode == 9) { 
+            e.preventDefault();
+            jQuery('.invoice_id').focus();
+
+        }
+    });
     //<-------- display secondary and landline textboxes----->
     jQuery('#ws_billing_secondary_mobile').live('keydown', function(e){
         var keyCode = e.keyCode || e.which; 
@@ -329,6 +347,7 @@ jQuery('#ws_billing_customer').focus();
             }
         });
         jQuery('.ws_old_customer_id').val(ui.item.id);
+        jQuery('.customer_id').val(ui.item.id);
         jQuery('#ws_billing_address').val(ui.item.address);
 
         if(ui.item.identification == 'mobile' ) {
@@ -689,7 +708,7 @@ jQuery( document ).ready(function() {
                 addFromProductControl();
                 jQuery('.product_control_error').remove();
             } else {
-                var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="customer_table" ><td class="td_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="customer_detail['+current_row+'][id]" class="sub_id" /><td class="td_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="customer_detail['+current_row+'][product]" class="sub_product"/><td class="td_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="customer_detail['+current_row+'][hsn]" class="sub_hsn"/><td class=""><input type="text" value = "'+ unit + '" name="customer_detail['+current_row+'][unit]" class="sub_unit"/> </td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][stock]" class="sub_stock"/><td class="td_price">' + price + '</td> <input type="hidden" value = "'+ price + '" name="customer_detail['+current_row+'][price]" class="sub_price"/> <td><input type="text" value ="'+discount +'" name="customer_detail['+current_row+'][discount]" class="sub_discount"/></td><input type="hidden" value ="each" name="customer_detail['+current_row+'][discount_type]" class="discount_type"/><td class="td_amt">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][amt]" class="sub_amt"/><td class="td_cgst">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="customer_detail['+current_row+'][cgst]" class="sub_cgst"/> <td class="td_cgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][cgst_value]" class="sub_cgst_value"/><td class="td_sgst">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="customer_detail['+current_row+'][sgst]" class="sub_sgst"/><td class="td_sgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][sgst_value]" class="sub_sgst_value"/><td class="td_subtotal"></td> <input type="hidden" value ="" name="customer_detail['+current_row+'][subtotal]" class="sub_total"/><td><a href="#" class="sub_delete">Delete</a></td></tr>';                
+                var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="customer_table" ><td class="td_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="customer_detail['+current_row+'][id]" class="sub_id" /><td class="td_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="customer_detail['+current_row+'][product]" class="sub_product"/><td class="td_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="customer_detail['+current_row+'][hsn]" class="sub_hsn"/><td class=""><input type="text" onkeypress="return isNumberKey(event)" value = "'+ unit + '" name="customer_detail['+current_row+'][unit]" class="sub_unit"/> </td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][stock]" class="sub_stock"/><td class="td_price">' + price + '</td> <input type="hidden" value = "'+ price + '" name="customer_detail['+current_row+'][price]" class="sub_price"/> <td><input type="text" onkeypress="return isNumberKey(event)" value ="'+discount +'" name="customer_detail['+current_row+'][discount]" class="sub_discount"/></td><input type="hidden" value ="each" name="customer_detail['+current_row+'][discount_type]" class="discount_type"/><td class="td_amt">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][amt]" class="sub_amt"/><td class="td_cgst">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="customer_detail['+current_row+'][cgst]" class="sub_cgst"/> <td class="td_cgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][cgst_value]" class="sub_cgst_value"/><td class="td_sgst">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="customer_detail['+current_row+'][sgst]" class="sub_sgst"/><td class="td_sgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][sgst_value]" class="sub_sgst_value"/><td class="td_subtotal"></td> <input type="hidden" value ="" name="customer_detail['+current_row+'][subtotal]" class="sub_total"/><td><a href="#" class="sub_delete">Delete</a></td></tr>';                
                 jQuery('#bill_lot_add').append(str);
 
                 addFromProductControl();
@@ -951,6 +970,25 @@ jQuery(document).ready(function (argument) {
                 jQuery('.ws_return_inv_id').focus()
             } 
     });
+     jQuery('.retail_return_bill_submit').live('keydown', function(e) { 
+            var keyCode = e.keyCode || e.which; 
+            if (keyCode == 9) { 
+                e.preventDefault(); 
+                // call custom function here
+                jQuery('.return_inv_id').focus()
+            } 
+    });
+      jQuery('.return_generate_bill').live('keydown', function(e) { 
+            var keyCode = e.keyCode || e.which; 
+            if (keyCode == 9) { 
+                e.preventDefault(); 
+                // call custom function here
+                jQuery('.invoice_id').focus()
+            } 
+    });
+
+      
+
 
 
 

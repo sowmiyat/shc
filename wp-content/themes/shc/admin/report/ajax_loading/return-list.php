@@ -20,7 +20,7 @@
             <table class="table table-striped jambo_table bulk_action">
                 <thead>
                     <tr class="headings">
-                        <th>Total Stock Sold Out</th>
+                        <th>Total Stock Return Out</th>
                         <th>Total CGST(Rs)</th>
                         <th>Total SGST(Rs)</th>
                         <th>Total COGS</th>
@@ -49,7 +49,7 @@
                             </th>
                             <th class="column-title">Product name</th>
                             <th class="column-title">Brand Name</th>
-                            <th class="column-title">Stock Sold Out</th>
+                            <th class="column-title">Stock Return Out</th>
 							<th class="column-title">AMONUT</th>
                             <th class="column-title">CGST</th>
                             <th class="column-title">SGST</th>

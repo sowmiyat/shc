@@ -6,35 +6,43 @@
      $invoice_id['invoice_id'] = '';
 
     if(isset($_GET['id']) && $_GET['id'] != '' ) {   
-     if(isset($_GET['return_id']) && $_GET['return_id'] != '' ) {
+        if(isValidInvoicews($_GET['id'], 1)) {
 
-            $update                        = true;
+            
             $year                           = $_GET['year'];
             $invoice_id['inv_id']           = $_GET['id'];
             $bill_data                      = getBillDataReturnDataWs($_GET['id'] , $year,$_GET['return_id']);
             $bill_fdata                     = $bill_data['bill_data'];
-            $bill_ldata                     = $bill_data['return_ordered_data'];
+            if(isset($_GET['return_id']) && $_GET['return_id'] != '' ) {
+                $update                        = true;
+                $bill_ldata                     = $bill_data['return_ordered_data'];
+            } else {
+                $display                    = true;
+                $bill_ldata                     = $bill_data['ordered_data'];
+            }
             $bill_rdata                     = $bill_data['return_data'];
             $invoice_id['invoice_id']       = $bill_fdata->inv_id;
-
-    } else {                                            
-         if(isValidInvoice($_GET['id'], 1)) {
-
-            $display                        = true;
-            $year                           = $_GET['year'];
-            $invoice_id['inv_id']           = $_GET['id'];
-            $bill_data                      = getBillDataReturnDataWs($invoice_id['inv_id'] , $year);
-            $bill_fdata                     = $bill_data['bill_data'];
-            $bill_ldata                     = $bill_data['ordered_data'];
-            $bill_rdata                     = $bill_data['return_data'];
-            $invoice_id['invoice_id']       = $bill_fdata->inv_id;
-
         }
         else {
              echo "<script>alert('INVOICE NOT FOUND!!! Try another number');</script>";
         }
-    }
-}
+    } 
+                                          
+        //  if(isValidInvoice($_GET['id'], 1)) {
+
+        //     $display                        = true;
+        //     $year                           = $_GET['year'];
+        //     $invoice_id['inv_id']           = $_GET['id'];
+        //     $bill_data                      = getBillDataReturnDataWs($invoice_id['inv_id'] , $year);
+        //     $bill_fdata                     = $bill_data['bill_data'];
+        //     $bill_ldata                     = $bill_data['ordered_data'];
+        //     $bill_rdata                     = $bill_data['return_data'];
+        //     $invoice_id['invoice_id']       = $bill_fdata->inv_id;
+
+        // } 
+    // }
+        
+    // }
    
 
 ?>
@@ -249,8 +257,6 @@
                                                          <?php 
                                                     if($display || $update) {  $i=1;
                                                         foreach($bill_ldata as $table_data) { ?>
-
-                                                    
                                                      <tr class="rtn_bill_lot_add" name="rtn_customer_table" data-productid="<?php echo $table_data->lot_id; ?>">
                                                         <td><?php echo $i; ?> </td><input type="hidden" name="customer_detail[<?php echo $i; ?>][id]" value="<?php echo $table_data->lot_id; ?>"  />
                                                         <td><?php echo $table_data->product_name; ?> </td>

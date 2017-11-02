@@ -283,10 +283,10 @@
 			 															<td class="td_id">'.$i.'</td> <input type="hidden" value="'.$c_value->lot_id.'" name="customer_detail['.$i.'][id]" class="sub_id" />
 			 															<td class="td_product">' .$c_value->product_name. '</td> <input type="hidden" value = "'.$c_value->product_name. '" name="customer_detail['.$i.'][product]" class="sub_product"/>
 			 															<td class="td_hsn">' .$c_value->hsn. '</td> <input type="hidden" value = "'.$c_value->hsn. '" name="customer_detail['.$i.'][hsn]" class="sub_hsn"/>
-			 															<td class=""><input type="text" value = "'.$c_value->sale_unit. '" name="customer_detail['.$i.'][unit]" class="sub_unit"/> </td> 
+			 															<td class=""><input type="text" onkeypress="return isNumberKey(event)" value = "'.$c_value->sale_unit. '" name="customer_detail['.$i.'][unit]" class="sub_unit"/> </td> 
 			 															<input type="hidden" value = "" name="customer_detail['.$i.'][stock]" class="sub_stock"/>
 			 															<td class="td_price">' .$c_value->unit_price. '</td> <input type="hidden" value = "'.$c_value->unit_price. '" name="customer_detail['.$i.'][price]" class="sub_price"/> 
-			 															<td><input type="text" value ="'.$c_value->discount.'" name="customer_detail['.$i.'][discount]" class="sub_discount"/></td>
+			 															<td><input type="text" onkeypress="return isNumberKey(event)" value ="'.$c_value->discount.'" name="customer_detail['.$i.'][discount]" class="sub_discount"/></td>
 			 															<input type="hidden" value ="each" name="customer_detail['.$i.'][discount_type]" class="discount_type"/>
 			 															<td class="td_amt">' .$c_value->amt. '</td> <input type="hidden" value = "'.$c_value->amt. '" name="customer_detail['.$i.'][amt]" class="sub_amt"/>
 			 															<td class="td_cgst">' .$c_value->cgst. '  %' . '</td> <input type="hidden" value = "'.$c_value->cgst. '" name="customer_detail['.$i.'][cgst]" class="sub_cgst"/> 
@@ -395,7 +395,7 @@
 															<th>Discount: <br/>	
 															<td>
 																<div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
-																	<input type="text" class="form-control ws_discount" value="<?php 
+																	<input type="text" class="form-control ws_discount"  onkeypress="return isNumberKey(event)" value="<?php 
 																	echo ( $bill_data && $bill_fdata ) ? $bill_fdata->discount : 0;  ?>" name="ws_discount" onkeypress="return isNumberKeyWithDot(event)"  style="margin: 0;">									
 																	<span class="fa fa-percent form-control-feedback right ws_dis_fa_per"></span>
 																		
@@ -417,7 +417,7 @@
 															<th>Paid Amount:</th>
 															<td>
 																<div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
-																	<input type="text" class="form-control ws_paid_amount" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->paid_amount : 0;  ?>" onkeypress="return isNumberKey(event)"  name="ws_paid_amount" style="margin: 0;">
+																	<input type="text" class="form-control ws_paid_amount" onkeypress="return isNumberKey(event)" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->paid_amount : 0;  ?>" onkeypress="return isNumberKey(event)"  name="ws_paid_amount" style="margin: 0;">
 																	<span class="fa fa-inr form-control-feedback right" aria-hidden="true"></span>
 																</div>
 															</td>

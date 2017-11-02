@@ -30,11 +30,10 @@
                         }
                     }
             $query              = "SELECT 
-                    (sum(final_sale.bal_cgst) + sum(final_ws_sale.bal_cgst)) as cgst_value,
-                    (sum(final_sale.bal_total) + sum(final_ws_sale.bal_total)) as total,
-                    (sum(final_sale.bal_unit) + sum(final_ws_sale.bal_unit)) as total_unit,
-                    (sum(final_sale.bal_amt) + sum(final_ws_sale.bal_amt)) as amt,
-                    final_ws_sale.gst as gst
+                    (sum(fin_tab.bal_cgst)) as cgst_value, 
+                    (sum(fin_tab.bal_total)) as total, 
+                    (sum(fin_tab.bal_unit)) as total_unit, 
+                    (sum(fin_tab.bal_amt)) as amt,fin_tab.gst as gst 
                       
                     from (SELECT 
                             (case when return_table.return_cgst is null then sale_table.sale_cgst else sale_table.sale_cgst - return_table.return_cgst end ) as bal_cgst, 
@@ -60,14 +59,13 @@
                                 sum(return_details.return_unit) as return_unit,
                                 sum(return_details.amt) as return_amt FROM ${sale} as sale left join ${return_table} as return_details on sale.`id`= return_details.sale_id WHERE sale.active = 1 and return_details.active = 1 ${condition} group by return_details.cgst
                             ) as return_table 
-                            on sale_table.cgst = return_table.cgst) as final_sale 
-                left JOIN
-                            (
+                            on sale_table.cgst = return_table.cgst
+                union all 
                                     SELECT 
-                            (case when ws_return_table.return_cgst is null then ws_sale_table.sale_cgst else ws_sale_table.sale_cgst - ws_return_table.return_cgst end ) as bal_cgst, 
-                                (case when ws_return_table.return_total is null then ws_sale_table.sale_total else ws_sale_table.sale_total - ws_return_table.return_total end ) as bal_total,
-                                (case when ws_return_table.return_unit is null then ws_sale_table.sale_unit else  ws_sale_table.sale_unit - ws_return_table.return_unit end) as bal_unit,
-                                (case when ws_return_table.return_amt is null then ws_sale_table.sale_amt else ws_sale_table.sale_amt - ws_return_table.return_amt end ) as bal_amt,
+        (case when ws_return_table.return_cgst is null then ws_sale_table.sale_cgst else ws_sale_table.sale_cgst - ws_return_table.return_cgst end ) as bal_cgst, 
+        (case when ws_return_table.return_total is null then ws_sale_table.sale_total else ws_sale_table.sale_total - ws_return_table.return_total end ) as bal_total,
+        (case when ws_return_table.return_unit is null then ws_sale_table.sale_unit else  ws_sale_table.sale_unit - ws_return_table.return_unit end) as bal_unit,
+        (case when ws_return_table.return_amt is null then ws_sale_table.sale_amt else ws_sale_table.sale_amt - ws_return_table.return_amt end ) as bal_amt,
                             ws_sale_table.cgst as gst
                             FROM 
                             (
@@ -87,9 +85,7 @@
                                 sum(ws_return_details.return_unit) as return_unit,
                                 sum(ws_return_details.amt) as return_amt FROM ${ws_sale} as sale left join ${ws_return_table} as ws_return_details on sale.`id`= ws_return_details.sale_id WHERE sale.active = 1 and ws_return_details.active = 1 ${condition} group by ws_return_details.cgst
                             ) as ws_return_table 
-                            on ws_sale_table.cgst = ws_return_table.cgst
-                            ) as final_ws_sale 
-                            on final_sale.gst = final_ws_sale.gst  group by final_ws_sale.gst";
+                            on ws_sale_table.cgst = ws_return_table.cgst ) as fin_tab GROUP by fin_tab.gst";
 
 
            

@@ -39,7 +39,7 @@ $stocks = new Stocks();
                                     </td>
                                     <td class=""><?php echo $s_value->brand_name; ?></td>
                                     <td class=""><?php echo $s_value->product_name; ?></td>
-                                    <td class=""><?php echo $s_value->final_stock; ?></td>
+                                    <td class=""><?php echo $s_value->balance_stock; ?></td>
                                 </tr>
                     <?php
                                 $i++;

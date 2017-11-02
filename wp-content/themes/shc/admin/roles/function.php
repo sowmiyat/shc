@@ -26,34 +26,76 @@ function src_global_var() {
 			'data' => array(
 				'add_stock' => 'Add Stock',
 				'stock_list' => 'Stock List', 
+				'total_stock_list' => 'Total Stock List', 
 			),
 			'permission' => array(
 				'add_stock' => (is_super_admin()) ? 'manage_options' : 'add_stock',
 				'stock_list' => (is_super_admin()) ? 'manage_options' : 'stock_list', 
+				'total_stock_list' => (is_super_admin()) ? 'manage_options' : 'total_stock_list', 
 			),			
 		),
 		'customers' => array(
 			'name' => 'Customers',
 			'data' => array(
 				'add_customer' => 'Add Customer',
-				'customer_list' => 'Customer List', 
+				'customer_list' => 'Customer List',
+				'add_ws_customer' => 'Add Wholesale Customer',
+				'ws_customer_list' => 'Wholesale Customer List',
 			),
 			'permission' => array(
 				'add_customer' => (is_super_admin()) ? 'manage_options' : 'add_customer',
-				'customer_list' => (is_super_admin()) ? 'manage_options' : 'customer_list', 
+				'customer_list' => (is_super_admin()) ? 'manage_options' : 'customer_list',
+				'add_ws_customer' => (is_super_admin()) ? 'manage_options' : 'add_ws_customer', 
+				'ws_customer_list' => (is_super_admin()) ? 'manage_options' : 'ws_customer_list', 
 			),			
 		),
 		'billing' => array(
 			'name' => 'Sales & Billing',
 			'data' => array(
 				'add_billing' => 'Purchase & Sales', 
-				'billing_list' => 'Billing List', 
+				'invoice' => 'View Billing', 
+				'billing_list' => 'Billing List(update)', 
+				'add_return' => 'Return Goods', 
+				'return_list' => 'Return List(Update)', 
+				'return_invoice' => 'View Return', 
+				'ws_add_billing' => 'Wholesale Purchase & Sales', 
+				'ws_invoice' => 'Wholesale View Billing', 
+				'ws_billing_list' => 'Wholesale Billing List(update)',
+				'ws_add_return' => 'Wholesale Return Goods', 
+				'ws_return_list' => 'Wholesale Return List(Update)', 
+				'ws_return_invoice' => 'Wholesale View Return',   
 			),
 			'permission' => array(
 				'add_billing' => (is_super_admin()) ? 'manage_options' : 'add_billing',
 				'billing_list' => (is_super_admin()) ? 'manage_options' : 'billing_list', 
+				'invoice' => (is_super_admin()) ? 'manage_options' : 'invoice', 
+				'add_return' => (is_super_admin()) ? 'manage_options' : 'add_return',
+				'return_list' => (is_super_admin()) ? 'manage_options' : 'return_list', 
+				'return_invoice' => (is_super_admin()) ? 'manage_options' : 'return_invoice', 
+				'ws_add_billing' => (is_super_admin()) ? 'manage_options' : 'ws_add_billing', 
+				'ws_billing_list' => (is_super_admin()) ? 'manage_options' : 'ws_billing_list', 
+				'ws_invoice' => (is_super_admin()) ? 'manage_options' : 'ws_invoice', 
+				'ws_add_return' => (is_super_admin()) ? 'manage_options' : 'ws_add_return', 
+				'ws_return_list' => (is_super_admin()) ? 'manage_options' : 'ws_return_list', 
+				'ws_return_invoice' => (is_super_admin()) ? 'manage_options' : 'ws_return_invoice', 
 			),			
 		),
+
+		'report' => array(
+			'name' => 'Report',
+			'data' => array(
+				'stock_report' => 'Stock Report', 
+				'return_report' => 'Goods Return Report', 
+				'acc_report' => 'Accountant Report', 
+			),
+			'permission' => array(
+				'stock_report' => (is_super_admin()) ? 'manage_options' : 'stock_report',
+				'return_report' => (is_super_admin()) ? 'manage_options' : 'return_report', 
+				'acc_report' => (is_super_admin()) ? 'manage_options' : 'acc_report', 
+			),			
+
+		),
+
 		'admin_user' => array(
 			'name' => 'Admin Users',
 			'data' => array(
@@ -77,6 +119,8 @@ function src_global_var() {
 			),			
 
 		)
+
+
 	);
 
 }
