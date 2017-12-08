@@ -57,6 +57,11 @@
               
             </div>
         </div>
+         <div class="col-md-5 form-group" style="float: right;">
+
+            <button class="btn btn-default ws_print_invoice_list pull-right"><i class="fa fa-print"></i> Print</button>
+            <button class="btn btn-primary pull-right ws_download_invoice_list" style="margin-right: 5px;"><i class="fa fa-file-pdf-o" href=""></i> Generate PDF</button>
+        </div>
         <div class="ws_billing_filter">
         <?php
             include( get_template_directory().'/admin/billing/ajax_loading/ws-billing-list.php' );
@@ -96,7 +101,7 @@ jQuery(document).ready(function () {
     });
 
 
-    jQuery('.jambo_table td a').live('keydown', function(e) { 
+    jQuery('.last_list_view').live('keydown', function(e) { 
 
         if(jQuery(this).parent().parent().next('tr').length == 0 && jQuery(".next.page-numbers").length == 0) {
             var keyCode = e.keyCode || e.which; 

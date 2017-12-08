@@ -1,6 +1,12 @@
 <?php
     $billing = new Billing();
 ?>
+
+<style>
+.x_title span {
+    color: #405467;
+}
+</style>
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
         <div class="x_title">
@@ -24,7 +30,7 @@
             <div class="filter-section">
                 <div class="row">
                     <div class="col-md-1 form-group">
-                      <select name="ppage" class="ppage ">
+                      <select name="ppage" class="ppage">
                         <option value="5" <?php echo ($billing->ppage == 5) ? 'selected' : '' ?>>5</option>
                         <option value="10" <?php echo ($billing->ppage == 10) ? 'selected' : '' ?>>10</option>
                         <option value="20" <?php echo ($billing->ppage == 20) ? 'selected' : '' ?>>20</option>
@@ -34,14 +40,14 @@
 
 
                     <div class="col-md-1 form-group has-feedback">
-                        <input type="text" class="form-control has-feedback-left inv_id" name="inv_id" value="<?php echo $billing->inv_id; ?>" placeholder="Invoice Number" style="padding-right: 5px;">
-                        <span class="form-control-feedback left " aria-hidden="true" style="margin-top: 6px;">INV</span>
+                        <input type="text" class="form-control  inv_id" name="inv_id" value="<?php echo $billing->inv_id; ?>" placeholder="ID" style="padding-right: 5px;">
+                        <!-- <span class="form-control-feedback left" aria-hidden="true" style=""> </span> -->
                     </div>
                     <div class="col-md-2 form-group">
                         <input type="text" name="mobile" class="mobile form-control" value="<?php echo $billing->mobile; ?>" placeholder="Customer Mobile">
                     </div>
                 </div>
-              <input type="hidden" name="filter_action" class="filter_action" value="return_billing_filter">
+                <input type="hidden" name="filter_action" class="filter_action" value="return_billing_filter">
               
             </div>
         </div>
@@ -58,7 +64,7 @@
 jQuery(document).ready(function () {
     jQuery('.ppage').focus();
 
-    jQuery(document).live('keydown', function(e){
+    jQuery(document).live('keydown', function(e) {
         if(jQuery(document.activeElement).closest("#wpbody-content").length == 0) {
             var keyCode = e.keyCode || e.which; 
             if (keyCode == 9) { 
@@ -83,7 +89,7 @@ jQuery(document).ready(function () {
     });
 
 
-    jQuery('.jambo_table td a').live('keydown', function(e) { 
+    jQuery('.last_list_view').live('keydown', function(e) { 
 
         if(jQuery(this).parent().parent().next('tr').length == 0 && jQuery(".next.page-numbers").length == 0) {
             var keyCode = e.keyCode || e.which; 

@@ -4,11 +4,18 @@ jQuery(document).ready(function () {
 
     jQuery(".reset_button").on('keydown',  function(e) { 
       var keyCode = e.keyCode || e.which; 
-
-      if (keyCode == 9) { 
+      if(event.shiftKey && event.keyCode == 9) {  
+         e.preventDefault(); 
+        jQuery('.cancel_button').focus();
+      }
+      else if (event.keyCode == 9) { 
         e.preventDefault(); 
         jQuery('#brand_name').focus();
       } 
+      else {
+        jQuery('.reset_button').focus();
+      }
+
     });
 
 
@@ -37,6 +44,9 @@ jQuery(document).ready(function () {
             },
             hsn : {
                  required: true,
+            },
+            stock_alert : {
+                required: true,
             }
         },
         messages: {
@@ -57,6 +67,9 @@ jQuery(document).ready(function () {
             },
             hsn : {
                 required: "Please Enter HSN code!",
+            },
+            stock_alert : {
+                required: "Please Stock Alert Count!",
             }
             
         }

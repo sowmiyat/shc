@@ -144,10 +144,10 @@ dd {  padding: 0 0 0.5em 0; }
             <table>
               <tr><td><b>Return to , </b></td><td><b></b></td></tr>
               <tr><td style="width: 100px;">Name</td><td>: <?php echo $bill_fdata->customer_name; ?></td></tr>
-              <tr><td>Company</td><td>: <?php echo $bill_fdata->company_name; ?></td></tr>
+              <!-- <tr><td>Company</td><td>: <?php echo $bill_fdata->company_name; ?></td></tr> -->
               <tr><td>Mobile</td><td>: <?php echo $bill_fdata->mobile; ?></td></tr>
               <tr><td>Address</td><td>: <?php echo $bill_fdata->address; ?></td></tr>
-              <tr><td>GST Number</td><td>: <?php echo $bill_fdata->gst_number; ?></td></tr>
+              <!-- <tr><td>GST Number</td><td>: <?php echo $bill_fdata->gst_number; ?></td></tr> -->
             </table>
           </td>
           
@@ -169,7 +169,7 @@ dd {  padding: 0 0 0.5em 0; }
       <br/>
 
 
-      <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" >
+      <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" border=1>
         <tr>
           <th valign='top'>SNO</th>
           <th valign='top'>PRODUCTS</th>
@@ -227,7 +227,7 @@ dd {  padding: 0 0 0.5em 0; }
     </div>
 
     <div>
-       <b style="float:right;">Authorised Signatory</b>
+       <!-- <b style="float:right;">Authorised Signatory</b> -->
     </div>
 
 </div>

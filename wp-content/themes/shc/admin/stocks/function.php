@@ -41,10 +41,8 @@ add_action( 'wp_ajax_nopriv_search_lot', 'search_lot' );
 
 
 function add_stock(){
-
-	/* $data['success'] 	= 0;
-	$data['msg'] 	= 'Something Went Wrong! Please Try Again!';
-	$data['redirect'] 	= 0; */
+	$current_user 		= wp_get_current_user();
+	$current_nice_name 	= $current_user->user_nicename;
 
 	global $wpdb;
 	$stock_table = $wpdb->prefix. 'shc_stock';
@@ -61,11 +59,10 @@ function add_stock(){
 	if($lot_id != '') {
 
 		$wpdb->insert($stock_table, $params);
-		/* if($wpdb->insert_id) {
-			$data['success'] = 1;
-			$data['msg'] 	= 'Stock Added!';
-			
-		} */
+		$create_id = $wpdb->insert_id;
+
+		$wpdb->update($stock_table,array('created_by'=>$current_nice_name), array('id' => $create_id));
+
 		$data['redirect'] = network_admin_url( 'admin.php?page=list_stocks' );
 		
 	}
@@ -78,10 +75,8 @@ add_action( 'wp_ajax_nopriv_add_stock', 'add_stock' );
 
 
 function update_stock(){
-
-	$data['success'] 	= 0;
-	$data['msg'] = 'Invalid Stock Please check again!';
-	$data['redirect'] 	= 0;
+	$current_user 		= wp_get_current_user();
+	$current_nice_name 	= $current_user->user_nicename;
 
 	global $wpdb;
 	$stock_table = $wpdb->prefix. 'shc_stock';
@@ -99,6 +94,7 @@ function update_stock(){
 
 	if($lot_id != '' && get_stock($stock_id)) {
 		$wpdb->update($stock_table, $params, array('id' => $stock_id));
+		$wpdb->update($stock_table,array('modified_by'=>$current_nice_name), array('id' => $stock_id));
 		$data['success'] = 1;
 		$data['msg'] = 'Stock Updated Successfully!';
 		$data['redirect'] = network_admin_url( 'admin.php?page=list_stocks' );

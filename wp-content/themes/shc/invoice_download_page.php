@@ -22,6 +22,110 @@
             $gst_data = $gst_slab['gst_data'];
     }
 ?>
+<style type="text/css" >
+
+  
+   @media screen {
+    .A4_HALF {
+      display: none !important;
+    }
+
+    .A4_HALF .footer {
+      bottom: 0px;
+      left: 0px;
+    }
+    .A4_HALF .footer .foot {
+        background-color: #67a3b7 !important;
+        -webkit-print-color-adjust: exact;
+    }
+
+  }
+  /** Fix for Chrome issue #273306 **/
+  @media print {
+    #adminmenumain, #wpfooter, .print-hide {
+      display: none;
+    }
+    body, html {
+      height: auto;
+      padding:0px;
+    }
+    html.wp-toolbar {
+      padding:0;
+    }
+    #wpcontent {
+      background: white;
+      box-shadow: 0 .5mm 2mm rgba(0,0,0,.3);
+      margin: 1mm;
+      display: block;
+      padding: 0;
+    }
+
+
+
+
+    .A4_HALF .footer {
+      position: fixed;
+      bottom: 0px;
+      left: 0px;
+    }
+    .A4_HALF .footer .foot {
+        background-color: #67a3b7 !important;
+        -webkit-print-color-adjust: exact;
+    }
+  }
+
+  @page { margin: 0;padding: 0; }
+  .sheet {
+    margin: 0;
+  }
+/*@page *{
+    margin-top: 2.54cm;
+    margin-bottom: 2.54cm;
+    margin-left: 3.175cm;
+    margin-right: 3.175cm;
+}
+*/
+
+      .A4_HALF {
+        width: 110mm;
+      }
+      .inner-container {
+        padding-left: 20mm;
+        padding-right: 20mm;
+        width: 110mm;
+      }
+      .left-float {
+        float: left;
+      }
+
+      .text-center {
+        text-align: center;
+      }
+      .text-rigth {
+        text-align: right;
+      }
+      .table td, .table th {
+        background-color: transparent !important;
+      }
+
+
+      .table>tbody>tr>td {
+        padding: 0 3px;
+        height: 20px;
+      }
+      .table-bordered>tbody>tr>td, .table-bordered>thead>tr>th {
+        border: 1px solid #000 !important;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .A4_HALF h3 {
+        margin-top: 20px;
+      }
+
+
+
+      
+</style> 
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,7 +136,7 @@
 
 <body>
 
-  <div class="A4_HALF">
+  <div class="A4_HALF" style="margin-top:20px;">
     <div class="sheet padding-10mm">
       <?php
           if($bill_data) {
@@ -59,7 +163,7 @@
 
         <br />
         <br/>
-        <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" >
+        <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" border=1>
           <tr>
           <th valign='top'>SNO</th>
           <th valign='top'>PRD</th>
@@ -94,7 +198,7 @@
                 } 
               ?>  
         </table>
-      <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped">
+      <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" >
           <tr>
             <td valign='top' align='center'><b>NET AMOUNT:</b></td>
               <td valign='top' align='left' style="width:62px;"><span class="amount"><?php echo '<b>'.$bill_fdata->sub_total.'</b>'; ?></span></td>
@@ -123,7 +227,7 @@
             }
           ?>
                 <!-- <table class="table table-bordered" style="margin-top:10px;margin-bottom: 5px;width: 120mm;"> -->
-        <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped">
+        <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" border=1>
           <thead>
             <tr>
               <th class="center-th" style="width:90px;padding:0;" rowspan="2">
@@ -161,7 +265,7 @@
                       <?php $total_tax = ( 2 * $g_data->sale_sgst) +$total_tax;
                             }
                           } ?>
-                  <td colspan="4">
+                  <tr><td colspan="4">
                     <div class="text-center">
                       Total Tax
                     </div>
@@ -171,6 +275,7 @@
                      <?php echo $total_tax; ?>
                     </div>
                   </td>
+                </tr>
                 </tr>
           </tbody>
         </table>

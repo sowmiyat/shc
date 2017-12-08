@@ -23,13 +23,19 @@
             if(($_GET['bill_form'] != '') && ($_GET['bill_to'] != '')) {
                 $condition .= " AND DATE(sale.modified_at) >= DATE('".$_GET['bill_form']."') AND DATE(sale.modified_at) <= DATE('".$_GET['bill_to']."')";
             } else if($_GET['bill_form'] != '' || $_GET['bill_to'] != '') {
-                if($_GET['bill_form'] != '') {
-                    $condition .= " AND DATE(sale.modified_at) >= DATE('".$_GET['bill_form']."') AND DATE(sale.modified_at) <= DATE('".$_GET['bill_form']."')";
+            if($_GET['bill_form'] != '') {
+                $condition .= " AND DATE(sale.modified_at) >= DATE('".$_GET['bill_form']."') AND DATE(sale.modified_at) <= DATE('".$_GET['bill_form']."')";
                 } else {
-                    $condition .= " AND DATE(sale.modified_at) >= DATE('".$_GET['bill_to']."') AND DATE(sale.modified_at) <= DATE('".$_GET['bill_to']."')";
-                        }
-                    }
-            $query              = "SELECT 
+            $condition .= " AND DATE(sale.modified_at) >= DATE('".$_GET['bill_to']."') AND DATE(sale.modified_at) <= DATE('".$_GET['bill_to']."')";
+                }
+            }
+
+            if($_GET['slap'] != '') {
+                $condition_final .= " WHERE report.gst = ".$_GET['slap'];
+            }
+
+            $query = "SELECT * from (
+                    SELECT 
                     (sum(fin_tab.bal_cgst)) as cgst_value, 
                     (sum(fin_tab.bal_total)) as total, 
                     (sum(fin_tab.bal_unit)) as total_unit, 
@@ -85,7 +91,7 @@
                                 sum(ws_return_details.return_unit) as return_unit,
                                 sum(ws_return_details.amt) as return_amt FROM ${ws_sale} as sale left join ${ws_return_table} as ws_return_details on sale.`id`= ws_return_details.sale_id WHERE sale.active = 1 and ws_return_details.active = 1 ${condition} group by ws_return_details.cgst
                             ) as ws_return_table 
-                            on ws_sale_table.cgst = ws_return_table.cgst ) as fin_tab GROUP by fin_tab.gst";
+                            on ws_sale_table.cgst = ws_return_table.cgst ) as fin_tab GROUP by fin_tab.gst ) as report ${condition_final}";
 
 
            
@@ -96,43 +102,53 @@
  } ?>
 <!DOCTYPE html>
 <html>
-    <head>
-      <link rel='stylesheet' id='bootstrap-min-css'  href='http://ajnainfotech.com/demo/shc/wp-content/themes/shc/admin/inc/css/bootstrap.min.css' type='text/css' media='all' />
+       <head>
+
 
     <meta charset="utf-8">
-    <style>
-        body {  font-family: arial, Arial, Helvetica, sans-serif; font-size: 12px;margin-left: 20px;margin-right: 30px; }
-/*        body {
-                height: 297mm;
-                width: 210mm;
-            }*/
-        dt {    float: left; clear: left; text-align: right; font-weight: bold; margin-right: 10px; } 
-        dd {    padding: 0 0 0.5em 0; }
-         .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
-             padding: 3px; 
-            } 
-    </style> 
-    <style type="text/css" media="print">
-    @page 
-        {
-            size: auto;   /* auto is the initial value */ 
+        <style>
 
-        /* this affects the margin in the printer settings */ 
-            margin: 10mm 10mm 0mm 0mm;      
-         
-        }
-            
-          
-    </style>   
+            body {font-family: arial, Arial, Helvetica, sans-serif; font-size: 12px;margin-left: 20px;margin-right: 30px;border:1px solid #73879c;}
+            body {
+                    height: 297mm;/*297*/
+                    width: 210mm;
+                    
+                }
+            dt { float: left; clear: left; text-align: right; font-weight: bold; margin-right: 10px; } 
+            dd {  padding: 0 0 0.5em 0; }
+             .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{
+                 padding: 3px; 
+                } 
+                .footer_left,.footer_right{
+                  width:50%;
+                  float: left;
+                  border:1px solid #73879c;
+                  height: 100px;
+                }
+                .title{
+                   border:1px solid #73879c;
+                }
+                .footer_last{
+                  margin-top: 60px;
+                }
+                .body_style{
+                    margin-left: 10px;
+                }
+                .print_padding{
+                  padding: 10px;
+
+                }
+        </style>   
     </head>
+
 
     <body>
 
     <div class="col-xs-12 invoice-header">
-        <h4 style="margin-left: -15px;">
+        <h2 style="">
            Accountant Report
             <small class="pull-right">Date: <?php echo date("d/m/Y"); ?></small>
-        </h4>
+        </h2>
     </div>
 
     <table cellspacing='3' cellpadding='3' WIDTH='100%' >
@@ -158,16 +174,16 @@
 
     <br/>
 
-    <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped">
+    <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" style=" border-collapse: collapse;border: 1px solid black;">
     <tr>
-        <th >SNO</th>
-        <th >Number of Goods Sold</th>
-        <th >CGST</th>
-        <th >SGST</th>
-        <th >CGST Amount</th>
-        <th >SGST Amonut</th>
-        <th>Amount</th>
-        <th >Cost Of Goods Sold(COGS)</th>
+        <th style="border: 1px solid black;">SNO</th>
+        <th style="border: 1px solid black;">Number of Goods Sold</th>
+        <th style="border: 1px solid black;">CGST</th>
+        <th style="border: 1px solid black;">SGST</th>
+        <th style="border: 1px solid black;">CGST Amount</th>
+        <th style="border: 1px solid black;">SGST Amonut</th>
+        <th style="border: 1px solid black;">Amount</th>
+        <th style="border: 1px solid black;" >Cost Of Goods Sold(COGS)</th>
     </tr>
 
     <?php 
@@ -175,14 +191,14 @@
     foreach ($results as $b_value) {
     ?>
             <tr>
-                <td class=""><?php echo $i; ?></td>
-                <td class=""><?php echo round($b_value->total_unit); ?></td>
-                <td class=""><?php echo $b_value->gst; ?> </td>
-                <td class=""><?php echo $b_value->gst; ?> </td>
-                <td class=""><?php echo $b_value->cgst_value; ?></td>
-                <td class=""><?php echo $b_value->cgst_value; ?></td>
-                <td class=""><?php echo $b_value->amt; ?></td> 
-                <td class=""><?php echo $b_value->total; ?></td>                               
+                <td style="border: 1px solid black;" ><?php echo $i; ?></td>
+                <td style="border: 1px solid black;" ><?php echo round($b_value->total_unit); ?></td>
+                <td style="border: 1px solid black;" ><?php echo $b_value->gst; ?> </td>
+                <td style="border: 1px solid black;" ><?php echo $b_value->gst; ?> </td>
+                <td style="border: 1px solid black;" ><?php echo $b_value->cgst_value; ?></td>
+                <td style="border: 1px solid black;" ><?php echo $b_value->cgst_value; ?></td>
+                <td style="border: 1px solid black;" ><?php echo $b_value->amt; ?></td> 
+                <td style="border: 1px solid black;" ><?php echo $b_value->total; ?></td>                               
             </tr>
     <?php
             $i++;

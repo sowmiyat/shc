@@ -15,7 +15,7 @@ function my_footer_shh() {
 	remove_menu_page( 'jetpack' );                    //Jetpack* 
 	remove_menu_page( 'edit.php' );                   //Posts
 	remove_menu_page( 'upload.php' );                 //Media
-	remove_menu_page( 'edit.php?post_type=page' );    //Pages
+	// remove_menu_page( 'edit.php?post_type=page' );    //Pages
 	remove_menu_page( 'edit-comments.php' );          //Comments
 	remove_menu_page( 'themes.php' );                 //Appearance
 	remove_menu_page( 'plugins.php' );                //Plugins
@@ -44,14 +44,6 @@ function remove_dashboard_meta() {
 }
 add_action( 'admin_init', 'remove_dashboard_meta' ); 
 
-
-add_action('after_setup_theme', 'remove_admin_bar');
- 
-function remove_admin_bar() {
-
-  show_admin_bar(false);
-
-}
 
 function remove_footer_admin() 
 {
@@ -216,6 +208,7 @@ function load_custom_wp_admin_style() {
 
 
 	wp_enqueue_script( 'bpopup-min', get_template_directory_uri() . '/admin/inc/js/jquery.bpopup.min.js', array('jquery'), false, false );
+	wp_enqueue_script( 'moment-js', get_template_directory_uri() . '/admin/inc/js/moment-with-locales.min.js', array('jquery'), false, false );
 	wp_enqueue_script( 'select2', get_template_directory_uri() . '/admin/inc/js/select2/dist/js/select2.full.min.js', array('jquery'), false, false );
 	wp_enqueue_script( 'repeater', get_template_directory_uri() . '/admin/inc/js/jquery.repeater.js', array('jquery'), false, false );
 	wp_enqueue_script( 'jquery-ui-js', get_template_directory_uri() . '/admin/inc/js/jquery-ui.js', array('jquery'), false, false );
@@ -252,8 +245,13 @@ function sales_statistics_widget_today( $post, $callback_args ) {
 	include('admin/billing/ajax_loading/billing-list.php');
 	//admin_url('admin.php?page=billing_list&ppage=20&inv_id&order_id&name&mobile&bill_from='.$date.'&bill_to='.$date.'&cpage=1');
 }
-function sales_statistics_widget_today_ws( $post, $callback_args ) {
-	//include('admin/billing/ajax_loading/ws-billing-list.php');
+
+function sales_statistics_widget_ws_today( $post, $callback_args ) {
+	include('admin/billing/ajax_loading/ws-billing-list.php');
+	//admin_url('admin.php?page=billing_list&ppage=20&inv_id&order_id&name&mobile&bill_from='.$date.'&bill_to='.$date.'&cpage=1');
+}
+function stock_alert( $post, $callback_args ) {
+	include('admin/stocks/ajax_loading/stock-list-total-dashboard.php');
 	//admin_url('admin.php?page=billing_list&ppage=20&inv_id&order_id&name&mobile&bill_from='.$date.'&bill_to='.$date.'&cpage=1');
 }
 function sales_statistics_widget( $post, $callback_args ) {
@@ -269,21 +267,20 @@ function customer( $post, $callback_args ) {
 	include('admin/customer/ajax_loading/customer-list.php');
 	//echo admin_url('admin.php?page=customer_list&ppage=5&name&mobile&customer_from&customer_to&sale_total=999&cpage=1');
 }
-function stock_status_widget( $post, $callback_args ) {
-	include('admin/report/ajax_loading/stock-list.php');
-	//echo admin_url('admin.php?page=list_report&ppage=10&bill_from='.$date.'&bill_to='.$date.'&cpage=1');
-}
+// function stock_status_widget( $post, $callback_args ) {
+// 	include('admin/report/ajax_loading/stock-list.php');
+// 	//echo admin_url('admin.php?page=list_report&ppage=10&bill_from='.$date.'&bill_to='.$date.'&cpage=1');
+// }
 
 
 function add_dashboard_widgets() {
-	add_meta_box( 'my_sales_tatistics_widget', 'Today Retail Sales Statistics', 'sales_statistics_widget_today', 'dashboard', 'normal', 'high' );
-	add_meta_box( 'my_sales_tatistics_widget_ws', 'Wholesale Today Retail Sales Statistics', 'sales_statistics_widget_today_ws', 'dashboard', 'normal', 'high' );
-	add_meta_box( 'my_sales_statistics_widget', 'Sales Statistics', 'sales_statistics_widget', 'dashboard', 'side', 'high' );
-	add_meta_box( 'my_wscutomer', 'Wholesale Customer  Status', 'wscutomer', 'dashboard', 'normal', 'low' );
-	add_meta_box( 'my_customer', 'Retail Customer Status', 'customer', 'dashboard', 'side', 'low' );
-	add_meta_box( 'my_stock_status_widget', 'Today Sold Stocks ', 'stock_status_widget', 'dashboard', 'side', 'low' );
-	//add_meta_box( 'my_stock_status_widget', 'Stock ', 'sales_delivery_status_widget', 'dashboard', 'normal', 'low' );
-	
+	add_meta_box( 'my_sales_statistics_widget_re', 'Retail Sales Statistics', 'sales_statistics_widget_today', 'dashboard', 'normal', 'high' );
+ 	add_meta_box( 'my_sales_statistics_widget', 'Today Sold Stocks', 'sales_statistics_widget', 'dashboard', 'normal', 'high' );
+	add_meta_box( 'my_customer', 'Retail Customer Status', 'customer', 'dashboard', 'normal', 'low' );
+	add_meta_box( 'my_sales_statistics_widget_ws', 'Wholesale Sales Statistics', 'sales_statistics_widget_ws_today', 'dashboard', 'side', 'high' );
+	add_meta_box( 'my_stocks_alert_widget', 'Stock Status', 'stock_alert', 'dashboard', 'side', 'low' );
+	add_meta_box( 'my_wscutomer', 'Wholesale Customer  Status', 'wscutomer', 'dashboard', 'side', 'low' );
+
 	
 } 
 add_action('wp_dashboard_setup', 'add_dashboard_widgets' );

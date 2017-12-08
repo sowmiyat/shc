@@ -12,7 +12,7 @@ if(isset($_GET['stock_id']) && $stock = get_stock($_GET['stock_id']) ) {
 		<div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2">
 			<div class="x_panel">
 				<div class="x_title">
-					<h2>Add New Lot <small>Sessions</small></h2>
+					<h2>Add New Stock <small>Sessions</small></h2>
 					<div class="clearfix"></div>
 				</div>
 				<div class="x_content">
@@ -79,21 +79,3 @@ if(isset($_GET['stock_id']) && $stock = get_stock($_GET['stock_id']) ) {
 
 </div>
 
-<SCRIPT language=Javascript>
-	jQuery.extend(jQuery.expr[':'], {
-	    focusable: function (el, index, selector) {
-	        return jQuery(el).is('a, button, :input, [tabindex]');
-	    }
-	});
-
-	jQuery(document).on('keypress', 'input,select', function (e) {
-	    if (e.which == 13) {
-	        e.preventDefault();
-	        // Get all focusable elements on the page
-	        var $canfocus = jQuery(':focusable');
-	        var index = $canfocus.index(document.activeElement) + 1;
-	        if (index >= $canfocus.length) index = 0;
-	        $canfocus.eq(index).focus();
-	    }
-	});
-</SCRIPT>

@@ -34,8 +34,8 @@
 
 
                     <div class="col-md-1 form-group has-feedback">
-                        <input type="text" class="form-control has-feedback-left inv_id" name="inv_id" value="<?php echo $billing->inv_id; ?>" placeholder="Invoice Number" style="padding-right: 5px;">
-                        <span class="form-control-feedback left " aria-hidden="true" style="margin-top: 6px;">INV</span>
+                        <input type="text" class="form-control  inv_id" name="inv_id" value="<?php echo $billing->inv_id; ?>" placeholder="Invoice Number" style="padding-right: 5px;">
+                       
                     </div>
                     <div class="col-md-2 form-group">
                         <input type="text" name="mobile" class="mobile form-control" value="<?php echo $billing->mobile; ?>" placeholder="Customer Mobile">
@@ -84,7 +84,7 @@ jQuery(document).ready(function () {
     });
 
 
-    jQuery('.jambo_table td a').live('keydown', function(e) { 
+    jQuery('.last_list_view').live('keydown', function(e) { 
 
         if(jQuery(this).parent().parent().next('tr').length == 0 && jQuery(".next.page-numbers").length == 0) {
             var keyCode = e.keyCode || e.which; 

@@ -171,7 +171,7 @@
                                             
                                     </div>
                                     <!-- /.col -->
-                                <div class="col-sm-4 invoice-col">
+                                <div class="col-sm-6 invoice-col">
                                     <div class="col-xs-12 table">
                                         <?php if($bill_rdata) {  ?>
                                      Billed Items 
@@ -185,6 +185,7 @@
                                                         <th>Unit</th>
                                                         <th>Price</th>
                                                         <th>total</th>
+                                                        <th>Date</th>
                                                         
                                                     </tr>
                                                 </thead>
@@ -200,6 +201,7 @@
                                                         <td><?php echo $table_data->return_unit; ?> </td>
                                                         <td><?php echo $table_data->mrp; ?> </td>
                                                         <td><?php echo $table_data->sub_total; ?> </td>
+                                                        <td><?php echo $table_data->created_at; ?> </td>
                                                     </tr>
                                                        
                                                    <?php  
@@ -257,7 +259,7 @@
                                                          <?php 
                                                     if($display || $update) {  $i=1;
                                                         foreach($bill_ldata as $table_data) { ?>
-                                                     <tr class="rtn_bill_lot_add" name="rtn_customer_table" data-productid="<?php echo $table_data->lot_id; ?>">
+                                                        <tr class="rtn_bill_lot_add" name="rtn_customer_table" data-productid="<?php echo $table_data->lot_id; ?>">
                                                         <td><?php echo $i; ?> </td><input type="hidden" name="customer_detail[<?php echo $i; ?>][id]" value="<?php echo $table_data->lot_id; ?>"  />
                                                         <td><?php echo $table_data->product_name; ?> </td>
                                                         <td><?php echo $table_data->hsn; ?> </td>

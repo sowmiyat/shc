@@ -25,10 +25,12 @@
 ?>
 
 <script>
-function print_current_page()
-{
-window.print();
-}
+  function print_current_page()
+  {
+  // window.print();
+  var printPage = window.open(document.URL, '_blank');
+  setTimeout(printPage.print(), 5);
+  }
 </script>
 <div class="container">
   <div class="row">
@@ -40,7 +42,7 @@ window.print();
                       <input type="hidden" name="page" value="invoice">
                       <input type="text" name="id" class="invoice_id" value="<?php echo $invoice_id['inv_id']; ?>" required autocomplete="off"> 
                      Year
-                     <select name="year" class="year">
+                        <select name="year" class="year">
                             <?php   $current_year = date('Y');
                                     $display_year = $current_year - 30;
                                     $added_year = 0;
@@ -60,7 +62,8 @@ window.print();
                   </h2>
                 
                 <button class="btn btn-primary pull-right generate_bill" style="margin-right: 5px;"><i class="fa fa-file-pdf-o"></i> Generate PDF</button>
-                <button class="btn btn-default pull-right bill_retail_print" onclick="print_current_page();"><i class="fa fa-print"></i> Print</button>
+                <!-- <button class="btn btn-default pull-right bill_retail_print" onclick="print_current_page();"><i class="fa fa-print"></i>Print</button> -->
+              <a class="btn btn-default pull-right bill_retail_print" href="#" target="_blank" onclick="print_current_page();"><i class="fa fa-print"></i> Print</a>
             </form>
             <div class="clearfix"></div>
         </div>
@@ -114,6 +117,7 @@ window.print();
             <div class="row">
               <div class="col-xs-12 table">
                 <h2>Billed Items</h2>
+                <input type="checkbox" name="check_all" value="check_all" class="check_all" style="width: 20px;height: 20px;">  Delivery Check all
                 <table class="table table-striped">
                   <thead>
                     <tr>
@@ -151,6 +155,11 @@ window.print();
                           </td>
                           <td class="delivery">
                                 <input type="checkbox" class="delivery_check" <?php echo $checked; ?>  style="width: 20px; height: 20px;"/>
+                                <?php if($d_value->delivery_count > 0) {
+                                  echo $d_value->delivery_count;
+                                }?>
+
+                                  <input type="text" value="<?php echo $d_value->sale_unit; ?>" class="delivery_count delivery_count_div" onkeypress="return isNumberKey(event)" style="display:none;width: 40px;"/>
                           </td> <input type="hidden" value="<?php  echo $d_value->id; ?>" class="delivery_id" />
                           <td>
                             <span class="span_product_name"><?php echo $d_value->product_name; ?></span>
@@ -160,6 +169,7 @@ window.print();
                           </td>
                           <td>
                             <span class="span_unit_count"><?php echo $d_value->sale_unit; ?><span>
+                              <input type="hidden" value="<?php echo $d_value->sale_unit; ?>" name="unit_count" class="unit_count"/> 
                           </td>
                           <td>
                             <span class="span_unit_price"><?php echo $d_value->unit_price; ?><span>
@@ -376,14 +386,14 @@ window.print();
       }
 
       .A4_HALF h3 {
-        margin-top: 10px;
+        margin-top: 20px;
       }
 
 
 
       
 </style>   
-<div class="A4_HALF">
+<div class="A4_HALF" style="margin-top:20px;">
 	<div class="sheet padding-10mm">
 	  <?php
 		  if($bill_data) {

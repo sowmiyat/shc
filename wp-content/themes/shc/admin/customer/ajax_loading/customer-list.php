@@ -66,7 +66,7 @@
                                     <td class=""><?php echo $c_value->created_at; ?></td>
                                     <td>
                                         <a href="<?php echo admin_url('admin.php?page=new_customer')."&id=${customer_id}"; ?>" class="list_update">Update</a> /
-                                        <a href = "#" class="list_delete delete-cus" data-id="<?php echo $c_value->id; ?>">Delete</a>
+                                        <a href = "#" class="list_delete delete-cus last_list_view" data-id="<?php echo $c_value->id; ?>">Delete</a>
                                     </td>
                                 </tr>
                     <?php

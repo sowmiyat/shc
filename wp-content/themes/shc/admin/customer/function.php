@@ -25,6 +25,9 @@ function get_wholesale_customer($customer_id = 0) {
 
 
 function create_customer() {
+	$current_user 		= wp_get_current_user();
+	$current_nice_name 	= $current_user->user_nicename;
+
 	$data['success'] 	= 0;
 	$data['msg'] 	= 'Something Went Wrong! Please Try Again!';
 	$data['redirect'] 	= 0;
@@ -37,6 +40,8 @@ function create_customer() {
 
 	$customer_table = $wpdb->prefix. 'shc_customers';
 	$wpdb->insert($customer_table, $params);
+	$customer_id = $wpdb->insert_id;
+	$wpdb->update($customer_table, array('created_by' => $current_nice_name ), array('id' => $customer_id));
 
 	if($wpdb->insert_id) {
 		$data['success'] = 1;
@@ -54,6 +59,11 @@ add_action( 'wp_ajax_nopriv_create_customer', 'create_customer' );
 
 
 function update_customer() {
+
+	$current_user 		= wp_get_current_user();
+	$current_nice_name 	= $current_user->user_nicename;
+
+
 	$data['success'] 	= 0;
 	$data['msg'] = 'Invalid Customer Please Check Again!';
 	$data['redirect'] 	= 0;
@@ -70,6 +80,7 @@ function update_customer() {
 	if(get_customer($customer_id)) {
 		$customer_table = $wpdb->prefix. 'shc_customers';
 		$wpdb->update($customer_table, $params, array('id' => $customer_id));
+		$wpdb->update($customer_table, array('modified_by' => $current_nice_name ), array('id' => $customer_id));
 		$data['success'] = 1;
 		$data['msg'] = 'Customer Detail Updated!';
 		$data['redirect'] = network_admin_url( 'admin.php?page=customer_list' );
@@ -82,6 +93,9 @@ add_action( 'wp_ajax_update_customer', 'update_customer' );
 add_action( 'wp_ajax_nopriv_update_customer', 'update_customer' );
 
 function create_wholesale_customer() {
+	$current_user 		= wp_get_current_user();
+	$current_nice_name 	= $current_user->user_nicename;
+
 	$data['success'] 	= 0;
 	$data['msg'] 	= 'Something Went Wrong! Please Try Again!';
 	$data['redirect'] 	= 0;
@@ -94,6 +108,8 @@ function create_wholesale_customer() {
 
 	$customer_table = $wpdb->prefix. 'shc_wholesale_customer';
 	$wpdb->insert($customer_table, $params);
+	$customer_id = $wpdb->insert_id;
+	$wpdb->update($customer_table, array('created_by' => $current_nice_name ), array('id' => $customer_id));
 
 	if($wpdb->insert_id) {
 		$data['success'] = 1;
@@ -109,6 +125,11 @@ add_action( 'wp_ajax_create_wholesale_customer', 'create_wholesale_customer' );
 add_action( 'wp_ajax_nopriv_create_wholesale_customer', 'create_wholesale_customer' );
 
 function update_wholesale_customer() {
+
+	$current_user 		= wp_get_current_user();
+	$current_nice_name 	= $current_user->user_nicename;
+
+
 	$data['success'] 	= 0;
 	$data['msg'] = 'Invalid Customer Please Check Again!';
 	$data['redirect'] 	= 0;
@@ -125,6 +146,7 @@ function update_wholesale_customer() {
 	if(get_wholesale_customer($customer_id)) {
 		$customer_table = $wpdb->prefix. 'shc_wholesale_customer';
 		$wpdb->update($customer_table, $params, array('id' => $customer_id));
+		$wpdb->update($customer_table, array('modified_by' => $current_nice_name ), array('id' => $customer_id));
 		$data['success'] = 1;
 		$data['msg'] = 'Customer Detail Updated!';
 		$data['redirect'] = network_admin_url( 'admin.php?page=wholesale_customer' );
@@ -159,13 +181,8 @@ function check_unique_mobile() {
 	global $wpdb;
 	$mobile 				= $_POST['mobile'];
 	$customer_id    		= $_POST['customer_id'];
-    $retail_customer 		=  $wpdb->prefix.'shc_customers';
-   if($customer_id == 0){
-    	$query = "SELECT mobile FROM ${retail_customer} WHERE mobile ='$mobile' and active=1";
-    } else {
-    	$query = "SELECT mobile FROM ${retail_customer} WHERE mobile ='$mobile' and id != '$customer_id' and active=1";
-    }
-    
+    $retail_customer 		=  $wpdb->prefix.'shc_customers';   
+    $query = "SELECT mobile FROM ${retail_customer} WHERE mobile ='$mobile' and id != '$customer_id' and active=1";
     $result 	=  $wpdb->get_row( $query );
     if($result) {
     	$data = 1;
@@ -184,11 +201,11 @@ function check_unique_mobile_wholesale() {
 	$mobile 		= $_POST['mobile'];
 	$customer_id    = $_POST['customer_id'];
     $wholesale_customer 		=  $wpdb->prefix.'shc_wholesale_customer';
-    if($customer_id == 0){
-    	$query = "SELECT mobile FROM ${wholesale_customer} WHERE mobile ='$mobile' and active=1";
-    } else {
+    // if($customer_id == 0){
+    // 	$query = "SELECT mobile FROM ${wholesale_customer} WHERE mobile ='$mobile' and active=1";
+    // } else {
     	$query = "SELECT mobile FROM ${wholesale_customer} WHERE mobile ='$mobile' and id != '$customer_id' and active=1";
-    }
+    // }
     
     $result 			=  $wpdb->get_row( $query );
     if($result) {

@@ -58,12 +58,12 @@
                                     <td class=""><?php echo $c_value->mobile; ?></td>
                                     <td class=""><?php echo $c_value->address; ?> </td>
                                     <td class=""><?php echo $c_value->gst_number; ?> </td>
-                                     <td class=""><?php echo $c_value->total_buy; ?></td>
+                                    <td class=""><?php echo $c_value->total_buy; ?></td>
 									<td class=""><?php echo $c_value->balance; ?></td>
                                     <td class=""><?php echo $c_value->created_at; ?></td>
                                     <td>
                                         <a href="<?php echo admin_url('admin.php?page=new_wholesale_customer')."&id=${customer_id}"; ?>" class="list_update">Update</a> / 
-                                        <a href = "#" class="list_delete delete-ws-cus" data-id="<?php echo $c_value->id; ?>">Delete</a>
+                                        <a href = "#" class="list_delete delete-ws-cus last_list_view" data-id="<?php echo $c_value->id; ?>">Delete</a>
                                     </td>
                                 </tr>
                     <?php

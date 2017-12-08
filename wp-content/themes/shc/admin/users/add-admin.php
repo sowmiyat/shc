@@ -26,20 +26,21 @@ if(isset($_GET['user_id']) && $user = get_userdata($_GET['user_id']) ) {
 					<div class="clearfix"></div>
 				</div>
 				<div class="x_content">
-					<form class="form-horizontal form-label-left" id="create_user">
+					<form class="form-horizontal form-label-left admin_submit" id="create_user">
 						<div class="form-group">
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">User Name (Login Name) <span class="required">*</span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="text" name="user_name" id="user_name" required="required" <?php echo ($user) ? 'readonly' : ''; ?> value="<?php echo ($user) ? $user->data->user_login : '';  ?>" class="form-control col-md-7 col-xs-12">
+								<input type="text" name="user_name" autocomplete="off" id="user_name" class="user_name"  <?php echo ($user) ? 'readonly' : ''; ?> value="<?php echo ($user) ? $user->data->user_login : '';  ?>" class="form-control col-md-7 col-xs-12">
 							</div>
 						</div>
+						
 						<div class="divider-dashed"></div>
 						<div class="form-group">
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Password <span class="required"><?php echo ($user) ? '' : '*';  ?></span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="text" name="password" id="password" class="form-control col-md-7 col-xs-12" <?php echo ($user) ? '' : 'required=required';  ?>>
+								<input type="text" name="password" autocomplete="off" id="password" class="form-control col-md-7 col-xs-12" >
 							</div>
 						</div>
 						<div class="divider-dashed"></div>
@@ -47,7 +48,7 @@ if(isset($_GET['user_id']) && $user = get_userdata($_GET['user_id']) ) {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Mobile <span class="required">*</span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="text" name="mobile" id="mobile" required="required" value="<?php echo get_user_meta($user->data->ID, 'mobile', true ); ?>" class="form-control col-md-7 col-xs-12">
+								<input type="text" name="mobile" autocomplete="off" id="mobile" onkeypress="return isNumberKey(event)" maxlength="10"  value="<?php echo get_user_meta($user->data->ID, 'mobile', true ); ?>" class="form-control col-md-7 col-xs-12">
 							</div>
 						</div>
 
@@ -56,7 +57,7 @@ if(isset($_GET['user_id']) && $user = get_userdata($_GET['user_id']) ) {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Email <span class="required">*</span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="text" name="email" id="email" value="<?php echo ($user) ? $user->data->user_email : '';  ?>" class="form-control col-md-7 col-xs-12">
+								<input type="text" name="email" autocomplete="off" id="email" value="<?php echo ($user) ? $user->data->user_email : '';  ?>" class="form-control col-md-7 col-xs-12">
 							</div>
 						</div>
 
@@ -66,10 +67,10 @@ if(isset($_GET['user_id']) && $user = get_userdata($_GET['user_id']) ) {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Role <span class="required">*</span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<select name="role" data-placeholder="Choose a Role..." class="chosen-select" style="width:350px;" tabindex="2" class="form-control col-md-7 col-xs-12">
+								<select name="role" required data-placeholder="Choose a Role..." class=""   class="form-control col-md-7 col-xs-12">
 									<?php
 									$selected = '';
-									echo '<option value="0">No Role</option>';
+									echo '<option value="">No Role</option>';
 									foreach ($editable_roles as $key => $role_value) {
 										if($user && $current_role === $key) {
 											$selected = 'selected';
@@ -86,10 +87,12 @@ if(isset($_GET['user_id']) && $user = get_userdata($_GET['user_id']) ) {
 
 						<div class="divider-dashed"></div>
 						<div class="form-group">
-							<div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-	                          	<button class="btn btn-primary" type="button">Cancel</button>
-							  	<button class="btn btn-primary" type="reset">Reset</button>
-	                          	<button type="submit" class="btn btn-success">Submit</button>
+							<div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-3">
+	                          	
+	                          	<button type="submit" class="btn btn-success admin_sub">Submit</button>
+							  	<button class="btn btn-primary admin_reset" type="reset">Reset</button>
+							  	<button class="btn btn-primary admin_cancel" type="button">Cancel</button>
+	                          	
 
 								<?php 
 									if(  $user ) {

@@ -2,6 +2,8 @@
 
 
     $bill_data = false;
+     $display  = false;
+     $update = false;
      $invoice_id['inv_id'] = '';
      $invoice_id['invoice_id'] = '';
 
@@ -14,10 +16,12 @@
             $bill_data                      = getBillDataReturnData($_GET['id'] , $year,$_GET['return_id']);
             $bill_fdata                     = $bill_data['bill_data'];
            if(isset($_GET['return_id']) && $_GET['return_id'] != '' ) {
-                $update                        = true;
+                $display                        = false;
+                $update                         = true;
                 $bill_ldata                     = $bill_data['return_ordered_data'];
             } else {
-                $display                    = true;
+                $display                        = true;
+                $update                         = false;
                 $bill_ldata                     = $bill_data['ordered_data'];
             }
             $bill_rdata                     = $bill_data['return_data'];
@@ -158,7 +162,7 @@
                                             
                                     </div>
                                     <!-- /.col -->
-                                <div class="col-sm-4 invoice-col">
+                                <div class="col-sm-6 invoice-col">
                                     <div class="col-xs-12 table">
                                         <?php if($bill_rdata) {  ?>
                                      Billed Items 
@@ -172,6 +176,7 @@
                                                         <th>Unit</th>
                                                         <th>Price</th>
                                                         <th>total</th>
+                                                        <th>Date</th>
                                                         
                                                     </tr>
                                                 </thead>
@@ -187,6 +192,7 @@
                                                         <td><?php echo $table_data->return_unit; ?> </td>
                                                         <td><?php echo $table_data->mrp; ?> </td>
                                                         <td><?php echo $table_data->sub_total; ?> </td>
+                                                        <td><?php echo $table_data->created_at; ?> </td>
                                                     </tr>
                                                        
                                                    <?php  

@@ -84,7 +84,7 @@ dd {  padding: 0 0 0.5em 0; }
           <br/>GST No - 33BMDPA4840E1ZP
           <td valign='top' WIDTH='50%'>
               <table>
-                <tr><td>Return Number</td><td>: <?php echo 'GR'.$bill_fdata->return_id; ?></td></tr>
+                <tr><td>Return Number</td><td>: <?php echo $bill_fdata->return_id; ?></td></tr>
                 <tr><td>Date</td><td>: <?php echo date("d/m/Y"); ?></td></tr>
                 <tr><td>State</td><td>: TAMILNADU</td></tr>
                 <tr><td>State Code</td><td>: 33</td></tr>
@@ -116,19 +116,21 @@ dd {  padding: 0 0 0.5em 0; }
       <br/>
 
 
-      <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" >
-        <tr>
-          <th valign='top'>SNO</th>
-          <th valign='top'>PRODUCTS</th>
-          <th valign='top'>HSN</th>
-          <th valign='top'>Return Quantity</th>
-          <th valign='top'>MRP(Per Item)</th> 
-          <th valign='top'>AMOUNT</th>
-          <th valign='top'>CGST (%) </th>
-          <th valign='top'>CGST VALUE</th>
-          <th valign='top'>SGST (%) </th>
-          <th valign='top'>SGST VALUE</th>
-          <th valign='top'>SUB TOTAL</th>
+      
+
+      <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" style=" border-collapse: collapse;border: 1px solid black;">
+        <tr style="border: 1px solid black;">
+          <th valign='top' style="border: 1px solid black;">SNO</th>
+          <th valign='top' style="border: 1px solid black;">PRODUCTS</th>
+          <th valign='top' style="border: 1px solid black;">HSN</th>
+          <th valign='top' style="border: 1px solid black;">Return Quantity</th>
+          <th valign='top' style="border: 1px solid black;">MRP(Per Item)</th> 
+          <th valign='top' style="border: 1px solid black;">AMOUNT</th>
+          <th valign='top' style="border: 1px solid black;">CGST (%) </th>
+          <th valign='top' style="border: 1px solid black;">CGST VALUE</th>
+          <th valign='top' style="border: 1px solid black;">SGST (%) </th>
+          <th valign='top' style="border: 1px solid black;">SGST VALUE</th>
+          <th valign='top' style="border: 1px solid black;">SUB TOTAL</th>
         </tr>
       <?php
           if($bill_data && $bill_ldata && count($bill_ldata)>0) {
@@ -136,18 +138,18 @@ dd {  padding: 0 0 0.5em 0; }
               foreach ($bill_ldata as $d_value) {
       ?>
                             
-        <tr>
-          <td valign='top' align='center'><?php echo $i; ?></td>
-          <td valign='top'><?php echo $d_value->product_name; ?></td>
-          <td valign='top'><?php echo $d_value->hsn; ?></td>
-          <td valign='top' align='left'><?php echo $d_value->sale_unit; ?></td>
-          <td valign='top' align='left'><?php echo $d_value->mrp; ?></td>
-          <td valign='top' align='left'><?php echo $d_value->amt; ?></td>
-          <td valign='top'><?php echo $d_value->cgst + 0; echo ' %'; ?></td>
-          <td valign='top'><?php echo $d_value->cgst_value; ?></td>
-          <td valign='top'><?php echo $d_value->sgst + 0; echo ' %';  ?></td>
-          <td valign='top'><?php echo $d_value->sgst_value; ?></td>
-          <td valign='top' style="padding:3px;" align='left'><?php echo $d_value->sub_total; ?></td>
+        <tr style="border: 1px solid black;">
+          <td valign='top' style="border: 1px solid black;" align='center'><?php echo $i; ?></td>
+          <td valign='top' style="border: 1px solid black;"><?php echo $d_value->product_name; ?></td>
+          <td valign='top' style="border: 1px solid black;"><?php echo $d_value->hsn; ?></td>
+          <td valign='top' style="border: 1px solid black;" align='left'><?php echo $d_value->sale_unit; ?></td>
+          <td valign='top' style="border: 1px solid black;" align='left'><?php echo $d_value->mrp; ?></td>
+          <td valign='top' style="border: 1px solid black;" align='left'><?php echo $d_value->amt; ?></td>
+          <td valign='top' style="border: 1px solid black;"><?php echo $d_value->cgst + 0; echo ' %'; ?></td>
+          <td valign='top' style="border: 1px solid black;"><?php echo $d_value->cgst_value; ?></td>
+          <td valign='top' style="border: 1px solid black;"><?php echo $d_value->sgst + 0; echo ' %';  ?></td>
+          <td valign='top' style="border: 1px solid black;"><?php echo $d_value->sgst_value; ?></td>
+          <td valign='top' style="border: 1px solid black;" style="padding:3px;" align='left'><?php echo $d_value->sub_total; ?></td>
         </tr>
       <?php
             $i++;

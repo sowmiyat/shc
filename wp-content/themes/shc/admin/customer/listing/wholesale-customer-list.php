@@ -64,7 +64,7 @@
 jQuery(document).ready(function () {
     jQuery('.ppage').focus();
 
-    jQuery(document).live('keydown', function(e){
+    jQuery(document).live('keydown', function(e) {
         if(jQuery(document.activeElement).closest("#wpbody-content").length == 0) {
             var keyCode = e.keyCode || e.which; 
             if (keyCode == 9) { 
@@ -89,7 +89,7 @@ jQuery(document).ready(function () {
     });
 
 
-    jQuery('.jambo_table td a').live('keydown', function(e) { 
+    jQuery('.last_list_view').live('keydown', function(e) { 
 
         if(jQuery(this).parent().parent().next('tr').length == 0 && jQuery(".next.page-numbers").length == 0) {
             var keyCode = e.keyCode || e.which; 
@@ -98,7 +98,7 @@ jQuery(document).ready(function () {
                 // call custom function here
                 jQuery('.ppage').focus()
             } 
-        }
+        } 
     });
 
     jQuery(".next.page-numbers").live('keydown', function(e) { 

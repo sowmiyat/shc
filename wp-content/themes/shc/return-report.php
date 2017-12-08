@@ -62,43 +62,53 @@ left join
  } ?>
 <!DOCTYPE html>
 <html>
-    <head>
-      <link rel='stylesheet' id='bootstrap-min-css'  href='http://ajnainfotech.com/demo/shc/wp-content/themes/shc/admin/inc/css/bootstrap.min.css' type='text/css' media='all' />
+       <head>
+      <link rel='stylesheet' id='bootstrap-min-css'  href="'<?php echo get_template_directory_uri(); ?>'/admin/inc/css/bootstrap.min.css'" type='text/css' media='all' />
 
     <meta charset="utf-8">
-    <style>
-        body {  font-family: arial, Arial, Helvetica, sans-serif; font-size: 12px;margin-left: 20px;margin-right: 30px; }
-/*        body {
-                height: 297mm;
-                width: 210mm;
-            }*/
-        dt {    float: left; clear: left; text-align: right; font-weight: bold; margin-right: 10px; } 
-        dd {    padding: 0 0 0.5em 0; }
-         .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
-             padding: 3px; 
-            } 
-    </style> 
-    <style type="text/css" media="print">
-    @page 
-        {
-            size: auto;   /* auto is the initial value */ 
+        <style>
 
-        /* this affects the margin in the printer settings */ 
-            margin: 10mm 10mm 0mm 0mm;      
-         
-        }
-            
-          
-    </style>   
+            body {font-family: arial, Arial, Helvetica, sans-serif; font-size: 12px;margin-left: 20px;margin-right: 30px;border:1px solid #73879c;}
+            body {
+                    height: 297mm;/*297*/
+                    width: 210mm;
+                    
+                }
+            dt { float: left; clear: left; text-align: right; font-weight: bold; margin-right: 10px; } 
+            dd {  padding: 0 0 0.5em 0; }
+             .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{
+                 padding: 3px; 
+                } 
+                .footer_left,.footer_right{
+                  width:50%;
+                  float: left;
+                  border:1px solid #73879c;
+                  height: 100px;
+                }
+                .title{
+                   border:1px solid #73879c;
+                }
+                .footer_last{
+                  margin-top: 60px;
+                }
+                .body_style{
+                    margin-left: 10px;
+                }
+                .print_padding{
+                  padding: 10px;
+
+                }
+        </style>   
     </head>
+
 
     <body>
 
     <div class="col-xs-12 invoice-header">
-        <h4 style="margin-left: -15px;">
+        <h2 style="">
            Return Report
             <small class="pull-right">Date: <?php echo date("d/m/Y"); ?></small>
-        </h4>
+        </h2>
     </div>
 
     <table cellspacing='3' cellpadding='3' WIDTH='100%' >
@@ -124,18 +134,18 @@ left join
 
     <br/>
 
-    <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped">
+    <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" style=" border-collapse: collapse;border: 1px solid black;">
     <tr>
-        <th>SNO</th>
-        <th>Product Name</th>
-        <th>Brand Name</td>
-        <th>Number of Goods Sold</th>
-        <th>CGST</th>
-        <th>SGST</th>
-        <th>CGST Amount</th>
-        <th>SGST Amonut</th>
-        <th>Amount</th>
-        <th>Cost Of Goods Sold(COGS)</th>
+        <th style="border: 1px solid black;" >SNO</th>
+        <th style="border: 1px solid black;" >Product Name</th>
+        <th style="border: 1px solid black;" >Brand Name</td>
+        <th style="border: 1px solid black;" >Number of Goods Sold</th>
+        <th style="border: 1px solid black;" >CGST</th>
+        <th style="border: 1px solid black;" >SGST</th>
+        <th style="border: 1px solid black;" >CGST Amount</th>
+        <th style="border: 1px solid black;" >SGST Amonut</th>
+        <th style="border: 1px solid black;" >Amount</th>
+        <th style="border: 1px solid black;" >Cost Of Goods Sold(COGS)</th>
     </tr>
 
     <?php 
@@ -143,16 +153,16 @@ left join
     foreach ($results as $b_value) {
     ?>
             <tr>
-                <td class=""><?php echo $i; ?></td>
-                <td class=""><?php echo $b_value->product_name; ?></td>
-                <td class=""><?php echo $b_value->brand_name; ?></td>
-                <td class=""><?php echo round($b_value->return_unit); ?></td>
-                <td class=""><?php echo $b_value->amt; ?></td>
-                <td class=""><?php echo $b_value->cgst; ?> </td>
-                <td class=""><?php echo $b_value->cgst; ?> </td>
-                <td class=""><?php echo $b_value->cgst_value; ?></td>
-                <td class=""><?php echo $b_value->cgst_value; ?></td>
-                <td class=""><?php echo $b_value->subtotal; ?></td>                            
+                <td style="border: 1px solid black;"><?php echo $i; ?></td>
+                <td style="border: 1px solid black;"><?php echo $b_value->product_name; ?></td>
+                <td style="border: 1px solid black;"><?php echo $b_value->brand_name; ?></td>
+                <td style="border: 1px solid black;"><?php echo round($b_value->return_unit); ?></td>
+                <td style="border: 1px solid black;"><?php echo $b_value->amt; ?></td>
+                <td style="border: 1px solid black;"><?php echo $b_value->cgst; ?> </td>
+                <td style="border: 1px solid black;"><?php echo $b_value->cgst; ?> </td>
+                <td style="border: 1px solid black;"><?php echo $b_value->cgst_value; ?></td>
+                <td style="border: 1px solid black;"><?php echo $b_value->cgst_value; ?></td>
+                <td style="border: 1px solid black;"><?php echo $b_value->subtotal; ?></td>                            
             </tr>
     <?php
             $i++;

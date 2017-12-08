@@ -311,7 +311,58 @@
 
 
 									<div class="row billing-repeater-extra">
-										<!-- accepted payments column -->
+
+										<div class="col-xs-6">
+											
+											<div class="table-responsive">
+												<table class="table">
+													<tbody>
+														<tr>
+															<th>Discount: <br/>	
+															<td>
+																<div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
+																	<input type="text" class="form-control ws_discount"  onkeypress="return isNumberKeyWithDot(event)" value="<?php 
+																	echo ( $bill_data && $bill_fdata ) ? $bill_fdata->discount : '';  ?>" name="ws_discount" onkeypress="return isNumberKeyWithDot(event)"  style="margin: 0;">									
+																	<span class="fa fa-percent form-control-feedback right ws_dis_fa_per"></span>
+																		
+																</div>
+															</td>
+														</tr>
+														<tr>
+															<th style="width:50%">Subtotal:</th>
+															<td>
+																<div class="form-horizontal form-label-left input_mask" style="position:relative;">
+																	<div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
+																		<input type="text" class="form-control ws_fsub_total" tabindex="-1" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->sub_total : 0;  ?>" readonly name="ws_fsub_total" style="margin: 0;">
+																		<span class="fa fa-inr form-control-feedback right" aria-hidden="true"></span>
+																	</div>
+																</div>
+															</td>
+														</tr>
+														<tr>
+															<th>Paid Amount:</th>
+															<td>
+																<div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
+																	<input type="text" class="form-control ws_paid_amount" onkeypress="return isNumberKey(event)" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->paid_amount : 0;  ?>" onkeypress="return isNumberKey(event)"  name="ws_paid_amount" style="margin: 0;">
+																	<span class="fa fa-inr form-control-feedback right" aria-hidden="true"></span>
+																</div>
+															</td>
+														</tr>
+														<tr>
+															<th>Balance Amount:</th>
+															<td>
+																<div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
+																	<input type="hidden" class="form-control ws_return_amt" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->return_amt : 0;  ?>" name="ws_return_amt">
+																	<span class="ws_return_amt_txt"><?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->return_amt : 0;  ?></span>
+																</div>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+										<!-- /.col -->
+																				<!-- accepted payments column -->
 										<div class="col-xs-6">
 											
 											<div class="billing-structure">Payment Due From Previous Bills:<span class="ws_balance_amount"></span>
@@ -325,9 +376,37 @@
 														if(isset($_GET['id'])) { 
 															$payment_type = $bill_fdata->payment_type;
 															echo $payment_type; 
-															echo "<br>";
-															echo $bill_fdata->payment_details;
-														} else {
+															//echo "<br>";
+															//echo $bill_fdata->payment_details; ?>
+															<div class="row">
+																<div class="col-md-2">
+																	<input type="radio" name="payment_pay_type" value="cash" class="payment_pay_type" <?php echo ($payment_type == 'cash') ? 'Checked' : ''; ?>/> Cash
+																</div>
+																<div class="col-md-2">
+																	<input type="radio" name="payment_pay_type" value="card" class="payment_pay_type" <?php echo ($payment_type == 'card') ? 'Checked' : ''; ?> /> Card
+																</div>
+																<div class="col-md-3">
+																	<input type="radio" name="payment_pay_type" value="cheque" class="payment_pay_type" <?php echo ($payment_type == 'cheque') ? 'Checked' : ''; ?> /> Cheque
+																</div>
+																<div class="col-md-5">
+																	<input type="radio" name="payment_pay_type" value="internet_banking" class="payment_pay_type" <?php echo ($payment_type == 'internet_banking') ? 'Checked' : ''; ?> />Internet Banking
+																</div>
+																<div class="col-md-5">
+																	<input type="radio" name="payment_pay_type" value="credit" class="payment_pay_type" <?php echo ($payment_type == 'credit') ? 'Checked' : ''; ?> />Credit
+																</div>
+															</div>
+															<div>
+																<div class="payment_details_card"><input type="textarea" name="card_number" placeholder="Card Details" class="card_number" value="<?php echo ($payment_type == 'card') ? $bill_fdata->payment_details : ''; ?>"/> </div>
+																<div class="payment_details_cheque">
+																	<input type="textarea" name="cheque_number" placeholder="Cheque Details"  class="cheque_number" value="<?php echo ($payment_type == 'cheque') ? $bill_fdata->payment_details : ''; ?>" />
+																	<input type="textarea" name="cheque_date" placeholder="Cheque Date"  class="cheque_date" value="<?php echo ($payment_type == 'cheque') ? $bill_fdata->payment_date : ''; ?>" />
+																</div>
+																<div class="payment_details_internet">
+																	<textarea  name="internet_banking_details" class="internet_banking_details" placeholder="Bank Details"  style="width:100%;"><?php echo ($payment_type == 'internet_banking') ? $bill_fdata->payment_details : ''; ?></textarea>
+																</div> 
+															</div>
+
+													<?php 	} else {
 														?>
 															<div class="row">
 																<div class="col-md-2">
@@ -386,56 +465,6 @@
 											</div>
 										</div>
 										<!-- /.col -->
-										<div class="col-xs-6">
-											
-											<div class="table-responsive">
-												<table class="table">
-													<tbody>
-														<tr>
-															<th>Discount: <br/>	
-															<td>
-																<div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
-																	<input type="text" class="form-control ws_discount"  onkeypress="return isNumberKey(event)" value="<?php 
-																	echo ( $bill_data && $bill_fdata ) ? $bill_fdata->discount : 0;  ?>" name="ws_discount" onkeypress="return isNumberKeyWithDot(event)"  style="margin: 0;">									
-																	<span class="fa fa-percent form-control-feedback right ws_dis_fa_per"></span>
-																		
-																</div>
-															</td>
-														</tr>
-														<tr>
-															<th style="width:50%">Subtotal:</th>
-															<td>
-																<div class="form-horizontal form-label-left input_mask" style="position:relative;">
-																	<div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
-																		<input type="text" class="form-control ws_fsub_total" tabindex="-1" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->sub_total : 0;  ?>" readonly name="ws_fsub_total" style="margin: 0;">
-																		<span class="fa fa-inr form-control-feedback right" aria-hidden="true"></span>
-																	</div>
-																</div>
-															</td>
-														</tr>
-														<tr>
-															<th>Paid Amount:</th>
-															<td>
-																<div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
-																	<input type="text" class="form-control ws_paid_amount" onkeypress="return isNumberKey(event)" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->paid_amount : 0;  ?>" onkeypress="return isNumberKey(event)"  name="ws_paid_amount" style="margin: 0;">
-																	<span class="fa fa-inr form-control-feedback right" aria-hidden="true"></span>
-																</div>
-															</td>
-														</tr>
-														<tr>
-															<th>Balance Amount:</th>
-															<td>
-																<div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
-																	<input type="hidden" class="form-control ws_return_amt" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->return_amt : 0;  ?>" name="ws_return_amt">
-																	<span class="ws_return_amt_txt"><?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->return_amt : 0;  ?></span>
-																</div>
-															</td>
-														</tr>
-													</tbody>
-												</table>
-											</div>
-										</div>
-										<!-- /.col -->
 									</div>
 									<!-- /.row -->
 									<!-- this row will not appear when printing -->
@@ -446,12 +475,12 @@
 											?>
 											<input type="hidden" name="id" class="invoice_id_new" value="<?php echo $invoice_id['invoice_id']; ?>">
 												
-												<button class="btn btn-success pull-right" id="ws_update_payment"><i class="fa fa fa-edit"></i> Update Invoice</button>
+												<button class="btn btn-success pull-right" id="ws_update_payment" style="margin-top: 10px;"><i class="fa fa fa-edit"></i> Update Invoice</button>
 												
 											<?php
 												} else {
 											?>
-												<button class="btn btn-success pull-right ws_bill_submit" id="ws_submit_payment" ><i class="fa fa-credit-card"></i> Create Invoice</button>
+												<button class="btn btn-success pull-right ws_bill_submit" id="ws_submit_payment" style="margin-top: 10px;" ><i class="fa fa-credit-card"></i> Create Invoice</button>
 											<?php
 												} 
 											?>

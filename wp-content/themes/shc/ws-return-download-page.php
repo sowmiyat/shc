@@ -84,7 +84,7 @@ dd {  padding: 0 0 0.5em 0; }
           <br/>GST No - 33BMDPA4840E1ZP
           <td valign='top' WIDTH='50%'>
               <table>
-                <tr><td>Return Number</td><td>: <?php echo 'GR'.$bill_fdata->return_id; ?></td></tr>
+                <tr><td>Return Number</td><td>: <?php echo $bill_fdata->return_id; ?></td></tr>
                 <tr><td>Date</td><td>: <?php echo date("d/m/Y"); ?></td></tr>
                 <tr><td>State</td><td>: TAMILNADU</td></tr>
                 <tr><td>State Code</td><td>: 33</td></tr>
@@ -116,7 +116,7 @@ dd {  padding: 0 0 0.5em 0; }
       <br/>
 
 
-      <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" >
+      <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" border="1">
         <tr>
           <th valign='top'>SNO</th>
           <th valign='top'>PRODUCTS</th>
@@ -174,7 +174,7 @@ dd {  padding: 0 0 0.5em 0; }
     </div>
 
     <div>
-       <b style="float:right;">Authorised Signatory</b>
+       <!-- <b style="float:right;">Authorised Signatory</b> -->
     </div>
 
 </div>

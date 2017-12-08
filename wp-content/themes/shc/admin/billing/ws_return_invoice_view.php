@@ -21,7 +21,9 @@
 <script>
 function print_current_page()
 {
-window.print();
+// window.print();
+var printPage = window.open(document.URL, '_blank');
+setTimeout(printPage.print(), 5);
 }
 </script>
 <div class="container">
@@ -38,7 +40,8 @@ window.print();
                                   <input class="btn btn-success" type="submit" style="height: 38px;margin-left: 20px;">
                               </h2>
                             <button class="btn btn-primary pull-right ws_return_generate_bill" style="margin-right: 5px;"><i class="fa fa-file-pdf-o"></i> Generate PDF</button>
-                            <button class="btn btn-default pull-right ws_bill_return_print" onclick="print_current_page();" style="border-color: #bc2323;"><i class="fa fa-print"></i> Print</button>
+                            <!-- <button class="btn btn-default pull-right ws_bill_return_print" onclick="print_current_page();" style="border-color: #bc2323;"><i class="fa fa-print"></i> Print</button> -->
+                            <a class="btn btn-default pull-right ws_bill_return_print" href="#" target="_blank" onclick="print_current_page();"><i class="fa fa-print"></i> Print</a>
                                 
                         </form>
                         <div class="clearfix"></div>

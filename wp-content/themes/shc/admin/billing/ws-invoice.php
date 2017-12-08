@@ -25,7 +25,9 @@
 <script>
 function print_current_page()
 {
-window.print();
+//window.print();
+var printPage = window.open(document.URL, '_blank');
+setTimeout(printPage.print(), 5);
 }
 </script>
 <div class="container">
@@ -56,8 +58,8 @@ window.print();
                   </h2>
                   <!-- ws_print_bill -->
                 <button class="btn btn-primary pull-right ws_generate_bill" style="margin-right: 5px;"><i class="fa fa-file-pdf-o" href=""></i> Generate PDF</button>
-                <button class="btn btn-default  pull-right bill_retail_print" onclick="print_current_page();"><i class="fa fa-print"></i> Print</button>
-                
+               <!--  <button class="btn btn-default  pull-right bill_retail_print" onclick="print_current_page();"><i class="fa fa-print"></i> Print</button> -->
+                <a class="btn btn-default pull-right" href="#" target="_blank" onclick="print_current_page();"><i class="fa fa-print"></i> Print</a> 
             </form>
             <div class="clearfix"></div>
         </div>
@@ -114,6 +116,7 @@ window.print();
             <div class="row">
               <div class="col-xs-12 table">
                 <h2>Billed Items</h2>
+                <input type="checkbox" name="ws_check_all" value="ws_check_all" class="ws_check_all" style="width: 20px;height: 20px;">  Delivery Check all
                 <table class="table table-striped">
                   <thead>
                     <tr>
@@ -151,6 +154,12 @@ window.print();
                           </td>
                            <td class="delivery">
                                 <input type="checkbox" class="ws_delivery_check" <?php echo $checked; ?>  style="width: 20px; height: 20px;"/>
+                              <?php 
+                              if($d_value->delivery_count > 0) {
+                                  echo $d_value->delivery_count;
+                                }
+                              ?>
+                                <input type="text" value="<?php echo $d_value->sale_unit; ?>" class="ws_delivery_count ws_delivery_count_div" onkeypress="return isNumberKey(event)" style="display:none;width: 40px;"/>  
                           </td> <input type="hidden" value="<?php  echo $d_value->id; ?>" class="ws_delivery_id" />
                           <td>
                             <span class="span_product_name"><?php echo $d_value->product_name; ?></span>
@@ -160,6 +169,7 @@ window.print();
                           </td>
                           <td>
                             <span class="span_unit_count"><?php echo $d_value->sale_unit; ?><span>
+                               <input type="hidden" value="<?php echo $d_value->sale_unit; ?>" name="unit_count" class="ws_unit_count"/> 
                           </td>
                           <td>
                             <span class="span_unit_price"><?php echo $d_value->unit_price; ?><span>

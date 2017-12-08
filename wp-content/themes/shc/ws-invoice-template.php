@@ -181,20 +181,8 @@
 
 
 </style>
-
-
-
   <div class="A4">
     <div class="sheet padding-10mm">
-
-
-
-
-
-
-
-
-
       <table> 
         <thead>
           <tr>

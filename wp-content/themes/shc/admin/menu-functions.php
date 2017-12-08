@@ -46,10 +46,15 @@ global $src_capabilities;
 	);
 	add_submenu_page('billing_list', 'Billing List', 'Billing List', $src_capabilities['billing']['permission']['billing_list'], 'billing_list', 'billing_list' );
 	add_submenu_page('billing_list', 'New Billing', 'New Billing', $src_capabilities['billing']['permission']['add_billing'], 'new_billing', 'new_billing' );
-	add_submenu_page('billing_list', 'Invoice', 'Invoice', $src_capabilities['billing']['permission']['invoice'], 'invoice', 'invoice' );
+	add_submenu_page('billing_list', '', '', $src_capabilities['billing']['permission']['billing_list'], 'invoice', 'invoice' );
+	add_submenu_page('billing_list', 'Cancel Invoice list', 'Cancel Invoice list', $src_capabilities['billing']['permission']['cancel_invoice'], 'cancel_invoice', 'cancel_invoice' );
+	add_submenu_page('billing_list', '', '', $src_capabilities['billing']['permission']['cancel_invoice'], 'cancel_invoice_view', 'cancel_invoice_view' );
 	add_submenu_page('billing_list', 'Return Items', 'Return Items', $src_capabilities['billing']['permission']['add_return'], 'return_items', 'return_items' );
 	add_submenu_page('billing_list', 'Return Items List', 'Return Items List', $src_capabilities['billing']['permission']['return_list'], 'return_items_list', 'return_items_list' );
-	add_submenu_page('billing_list', 'Invoice Return', 'Invoice Return', $src_capabilities['billing']['permission']['return_invoice'], 'return_items_view', 'return_items_view' );
+	add_submenu_page('billing_list', '', '', $src_capabilities['billing']['permission']['return_list'], 'return_items_view', 'return_items_view' );
+	add_submenu_page('billing_list', 'Cancel Return Items', 'Cancel Return Items', $src_capabilities['billing']['permission']['cancel_return_items'], 'cancel_return_items', 'cancel_return_items' );
+	add_submenu_page('billing_list', '', '', $src_capabilities['billing']['permission']['cancel_return_items'], 'cancel_return_items_view', 'cancel_return_items_view' );
+
 	add_menu_page(
 	    __( 'WS Billing', 'shc'),
 	    'WS Billing',
@@ -61,10 +66,14 @@ global $src_capabilities;
 	);
 	add_submenu_page('ws_billing_list', 'Billing List', 'Billing List', $src_capabilities['billing']['permission']['ws_billing_list'], 'ws_billing_list', 'ws_billing_list' );
 	add_submenu_page('ws_billing_list', 'New Billing', 'New Billing', $src_capabilities['billing']['permission']['ws_add_billing'], 'ws_new_billing', 'ws_new_billing' );
-	add_submenu_page('ws_billing_list', 'Invoice', 'Invoice', $src_capabilities['billing']['permission']['ws_invoice'], 'ws_invoice', 'ws_invoice' );
+	add_submenu_page('ws_billing_list', '', '', $src_capabilities['billing']['permission']['ws_billing_list'], 'ws_invoice', 'ws_invoice' );
+	add_submenu_page('ws_billing_list', 'Cancel Invoice list', 'Cancel Invoice list', $src_capabilities['billing']['permission']['ws_cancel_invoice'], 'ws_cancel_invoice', 'ws_cancel_invoice' );
+	add_submenu_page('ws_billing_list', '', '', $src_capabilities['billing']['permission']['ws_cancel_invoice'], 'ws_cancel_invoice_view', 'ws_cancel_invoice_view' );
 	add_submenu_page('ws_billing_list', 'Return Items', 'Return Items', $src_capabilities['billing']['permission']['ws_add_return'], 'ws_return_items', 'ws_return_items' );
 	add_submenu_page('ws_billing_list', 'Return Items List', 'Return Items List', $src_capabilities['billing']['permission']['ws_return_list'], 'ws_return_items_list', 'ws_return_items_list' );
-	add_submenu_page('ws_billing_list', 'Invoice Return', 'Invoice Return', $src_capabilities['billing']['permission']['ws_return_invoice'], 'ws_return_items_view', 'ws_return_items_view' );
+	add_submenu_page('ws_billing_list', '', '', $src_capabilities['billing']['permission']['ws_return_list'], 'ws_return_items_view', 'ws_return_items_view' );
+	add_submenu_page('ws_billing_list', 'Cancel Return Items', 'Cancel Return Items', $src_capabilities['billing']['permission']['ws_cancel_return_items'], 'ws_cancel_return_items', 'ws_cancel_return_items' );
+	add_submenu_page('ws_billing_list', '', '', $src_capabilities['billing']['permission']['ws_cancel_return_items'], 'ws_cancel_return_items_view', 'ws_cancel_return_items_view' );
 
 
 	add_menu_page(
@@ -134,13 +143,15 @@ global $src_capabilities;
 
 }
 
-
+//<----  Lot------>
 function list_lots() {
 	require 'lots/listing/lot-list.php';
 }
 function add_lot() {
     require 'lots/add-lot.php';
 }
+
+//<-  Stock------>
 function list_stocks() {
 	require 'stocks/listing/stock-list.php';
 }
@@ -151,6 +162,8 @@ function add_stocks() {
 	require 'stocks/add-stock.php';
 }
 
+
+//<------- Retail Biling----->
 function billing_list() {
     require 'billing/listing/billing-list.php';
 }
@@ -161,12 +174,36 @@ function new_billing() {
 function invoice() {
 	require 'billing/invoice.php';
 }
+
 function return_items(){
 	require 'billing/return_invoice.php';
 }
+
 function return_items_list(){
 	require 'billing/return_invoice_list.php';
 }
+function return_items_view() {
+	require 'billing/return_invoice_view.php';
+}
+
+function cancel_invoice() {
+	require 'billing/listing/cancel-billing-list.php';
+}
+
+function cancel_invoice_view() {
+	require 'billing/cancel_view.php';
+}
+
+function cancel_return_items(){
+	require 'billing/listing/return-cancel-billing-list.php';
+}
+
+function cancel_return_items_view(){
+	require 'billing/cancel_return_invoice_view.php';
+}
+//<------- Wholesale Biling----->
+
+
 
 function ws_billing_list() {
     require 'billing/listing/ws-billing-list.php';
@@ -182,17 +219,29 @@ function ws_invoice() {
 function ws_return_items() {
 	require 'billing/ws_return_invoice.php';
 }
-function ws_return_items_list(){
+function ws_return_items_list() {
 	require 'billing/ws_return_invoice_list.php';
 }
-function ws_return_items_view(){
+function ws_return_items_view() {
 	require 'billing/ws_return_invoice_view.php';
 }
-
-function return_items_view(){
-	require 'billing/return_invoice_view.php';
+function ws_cancel_invoice(){
+	require 'billing/listing/ws-cancel-billing-list.php';
 }
 
+function ws_cancel_invoice_view(){
+	require 'billing/ws_cancel_view.php';
+}
+
+function ws_cancel_return_items(){
+	require 'billing/listing/ws-return-cancel-billing-list.php';	
+}
+
+function ws_cancel_return_items_view(){
+	require 'billing/ws_cancel_return_invoice_view.php';
+}
+
+//<---- Customer ------->
 
 function customer_list() {
 	require 'customer/listing/customer-list.php';
@@ -208,7 +257,7 @@ function new_wholesale_customer() {
 	require 'customer/add-wholesale-customer.php';
 }
 
-
+//<------- Admin ---->
 
 function add_admin() {
     require 'users/add-admin.php';
@@ -217,6 +266,8 @@ function list_admin_users() {
     require 'users/listing/user-list.php';
 }
 
+
+//<----- Role------>
 function add_admin_role() {
     require 'roles/add-role.php';
 }
@@ -224,6 +275,8 @@ function list_roles() {
     require 'roles/listing/role-list.php';
 }
 
+
+//<------ Report-------->
 function list_report() {
     require 'report/listing/stock-list.php';
 }

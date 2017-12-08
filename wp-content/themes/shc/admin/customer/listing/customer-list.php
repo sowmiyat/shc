@@ -89,7 +89,7 @@ jQuery(document).ready(function () {
     });
 
 
-    jQuery('.jambo_table td a').live('keydown', function(e) { 
+    jQuery('.last_list_view').live('keydown', function(e) { 
 
         if(jQuery(this).parent().parent().next('tr').length == 0 && jQuery(".next.page-numbers").length == 0) {
             var keyCode = e.keyCode || e.which; 

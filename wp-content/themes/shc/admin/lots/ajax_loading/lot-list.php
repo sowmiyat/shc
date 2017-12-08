@@ -59,8 +59,8 @@
                                     <td class=""><?php echo $l_value->hsn; ?></td>
 
                                     <td class="">
-                                        <a href="<?php echo admin_url('admin.php?page=add_lot')."&id=${lot_id}"; ?>" class="list_update">Update</a> / 
-                                        <a href = "#" class="list_delete delete-lot" data-id="<?php echo $l_value->id; ?>">Delete</a>
+                                        <?php if(is_super_admin()) { ?> <a href="<?php echo admin_url('admin.php?page=add_lot')."&id=${lot_id}"; ?>" class="list_update">Update</a> /<?php } ?>
+                                        <a href = "#" class="list_delete delete-lot last_list_view" data-id="<?php echo $l_value->id; ?>">Delete</a>
                                     </td>
                                 </tr>
                     <?php

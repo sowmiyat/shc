@@ -4,22 +4,53 @@
 jQuery('#billing_customer').focus();
     // populateReturnProductsRetail('.rtn_lot_id');
 //delivery check products
-     jQuery('.delivery_check').on('click',function(){
+
+     jQuery(".check_all").click(function(){
+       var check_all = jQuery(".check_all").is(":checked");
+        if(check_all == '1'){
+        
+           jQuery(".delivery_check").trigger("click"); 
+           jQuery(".delivery_check").attr('checked', true);    // if i remove this line then selectall for checkbox don't works   
+        } else {
+            jQuery(".delivery_check").trigger("click");
+            jQuery(".delivery_check").attr('checked', false);
+            jQuery('.delivery_count_div').css("display","none");
+        }          
+     });  
+
+     jQuery('.delivery_check,.delivery_count').live('click change',function(){
+
+         var delivery_count_check = parseFloat(jQuery(this).parent().parent().find('.delivery_count').val());
+         var unit_count = parseFloat(jQuery(this).parent().parent().find('.unit_count').val());
+         if( delivery_count_check > unit_count){
+            alert('please enter correct product count !!!');
+            jQuery(this).parent().parent().find('.delivery_count').val(unit_count);
+
+         }
         var delivery_check = jQuery(this).parent().parent().find('.delivery_check').is(":checked");
+      
         if(delivery_check){
             var delivery = 1;
+            
+            jQuery(this).parent().parent().find('.delivery_count_div').css("display","block");
+             var delivery_count = parseFloat(jQuery(this).parent().parent().find('.delivery_count').val());
+             
         } else {
             var delivery = 0;
+            jQuery(this).parent().parent().find('.delivery_count_div').css("display","none");
+            var delivery_count = 0;
         }
         var delivery_id = jQuery(this).parent().parent().find('.delivery_id').val();
+        console.log(delivery_count);
         jQuery.ajax({
             type: "POST",
             dataType : "json",
             url: frontendajax.ajaxurl,
             data: {
-                action      :'product_delivery',
-                id          : delivery_id,
-                delivery    : delivery,
+                action          :'product_delivery',
+                id              : delivery_id,
+                delivery        : delivery,
+                delivery_count  : delivery_count,
             },
             success: function (data) {
                 clearPopup();     
@@ -29,7 +60,10 @@ jQuery('#billing_customer').focus();
 
      });
 
+jQuery('.delivery_count').live('change',function(){
+    
 
+});
 
 jQuery('#billing_mobile').live('keydown', function(e){
     var keyCode = e.keyCode || e.which; 
@@ -85,15 +119,39 @@ jQuery('#billing_landline_mobile').live('keydown', function(e){ console.log(e);
 
 
 //<-----After keydown submit using tab goto first text box--->
- jQuery("#submit_payment").on('keydown',  function(e) { 
+    jQuery("#submit_payment").on('keydown',  function(e) { 
       var keyCode = e.keyCode || e.which; 
-
-      if (keyCode == 9) { 
-        e.preventDefault(); 
-        jQuery('#billing_customer').focus();
-      } 
+        if(event.shiftKey && event.keyCode == 9) {  
+         e.preventDefault(); 
+        jQuery('.delivery_address').focus();
+        }
+        else if (keyCode == 9) { 
+            e.preventDefault(); 
+            jQuery('#billing_customer').focus();
+        }
+        else {
+            jQuery('#submit_payment').focus();
+        } 
 
     });
+    
+     jQuery("#update_payment").on('keydown',  function(e) { 
+      var keyCode = e.keyCode || e.which; 
+
+     if(event.shiftKey && event.keyCode == 9) {  
+         e.preventDefault(); 
+        jQuery('.delivery_address').focus();
+        }
+        else if (keyCode == 9) { 
+            e.preventDefault(); 
+            jQuery('#billing_customer').focus();
+        }
+        else {
+            jQuery('#update_payment').focus();
+        } 
+
+    });
+
 
 
  //<-------- search customer using name and mobile------>   
@@ -133,51 +191,92 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
                 }
             }));
           }
-        } );
+        });
       },
       minLength: 2,
       select: function( event, ui ) {
 
-         jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                id      : ui.item.id,
-                action  :'customer_balance'
-            },
-              success: function (data) {
-                
-                jQuery('.balance_amount').text(data);
-                jQuery('.balance_amount_val').val(data);
-                rowCalculate();
+            jQuery.ajax({
+                type: "POST",
+                dataType : "json",
+                url: frontendajax.ajaxurl,
+                data: {
+                    id      : ui.item.id,
+                    action  :'customer_balance'
+                },
+                  success: function (data) {
+                    
+                    jQuery('.balance_amount').text(data);
+                    jQuery('.balance_amount_val').val(data);
+                    rowCalculate();
+
+                }
+            });
+
+            if(ui.item.identification == 'mobile' ) {
+                jQuery('#billing_mobile').val(ui.item.value);
+                jQuery('#billing_customer').val(ui.item.name);
+            } else {
+                jQuery('#billing_mobile').val(ui.item.mobile);
+                jQuery('#billing_customer').val(ui.item.value);
+            }
+
+            jQuery('#billing_secondary_mobile').val(ui.item.secondary_mobile);
+            jQuery('#billing_landline_mobile').val(ui.item.landline);
+            jQuery('.old_customer_id').val(ui.item.id);
+            jQuery('.customer_id').val(ui.item.id);
+            jQuery('#billing_address').val(ui.item.address);
+           
+
+            jQuery('.lot_id').focus();
+            jQuery('.paid_amount').trigger('change');
+
+      },
+
+
+       response: function(event, ui) {
+            if (ui.content.length == 1)
+            {
+                jQuery(this).val(ui.content[0].value);
+                jQuery(this).autocomplete( "close" );
+
+                jQuery.ajax({
+                    type: "POST",
+                    dataType : "json",
+                    url: frontendajax.ajaxurl,
+                    data: {
+                        id      : ui.content[0].id,
+                        action  :'customer_balance'
+                    },
+                      success: function (data) {
+                        
+                        jQuery('.balance_amount').text(data);
+                        jQuery('.balance_amount_val').val(data);
+                        rowCalculate();
+
+                    }
+                });
+
+                if(ui.content[0].identification == 'mobile' ) {
+                    jQuery('#billing_mobile').val(ui.content[0].value);
+                    jQuery('#billing_customer').val(ui.content[0].name);
+                } else {
+                    jQuery('#billing_mobile').val(ui.content[0].mobile);
+                    jQuery('#billing_customer').val(ui.content[0].value);
+                }
+
+                jQuery('#billing_secondary_mobile').val(ui.content[0].secondary_mobile);
+                jQuery('#billing_landline_mobile').val(ui.content[0].landline);
+                jQuery('.old_customer_id').val(ui.content[0].id);
+                jQuery('.customer_id').val(ui.content[0].id);
+                jQuery('#billing_address').val(ui.content[0].address);
+
+                jQuery('.lot_id').focus();
+                jQuery('.paid_amount').trigger('change');
+
 
             }
-        });
-
-        if(ui.item.identification == 'mobile' ) {
-            jQuery('#billing_mobile').val(ui.item.value);
-            jQuery('#billing_customer').val(ui.item.name);
-        } else {
-            jQuery('#billing_mobile').val(ui.item.mobile);
-            jQuery('#billing_customer').val(ui.item.value);
         }
-
-        jQuery('#billing_secondary_mobile').val(ui.item.secondary_mobile);
-        jQuery('#billing_landline_mobile').val(ui.item.landline);
-        jQuery('.old_customer_id').val(ui.item.id);
-        jQuery('.customer_id').val(ui.item.id);
-        jQuery('#billing_address').val(ui.item.address);
-        console.log(ui.item.address);
-       
-
-        jQuery('.lot_id').focus();
-        jQuery('.paid_amount').trigger('change');
-
-
-
-        console.log( "id: " + ui.item.id);
-      }
     });
 //<------ Select Product ------>
 
@@ -204,7 +303,7 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
         
     });
 
-    jQuery('.retail_sub_discount').live('change keyup',function(){
+    jQuery('.retail_sub_discount').live('change',function(){
 
         jQuery(this).parent().parent().find('.discount_type').val('each');
         var unit = jQuery(this).parent().parent().find('.retail_sub_discount').val();
@@ -232,8 +331,8 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
         var current_bal = parseFloat(jQuery('.fsub_total').val());
         var paid = parseFloat(jQuery('.paid_amount').val());
         var bal = (prev_bal + current_bal) - paid;
-        jQuery('.return_amt').val(bal);
-        jQuery('.return_amt_txt').text(bal);
+        jQuery('.return_amt').val(Math.round(bal));
+        jQuery('.return_amt_txt').text(Math.round(bal));
 
     });
 
@@ -275,61 +374,32 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
 
 
 //<------- credit and payment type------->
- jQuery('.paid_amount').on('change',function() {
-    if((jQuery('.paid_amount').val()) == '0'){
-    jQuery('.payment_pay_type:checked').val();
-    jQuery("input[name=payment_pay_type][value='credit']").show();
-    jQuery("input[name=payment_pay_type][value='credit']").prop("checked",true);
+ jQuery('.payment_pay_type,.paid_amount').on('change keyup',function() {
+    if((jQuery('.paid_amount').val()) == '0') {
+        jQuery('.payment_pay_type:checked').val();
+        jQuery("input[name=payment_pay_type][value='credit']").attr('disabled',false);
+        jQuery("input[name=payment_pay_type][value='credit']").prop("checked",true);
+        jQuery("input[name=payment_pay_type][value='cash']").attr('disabled',true);
+        jQuery("input[name=payment_pay_type][value='card']").attr('disabled',true);
+        jQuery("input[name=payment_pay_type][value='cheque']").attr('disabled',true);
+        jQuery("input[name=payment_pay_type][value='internet_banking']").attr('disabled',true);
+        jQuery('.payment_details_card').css("display","none");
+        jQuery('.payment_details_cheque').css("display","none");
+        jQuery('.payment_details_internet').css("display","none");
     } else
      {
-    var pay_type = jQuery('.payment_pay_type:checked').val();
-    if(pay_type == 'credit')
-    jQuery("input[name=payment_pay_type][value='cash']").prop("checked",true);
-    jQuery("input[name=payment_pay_type][value='credit']").hide();
-    }
-}); 
-
-  jQuery('.ws_paid_amount').on('change',function() {
-    if((jQuery('.ws_paid_amount').val()) == '0'){
-    jQuery('.ws_payment_pay_type:checked').val();
-    jQuery("input[name=ws_payment_pay_type][value='credit']").show();
-    jQuery("input[name=ws_payment_pay_type][value='credit']").prop("checked",true);
-    } else
-     {
-    var pay_type = jQuery('.ws_payment_pay_type:checked').val();
-    if(pay_type == 'credit')
-    jQuery("input[name=ws_payment_pay_type][value='cash']").prop("checked",true);
-    jQuery("input[name=ws_payment_pay_type][value='credit']").hide();
-    }
-}); 
-
-  jQuery('.payment_pay_type').on('click',function() {
-    if((jQuery('.paid_amount').val()) == '0'){
-    jQuery('.payment_pay_type:checked').val();
-    jQuery("input[name=payment_pay_type][value='credit']").show();
-    jQuery("input[name=payment_pay_type][value='credit']").prop("checked",true);
-    } else
-     {
-    var pay_type = jQuery('.payment_pay_type:checked').val();
-    if(pay_type == 'credit')
-    jQuery("input[name=payment_pay_type][value='cash']").prop("checked",true);
-    jQuery("input[name=payment_pay_type][value='credit']").hide();
-    }
-}); 
-
-   jQuery('.payment_pay_type').on('click',function() {
-    if((jQuery('.ws_paid_amount').val()) == '0'){
-    jQuery('.payment_pay_type:checked').val();
-    jQuery("input[name=ws_payment_pay_type][value='credit']").show();
-    jQuery("input[name=ws_payment_pay_type][value='credit']").prop("checked",true);
-    } else
-     {
-    var pay_type = jQuery('.payment_pay_type:checked').val();
-    if(pay_type == 'credit')
-    jQuery("input[name=ws_payment_pay_type][value='cash']").prop("checked",true);
-    jQuery("input[name=ws_payment_pay_type][value='credit']").hide();
-    }
-}); 
+        var pay_type = jQuery('.payment_pay_type:checked').val();
+        if( pay_type == 'credit') { 
+            jQuery("input[name=payment_pay_type][value='credit']").prop("checked",false);
+            jQuery("input[name=payment_pay_type][value='cash']").prop("checked",true);
+        }
+        jQuery("input[name=payment_pay_type][value='cash']").attr('disabled',false);
+        jQuery("input[name=payment_pay_type][value='card']").attr('disabled',false);
+        jQuery("input[name=payment_pay_type][value='cheque']").attr('disabled',false);
+        jQuery("input[name=payment_pay_type][value='internet_banking']").attr('disabled',false);
+        jQuery("input[name=payment_pay_type][value='credit']").attr('disabled',true);
+     }
+});
 
 
 //<--- Add table data-----> 
@@ -363,7 +433,7 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
                 jQuery('.product_control_error_retail').remove();
                 
             } else {
-                var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="customer_table_retail" ><td class="td_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="customer_detail['+current_row+'][id]" class="sub_id" /><td class="td_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="customer_detail['+current_row+'][product]" class="sub_product"/><td class="td_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="customer_detail['+current_row+'][hsn]" class="sub_hsn"/><td class=""><input type="text" onkeypress="return isNumberKey(event)" value = "'+ unit + '" name="customer_detail['+current_row+'][unit]" class="retail_sub_unit"/> </td>  <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][stock]" class="retail_sub_stock"/><td class="td_price">' + price + '</td> <input type="hidden" value = "'+ price + '" name="customer_detail['+current_row+'][price]" class="sub_price"/> <td><input type="text"  onkeypress="return isNumberKey(event)" value ="'+ discount +'" name="customer_detail['+current_row+'][discount]" class="retail_sub_discount"/></td><input type="hidden" value ="each" name="customer_detail['+current_row+'][discount_type]" class="discount_type"/><td class="td_amt">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][amt]" class="sub_amt"/><td class="td_cgst">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="customer_detail['+current_row+'][cgst]" class="sub_cgst"/> <td class="td_cgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][cgst_value]" class="sub_cgst_value"/><td class="td_sgst">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="customer_detail['+current_row+'][sgst]" class="sub_sgst"/><td class="td_sgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][sgst_value]" class="sub_sgst_value"/><td class="td_subtotal"></td> <input type="hidden" value ="" name="customer_detail['+current_row+'][subtotal]" class="sub_total"/><td><a  href="#" class="retail_sub_delete">Delete</a></td></tr>';                
+                var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="customer_table_retail" ><td class="td_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="customer_detail['+current_row+'][id]" class="sub_id" /><td class="td_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="customer_detail['+current_row+'][product]" class="sub_product"/><td class="td_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="customer_detail['+current_row+'][hsn]" class="sub_hsn"/><td class=""><input type="text" onkeypress="return isNumberKey(event)" value = "'+ unit + '" name="customer_detail['+current_row+'][unit]" class="retail_sub_unit"/> </td>  <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][stock]" class="retail_sub_stock"/><td class="td_price">' + price + '</td> <input type="hidden" value = "'+ price + '" name="customer_detail['+current_row+'][price]" class="sub_price"/> <td><input type="text"  onkeypress="return isNumberKeyWithDot(event)" value ="'+ discount +'" name="customer_detail['+current_row+'][discount]" class="retail_sub_discount"/></td><input type="hidden" value ="each" name="customer_detail['+current_row+'][discount_type]" class="discount_type"/><td class="td_amt">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][amt]" class="sub_amt"/><td class="td_cgst">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="customer_detail['+current_row+'][cgst]" class="sub_cgst"/> <td class="td_cgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][cgst_value]" class="sub_cgst_value"/><td class="td_sgst">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="customer_detail['+current_row+'][sgst]" class="sub_sgst"/><td class="td_sgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][sgst_value]" class="sub_sgst_value"/><td class="td_subtotal"></td> <input type="hidden" value ="" name="customer_detail['+current_row+'][subtotal]" class="sub_total"/><td><a  href="#" class="retail_sub_delete">Delete</a></td></tr>';                
                 jQuery('#bill_lot_add_retail').append(str);
 
                 addFromProductControlRetail();
@@ -608,7 +678,7 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
 	//<-------Delete Bill------->
 
   jQuery('.delete-bill').live( "click", function() {
-    if(confirm('Are you sure you want to delete this element?')){
+    if(confirm('Are you sure you want to cancel this Invoice?')){
       var data=jQuery(this).attr("data-id");
       console.log(data);
       window.location.replace('admin.php?page=billing_list&delete_id='+data+'&action=delete');
@@ -619,7 +689,7 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
   	//<-------Delete Return Bill------->
 
   jQuery('.delete-return-bill').live( "click", function() {
-    if(confirm('Are you sure you want to delete this element?')){
+    if(confirm('Are you sure you want to cancel this Invoice?')){
       var data=jQuery(this).attr("data-id");
       console.log(data);
       window.location.replace('admin.php?page=return_items_list&delete_id='+data+'&action=delete');
@@ -701,7 +771,7 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
 
 
 
-    jQuery('.print_bill').on('click',function() {
+    jQuery('.print_bill').live('click',function() {
         var inv_id = jQuery(this).parent().parent().find('.invoice_id').val();
         var year = jQuery(this).parent().parent().find('.year').val();
         var datapass =   home_page.url+'invoice/?id='+inv_id+'&year='+year;
@@ -711,7 +781,39 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
         thePopup.print();  
     });
 
-    jQuery('.generate_bill').on('click',function(){
+
+
+    jQuery('.print_invoice_list').live('click',function() {
+        var  inv_id = jQuery('.inv_id').val();
+        var  order_id = jQuery('.order_id').val();
+        var  name = jQuery('.name').val();
+        var  mobile = jQuery('.mobile').val();
+        var bill_from = jQuery('.bill_from').val();
+        var bill_to = jQuery('.bill_to').val();
+        var datapass =   home_page.url+'sale-report-print/?bill_from='+bill_from+'&bill_to='+bill_to + '&inv_id='+inv_id+'&order_id='+order_id +'&name='+name+'&mobile='+mobile;
+
+        // billing_list_single
+        var thePopup = window.open( datapass, "Billing Wholesale Invoice","");
+        thePopup.print();  
+    });
+
+        jQuery('.download_invoice_list').live('click',function() {
+        var  inv_id = jQuery('.inv_id').val();
+        var  order_id = jQuery('.order_id').val();
+        var  name = jQuery('.name').val();
+        var  mobile = jQuery('.mobile').val();
+        var bill_from = jQuery('.bill_from').val();
+        var bill_to = jQuery('.bill_to').val();
+        var datapass =   home_page.url+'sale-report-download/?bill_from='+bill_from+'&bill_to='+bill_to + '&inv_id='+inv_id+'&order_id='+order_id +'&name='+name+'&mobile='+mobile;
+
+        // billing_list_single
+        var thePopup = window.open( datapass, "Billing Wholesale Invoice","");
+    });
+
+
+
+
+    jQuery('.generate_bill').live('click',function(){
         var year = jQuery('.year').val();
         var inv_id = jQuery('.invoice_id').val();
         var datapass =   home_page.url+'invoice-download/?id='+inv_id+'&year='+year;
@@ -722,7 +824,7 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
     });
 
 //download page
-    jQuery('.return_generate_bill').on('click',function(){
+    jQuery('.return_generate_bill').live('click',function(){
         var id = jQuery('.invoice_id').val();
         var datapass =   home_page.url+'goods-return-download/?id='+id;
 
@@ -792,66 +894,96 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
 
 function populateSelect2(selector, v) {
 
-     jQuery( "#lot_id" ).autocomplete ({
-      source: function( request, response ) {
-        jQuery.ajax( {
-          url: frontendajax.ajaxurl,
-          type: 'POST',
-          dataType: "json",
-          data: {
-            action: 'get_lot_data',
-            search_key: request.term
-          },
-          success: function( data ) {
-            response(jQuery.map( data.result, function( item ) {
-                return {
-                    id: item.id,
-                    lot_no: item.lot_no,
-                    brand_name : item.brand_name,
-                    product_name : item.product_name,
-                    hsn : item.hsn,
-                    cgst : item.cgst,
-                    sgst : item.sgst,
-                    unit_price : item.selling_price,
-                    value : item.product_name +' \('+item.brand_name+'\)',
+    jQuery( "#lot_id" ).autocomplete ({
+        source: function( request, response ) {
+            jQuery.ajax( {
+              url: frontendajax.ajaxurl,
+              type: 'POST',
+              dataType: "json",
+              data: {
+                action: 'get_lot_data',
+                search_key: request.term
+              },
+              success: function( data ) {
+                response(jQuery.map( data.result, function( item ) {
+                    return {
+                        id: item.id,
+                        lot_no: item.lot_no,
+                        brand_name : item.brand_name,
+                        product_name : item.product_name,
+                        hsn : item.hsn,
+                        cgst : item.cgst,
+                        sgst : item.sgst,
+                        unit_price : item.selling_price,
+                        value : item.product_name +' \('+item.brand_name+'\)',
+                    }
+                }));
+              }
+            });
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+
+
+            jQuery('.retail_lot_id_orig').val(ui.item.id);  
+            jQuery('.retail_product').val(ui.item.product_name);  
+            jQuery('.retail_unit_price').val(ui.item.unit_price);
+            jQuery('.retail_discount').val(ui.item.unit_price);
+            jQuery('.retail_hsn').val(ui.item.hsn);
+            jQuery('.retail_cgst_percentage').val(ui.item.cgst);
+            jQuery('.retail_sgst_percentage').val(ui.item.sgst);
+
+           var selector = jQuery(this);
+            jQuery.ajax({
+                type: "POST",
+                dataType : "json",
+                url: frontendajax.ajaxurl,
+                data: {
+                    id      : ui.item.id,
+                    action  :'ws_slap'
+                },
+                  success: function (data) {
+                               
+                    var str = '<td class="td_id">'+'1'+'</td><td class="stock_prod">' + ui.item.product_name + '</td><td class="slap_stock">'+ data +'</td><input type="hidden" name="ws_slab_sys_txt" value="'+ data +'"  class="ws_slab_sys_txt"/>';                
+                    jQuery('.stock_table_body').html(str);
+
                 }
-            }));
-          }
-        });
-      },
-      minLength: 2,
-      select: function( event, ui ) {
+            }); 
 
+            console.log( "id: " + ui.item.id);
+        },
+        response: function(event, ui) {
+            if (ui.content.length == 1)
+            {
+                jQuery(this).val(ui.content[0].value);
+                jQuery(this).autocomplete( "close" );
 
-        jQuery('.retail_lot_id_orig').val(ui.item.id);  
-        jQuery('.retail_product').val(ui.item.product_name);  
-        jQuery('.retail_unit_price').val(ui.item.unit_price);
-        jQuery('.retail_discount').val(ui.item.unit_price);
-        jQuery('.retail_hsn').val(ui.item.hsn);
-        jQuery('.retail_cgst_percentage').val(ui.item.cgst);
-        jQuery('.retail_sgst_percentage').val(ui.item.sgst);
+                jQuery('.retail_lot_id_orig').val(ui.content[0].id);  
+                jQuery('.retail_product').val(ui.content[0].product_name);  
+                jQuery('.retail_unit_price').val(ui.content[0].unit_price);
+                jQuery('.retail_discount').val(ui.content[0].unit_price);
+                jQuery('.retail_hsn').val(ui.content[0].hsn);
+                jQuery('.retail_cgst_percentage').val(ui.content[0].cgst);
+                jQuery('.retail_sgst_percentage').val(ui.content[0].sgst);
 
-       var selector = jQuery(this);
-        jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                id      : ui.item.id,
-                action  :'ws_slap'
-            },
-              success: function (data) {
-                           
-                var str = '<td class="td_id">'+'1'+'</td><td class="stock_prod">' + ui.item.product_name + '</td><td class="slap_stock">'+ data +'</td><input type="hidden" name="ws_slab_sys_txt" value="'+ data +'"  class="ws_slab_sys_txt"/>';                
-                jQuery('.stock_table_body').html(str);
+               var selector = jQuery(this);
+                jQuery.ajax({
+                    type: "POST",
+                    dataType : "json",
+                    url: frontendajax.ajaxurl,
+                    data: {
+                        id      : ui.content[0].id,
+                        action  :'ws_slap'
+                    },
+                      success: function (data) {
+                                   
+                        var str = '<td class="td_id">'+'1'+'</td><td class="stock_prod">' + ui.content[0].product_name + '</td><td class="slap_stock">'+ data +'</td><input type="hidden" name="ws_slab_sys_txt" value="'+ data +'"  class="ws_slab_sys_txt"/>';                
+                        jQuery('.stock_table_body').html(str);
 
+                    }
+                }); 
             }
-        }); 
-
-
-
-        console.log( "id: " + ui.item.id);
-      }
+        }
     });
 }
 
@@ -866,6 +998,7 @@ function rowCalculate() {
     var existing_count = '0';
 
     var discount =parseFloat(jQuery('.discount').val());
+    discount = isNaN(discount) ? '0.00' : discount;
     existing_count = parseInt( jQuery('.discount_type[value="whole"]').length);
     if(jQuery('.discount_type[value="whole"]').length == '0'){
         existing_count = 1;
@@ -928,7 +1061,7 @@ function rowCalculate() {
 
     });
     
-    jQuery('.fsub_total').val(sub_tot.toFixed(2));
+    jQuery('.fsub_total').val(Math.round(sub_tot));
     jQuery('.paid_amount').trigger('change');
 
 }
@@ -971,7 +1104,7 @@ function Return_rowCalculate() {
         sub_tot = sub_tot + parseFloat(jQuery(this).find('.return_sub_total').val());
          
     });
-        jQuery('.rtn_fsub_total').val(sub_tot);
+        jQuery('.rtn_fsub_total').val(Math.round(sub_tot));
 
 }
 function addFromProductControlRetail() {

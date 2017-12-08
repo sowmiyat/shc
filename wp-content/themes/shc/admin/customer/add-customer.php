@@ -72,7 +72,7 @@ input[type=number]::-webkit-outer-spin-button {
 						<div class="form-group">
 							<div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-3">
 								<button type="submit" class="btn btn-success submit_form1">Submit</button>
-	                          	<button class="btn btn-primary" type="button"  onclick="window.location = '<?php echo admin_url('admin.php?page=customer_list'); ?>';">Cancel</button>
+	                          	<button class="btn btn-primary cancel_button_cus" type="button"  onclick="window.location = '<?php echo admin_url('admin.php?page=customer_list'); ?>';">Cancel</button>
 							  	<button class="btn btn-primary reset_button_cus" type="reset">Reset</button>
 	                          	
 	                          	<?php 

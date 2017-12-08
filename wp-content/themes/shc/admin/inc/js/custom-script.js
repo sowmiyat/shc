@@ -11,7 +11,14 @@ function clearPopup() {
 }
 
 jQuery(document).ready(function(){
-    jQuery('.stock_from, .stock_to, .bill_from, .bill_to, .customer_from, .customer_to,.cheque_date').datepicker({dateFormat: "yy-mm-dd"});
+    jQuery('.stock_from, .stock_to, .bill_from, .bill_to, .customer_from, .customer_to,.cheque_date').datepicker({
+    showButtonPanel: true,
+    changeMonth: true,
+    changeYear: true,
+    showOtherMonths: true,
+    selectOtherMonths: true, 
+    dateFormat: "yy-mm-dd"
+    });
 
 	jQuery('#my-button-new').on('click', function(){
 		jQuery('.popup_box').bPopup();
@@ -77,7 +84,7 @@ jQuery(document).ready(function(){
     jQuery.validator.addMethod(
         "addressValidate", 
         function(value, element) {
-            var alphanumers = /^[a-zA-Z0-9\s,\(\)\/#'-]*$/;
+            var alphanumers = /^[a-zA-Z0-9\s,\(\)\/#'-:.,]*$/;
             if(!alphanumers.test(value)){
                 return false
             }
@@ -102,7 +109,7 @@ jQuery(document).ready(function(){
         function(value, element) {
             var alphanumers = /^[a-zA-Z0-9\s\(\),-]*$/;
             if(!alphanumers.test(value)){
-                return false
+                return false;
             }
             return true;
         }
@@ -155,7 +162,14 @@ jQuery(document).ready(function(){
 
 //<------ End Validation function------->
 
+//<------- Trim function ---------->
+jQuery('#brand_name,#product_name').on('change',function(){
+  
+    var brand = jQuery(this).val();
+    jQuery(this).val(jQuery.trim(brand));
 
+});
+//<------- End Trim function ---------->
 });
 
 

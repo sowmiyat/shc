@@ -6,20 +6,33 @@ jQuery(document).ready(function () {
 
     jQuery(".reset_button_ws_cus").on('keydown',  function(e) { 
       var keyCode = e.keyCode || e.which; 
-
-      if (keyCode == 9) { 
+       if(event.shiftKey && event.keyCode == 9) {  
+         e.preventDefault(); 
+        jQuery('.cancel_button_ws_cus').focus();
+      }
+      else if (keyCode == 9) { 
         e.preventDefault(); 
         jQuery('#customer_name').focus();
       } 
+      else {
+        jQuery('.reset_button_ws_cus').focus();
+      }
     });
 
     jQuery(".reset_button_cus").on('keydown',  function(e) { 
       var keyCode = e.keyCode || e.which; 
+       if(event.shiftKey && event.keyCode == 9) {  
+         e.preventDefault(); 
+        jQuery('.cancel_button_cus').focus();
+      }
 
-      if (keyCode == 9) { 
+      else if (keyCode == 9) { 
         e.preventDefault(); 
         jQuery('#name').focus();
       } 
+      else {
+        jQuery('.reset_button_cus').focus();
+      }
     });
 
 

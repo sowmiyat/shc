@@ -1,3 +1,4 @@
+
 <?php
 
 date_default_timezone_set('Asia/Kolkata');
@@ -27,10 +28,10 @@ function getBillData($inv_id = 0, $year = 0) {
 	$data['msg'] = 'Something Went Wrong!';
 
 	global $wpdb;
-	$customer_table 		=  $wpdb->prefix.'shc_customers';
-	$sale_table 			=  $wpdb->prefix.'shc_sale';
-	$sale_detail_table 		= $wpdb->prefix.'shc_sale_detail';
-	$lots_table 			= $wpdb->prefix.'shc_lots';
+	$customer_table 		=  	$wpdb->prefix.'shc_customers';
+	$sale_table 			=  	$wpdb->prefix.'shc_sale';
+	$sale_detail_table 		= 	$wpdb->prefix.'shc_sale_detail';
+	$lots_table 			= 	$wpdb->prefix.'shc_lots';
 
 
 	$bill_query = "SELECT s.*,
@@ -51,6 +52,39 @@ FROM ${sale_table} as s LEFT JOIN ${customer_table} as c ON s.customer_id = c.id
 	
 	return $data;
 }
+
+
+function getCancelBillData($inv_id = 0, $year = 0) {
+
+	$data['success'] = 0;
+	$data['msg'] = 'Something Went Wrong!';
+
+	global $wpdb;
+	$customer_table 		=  	$wpdb->prefix.'shc_customers';
+	$sale_table 			=  	$wpdb->prefix.'shc_sale';
+	$sale_detail_table 		= 	$wpdb->prefix.'shc_sale_detail';
+	$lots_table 			= 	$wpdb->prefix.'shc_lots';
+
+
+	$bill_query = "SELECT s.*,
+( CASE WHEN c.id IS NULL THEN 0 ELSE c.id END ) as customer_id,
+( CASE WHEN c.name IS NULL THEN '' ELSE c.name END ) as customer_name,
+( CASE WHEN c.mobile IS NULL THEN '' ELSE c.mobile END ) as mobile,
+( CASE WHEN c.secondary_mobile IS NULL THEN '' ELSE c.secondary_mobile END ) as secondary_mobile,
+( CASE WHEN c.landline IS NULL THEN '' ELSE c.landline END ) as landline,
+( CASE WHEN c.address IS NULL THEN '' ELSE c.address END ) as address
+FROM ${sale_table} as s LEFT JOIN ${customer_table} as c ON s.customer_id = c.id WHERE s.inv_id = ${inv_id} and s.financial_year = ${year} AND s.locked = 1";
+
+	$data['bill_data'] = $wpdb->get_row($bill_query);
+	$invoice_id = $data['bill_data']->id;
+
+	$ordered_item_query = "SELECT dt.*, l.lot_no, l.brand_name, l.product_name,l.hsn FROM ${sale_detail_table} as dt JOIN ${lots_table} as l ON dt.lot_id = l.id WHERE dt.sale_id = ${invoice_id} AND dt.cancel = 1 ";
+	
+	$data['ordered_data'] = $wpdb->get_results($ordered_item_query);
+	
+	return $data;
+}
+
 
 
 function getBillDataws($inv_id = 0, $year = 0) {
@@ -86,6 +120,43 @@ FROM ${sale_table} as s LEFT JOIN ${customer_table} as c ON s.customer_id = c.id
 	return $data;
 }
 
+
+function getCancelBillDataws($inv_id = 0, $year = 0) {
+
+	$data['success'] = 0;
+	$data['msg'] = 'Something Went Wrong!';
+
+	global $wpdb;
+	$customer_table 		=  $wpdb->prefix.'shc_wholesale_customer';
+	$sale_table 			=  $wpdb->prefix.'shc_ws_sale';
+	$sale_detail_table 		= $wpdb->prefix.'shc_ws_sale_detail';
+	$lots_table 			= $wpdb->prefix.'shc_lots';
+
+
+	$bill_query = "SELECT s.*,
+( CASE WHEN c.id IS NULL THEN 0 ELSE c.id END ) as customer_id,
+( CASE WHEN c.gst_number IS NULL THEN '' ELSE c.gst_number END ) as gst_number,
+( CASE WHEN c.company_name IS NULL THEN '' ELSE c.company_name END ) as company_name,
+( CASE WHEN c.customer_name IS NULL THEN '' ELSE c.customer_name END ) as customer_name,
+( CASE WHEN c.mobile IS NULL THEN '' ELSE c.mobile END ) as mobile,
+( CASE WHEN c.secondary_mobile IS NULL THEN '' ELSE c.secondary_mobile END ) as secondary_mobile,
+( CASE WHEN c.landline IS NULL THEN '' ELSE c.landline END ) as landline,
+( CASE WHEN c.address IS NULL THEN '' ELSE c.address END ) as address
+FROM ${sale_table} as s LEFT JOIN ${customer_table} as c ON s.customer_id = c.id WHERE s.inv_id = ${inv_id} and s.financial_year = ${year} AND s.locked = 1";
+
+	$data['bill_data'] = $wpdb->get_row($bill_query);
+	$invoice_id = $data['bill_data']->id;
+
+	$ordered_item_query = "SELECT dt.*, l.lot_no, l.brand_name, l.product_name,l.hsn FROM ${sale_detail_table} as dt JOIN ${lots_table} as l ON dt.lot_id = l.id WHERE dt.sale_id = ${invoice_id} AND dt.cancel = 1 AND dt.item_status = 'open'";
+	
+	$data['ordered_data'] = $wpdb->get_results($ordered_item_query);
+	
+	return $data;
+}
+
+
+
+
 function generateInvoice() {
 	$data['success'] = 0;
 	$data['msg'] = 'Something Went Wrong!';
@@ -98,7 +169,7 @@ function generateInvoice() {
 
 	
 	
-    $query  = "SELECT * FROM ${table} WHERE active = 1 AND order_id = 0 AND locked = 0 ";
+    $query  = "SELECT * FROM ${table} WHERE order_id = 0 AND locked = 0";
     
     if( $inv_result = $wpdb->get_row($query) ) {
     	$data['invoice_id'] = $inv_result->id;
@@ -106,7 +177,7 @@ function generateInvoice() {
 
     } else {
 
-    	$query_table = "SELECT inv_id,financial_year FROM ${table} WHERE active = 1 order by `id` DESC LIMIT 1";
+    	$query_table = "SELECT inv_id,financial_year FROM ${table} order by `id` DESC LIMIT 1";
     	$query_year = $wpdb->get_row($query_table);
     	$final_yr_table = $query_year->financial_year;
     	$inv_id = $query_year->inv_id;
@@ -138,7 +209,7 @@ function generateInvoicews() {
 	$financial_year = getFinancialYear($date);
 	
 	
-    $query  = "SELECT * FROM ${table} WHERE active = 1 AND order_id = 0 AND locked = 0 ";
+    $query  = "SELECT * FROM ${table} WHERE  order_id = 0 AND locked = 0 ";
     
     if( $inv_result = $wpdb->get_row($query) ) {
     	$data['invoice_id'] = $inv_result->id;
@@ -146,7 +217,7 @@ function generateInvoicews() {
 
     } else {
 
-    	$query_table = "SELECT inv_id,financial_year FROM ${table} WHERE active = 1 order by `id` DESC LIMIT 1";
+    	$query_table = "SELECT inv_id,financial_year FROM ${table} order by `id` DESC LIMIT 1";
     	$query_year = $wpdb->get_row($query_table);
     	$final_yr_table = $query_year->financial_year;
     	$inv_id = $query_year->inv_id;
@@ -194,6 +265,10 @@ add_action( 'wp_ajax_nopriv_get_lot_data', 'get_lot_data');
 
 
 function create_order() {
+
+	$current_user 		= wp_get_current_user();
+	$current_nice_name 	= $current_user->user_nicename;
+
 	$data['success'] = 0;
 	global $wpdb;
 	$sale_table =  $wpdb->prefix.'shc_sale';
@@ -207,6 +282,7 @@ function create_order() {
 	if( isset($params['invoice_id']) && $params['invoice_id'] != 0 && isValidInvoice( $params['invoice_id'] ) ) {
 		$invoice_id = $params['invoice_id'];
 		$wpdb->update($sale_table, array('locked' => 1), array('id' => $invoice_id));
+
 		
 	} else {
 		$wpdb->insert($sale_table, array('locked' => 1));		
@@ -281,15 +357,18 @@ function create_order() {
 		'home_delivery_mobile' 		=> $params['delivery_phone'],
 		'home_delivery_address' 	=> $params['delivery_address'],
 		'sub_total' 				=> $params['fsub_total'], 
-		'discount' 					=> $params['retail_main_discount'],
+		'discount' 					=> $params['discount'],
 		'discount_type'				=> $params['discount_per'],
 		'paid_amount' 				=> $params['paid_amount'],
 		'return_amt' 				=> $params['return_amt'],
 		'payment_type'         		=> $params['payment_pay_type'],
 		'payment_details'       	=> $payment_details,
 		'payment_date'       		=> $payment_date,
+		'created_by'				=> $current_nice_name,
 	);
 	$wpdb->update($sale_table, $sale_update, array('id' => $invoice_id));
+		// 	var_dump($wpdb->last_query);
+		// die();
 	$query = "SELECT * from ${sale_table} where id = ${invoice_id}";
 	$data1 = $wpdb->get_row($query);
 	$data['inv_id'] = $data1->inv_id;
@@ -325,6 +404,10 @@ add_action( 'wp_ajax_create_order', 'create_order' );
 add_action( 'wp_ajax_nopriv_create_order', 'create_order' );
 
 function ws_create_order() {
+	$current_user 		= wp_get_current_user();
+	$current_nice_name 	= $current_user->user_nicename;
+
+
 	$data['success'] = 0;
 	global $wpdb;
 	$sale_table =  $wpdb->prefix.'shc_ws_sale';
@@ -422,6 +505,7 @@ function ws_create_order() {
 		'payment_type'         		=> $params['ws_payment_pay_type'],
 		'payment_details'       	=> $payment_details,
 		'payment_date'       		=> $payment_date,
+		'created_by'				=> $current_nice_name,
 	);
 	$wpdb->update($sale_table, $sale_update, array('id' => $invoice_id));
 	$query = "SELECT * from ${sale_table} where id = ${invoice_id}";
@@ -458,6 +542,9 @@ add_action( 'wp_ajax_nopriv_ws_create_order', 'ws_create_order' );
 
 
 function update_order() {
+	$current_user 		= wp_get_current_user();
+	$current_nice_name 	= $current_user->user_nicename;
+
 	$data['success'] = 0;
 	global $wpdb;
 	$sale_table =  $wpdb->prefix.'shc_sale';
@@ -532,6 +619,7 @@ function update_order() {
 		'payment_type'         		=> $params['payment_pay_type'],
 		'payment_details'       	=> $payment_details,
 		'payment_date'       		=> $payment_date,
+		'modified_by'				=> $current_nice_name,
 	);
 
 	
@@ -600,6 +688,9 @@ add_action( 'wp_ajax_nopriv_update_order', 'update_order' );
 
 
 function ws_update_order() {
+	$current_user 		= wp_get_current_user();
+	$current_nice_name 	= $current_user->user_nicename;
+
 	$data['success'] = 0;
 	global $wpdb;
 	$sale_table =  $wpdb->prefix.'shc_ws_sale';
@@ -677,6 +768,7 @@ function ws_update_order() {
 		'payment_type'         		=> $params['ws_payment_pay_type'],
 		'payment_details'       	=> $payment_details,
 		'payment_date'       		=> $payment_date,
+		'modified_by'				=> $current_nice_name,
 	);
 
 
@@ -759,6 +851,8 @@ function isValidInvoice($invoice_id = 0, $lock_check = 0){
     }
     return false;
 }
+
+
 
 
 function isValidInvoicews($invoice_id = 0, $lock_check = 0){
@@ -853,6 +947,46 @@ function billing_filter(){
 add_action( 'wp_ajax_billing_filter', 'billing_filter' );
 add_action( 'wp_ajax_nopriv_billing_filter', 'billing_filter' );
 
+
+
+function cancel_billing_filter(){
+
+	$billing = new Billing();
+	include( get_template_directory().'/admin/billing/ajax_loading/cancel-billing-list.php' );
+	die();
+}
+add_action( 'wp_ajax_cancel_billing_filter', 'cancel_billing_filter' );
+add_action( 'wp_ajax_nopriv_cancel_billing_filter', 'cancel_billing_filter' );
+
+
+function return_cancel_billing_filter(){
+
+	$billing = new Billing();
+	include( get_template_directory().'/admin/billing/ajax_loading/return-cancel-billing-list.php' );
+	die();
+}
+add_action( 'wp_ajax_return_cancel_billing_filter', 'return_cancel_billing_filter' );
+add_action( 'wp_ajax_nopriv_return_cancel_billing_filter', 'return_cancel_billing_filter' );
+
+function ws_cancel_billing_filter() {
+
+	$billing = new Billing();
+	include( get_template_directory().'/admin/billing/ajax_loading/ws-cancel-billing-list.php' );
+	die();
+}
+add_action( 'wp_ajax_ws_cancel_billing_filter', 'ws_cancel_billing_filter' );
+add_action( 'wp_ajax_nopriv_ws_cancel_billing_filter', 'ws_cancel_billing_filter' );
+
+function ws_cancel_return_billing_filter() {
+
+	$billing = new Billing();
+	include( get_template_directory().'/admin/billing/ajax_loading/ws-return-cancel-billing-list.php' );
+	die();
+}
+add_action( 'wp_ajax_ws_cancel_return_billing_filter', 'ws_cancel_return_billing_filter' );
+add_action( 'wp_ajax_nopriv_ws_cancel_return_billing_filter', 'ws_cancel_return_billing_filter' );
+
+
 function ws_billing_filter(){
 
 	$billing = new Billing();
@@ -917,7 +1051,7 @@ FROM ${sale_table} as s LEFT JOIN ${customer_table} as c ON s.customer_id = c.id
 
 	$ordered_item_query 		= "SELECT sale_tab.*,(case when (sale_tab.sale_unit - return_tab.return_unit) is null then sale_tab.sale_unit else (sale_tab.sale_unit - return_tab.return_unit) end ) as balance_unit from (SELECT dt.lot_id,dt.sale_unit,dt.sale_id,dt.discount, l.lot_no, l.brand_name, l.product_name,l.hsn,l.cgst,l.sgst FROM ${sale_detail_table} as dt JOIN ${lots_table} as l ON dt.lot_id = l.id WHERE dt.sale_id = ${inv_id} AND dt.active = 1  and dt.sale_update < '${currentdate_time}' ) as sale_tab left join (SELECT lot_id,sale_id,sum(return_unit) as return_unit FROM ${return_detail_table} WHERE sale_id = ${inv_id} AND active = 1 and sale_update < '${currentdate_time}' GROUP by lot_id ) as return_tab on sale_tab.lot_id = return_tab.lot_id";
 	$data['ordered_data'] 		= $wpdb->get_results($ordered_item_query);
-	$return_item_quantity 		= "SELECT dt.sale_id,dt.lot_id,sum(dt.sale_unit) as sale_unit,sum(dt.return_unit) as return_unit,dt.mrp,sum(dt.cgst_value) as cgst_value,sum(dt.sub_total) as sub_total,sum(dt.amt) as amt, l.lot_no, l.brand_name, l.product_name,l.hsn FROM ${return_detail_table} as dt JOIN ${lots_table} as l ON dt.lot_id = l.id WHERE dt.sale_id =${inv_id} AND dt.active = 1 and dt.sale_update < '${currentdate_time}' GROUP by dt.lot_id";
+	$return_item_quantity 		= "SELECT dt.sale_id,dt.lot_id,sum(dt.sale_unit) as sale_unit,sum(dt.return_unit) as return_unit,dt.mrp,sum(dt.cgst_value) as cgst_value,sum(dt.sub_total) as sub_total,sum(dt.amt) as amt, l.lot_no, l.brand_name, l.product_name,l.hsn,dt.created_at FROM ${return_detail_table} as dt JOIN ${lots_table} as l ON dt.lot_id = l.id WHERE dt.sale_id =${inv_id} AND dt.active = 1 and dt.sale_update < '${currentdate_time}' GROUP by dt.lot_id";
 	$data['return_data'] 		= $wpdb->get_results($return_item_quantity);
 	if( $return_id != 0 ) { 
 		$return_ordered_itmes_query 	= "SELECT sale_table.*,
@@ -967,7 +1101,7 @@ FROM ${sale_table} as s LEFT JOIN ${customer_table} as c ON s.customer_id = c.id
 
 	$ordered_item_query 		= "SELECT sale_tab.*,(case when (sale_tab.sale_unit - return_tab.return_unit) is null then sale_tab.sale_unit else (sale_tab.sale_unit - return_tab.return_unit) end ) as balance_unit from (SELECT dt.lot_id,dt.sale_unit,dt.sale_id,dt.discount, l.lot_no, l.brand_name, l.product_name,l.hsn,l.cgst,l.sgst FROM ${sale_detail_table} as dt JOIN ${lots_table} as l ON dt.lot_id = l.id WHERE dt.sale_id = ${inv_id} AND dt.active = 1  and dt.sale_update < '${currentdate_time}' ) as sale_tab left join (SELECT lot_id,sale_id,sum(return_unit) as return_unit FROM ${return_detail_table} WHERE sale_id = ${inv_id} AND active = 1 and sale_update < '${currentdate_time}' GROUP by lot_id ) as return_tab on sale_tab.lot_id = return_tab.lot_id";
 	$data['ordered_data'] 		= $wpdb->get_results($ordered_item_query);
-	$return_item_quantity 		= "SELECT dt.sale_id,dt.lot_id,sum(dt.sale_unit) as sale_unit,sum(dt.return_unit) as return_unit,dt.mrp,sum(dt.cgst_value) as cgst_value,sum(dt.sub_total) as sub_total,sum(dt.amt) as amt, l.lot_no, l.brand_name, l.product_name,l.hsn FROM ${return_detail_table} as dt JOIN ${lots_table} as l ON dt.lot_id = l.id WHERE dt.sale_id =${inv_id} AND dt.active = 1 and dt.sale_update < '${currentdate_time}' GROUP by dt.lot_id";
+	$return_item_quantity 		= "SELECT dt.sale_id,dt.lot_id,sum(dt.sale_unit) as sale_unit,sum(dt.return_unit) as return_unit,dt.mrp,sum(dt.cgst_value) as cgst_value,sum(dt.sub_total) as sub_total,sum(dt.amt) as amt, l.lot_no, l.brand_name, l.product_name,l.hsn,dt.created_at FROM ${return_detail_table} as dt JOIN ${lots_table} as l ON dt.lot_id = l.id WHERE dt.sale_id =${inv_id} AND dt.active = 1 and dt.sale_update < '${currentdate_time}' GROUP by dt.lot_id";
 	$data['return_data'] 		= $wpdb->get_results($return_item_quantity);
 	if( $return_id != 0 ) { 
 		$return_ordered_itmes_query 	= "SELECT sale_table.*,
@@ -1011,6 +1145,35 @@ function getBillDataReturn($invoice_id = 0) {
 	
 	return $data;
 }
+
+function getCancelBillDataReturn($invoice_id = 0) {
+
+	$data['success'] = 0;
+	$data['msg'] = 'Something Went Wrong!';
+
+	global $wpdb;
+	$customer_table 		= $wpdb->prefix.'shc_customers';
+	$sale_table 			= $wpdb->prefix.'shc_return_items';
+	$sale_detail_table 		= $wpdb->prefix.'shc_return_items_details';
+	$lots_table 			= $wpdb->prefix.'shc_lots';
+
+	$bill_query = "SELECT s.*,
+	( CASE WHEN c.id IS NULL THEN 0 ELSE c.id END ) as customer_id,
+	( CASE WHEN c.name IS NULL THEN 'Nil' ELSE c.name END ) as customer_name,
+	( CASE WHEN c.mobile IS NULL THEN 'Nil' ELSE c.mobile END ) as mobile,
+	( CASE WHEN c.secondary_mobile IS NULL THEN 'Nil' ELSE c.secondary_mobile END ) as secondary_mobile,
+	( CASE WHEN c.landline IS NULL THEN 'Nil' ELSE c.landline END ) as landline,
+	( CASE WHEN c.address IS NULL THEN 'Nil' ELSE c.address END ) as address
+	FROM ${sale_table} as s LEFT JOIN ${customer_table} as c ON s.customer_id = c.id WHERE  s.id = ${invoice_id} AND s.cancel = 1";
+	$data['bill_data'] = $wpdb->get_row($bill_query);
+
+	$ordered_item_query = "SELECT dt.*, l.lot_no, l.brand_name, l.product_name,l.hsn FROM ${sale_detail_table} as dt JOIN ${lots_table} as l ON dt.lot_id = l.id WHERE dt.return_id = ${invoice_id} AND dt.cancel = 1 ";
+	$data['ordered_data'] = $wpdb->get_results($ordered_item_query);
+	
+	return $data;
+}
+
+
 function getBillDataReturnws($invoice_id = 0) {
 
 	$data['success'] = 0;
@@ -1037,6 +1200,34 @@ function getBillDataReturnws($invoice_id = 0) {
 	return $data;
 
 }
+
+function getCancelBillDataReturnws($invoice_id = 0) {
+
+	$data['success'] = 0;
+	$data['msg'] = 'Something Went Wrong!';
+
+	global $wpdb;
+	$customer_table 		= $wpdb->prefix.'shc_wholesale_customer';
+	$sale_table 			= $wpdb->prefix.'shc_ws_return_items';
+	$sale_detail_table 		= $wpdb->prefix.'shc_ws_return_items_details';
+	$lots_table 			= $wpdb->prefix.'shc_lots';
+
+	$bill_query = "SELECT s.*,
+	( CASE WHEN c.id IS NULL THEN 0 ELSE c.id END ) as customer_id,
+	( CASE WHEN c.customer_name IS NULL THEN 'Nil' ELSE c.customer_name END ) as customer_name,
+	( CASE WHEN c.mobile IS NULL THEN 'Nil' ELSE c.mobile END ) as mobile,
+	( CASE WHEN c.secondary_mobile IS NULL THEN 'Nil' ELSE c.secondary_mobile END ) as secondary_mobile,
+	( CASE WHEN c.landline IS NULL THEN 'Nil' ELSE c.landline END ) as landline,
+	( CASE WHEN c.address IS NULL THEN 'Nil' ELSE c.address END ) as address
+	FROM ${sale_table} as s LEFT JOIN ${customer_table} as c ON s.customer_id = c.id WHERE  s.id = ${invoice_id} AND s.cancel = 1";
+	$data['bill_data'] = $wpdb->get_row($bill_query);
+	$ordered_item_query = "SELECT dt.*, l.lot_no, l.brand_name, l.product_name,l.hsn FROM ${sale_detail_table} as dt JOIN ${lots_table} as l ON dt.lot_id = l.id WHERE dt.return_id = ${invoice_id} AND dt.cancel = 1 ";
+	$data['ordered_data'] = $wpdb->get_results($ordered_item_query);
+	
+	return $data;
+
+}
+
 
 
 function check_unique_mobile_bill() {
@@ -1134,8 +1325,7 @@ function ws_slap() {
     $stock_details = $wpdb->prefix.'shc_ws_sale_detail';
     $sale =$wpdb->prefix.'shc_ws_sale';
 	
-$query = "SELECT * from ( SELECT lot_table.*,(case when final_sale_tab.tot_sale is null then 0 else final_sale_tab.tot_sale end ) as tot_sale, (case when final_sale_tab.tot_sale is null then lot_table.stock_in else lot_table.stock_in - final_sale_tab.tot_sale end ) as balance_stock from (select lot_table.*,(case when stock_table.stock_in is null then 0 else stock_table.stock_in end )as stock_in from (select id,cgst,sgst,selling_price,`brand_name`,`product_name`,`hsn` from wp_shc_lots WHERE active = 1) as lot_table left join (select (case when sum(stock_count) is null then 0 else sum(stock_count) end )as stock_in,lot_number from wp_shc_stock WHERE active=1 GROUP by lot_number ) as stock_table on lot_table.id = stock_table.lot_number ) as lot_table left join (select (sum(total_sale_unit)) as tot_sale,lot_id from ( select (case when return_table.return_unit is null then sale_table.sale_unit else (sale_table.sale_unit - return_table.return_unit) end) as total_sale_unit,sale_table.lot_id from (SELECT (case when sum(sale.sale_unit ) is null then 0 ELSE sum(sale.sale_unit ) end) as sale_unit ,(case when (sale.lot_id) is null then 0 else (sale.lot_id) end) as lot_id FROM wp_shc_sale_detail as sale WHERE sale.active =1) as sale_table left join (SELECT (case when sum(return_tab.return_unit ) is null then 0 ELSE sum(return_tab.return_unit ) end) as return_unit ,(case when (return_tab.lot_id) is null then 0 else (return_tab.lot_id) end) as lot_id FROM wp_shc_return_items_details as return_tab WHERE return_tab.active =1) as return_table on sale_table.lot_id = return_table.lot_id UNION all 
-select (case when ws_return_table.return_unit is null then ws_sale_table.sale_unit else (ws_sale_table.sale_unit - ws_return_table.return_unit) end ) as total_sale_unit,ws_sale_table.lot_id from (SELECT (case when sum(ws_sale.sale_unit ) is null then 0 ELSE sum(ws_sale.sale_unit ) end) as sale_unit ,(case when (ws_sale.lot_id) is null then 0 else (ws_sale.lot_id) end) as lot_id FROM wp_shc_ws_sale_detail as ws_sale WHERE ws_sale.active =1) as ws_sale_table left join (SELECT (case when sum(ws_return_tab.return_unit ) is null then 0 ELSE sum(ws_return_tab.return_unit ) end) as return_unit ,(case when (ws_return_tab.lot_id) is null then 0 else (ws_return_tab.lot_id) end) as lot_id FROM wp_shc_ws_return_items_details as ws_return_tab WHERE ws_return_tab.active =1) as ws_return_table on ws_sale_table.lot_id = ws_return_table.lot_id) as invoice_table GROUP by lot_id) final_sale_tab on final_sale_tab.lot_id = lot_table.id ) as final_tab WHERE final_tab.id = ${id}";
+$query = "SELECT * from ( SELECT lot_table.*,(case when final_sale_tab.tot_sale is null then 0 else final_sale_tab.tot_sale end ) as tot_sale, (case when final_sale_tab.tot_sale is null then lot_table.stock_in else lot_table.stock_in - final_sale_tab.tot_sale end ) as balance_stock from (select lot_table.*,(case when stock_table.stock_in is null then 0 else stock_table.stock_in end )as stock_in from (select id,cgst,sgst,selling_price,`brand_name`,`product_name`,`hsn` from wp_shc_lots WHERE active = 1) as lot_table left join (select (case when sum(stock_count) is null then 0 else sum(stock_count) end )as stock_in,lot_number from wp_shc_stock WHERE active=1 GROUP by lot_number ) as stock_table on lot_table.id = stock_table.lot_number ) as lot_table left join (select (sum(total_sale_unit)) as tot_sale,lot_id from ( select (case when return_table.return_unit is null then sale_table.sale_unit else (sale_table.sale_unit - return_table.return_unit) end) as total_sale_unit,sale_table.lot_id from (SELECT (case when sum(sale.sale_unit ) is null then 0 ELSE sum(sale.sale_unit ) end) as sale_unit ,(case when (sale.lot_id) is null then 0 else (sale.lot_id) end) as lot_id FROM wp_shc_sale_detail as sale WHERE sale.active =1 group by lot_id) as sale_table left join (SELECT (case when sum(return_tab.return_unit ) is null then 0 ELSE sum(return_tab.return_unit ) end) as return_unit ,(case when (return_tab.lot_id) is null then 0 else (return_tab.lot_id) end) as lot_id FROM wp_shc_return_items_details as return_tab WHERE return_tab.active =1) as return_table on sale_table.lot_id = return_table.lot_id UNION all select (case when ws_return_table.return_unit is null then ws_sale_table.sale_unit else (ws_sale_table.sale_unit - ws_return_table.return_unit) end ) as total_sale_unit,ws_sale_table.lot_id from (SELECT (case when sum(ws_sale.sale_unit ) is null then 0 ELSE sum(ws_sale.sale_unit ) end) as sale_unit ,(case when (ws_sale.lot_id) is null then 0 else (ws_sale.lot_id) end) as lot_id FROM wp_shc_ws_sale_detail as ws_sale WHERE ws_sale.active =1 group by lot_id) as ws_sale_table left join (SELECT (case when sum(ws_return_tab.return_unit ) is null then 0 ELSE sum(ws_return_tab.return_unit ) end) as return_unit ,(case when (ws_return_tab.lot_id) is null then 0 else (ws_return_tab.lot_id) end) as lot_id FROM wp_shc_ws_return_items_details as ws_return_tab WHERE ws_return_tab.active =1) as ws_return_table on ws_sale_table.lot_id = ws_return_table.lot_id) as invoice_table GROUP by lot_id) final_sale_tab on final_sale_tab.lot_id = lot_table.id ) as final_tab WHERE final_tab.id = ${id}"; 
 if($data= $wpdb->get_row( $query, ARRAY_A ) ) {
 			$data['success'] = 1;	
 			$balance = $data['balance_stock'];
@@ -1178,58 +1368,7 @@ function getToken()
     return $token;
 }
 
-// function get_return_lot_data() {
-// 	$data['success'] = 0;
-// 	global $wpdb;
-// 	$params = array();
-// 	parse_str($_POST['data'], $params);
-// 	$id = $_POST['id'];
 
-// 	$sale_table = $wpdb->prefix. 'shc_ws_sale_detail';
-// 	$lot_table = $wpdb->prefix. 'shc_lots';
-// 	$return_table = $wpdb->prefix. 'shc_ws_return_items_details';
-// 	$id = $_POST['inv_id'];
-// 	$search_term = $_POST['search_key'];
-// 	//$query = "SELECT * FROM {$sale_table} as s left join {$lot_table} as l on l.id = s.lot_id WHERE s.sale_id = '$id' and l.product_name like '%${search_term}%' and s.active = 1";
-// 	$query ="SELECT sale.*, (sale.sale_unit - (case when rtn.return_unit is null then 0 else rtn.return_unit END)) as bal_qty from (SELECT s.*, l.brand_name, l.product_name,l.hsn,l.selling_price FROM {$sale_table} as s left join {$lot_table} as l on l.id = s.lot_id WHERE s.sale_id = '$id' and l.product_name like '%$search_term%' and s.active = 1 ) as sale left join (SELECT sum(sr.return_unit ) as return_unit ,sr.lot_id FROM {$return_table} as sr WHERE sr.sale_id = '$id' and sr.active = 1 group by sr.lot_id) as rtn on rtn.lot_id = sale.lot_id";
-
-// 	if( $data['items'] = $wpdb->get_results( $query, ARRAY_A ) ) {
-// 		$data['success'] = 1;
-		
-// 	}
-// 	echo json_encode($data);
-// 	die();
-// }
-// add_action( 'wp_ajax_get_return_lot_data', 'get_return_lot_data' );
-// add_action( 'wp_ajax_nopriv_get_return_lot_data', 'get_return_lot_data' );
-
-
-
-
-// function get_return_lot_data_retail() {
-// 	$data['success'] = 0;
-// 	global $wpdb;
-// 	$params = array();
-// 	parse_str($_POST['data'], $params);
-// 	$id = $_POST['id'];
-
-// 	$sale_table = $wpdb->prefix. 'shc_sale_detail';
-// 	$lot_table = $wpdb->prefix. 'shc_lots';
-// 	$return_table = $wpdb->prefix. 'shc_return_items_details';
-// 	$id = $_POST['inv_id'];
-// 	$search_term = $_POST['search_key'];
-// 	//$query = "SELECT * FROM {$sale_table} as s left join {$lot_table} as l on l.id = s.lot_id WHERE s.sale_id = '$id' and l.product_name like '%${search_term}%' and s.active = 1";
-// 	$query ="SELECT sale.*, (sale.sale_unit - (case when rtn.return_unit is null then 0 else rtn.return_unit END)) as bal_qty from (SELECT s.*, l.brand_name, l.product_name,l.hsn,l.selling_price FROM {$sale_table} as s left join {$lot_table} as l on l.id = s.lot_id WHERE s.sale_id = '$id' and l.product_name like '%$search_term%' and s.active = 1 ) as sale left join (SELECT sum(sr.return_unit ) as return_unit ,sr.lot_id FROM {$return_table} as sr WHERE sr.sale_id = '$id' and sr.active = 1 group by sr.lot_id) as rtn on rtn.lot_id = sale.lot_id";
-
-// 	if( $data['items'] = $wpdb->get_results( $query, ARRAY_A ) ) {
-// 		$data['success'] = 1;
-		
-// 	}
-// 	echo json_encode($data);
-// 	die();
-// }
-// add_action( 'wp_ajax_get_return_lot_data_retail', 'get_return_lot_data_retail' );
-// add_action( 'wp_ajax_nopriv_get_return_lot_data_retail', 'get_return_lot_data_retail' );
 
 
 //Invoice Number Generate Function
@@ -1250,6 +1389,9 @@ function getFinancialYear( $current_date = '' ) {
 
 
 function ws_create_return() {
+	$current_user 		= wp_get_current_user();
+	$current_nice_name 	= $current_user->user_nicename;
+
 	$data['success'] = 0;
 	global $wpdb;
 	$sale_table =  $wpdb->prefix.'shc_ws_return_items';
@@ -1265,7 +1407,8 @@ function ws_create_return() {
 		'inv_id' 				=> $params['invoice_id'], 
 		'total_amount' 			=> $params['rtn_fsub_total'],
 		'search_inv_id' 		=> $_POST['search_inv_id'],
-		'financial_year'        => $_POST['year'],		
+		'financial_year'        => $_POST['year'],	
+		'created_by'			=> $current_nice_name,	
 	);
 
 	$wpdb->insert($sale_table, $sale_update);
@@ -1277,7 +1420,7 @@ function ws_create_return() {
 	$data['id'] = $wpdb->insert_id;
 
 	$id_update = array(
-		'return_id' 			=>  'GR'.$return_id,	
+		'return_id' 			=>  'GR '.$return_id,	
 	);
 
 	$wpdb->update($sale_table, $id_update,array( 'id' => $return_id));
@@ -1319,6 +1462,10 @@ add_action( 'wp_ajax_ws_create_return', 'ws_create_return' );
 add_action( 'wp_ajax_nopriv_ws_create_return', 'ws_create_return' );
 
 function create_return() {
+
+	$current_user 		= wp_get_current_user();
+	$current_nice_name 	= $current_user->user_nicename;
+
 	$data['success'] = 0;
 	global $wpdb;
 	$sale_table =  $wpdb->prefix.'shc_return_items';
@@ -1335,6 +1482,7 @@ function create_return() {
 		'total_amount' 			=> $params['rtn_fsub_total'], 
 		'search_inv_id' 		=> $_POST['search_inv_id'],
 		'financial_year'        => $_POST['year'],
+		'created_by'			=> $current_nice_name,
 	);
 	$wpdb->insert($sale_table, $sale_update);
 
@@ -1342,7 +1490,7 @@ function create_return() {
 	$data['id'] = $wpdb->insert_id;
 
 	$id_update = array(
-		'return_id' 			=>  'GR'.$return_id,	
+		'return_id' 			=>  'GR '.$return_id,	
 	);
 
 	$wpdb->update($sale_table, $id_update,array( 'id' => $return_id));
@@ -1388,6 +1536,9 @@ add_action( 'wp_ajax_nopriv_create_return', 'create_return' );
 
 
 function update_return() {
+	$current_user 		= wp_get_current_user();
+	$current_nice_name 	= $current_user->user_nicename;
+
 	$data['success'] = 0;
 	global $wpdb;
 	$sale_table =  $wpdb->prefix.'shc_return_items';
@@ -1401,8 +1552,9 @@ function update_return() {
 	$sale_update = array(
 		'customer_id' 			=> $params['customer_id'], 
 		'inv_id' 				=> $params['inv_id'], 
-		'return_id' 			=>  'GR'.$params['return_id'],
+		'return_id' 			=>  'GR '.$params['return_id'],
 		'total_amount' 			=> $params['rtn_fsub_total'], 
+		'modified_by'			=> $current_nice_name,
 	);
 
 	$wpdb->update($sale_table, $sale_update ,array('id' =>$params['return_id']));
@@ -1446,6 +1598,8 @@ add_action( 'wp_ajax_update_return', 'update_return' );
 add_action( 'wp_ajax_nopriv_update_return', 'update_return' );
 
 function ws_update_return() {
+	$current_user 		= wp_get_current_user();
+	$current_nice_name 	= $current_user->user_nicename;
 	$data['success'] = 0;
 	global $wpdb;
 	$sale_table =  $wpdb->prefix.'shc_ws_return_items';
@@ -1458,8 +1612,9 @@ function ws_update_return() {
 	$sale_update = array(
 		'customer_id' 			=> $params['customer_id'], 
 		'inv_id' 				=> $params['inv_id'], 
-		'return_id' 			=>  'GR'.$params['return_id'],
+		'return_id' 			=>  'GR '.$params['return_id'],
 		'total_amount' 			=> $params['rtn_fsub_total'], 
+		'modified_by'			=> $current_nice_name,
 	);
 
 	$wpdb->update($sale_table, $sale_update ,array('id' =>$params['return_id']));
@@ -1513,6 +1668,7 @@ function product_delivery() {
 	parse_str($_POST['data'], $params);
 	$id = $_POST['id'];
 	$delivery = $_POST['delivery'];
+	$delivery_count = $_POST['delivery_count'];
 
 	$lot_detail_table = $wpdb->prefix. 'shc_sale_detail';
 	$currentdate_time = date('Y-m-d H:i:s');
@@ -1521,12 +1677,13 @@ function product_delivery() {
 
 	$delivery_data = array(
 		'is_delivery' 		=> $delivery,
-		'delivery_date' 	=> $currentdate_time
+		'delivery_date' 	=> $currentdate_time,
+		'delivery_count'  	=> $delivery_count,
 		);
 
 
 	$wpdb->update($lot_detail_table,$delivery_data,array('id' => $id));
-
+var_dump($wpdb->last_query);
 	//$data['success'] = 1;
 	echo json_encode($data);
 	die();
@@ -1543,6 +1700,7 @@ function ws_product_delivery() {
 	parse_str($_POST['data'], $params);
 	$id = $_POST['id'];
 	$delivery = $_POST['delivery'];
+	$delivery_count = $_POST['delivery_count'];
 
 	$lot_detail_table = $wpdb->prefix. 'shc_ws_sale_detail';
 	$currentdate_time = date('Y-m-d H:i:s');
@@ -1551,12 +1709,13 @@ function ws_product_delivery() {
 
 	$delivery_data = array(
 		'is_delivery' 		=> $delivery,
-		'delivery_date' 	=> $currentdate_time
+		'delivery_date' 	=> $currentdate_time,
+		'delivery_count'  	=> $delivery_count,
 		);
 
 
 	$wpdb->update($lot_detail_table,$delivery_data,array('id' => $id));
-
+var_dump($wpdb->last_query);
 	//$data['success'] = 1;
 	echo json_encode($data);
 	die();
@@ -1593,6 +1752,40 @@ function gst_group_retail($id = 0) {
 	 sum(sale_details.sale_unit) as sale_unit,
 	sum(sale_details.amt) as sale_amt FROM ${sale_table} as sale 
 	left join ${sale_table_detail} as sale_details on sale.`id`= sale_details.sale_id WHERE sale.active = 1 and sale_details.active = 1 and sale.id = ${id} group by sale_details.cgst";
+	$data['gst_data'] = $wpdb->get_results($query);
+	return $data;
+
+}
+
+function gst_group_cancel_retail($id = 0) {
+	global $wpdb;
+	$sale_table_detail = $wpdb->prefix. 'shc_sale_detail';
+	$sale_table       = $wpdb->prefix. 'shc_sale';
+
+	$query = "SELECT sale_details.cgst,
+	 sum(sale_details.cgst_value) as sale_cgst, 
+	 sum(sale_details.sgst_value) sale_sgst, 
+	 sum(sale_details.sub_total) as sale_total, 
+	 sum(sale_details.sale_unit) as sale_unit,
+	sum(sale_details.amt) as sale_amt FROM ${sale_table} as sale 
+	left join ${sale_table_detail} as sale_details on sale.`id`= sale_details.sale_id WHERE sale.cancel = 1 and sale_details.cancel = 1 and sale.id = ${id} group by sale_details.cgst";
+	$data['gst_data'] = $wpdb->get_results($query);
+	return $data;
+
+}
+
+function gst_group_cancel($id = 0) {
+	global $wpdb;
+	$sale_table_detail = $wpdb->prefix. 'shc_ws_sale_detail';
+	$sale_table       = $wpdb->prefix. 'shc_ws_sale';
+
+	$query = "SELECT sale_details.cgst,
+	 sum(sale_details.cgst_value) as sale_cgst, 
+	 sum(sale_details.sgst_value) sale_sgst, 
+	 sum(sale_details.sub_total) as sale_total, 
+	 sum(sale_details.sale_unit) as sale_unit,
+	sum(sale_details.amt) as sale_amt FROM ${sale_table} as sale 
+	left join ${sale_table_detail} as sale_details on sale.`id`= sale_details.sale_id WHERE sale.cancel = 1 and sale_details.cancel = 1 and sale.id = ${id} group by sale_details.cgst";
 	$data['gst_data'] = $wpdb->get_results($query);
 	return $data;
 

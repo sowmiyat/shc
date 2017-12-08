@@ -115,6 +115,15 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 									</div>
 								</div>
 							</div>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+								<div class="form-group">
+									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Stock Alert (Pieces) <span class="required">*</span>
+									</label>
+									<div class="col-md-6 col-sm-6 col-xs-12">
+										<input type="text" id="stock_alert" name="stock_alert" class="form-control col-md-7 col-xs-12" autocomplete="off"  onkeypress="return isNumberKey(event)" value="<?php echo ($lot) ? $lot->stock_alert : ''; ?>">
+									</div>
+								</div>
+							</div>
 						</div>
 
 						
@@ -122,7 +131,7 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 						<div class="form-group">
 							<div style="text-align:center;">
 								<button type="submit" class="btn btn-success">Submit</button>
-	                          	<button class="btn btn-primary" type="button" onclick="window.location = '<?php echo admin_url('admin.php?page=list_lots'); ?>';">Cancel</button>
+	                          	<button class="btn btn-primary cancel_button" type="button" onclick="window.location = '<?php echo admin_url('admin.php?page=list_lots'); ?>';">Cancel</button>
 							  	<button class="btn btn-primary reset_button" type="reset" >Reset</button>
 	                          	
 								<?php 

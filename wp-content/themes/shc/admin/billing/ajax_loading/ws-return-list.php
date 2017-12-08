@@ -6,8 +6,8 @@ global $wpdb;
 
     if(isset($_GET['action']) && $_GET['action']=='delete'){
         $id = $_GET['delete_id'];
-        $data_delete=$wpdb->update( $bill_table ,array( 'active' =>'0' ),array( 'id' => $id ));
-		$wpdb->update($bill_detail_table, array('active' => 0), array('return_id' => $id));
+        $data_delete=$wpdb->update( $bill_table ,array( 'active' =>'0','cancel' => '1' ),array( 'id' => $id,'active' => '1' ));
+		$wpdb->update($bill_detail_table, array('active' => '0','cancel' => '1' ), array('return_id' => $id,'active' => '1'));
 		
     }
     $result_args = array(
@@ -54,13 +54,14 @@ global $wpdb;
                                         <?php echo $i; ?>
                                     </td>
                                     <td class=""><?php echo $b_value->inv_id; ?></td>
-                                    <td class=""><?php echo 'GR'.$b_value->id; ?></td>
+                                    <td class=""><?php echo 'GR '.$b_value->id; ?></td>
                                     <td class=""><?php echo $b_value->name; ?> </td>
                                     <td class=""><?php echo $b_value->mobile; ?> </td>  
                                     <td><a href="<?php echo admin_url('admin.php?page=ws_return_items_view')."&id=$b_value->id"; ?>" class="bill_view">View</a>/
-									<a href="<?php echo admin_url('admin.php?page=ws_return_items')."&return_id=$b_value->id&id=$b_value->search_inv_id&year=$b_value->financial_year"; ?>" class="bill_view_update">Update</a>/
-									<a href="#" class="ws_return_print">Print</a>/
-									<a href="#" class="print_bill_delete delete-ws-return-bill" data-id="<?php echo $b_value->id; ?>">Delete</a>
+									
+									<a href="#" class="ws_return_print">Print</a>
+                                    <?php if(is_super_admin()) { ?>  / <a href="<?php echo admin_url('admin.php?page=ws_return_items')."&return_id=$b_value->id&id=$b_value->search_inv_id&year=$b_value->financial_year"; ?>" class="bill_view_update">Update</a>/
+									<a href="#" class="print_bill_delete delete-ws-return-bill last_list_view" data-id="<?php echo $b_value->id; ?>">Cancel</a> <?php }?>
 									
 									<input type="hidden" name="gr_id" class="gr_id" value="<?php echo $b_value->id; ?>"/></td>  
                                 </tr>

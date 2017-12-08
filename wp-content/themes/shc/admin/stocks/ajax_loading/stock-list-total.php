@@ -37,9 +37,9 @@ $stocks = new Stocks();
                                     <td class="a-center ">
                                         <?php echo $i; ?>
                                     </td>
-                                    <td class=""><?php echo $s_value->brand_name; ?></td>
-                                    <td class=""><?php echo $s_value->product_name; ?></td>
-                                    <td class=""><?php echo $s_value->balance_stock; ?></td>
+                                   <td class="brand" <?php if($s_value->is_alert == 1){ echo'style="color:red"'; } ?>><?php echo $s_value->brand_name; ?></td>
+                                    <td class="product" <?php if($s_value->is_alert == 1){ echo'style="color:red"'; } ?>><?php echo $s_value->product_name; ?></td>
+                                    <td class="bal_stock" <?php if($s_value->is_alert == 1){ echo'style="color:red"'; } ?>><?php echo $s_value->balance_stock; ?></td>
                                 </tr>
                     <?php
                                 $i++;

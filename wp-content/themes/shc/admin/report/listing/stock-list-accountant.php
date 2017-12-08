@@ -31,6 +31,17 @@
                         <option value="50" <?php echo ($billing->ppage == 50) ? 'selected' : '' ?>>50</option>
                       </select>
                     </div> -->
+                      <div class="col-md-2 form-group">
+                        <b></b>
+                        <select name="slap" class="slap" >
+                            <option value="" >GST Tax</option>
+                            <option value="0.00" <?php echo ($report->slap == '0.00') ? 'selected' : '' ?>>0 %</option>
+                            <option value="2.50" <?php echo ($report->slap == '2.50') ? 'selected' : '' ?>>5 %</option>
+                            <option value="6.00" <?php echo ($report->slap == '6.00') ? 'selected' : '' ?>>12 %</option>
+                            <option value="9.00" <?php echo ($report->slap == '9.00') ? 'selected' : '' ?>>18 %</option>
+                            <option value="14.00" <?php echo ($report->slap == '14.00') ? 'selected' : '' ?>>28 %</option>
+                      </select>
+                    </div>
                     <div class="col-md-2 form-group">
                          <b></b><input type="text" name="bill_from" class="bill_from form-control" value="<?php echo date('Y-m-d'); ?>" placeholder="Bill From">
                     </div>
@@ -38,9 +49,9 @@
                     <div class="col-md-2 form-group">
                         <b></b> <input type="text" name="bill_to" class="bill_to form-control" value="<?php echo date('Y-m-d'); ?>" placeholder="Bill To">
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                         <button class="btn btn-default accountant_print pull-right"><i class="fa fa-print"></i> Print</button>
-                <button class="btn btn-primary pull-right accountant_download" style="margin-right: 5px;"><i class="fa fa-file-pdf-o" href=""></i> Generate PDF</button>
+                        <button class="btn btn-primary pull-right accountant_download" style="margin-right: 5px;"><i class="fa fa-file-pdf-o" href=""></i> Generate PDF</button>
                     </div>
                 </div>
               <input type="hidden" name="filter_action" class="filter_action" value="stock_report_acc">
@@ -59,56 +70,14 @@
 <script type="text/javascript">
     
 jQuery(document).ready(function () {
-    jQuery('.bill_from').focus();
-
-    jQuery(document).live('keydown', function(e){
-        if(jQuery(document.activeElement).closest("#wpbody-content").length == 0) {
-            var keyCode = e.keyCode || e.which; 
-            if (keyCode == 9) { 
-                e.preventDefault(); 
-                jQuery('.bill_from').focus()
-            }
+    jQuery('.slap').focus();
+    jQuery('.accountant_download').live('keydown', function(e){
+        var keyCode = e.keyCode || e.which; 
+        if (keyCode == 9) { 
+            e.preventDefault(); 
+            jQuery('.slap').focus();
         }
-    });
-    
-    jQuery('.filter-section input[type="text"]:last').live('keydown', function(e){
-
-        if(jQuery('.jambo_table td a').length == 0 && jQuery(".next.page-numbers").length == 0 ) {
-
-            var keyCode = e.keyCode || e.which; 
-            if (keyCode == 9) { 
-                e.preventDefault(); 
-                // call custom function here
-                jQuery('.bill_from').focus()
-            }
-        }
-
-    });
-
-
-    jQuery('.jambo_table td a').live('keydown', function(e) { 
-
-        if(jQuery(this).parent().parent().next('tr').length == 0 && jQuery(".next.page-numbers").length == 0) {
-            var keyCode = e.keyCode || e.which; 
-            if (keyCode == 9) { 
-                e.preventDefault(); 
-                // call custom function here
-                jQuery('.bill_from').focus()
-            } 
-        }
-    });
-
-    jQuery(".next.page-numbers").live('keydown', function(e) { 
-      var keyCode = e.keyCode || e.which; 
-
-      if (keyCode == 9) { 
-        e.preventDefault(); 
-        // call custom function here
-        jQuery('.bill_from').focus()
-      } 
-    });
-
-    
+    });    
 })    
 
 </script>

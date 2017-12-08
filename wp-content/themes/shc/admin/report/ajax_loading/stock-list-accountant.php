@@ -9,6 +9,29 @@
     );
     $stock_report = $report->stock_report_pagination_accountant($result_args);
 ?>
+
+        <div class="x_content" style="width:100%;">
+            <div class="table-responsive" style="width:400px;margin: 0 auto;margin-bottom:20px;">
+                <table class="table table-striped jambo_table bulk_action">
+                    <thead>
+                        <tr class="headings">
+                            <th>Total Stock Sold Out</th>
+                            <th>Total CGST(Rs)</th>
+                            <th>Total SGST(Rs)</th>
+                            <th>Total COGS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><?php echo $stock_report['s_result']->sold_qty; ?></td>
+                            <td><?php echo $stock_report['s_result']->total_cgst; ?></td>
+                            <td><?php echo $stock_report['s_result']->total_cgst; ?></td>
+                            <td><?php echo $stock_report['s_result']->sub_tot; ?></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
         <div class="x_content">
             <div class="table-responsive">
                 <table class="table table-striped jambo_table bulk_action">

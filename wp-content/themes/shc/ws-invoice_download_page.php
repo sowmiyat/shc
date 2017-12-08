@@ -31,16 +31,7 @@
 
 
   <div class="A4">
-    <div class="sheet padding-10mm">
-
-
-
-
-
-
-
-
-
+    <div class="sheet ">
       <table> 
         <thead>
           <tr>
@@ -140,7 +131,7 @@
               <td>
                 <div class="inner-container" >
                   <div class="bill-detail">
-                    <table class="table table-bordered sale-table-invoice" style="margin-bottom: 2px;">
+                    <table class="table table-bordered sale-table-invoice" style="margin-bottom: 2px;" border=1>
                       <thead>
                         <!-- <tr>
                           <th colspan="6">
@@ -198,7 +189,7 @@
                             <div class="text-center">TOTAL<br>AMOUNT</div>
                           </th>
                         </tr>
-                        <tr class="header-txt">
+                        <tr class="header-txt" >
                           <th style="padding: 0;width: 35px;"><div class="text-center">RATE</div></th>
                           <th style="padding: 0;width: 50px;"><div class="text-center">AMOUNT</div></th>
                           <th style="padding: 0;width: 35px;"><div class="text-center">RATE</div></th>
@@ -327,7 +318,7 @@
         <b>Rs <?php echo convert_number_to_words_full($final_total); ?></b>
 
 
-        <table class="table table-bordered" style="margin-top:10px;margin-bottom: 5px;width: 120mm;">
+        <table class="table table-bordered" style="margin-top:10px;margin-bottom: 5px;width: 120mm;" border=1>
           <thead>
             <tr>
               <th class="center-th" style="width:90px;padding:0;" rowspan="2">
@@ -365,7 +356,7 @@
                       <?php $total_tax = ( 2 * $g_data->sale_sgst) +$total_tax;
                             }
                           } ?>
-                  <td colspan="4">
+                  <tr><td colspan="4">
                     <div class="text-center">
                       Total Tax
                     </div>
@@ -375,6 +366,7 @@
                      <?php echo $total_tax; ?>
                     </div>
                   </td>
+                </tr>
                 </tr>
           </tbody>
         </table>

@@ -58,7 +58,7 @@
                                     <td class=""><?php echo $s_value->stock_created; ?></td>
                                     <td class="">
                                         <a href="<?php echo admin_url('admin.php?page=add_stocks')."&stock_id=${stock_id}"; ?>"  class="list_update">Update</a> / 
-                                        <a href = "#" class="list_delete delete-stock" data-id="<?php echo $s_value->stock_id; ?>">Delete</a>
+                                        <?php if(is_super_admin()) { ?>  <a href = "#" class="list_delete delete-stock last_list_view" data-id="<?php echo $s_value->stock_id; ?>">Delete</a> <?php } ?>
                                     </td>
                                     
                                 </tr>

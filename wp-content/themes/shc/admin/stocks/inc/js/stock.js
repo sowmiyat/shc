@@ -4,55 +4,77 @@ jQuery(document).ready(function () {
 
     jQuery(".stock_cancel").on('keydown',  function(e) { 
         var keyCode = e.keyCode || e.which; 
-
-        if (keyCode == 9) { 
+      if(event.shiftKey && event.keyCode == 9) {  
+         e.preventDefault(); 
+        jQuery('.submit_form').focus();
+      }
+        else if (keyCode == 9) { 
             e.preventDefault(); 
             jQuery('#pro_number').focus();
         } 
+        else {
+          jQuery('.stock_cancel').focus();
+        }
     }); 
 
+
     //<-------- Select Product----->   
-jQuery( "#pro_number" ).autocomplete ({
-      source: function( request, response ) {
+    jQuery( "#pro_number" ).autocomplete ({
+        source: function( request, response ) {
+          
+            jQuery.ajax({
+                url: frontendajax.ajaxurl,
+                type: 'POST',
+                dataType: "json",
+                showAutocompleteOnFocus : true,
+                autoFocus: true,
+                selectFirst: true,
+                data: {
+                    action: 'search_lot',
+                    search_key: request.term
+                },
+                success: function( data ) {
+                    response(jQuery.map( data.result, function( item ) {
 
-        jQuery.ajax( {
-          url: frontendajax.ajaxurl,
-          type: 'POST',
-          dataType: "json",
-          data: {
-            action: 'search_lot',
-            search_key: request.term
-          },
-          success: function( data ) {
-            response(jQuery.map( data.result, function( item ) {
+                        return {
+                            id              : item.id,
+                            value           : item.product_name,
+                            selling_price   : item.selling_price,
+                            brand_name      : item.brand_name,
 
-                return {
-                    id              : item.id,
-                    value           : item.product_name,
-                    selling_price   : item.selling_price,
-                    brand_name      : item.brand_name,
-
+                        }
+                    }));
                 }
-            }));
-          }
-        });
-      },
-      minLength: 2,
-      select: function( event, ui ) {
+            });
+        },
 
-       jQuery('#brand_name').val(ui.item.brand_name);
-        jQuery('.lot_number').val(ui.item.id);
-        jQuery('#product_name').val(ui.item.value);
-        jQuery('#unit_price').val(ui.item.selling_price);
-        jQuery('#selling_price').val(ui.item.selling_price);
+        minLength: 2,
+        select: function( event, ui ) {
 
-        jQuery('#stock_count').focus();
+            jQuery('#brand_name').val(ui.item.brand_name);
+            jQuery('.lot_number').val(ui.item.id);
+            jQuery('#product_name').val(ui.item.value);
+            jQuery('#unit_price').val(ui.item.selling_price);
+            jQuery('#selling_price').val(ui.item.selling_price);
+            // jQuery('#stock_count').focus();
+
+            
+        },
+        response: function(event, ui) {
+            if (ui.content.length == 1)
+            {
+              jQuery(this).val(ui.content[0].value);
+              jQuery(this).autocomplete( "close" );
+              jQuery('#brand_name').val(ui.content[0].brand_name);
+              jQuery('.lot_number').val(ui.content[0].id);
+              jQuery('#product_name').val(ui.content[0].value);
+              jQuery('#unit_price').val(ui.content[0].selling_price);
+              jQuery('#selling_price').val(ui.content[0].selling_price);
 
 
 
-
-        
-      }
+            }
+        }
     });                                               
 //<------- Validation Function --------> 
    
@@ -80,9 +102,9 @@ jQuery( "#pro_number" ).autocomplete ({
                 productCheck: "Select Products! New Products are not allowed Here!!!",
             },
             stock_count : {
-                required: 'Please Enter Stock Count!',
+                required   : 'Please Enter Stock Count!',
                 stockCheck : 'Please Enter Stock!',
-                maxlength : 'This Field Allowed Maximum 10 digits!!'
+                maxlength  : 'This Field Allowed Maximum 10 digits!!'
             },
           
         }
@@ -90,9 +112,9 @@ jQuery( "#pro_number" ).autocomplete ({
 
     var response = true;
     jQuery.validator.addMethod(
-          "productCheck", 
-          function(value, element) {
-              jQuery.ajax({
+        "productCheck", 
+        function(value, element) {
+            jQuery.ajax({
                 type: "POST",
                 dataType : "json",
                 url: frontendajax.ajaxurl,
@@ -108,10 +130,10 @@ jQuery( "#pro_number" ).autocomplete ({
                     }
                 }
             });
-              return response;
-          }
+            return response;
+        }
       );
-    jQuery.validator.addMethod(
+      jQuery.validator.addMethod(
         "stockCheck", 
         function(value, element) {
             if(value > 0){
@@ -129,10 +151,10 @@ jQuery( "#pro_number" ).autocomplete ({
 
         var valid = jQuery(".stock_validation").valid();
         var prevent = jQuery(".form_submit_prevent_stock").val();
-       if( valid && prevent == "off") {
-          jQuery(".form_submit_prevent_stock").val('on');
-		  jQuery('.submit_form').css('display','none');
-             jQuery('#lightbox').css('display','block'); 
+        if( valid && prevent == "off") {
+            jQuery(".form_submit_prevent_stock").val('on');
+		    jQuery('.submit_form').css('display','none');
+            jQuery('#lightbox').css('display','block'); 
             jQuery.ajax({
                 type: "POST",
                 dataType : "json",
@@ -171,8 +193,6 @@ jQuery( "#pro_number" ).autocomplete ({
         var stock_count = selling * change_count;
         jQuery('#selling_price').val(stock_count);
 
-
-
     });
 
 //<-------Delete Stock------->
@@ -186,6 +206,7 @@ jQuery( "#pro_number" ).autocomplete ({
 
   });
   //<-------End Delete Stock------->
+
 
 
 });
