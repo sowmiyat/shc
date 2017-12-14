@@ -172,7 +172,8 @@ jQuery('#ws_billing_customer').focus();
                 nameValidite : true,
             },
             company_name : {
-                nameValidite : true
+                nameValidite : true,
+                required : true
             },
             mobile: { 
                 minlength: 10,
@@ -259,7 +260,7 @@ jQuery('#ws_billing_customer').focus();
 
         var valid = jQuery(".ws_billing_validation").valid();
         var prevent = jQuery(".form_submit_prevent_ws_bill").val();
-       if( valid) {
+        if( valid) {
             var existing_count = parseInt( jQuery('#bill_lot_add tr').length );
             if(existing_count != 0 && prevent == "off") {
                 jQuery(".form_submit_prevent_ws_bill").val('on');

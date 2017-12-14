@@ -452,7 +452,7 @@ function ws_create_order() {
 	}
 	else {
 
-		if(  $params['mobile'] != '') {
+		if(  $params['company'] != '') {
 			$customer_update = array(
 			'customer_name' 			=> $params['name'], 
 			'company_name' 				=> $params['company'],
