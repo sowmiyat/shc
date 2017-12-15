@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: SRC Wholesale Invoice
+ * Template Name: SRC Wholesale Invoice1
  *
  * @package WordPress
  * @subpackage SHC
@@ -33,22 +33,28 @@
 
 
   /** Fix for Chrome issue #273306 **/
-@page { margin: 0; }
+  @media print {
+    #adminmenumain, #wpfooter, .print-hide {
+      display: none;
+    }
 
     body, html {
-      /*height: auto;
-      padding:0px;*/
-      margin: 0mm 25mm 25mm 0mm;
+      height: auto;
+      padding:0px;
 
     }
+    html.wp-toolbar {
+      padding:0;
+    }
+    #wpcontent {
+      background: white;
+      box-shadow: 0 .5mm 2mm rgba(0,0,0,.3);
+      margin: 1mm;
+      display: block;
+      padding: 0;
+    }
 
-  
-    .sheet {
-      margin: 0;
-    }
-    .A4 {
-        width: 210mm;
-    }
+
     .A4 .footer {
       position: fixed;
       bottom: 0px;
@@ -57,121 +63,142 @@
     .A4 .footer .foot {
         background-color: #67a3b7 !important;
         -webkit-print-color-adjust: exact;
-    } 
-    .inner-container {
-      padding-left: 20mm;
-      padding-right: 20mm;        
-      width: 210mm;
-    }      
-    .left-float {
-      float: left;
     }
-    .company-detail {
-      height: 100px;
-    }
-    .company-detail .company-name h3 {
-      font-family: serif;
-      font-weight: bold;
-      font-size: 18px;
-      margin-bottom: 3px;
-    }
-    .company-detail .company-address-txt {
-        font-size: 13px;
-        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-    }
-    .text-center {
-      text-align: center;
-    }
-    .text-rigth {
-      text-align: right;
-    }
-    .table td, .table th {
-      background-color: transparent !important;
-    }
+  }
+
+  @page { margin: 0;padding: 0; }
+  .sheet {
+    margin: 0;
+  }
 
 
-    .table>tbody>tr>td {
-      padding: 0 3px;
-      height: 20px;
+      .A4 {
+        width: 210mm;
+      }
+      .inner-container {
+        padding-left: 20mm;
+        padding-right: 20mm;        
+        width: 210mm;
+      }      
+      .left-float {
+        float: left;
+      }
+      .company-detail {
+        height: 100px;
+      }
+      .company-detail .company-name h3 {
+        font-family: serif;
+        font-weight: bold;
+        font-size: 18px;
+        margin-bottom: 3px;
+      }
+      .company-detail .company-address-txt {
+          font-size: 13px;
+          font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .text-rigth {
+        text-align: right;
+      }
+      .table td, .table th {
+        background-color: transparent !important;
+      }
 
-    }
-    .table-bordered>tbody>tr>td, .table-bordered>thead>tr>th {
-      border: 1px solid #000 !important;
-      -webkit-print-color-adjust: exact;
-    }
 
-    .billing-title {
-      text-align: center;
-      font-weight: bold;
-      font-size: 14px;
-        text-decoration: underline;
-    }
-     
-    .company-logo {
-      width: 50mm;
-    }
-    .company-address {
-      width: 70mm;
-    }
-    .invoice-detail {
-      width: 50mm;
-    }
+      .table>tbody>tr>td {
+        padding: 0 3px;
+        height: 20px;
 
-    .invoice-no {
-      margin-bottom: 15px;
-      font-size: 18px;
-    }
-    .buyer-detail, .delivery-detail {
-      min-height: 100px;
-      padding: 20px 10px 20px 10px;
-    }
-    .buyer-address, .delivery-address {
-      padding-left: 10px;
-      min-height: 80px;
-    }
-    .header-txt {
-      font-size: 10px;
-    } 
-    .sale-table-invoice tbody {
-      font-size: 13px;
-    }
+      }
+      .table-bordered>tbody>tr>td, .table-bordered>thead>tr>th {
+        border: 1px solid #000 !important;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .billing-title {
+        text-align: center;
+        font-weight: bold;
+        font-size: 14px;
+          text-decoration: underline;
+      }
+      .A4 h3 {
+        margin-top: 0px;
+      }
+
+
+
+
+
+
+
+
+  .company-logo {
+    width: 50mm;
+  }
+  .company-address {
+    width: 70mm;
+  }
+  .invoice-detail {
+    width: 50mm;
+  }
+
+  .invoice-no {
+    margin-bottom: 15px;
+    font-size: 18px;
+  }
+  .buyer-detail, .delivery-detail {
+    min-height: 100px;
+    padding: 20px 10px 20px 10px;
+  }
+  .buyer-address, .delivery-address {
+    padding-left: 10px;
+    min-height: 80px;
+  }
+  .header-txt {
+    font-size: 10px;
+  } 
+  .sale-table-invoice tbody {
+    font-size: 13px;
+  }
 
 
 
 /*  New Format csss */
-    .print-table {
-      padding-top: 5mm;
-      font-size: 14px;
-    }
-    .print-table hr {
-      color: #000;
-    }
-    .print-table tr td {
-      border: 1px solid #000;
-      padding: 5px;
-    }
-    .print-table table {
-      color: #000;
-      /*border-collapse: collapse;*/
-    }
-    .declare_section {
-      padding-top: 20px;
-      padding-left: 30px;
-    }
-    .text_bold {
-      font-weight: bold;
-    }
-    .text_center {
-      text-align: center;
-    }
-    .footer table tr td {
-      border: none;
-    }
+.print-table {
+  padding-top: 5mm;
+  font-size: 14px;
+}
+.print-table hr {
+  color: #000;
+}
+.print-table tr td {
+  border: 1px solid #000;
+  padding: 5px;
+}
+.print-table table {
+  color: #000;
+  /*border-collapse: collapse;*/
+}
+.declare_section {
+  padding-top: 20px;
+  padding-left: 30px;
+}
+.text_bold {
+  font-weight: bold;
+}
+.text_center {
+  text-align: center;
+}
+.footer table tr td {
+  border: none;
+}
 
 </style>
 <!-- New Table -->
-<div class="A4 print-table ">
-  <div class="sheet padding-10mm">
+<div class=" print-table ">
+    <div class="sheet padding-10mm">
     <div class="inner-container" >
       <table class="customer-detail " style="margin-top: 20px;margin-bottom:2px;  border-collapse: collapse; " >
         <tbody>
@@ -209,32 +236,31 @@
                 </td>                
             </tr>
             <?php
-            // $pages = false;
-            // $per_page = 31;
-            // $pieces = false;
-            // $tota_row = 0;
+            $pages = false;
+            $per_page = 31;
+            $pieces = false;
+            $tota_row = 0;
 
-            
-              // $pages = ceil(count($bill_ldata)/$per_page);
-              // $pieces = array_chunk($bill_ldata, $per_page);
-              // $tota_row = count($bill_ldata);
-              // $reminder = ($tota_row % $per_page);
-            // }
+            if($bill_data) {
+              $pages = ceil(count($bill_ldata)/$per_page);
+              $pieces = array_chunk($bill_ldata, $per_page);
+              $tota_row = count($bill_ldata);
+              $reminder = ($tota_row % $per_page);
+            }
 
-            // $page_total[-1] = 0;
-            // for ($i = 0; $i < $pages; $i++) { 
-            //   $tot_tmp = 0;
-            //   foreach ($pieces[$i] as $key => $h_value) {
-            //     $tot_tmp = $tot_tmp + $h_value->hiring_amt;
-            //   }
-            //   $page_total[$i] = $page_total[$i-1] + $tot_tmp;
-            // }
+            $page_total[-1] = 0;
+            for ($i = 0; $i < $pages; $i++) { 
+              $tot_tmp = 0;
+              foreach ($pieces[$i] as $key => $h_value) {
+                $tot_tmp = $tot_tmp + $h_value->hiring_amt;
+              }
+              $page_total[$i] = $page_total[$i-1] + $tot_tmp;
+            }
 
 
-                // for ($i = 0; $i < $pages; $i++) { 
-                //   $page_start = ( $i * $per_page ) + 1;
-                //   $current_page = ($i + 1);
-
+                for ($i = 0; $i < $pages; $i++) { 
+                  $page_start = ( $i * $per_page ) + 1;
+                  $current_page = ($i + 1);
             ?>
            
             <tr class="text_bold text_center">
@@ -257,10 +283,10 @@
               <td>AMOUNT</td>
             </tr>
             <?php
-                      //if($current_page > 1) {
+                      if($current_page > 1) {
 
                       ?>
-                       <!-- 
+                       
                           <tr>
                           <td></td>
                           <td>
@@ -280,12 +306,11 @@
                              
                             </div>
                           </td>
-                        </tr> -->
+                        </tr>
 
                       <?php
-                     if($bill_data && $bill_ldata && count($bill_ldata)>0) {
-                        $i = 1;
-                        foreach ($bill_ldata as $value) {
+                      } $tot = 0;
+                      foreach ($pieces[$i] as $key => $value) {
                       ?>
 
 
@@ -304,11 +329,11 @@
                 <td><?php echo $value->sub_total; ?></td>                
             </tr>
             <?php
-           
+            $tot = $value->sub_total + $tot;
             $page_start++;
             }
 
-            
+            if($pages == $current_page) {
             ?>                          
             <tr>
               <td colspan="11" style=" text-align: right;" ><div  >Discount (Hire Charges)</div></td>
@@ -332,9 +357,9 @@
                 <td class="text-center"  ><b><?php echo $final_total = $bill_fdata->sub_total; ?></b></td>
             </tr>
             <?php
-             
+              } else {
             ?>
-                <!-- <tr>
+                <tr>
                   <td colspan="11" style="padding-bottom: 2em;border: none;">
                     <div class="text-center">CF / TOTAL</div>
                   </td>
@@ -343,9 +368,9 @@
                       <?php echo $tot; ?>
                     </div>
                   </td>
-                </tr> -->
+                </tr>
             <?php
-              
+              }
 
             ?>
              <?php
@@ -360,7 +385,7 @@
         </div>
         <!-- TAX TABLE START -->
         <div class="inner-container" > 
-        <table  class="customer-detail" style="margin-top: 20px;margin-bottom:2px; text-align: center;  border-collapse: collapse; ">
+        <table  class="customer-detail " style="  margin-top: 20px;margin-bottom:2px; text-align: center;  border-collapse: collapse; ">
           <tbody>
             <tr class="text_bold text_center" >                
                 <td rowspan="2">TAXABLE VALUE</td>
