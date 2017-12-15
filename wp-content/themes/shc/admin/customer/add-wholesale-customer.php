@@ -34,7 +34,7 @@ input[type=number]::-webkit-outer-spin-button {
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Company Name
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Company Name <span class="required">*</span>
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<input type="text" id="company_name" name="company_name"  class="form-control col-md-7 col-xs-12 customer_check" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->company_name : ''; ?>">
@@ -43,7 +43,7 @@ input[type=number]::-webkit-outer-spin-button {
 						</div>
 						<div class="divider-dashed"></div>
 						<div class="form-group">
-							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Primary Mobile <span class="required">*</span>
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Primary Mobile 
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<input type="text" id="mobile"  maxlength="10" name="mobile" class="form-control col-md-7 col-xs-12 has-feedback-left" onkeypress="return isNumberKey(event)" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->mobile : ''; ?>">
@@ -81,7 +81,7 @@ input[type=number]::-webkit-outer-spin-button {
 						</div>
 						<div class="divider-dashed"></div>
 						<div class="form-group">
-							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">GST Number <span class="required">*</span>
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">GST Number 
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<input type="text" id="gst_number" name="gst_number" maxlength="15" class="form-control col-md-7 col-xs-12" autocomplete="off"   value="<?php echo ($wholesale_customer) ? $wholesale_customer->gst_number : ''; ?>">

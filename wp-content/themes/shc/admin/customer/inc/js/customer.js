@@ -48,10 +48,11 @@ jQuery(document).ready(function () {
                 nameValidite : true,
             },
             company_name : {
-                nameValidite : true
+                nameValidite : true,
+                required: true,
             },
             mobile: {
-                required: true,
+               
                 minlength: 10,
                 maxlength: 10,
                 uniqueUserMobile: true
@@ -67,7 +68,7 @@ jQuery(document).ready(function () {
                 addressValidate : true,
             },
             gst_number : {
-                required: true,
+                
                 gstValidate : true,
                 minlength: 15,
                 maxlength: 15,

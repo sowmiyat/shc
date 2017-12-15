@@ -131,7 +131,7 @@
 										</div>
 										<div class="col-md-4 col-sm-4 col-xs-12 landline_mobile">
 											<div class="form-group">
-												<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Landline<span class="required">*</span>
+												<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Landline
 												</label>
 												<div class="col-md-6 col-sm-6 col-xs-12">
 													<input type="text" id="ws_billing_landline_mobile" name="landline" autocomplete="off" class="form-control has-feedback-left" onkeypress="return isNumberKey(event)" maxlength="8"  value="<?php if(isset($bill_fdata)){ echo $bill_fdata->landline; } ?>" >
@@ -150,7 +150,7 @@
 										</div>
 										<div class="col-md-4 col-sm-4 col-xs-12">
 											<div class="form-group">
-												<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Company Name
+												<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Company Name<span class="required">*</span>
 												</label>
 												<div class="col-md-6 col-sm-6 col-xs-12">
 													<input type="text" id="ws_billing_company" name="company" autocomplete="off" class="customer_check" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->company_name; } ?>" >
