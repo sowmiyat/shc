@@ -208,7 +208,7 @@
 
 </style>
 <!-- New Table -->
-<div class="A4 print-table ">
+<div class=" print-table ">
     <div class="sheet padding-10mm">
     <div class="inner-container" >
       <table class="customer-detail " style="margin-top: 20px;margin-bottom:2px;  border-collapse: collapse; " >
