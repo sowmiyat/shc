@@ -84,7 +84,7 @@
 
 
       .A4_HALF {
-        width: 110mm;
+        width: 100mm;
       }
       .inner-container {
         padding-left: 20mm;
@@ -127,43 +127,63 @@
 
 <body>
 
-  <div class="A4_HALF">
+ <div class="A4_HALF">
 	<div class="sheet padding-10mm">
 	  <?php
 		  if($bill_data) {
 	  ?>
 		<table cellspacing='3' cellpadding='3' WIDTH='100%' >
-		  <tr>
-		  <td valign='top' WIDTH='50%'><strong>Saravana Health Store</strong>
-		  <br/>7/12,Mg Road,Thiruvanmiyur,
-		  <br/>Chennai,Tamilnadu,
-		  <br/>Pincode-600041.
-		  <br/>Cell:9841141648
-
-		  <td valign='top' WIDTH='50%'>
-			  <table>
-				<tr><td>Inv No</td><td>: <?php echo 'INV '.$bill_fdata->inv_id; ?></td></tr>
-				<tr><td>Name</td><td>: <?php echo $bill_fdata->customer_name; ?></td></tr>
-				<tr><td>Date</td><td>: <?php echo date("d/m/Y"); ?></td></tr>
-				<tr><td>Mobile</td><td>: <?php echo $bill_fdata->mobile; ?></td></tr>
-				<tr><td>Addr</td><td>: <?php echo $bill_fdata->address; ?></td></tr>
-			  </table>
-		  </td>
+		  <tr class="text-center" >
+			  <td valign='top' WIDTH='50%'>
+				  <strong>Saravana Health Store</strong>
+				  <span style=" font-size: 13px; " ><br/>7/12,Mg Road,Thiruvanmiyur,
+				  <br/>Chennai-41, Tamilnadu.		 
+				  <br/>PH : 9841141648
+				  <br/>GST No : 33BMDPA4840E1ZP</span>
+			  </td>
 		  </tr>
 		</table>
 
-		<br />
-		<br/>
-		<table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" >
+		<table cellspacing='3' cellpadding='3' WIDTH='100%' >
 		  <tr>
-		  <th valign='top'>SNO</th>
-		  <th valign='top'>PRD</th>
-		  <th valign='top'>HSN</th>
-		  <th valign='top'>QTY</th>
-		  <th valign='top'>MRP</th>
-		  <th valign='top'>Dis.Price</th>
-		  <th valign='top'>SUB TOTAL</th>
+			  <td valign='top' WIDTH='50%'>Customer : <?php echo $bill_fdata->customer_name; ?> </td>			 	  
+			  <td valign='top' WIDTH='50%'>Address : <?php echo $bill_fdata->address; ?></td>			 	  
+		  </tr>
+		  <tr>			  
+			  <td valign='top' WIDTH='50%'>Phone No :<?php echo $bill_fdata->mobile; ?> </td>		  
+		  </tr>
+		  
+		</table>
+		<div class="text-center" >CASH BILL</div>
+		<table cellspacing='3' cellpadding='3' WIDTH='100%' >
+		  <tr>
+			  <td valign='top' WIDTH='70%'>Inv No : <b><?php echo 'INV '.$bill_fdata->inv_id; ?></b></td>
+			  <td valign='top' WIDTH='70%'>Time : </td>		  
+		  </tr>
+		  <tr>
+		  	<td valign='top' WIDTH='30%'>Date : <?php echo date("d/m/Y"); ?></td>
+		  	<td valign='top' WIDTH='30%'> </td>
+		  </tr>
+		</table>
+		<style>
+			.dotted_border_top  {
+				border-top: 1px dashed #000;				
 
+			}
+			.dotted_border_bottom  {				
+				border-bottom: 1px dashed #000;
+			}
+		</style>
+
+		<table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" >
+			<tr>
+			  <th class="dotted_border_top dotted_border_bottom"  valign='top' align='center'>SNO</th>
+			  <th class="dotted_border_top dotted_border_bottom"  valign='top' align='center'>PRD</th>
+			  <th class="dotted_border_top dotted_border_bottom"  valign='top' align='center'>HSN</th>
+			  <th class="dotted_border_top dotted_border_bottom"  valign='top' align='center'>QTY</th>
+			  <th class="dotted_border_top dotted_border_bottom"  valign='top' align='center'>MRP</th>
+			  <th class="dotted_border_top dotted_border_bottom"  valign='top' align='center'>Dis.Price</th>
+			  <th class="dotted_border_top dotted_border_bottom"  valign='top' align='center'>SUB TOTAL</th>
 		  </tr>
 		  <tr>
 
@@ -181,36 +201,49 @@
 		  <td valign='top' align='left'><?php echo $d_value->sale_unit; ?></td>
 		  <td valign='top' align='left'><?php echo $d_value->unit_price; ?></td>
 		  <td valign='top' align='left'><?php echo $d_value->discount; ?></td>
-		  <td valign='top' align='left'><?php echo $d_value->sub_total; ?></td></tr>
+		  <td valign='top' align='right'><?php echo $d_value->sub_total; ?>&nbsp;&nbsp;&nbsp;</td></tr>
 
 		  <?php
 				$i++;
 				  }
 				} 
-			  ?>  
+			  ?> 
+
+		  <tr> 
+		  	 <td class="dotted_border_top dotted_border_bottom" colspan="6" valign='top' align='center'><b>NET AMOUNT:</b></td>
+		  	 <td  class="dotted_border_top dotted_border_bottom" valign='top' align='right'><span class="amount"><?php echo '<b>'.$bill_fdata->sub_total.'</b>'; ?>&nbsp;&nbsp;&nbsp;</span></td>
+		  </tr>
 		</table>
+
+
 	  <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped">
+		  <!-- <tr>
+			  <td valign='top' colspan="3" >No.Of.Items : 4    </td>
+			  <td valign='top'  align='right' >Total Qty : 10&nbsp;&nbsp;&nbsp;</td>
+		  </tr> -->
 		  <tr>
-			<td valign='top' align='center'><b>NET AMOUNT:</b></td>
-			  <td valign='top' align='left' style="width:62px;"><span class="amount"><?php echo '<b>'.$bill_fdata->sub_total.'</b>'; ?></span></td>
+			<td colspan="3" valign='top'  align='right' >Discount:</td>
+			  <td valign='top' align='right' >
+				  <span class="amount">
+				  	<?php 
+				  	if($bill_fdata->discount_type == 'cash') {
+						echo $bill_fdata->discount; 
+					} else {
+								echo $bill_fdata->discount + 0;
+								echo '%';
+							}
+					?>
+						
+					</span>
+				</td>
 		  </tr>
 		  <tr>
-			<td valign='top' align='right'>Discount:</td>
-			  <td valign='top' align='left'><span class="amount"><?php if($bill_fdata->discount_type == 'cash') {
-								  echo $bill_fdata->discount; }
-								  else {
-									echo $bill_fdata->discount + 0;
-									echo '%';
-								  }
-								  ?></span></td>
+			<td colspan="3" valign='top'  align='right'>Paid Amount:</td>
+			<td valign='top' align='right'><span class="amount"><?php echo $bill_fdata->paid_amount; ?>&nbsp;&nbsp;&nbsp;</span></td>
 		  </tr>
 		  <tr>
-			<td valign='top' align='right'>Paid Amount:</td>
-			  <td valign='top' align='left'><span class="amount"><?php echo $bill_fdata->paid_amount; ?></span></td>
-		  </tr>
-		  <tr>
-			<td valign='top' align='right'>Balance:</td>
-			  <td valign='top' align='left'><span class="amount"><?php echo $bill_fdata->return_amt; ?></span></td>
+			<td  colspan="3" align='right' class=" dotted_border_bottom" valign='top' align='right'>Balance:</td>
+			<td  class=" dotted_border_bottom" valign='top' align='right'><span class="amount"><?php echo $bill_fdata->return_amt; ?>&nbsp;&nbsp;&nbsp;</span></td>
 		  </tr>
 	  </table>
 
@@ -218,10 +251,13 @@
             }
           ?>
                 <!-- <table class="table table-bordered" style="margin-top:10px;margin-bottom: 5px;width: 120mm;"> -->
-		<table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped">
+		<table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" style="font-size:15px;" >
 		  <thead>
+		  	<tr>
+		  		<th colspan="5" class="dotted_border_bottom"  align="center" >GST Details</th>
+		  	</tr>		  
 			<tr>
-			  <th class="center-th" style="width:90px;padding:0;" rowspan="2">
+			  <th valign='top' class="center-th" style="width:90px;padding:0;" rowspan="2">
 				<div class="text-center">Taxable Value</div>
 			  </th>
 			  <th class="center-th" style="padding: 0;" colspan="2">
@@ -241,11 +277,11 @@
 		  <tbody>
 
 
-			<?php  if(isset($gst_data)) { 
-					  $total_tax=0;
-							foreach( $gst_data as $g_data) {
-
-					 ?>
+			<?php  
+			if(isset($gst_data)) { 
+			  	$total_tax=0;
+				foreach( $gst_data as $g_data) {
+			?>
 					<tr class="">
 						<td class=""><div class="text-right">Rs. <?php  echo $g_data->sale_amt; ?></div></td>
 						<td class=""><div class="text-right"><?php echo $g_data->cgst; ?> % </div></td>
@@ -253,24 +289,42 @@
 						<td class=""><div class="text-right"><?php echo $g_data->cgst; ?> % </div></td>
 						<td class=""><div class="text-right"><?php echo $g_data->sale_sgst; ?></div></td>
 					</tr>
-					  <?php $total_tax = ( 2 * $g_data->sale_sgst) +$total_tax;
-							}
-						  } ?>
-				  <td colspan="4">
-					<div class="text-center">
-					  Total Tax
-					</div>
-				  </td>
-				  <td>
-					<div class="text-right">
-					 <?php echo $total_tax; ?>
-					</div>
-				  </td>
-				</tr>
+					 <?php 
+					 $total_tax = ( 2 * $g_data->sale_sgst) +$total_tax;
+				}
+			} ?>
+			<tr class="">
+				<td class=""><div class="text-right"></div></td>
+				<td class=""><div class="text-right"></div></td>
+				<td class=""><div class="text-right"><?php echo $g_data->sale_cgst; ?></div></td>
+				<td class=""><div class="text-right"></div></td>
+				<td class=""><div class="text-right"><?php echo $g_data->sale_sgst; ?></div></td>
+			</tr>
+			<tr>
+			  <td  class="dotted_border_bottom" colspan="4">
+				<div class="text-center">
+				  <b>Total Tax</b>
+				</div>
+			  </td>
+			  <td class="dotted_border_bottom" >
+				<div class="text-right">
+				 <b><?php echo $total_tax; ?></b>
+				</div>
+			  </td>
+			</tr>
 		  </tbody>
 		</table>
+		<div style="text-align: center;" >Thank You !!!. Visit Again !!!.</div>
 	</div>
 
 </div>
+
+
+
+
+
+
+
+
 </body>
 </html>
