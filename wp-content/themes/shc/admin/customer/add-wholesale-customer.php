@@ -25,14 +25,6 @@ input[type=number]::-webkit-outer-spin-button {
 				<div class="x_content">
 
 					<form class="form-horizontal form-label-left wholesale_submit" id="create_customer">
-
-						<div class="form-group">
-							<input type="hidden" value="off" name="form_submit_prevent" class="form_submit_prevent_ws_customer" id="form_submit_prevent_ws_customer"/>
-							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Customer Name</label>
-							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="text" id="customer_name" name="customer_name" class="form-control col-md-7 col-xs-12 customer_check" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->customer_name : ''; ?>">
-							</div>
-						</div>
 						<div class="form-group">
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Company Name <span class="required">*</span>
 							</label>
@@ -41,6 +33,14 @@ input[type=number]::-webkit-outer-spin-button {
 								
 							</div>
 						</div>
+						<div class="form-group">
+							<input type="hidden" value="off" name="form_submit_prevent" class="form_submit_prevent_ws_customer" id="form_submit_prevent_ws_customer"/>
+							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Customer Name</label>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+								<input type="text" id="customer_name" name="customer_name" class="form-control col-md-7 col-xs-12 customer_check" autocomplete="off" value="<?php echo ($wholesale_customer) ? $wholesale_customer->customer_name : ''; ?>">
+							</div>
+						</div>
+						
 						<div class="divider-dashed"></div>
 						<div class="form-group">
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Primary Mobile 
@@ -76,7 +76,7 @@ input[type=number]::-webkit-outer-spin-button {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Address 
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<textarea id="address" name="address" class="form-control col-md-7 col-xs-12" autocomplete="off"><?php echo ($wholesale_customer) ? $wholesale_customer->address : ''; ?></textarea>
+								<textarea id="address" name="address" class="form-control col-md-7 col-xs-12 address" autocomplete="off" style="border: 2px solid rgb(238, 238, 238);"><?php echo ($wholesale_customer) ? $wholesale_customer->address : ''; ?></textarea>
 							</div>
 						</div>
 						<div class="divider-dashed"></div>

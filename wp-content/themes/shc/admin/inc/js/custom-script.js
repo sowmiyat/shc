@@ -11,14 +11,21 @@ function clearPopup() {
 }
 
 jQuery(document).ready(function(){
-    jQuery('.stock_from, .stock_to, .bill_from, .bill_to, .customer_from, .customer_to,.cheque_date').datepicker({
+
+    jQuery('.stock_from, .stock_to, .bill_from, .bill_to, .customer_from, .customer_to,.cheque_date,.creditdebit_date,.date').datepicker({
     showButtonPanel: true,
     changeMonth: true,
     changeYear: true,
     showOtherMonths: true,
     selectOtherMonths: true, 
-    dateFormat: "yy-mm-dd"
+    dateFormat: "yy-mm-dd",
+
+    onClose: function ()
+    {
+        this.focus();
+    }
     });
+
 
 	jQuery('#my-button-new').on('click', function(){
 		jQuery('.popup_box').bPopup();
@@ -115,10 +122,31 @@ jQuery(document).ready(function(){
         }
     );
 
-//<-----------company name and customer name validation--------->
-    jQuery('.customer_check,.unique_product').on('change', function(e) {
-        var capital_str = jQuery(this).val();
+     jQuery.validator.addMethod(
+        "accountValidate", 
+        function(value, element) {
+            var alphanumers = /^\d{9,20}$/;
+            if(!alphanumers.test(value)){
+                return false;
+            }
+            return true;
+        }
+    );
 
+     jQuery.validator.addMethod(
+        "ifscValidate", 
+        function(value, element) {
+            var alphanumers = /^[0-9a-zA-Z]+$/;
+            if(!alphanumers.test(value)){
+                return false;
+            }
+            return true;
+        }
+    );
+
+//<-----------company name and customer name validation--------->
+    jQuery('.customer_check,.unique_product,.address').on('change', function(e) {
+        var capital_str = jQuery(this).val();
         var res = capital_str.split(" ");
         var full_str = '';
         jQuery.each(res, function(e, value){
@@ -132,7 +160,7 @@ jQuery(document).ready(function(){
                 full_str = full_str + value + ' ';
              }
         });
-
+    
         jQuery(this).val(full_str.trim());
     });
 //<---- maxlength validation----->
@@ -147,7 +175,7 @@ jQuery(document).ready(function(){
     });
 
     //<------- GST Validation --->
-    jQuery('#gst_number,#ws_billing_gst').unbind('keyup change input paste').bind('keyup change input paste',function(e){
+    jQuery('#gst_number,#ws_billing_gst,#profile_gst_number,.length').unbind('keyup change input paste').bind('keyup change input paste',function(e){
         var this_val = jQuery(this);
         var val = this_val.val();
         var valLength = val.length;
@@ -170,7 +198,26 @@ jQuery('#brand_name,#product_name').on('change',function(){
 
 });
 //<------- End Trim function ---------->
+jQuery('.ws_paid_amount,.paid_amount').keypress(function(e){ 
+   if (this.value.length == 0 && e.which == 48 ){
+      return false;
+   }
 });
+
+// .popup_form .form_detail {
+//     width: 46%;
+//     float: left;
+//     /* margin: 0 10px 5px; */
+//     height: 41px;
+// }
+
+
+//<-------- select  function----->
+// jQuery("#ws_billing_customer,#ws_billing_company,#pro_number,#billing_customer,#billing_mobile,#ws_billing_mobile").focus(function() { 
+//     jQuery(this).select(); 
+
+// });
+ });
 
 
 
@@ -199,17 +246,32 @@ function managePopupContent( data ) {
       return true;
    }
 
+    function isNumberKeyDelivery(evt)
+    {
+
+        var theEvent = evt || window.event;
+        var key = theEvent.keyCode || theEvent.which;
+        key = String.fromCharCode( key );
+        var regex = /^[0-9.+, ]+$/;
+        if( !regex.test(key) ) {
+            theEvent.returnValue = false;
+            if(theEvent.preventDefault) theEvent.preventDefault();
+        }
+   }
+
     function isNumberKeyWithDot(evt)
-   {
+    {
         var charCode = (evt.which) ? evt.which : event.keyCode;
         if (charCode != 46 && charCode > 31
             && (charCode < 48 || charCode > 57))
              return false;
 
         return true;
-   }
+    }
+
 
     function isUpperCase(str) {
         return str === str.toUpperCase();
     }
 
+    

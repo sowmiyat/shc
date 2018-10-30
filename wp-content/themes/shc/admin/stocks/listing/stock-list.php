@@ -70,17 +70,42 @@ jQuery(document).ready(function () {
             }
         }
     });
-    
+    jQuery(".ppage").live('keydown', function(e) { 
+      var keyCode = e.keyCode || e.which; 
+
+      if (event.shiftKey && event.keyCode == 9) { 
+            e.preventDefault(); 
+        // call custom function here
+            jQuery('.last_list_view').focus();
+        } else if(event.keyCode == 9){
+            e.preventDefault(); 
+            jQuery('.brand_name').focus();
+        } else {
+         jQuery('.ppage').focus();
+        }
+    });
     jQuery('.filter-section input[type="text"]:last').live('keydown', function(e){
 
         if(jQuery('.jambo_table td a').length == 0 && jQuery(".next.page-numbers").length == 0 ) {
 
             var keyCode = e.keyCode || e.which; 
-            if (keyCode == 9) { 
+
+            if (event.shiftKey && event.keyCode == 9) { 
                 e.preventDefault(); 
                 // call custom function here
-                jQuery('.ppage').focus()
+                 jQuery('.stock_from').focus();
+            } 
+            else if ( event.keyCode == 9){
+                e.preventDefault(); 
+                // call custom function here
+               jQuery('.ppage').focus();
             }
+            else{
+
+              
+                jQuery('.filter-section input[type="text"]:last').focus();
+            }
+            
         }
 
     });
@@ -90,11 +115,21 @@ jQuery(document).ready(function () {
 
         if(jQuery(this).parent().parent().next('tr').length == 0 && jQuery(".next.page-numbers").length == 0) {
             var keyCode = e.keyCode || e.which; 
-            if (keyCode == 9) { 
+           if (event.shiftKey && event.keyCode == 9) { 
                 e.preventDefault(); 
                 // call custom function here
-                jQuery('.ppage').focus()
+                 jQuery(this).parent().parent().find('.list_update').focus();
             } 
+            else if ( event.keyCode == 9){
+                e.preventDefault(); 
+                // call custom function here
+               jQuery('.ppage').focus();
+            }
+            else{
+
+              
+                jQuery(this).parent().parent().find('.last_list_view').focus();
+            }
         }
     });
 

@@ -16,7 +16,7 @@
             $gst_slab = gst_group_cancel($bill_id);
             $gst_data = $gst_slab['gst_data'];
     }
-
+$profile = get_profile1();
 ?>
 <script>
 function print_current_page()
@@ -32,7 +32,7 @@ setTimeout(printPage.print(), 5);
       <div class="x_panel">
         <div class="x_title">
             
-                <a class="btn btn-default pull-right" href="#" target="_blank" onclick="print_current_page();"><i class="fa fa-print"></i> Print</a> 
+               
            
             <div class="clearfix"></div>
         </div>
@@ -47,7 +47,7 @@ setTimeout(printPage.print(), 5);
                 <div class="col-xs-12 invoice-header">
                     <h1>
                         <i class="fa fa-globe"></i> Invoice Number.   <?php echo $bill_fdata->id; ?>
-                        <small class="pull-right"><?php echo $bill_fdata->created_at; ?></small>
+                        <small class="pull-right"><?php echo $bill_fdata->modified_at; ?></small>
                     </h1>
                 </div>
                 <!-- /.col -->
@@ -57,11 +57,11 @@ setTimeout(printPage.print(), 5);
               <div class="col-sm-4 invoice-col">
                 From
                 <address>
-                    <strong>Saravana Health Store</strong>
-                    <br>7/12,Mg Road,Thiruvanmiyur
-                    <br>Chennai,Tamilnadu,
-                    <br>Pincode-600041.
-                    <br>Cell:9841141648.
+                    <strong><?php echo $profile ? $profile->company_name : '';  ?></strong>
+                    <br/><?php echo $profile ? $profile->address : '';  ?>
+                    <br/><?php echo $profile ? $profile->address2 : '';  ?>
+                    <br/>Cell : <?php echo $profile ? $profile->phone_number : '';  ?>
+                    <br/>GST No : <?php echo $profile ? $profile->gst_number : '';  ?>
                 </address>
               </div>
               <!-- /.col -->
@@ -102,7 +102,7 @@ setTimeout(printPage.print(), 5);
                       <th style="width:90px;">CGST</th>
                       <th style="width:90px;">CGST AMOUNT</th>
                       <th style="width:90px;">SGST</th>
-                      <th style="width:90px;">SGST AMONUT</th>
+                      <th style="width:90px;">SGST AMOUNT</th>
                       <th style="width:120px;">SUB TOTAL</th>
                     </tr>
                   </thead>
@@ -221,30 +221,33 @@ setTimeout(printPage.print(), 5);
                     <tbody>
                       
                       <tr>
-
+                        <?php if($bill_fdata->discount != 0){ ?>
                         <th>Discount:</th>
                         <td><?php 
                           echo $bill_fdata->discount + 0;
                           echo '%';
                         
                         ?></td>
+
+                      <?php   } ?>
+                        
                       </tr>
                       <tr>
-                        <th style="width:50%">Subtotal:</th>
+                        <th style="width:50%">Amount Payable:</th>
                         <td><?php echo $bill_fdata->sub_total; ?></td>
                       </tr>
                        <tr>
-                        <th>Paid Amount:</th>
+                        <th>Amount Paid :</th>
                         <td><?php echo $bill_fdata->paid_amount; ?></td>
                       </tr>
-                      <tr>
+                      <!-- <tr>
                         <th>Balance Amount:</th>
                         <td><?php echo $bill_fdata->return_amt; ?></td>
-                      </tr>
-                      <tr>
+                      </tr> -->
+                     <!--  <tr>
                         <th>Payment Type:</th>
                         <td><?php echo $bill_fdata->payment_type; ?></td>
-                      </tr>
+                      </tr> -->
                        <tr>
                         <th>Home Delivery:<br/></th>
                           <td>
@@ -262,6 +265,8 @@ setTimeout(printPage.print(), 5);
                       </tr>
                     </tbody>
                   </table>
+
+                   <a class="btn btn-default pull-right" href="javascript:void(0)" target="_blank" onclick="print_current_page();"><i class="fa fa-print"></i> Print</a> 
                 </div>
               </div>
               <!-- /.col -->
@@ -284,10 +289,11 @@ setTimeout(printPage.print(), 5);
   </div>
 </div>
 
-
+<script type="text/javascript">
+    jQuery('.pull-right').focus();
+</script>
 
   
-
 
 
 
@@ -382,15 +388,6 @@ setTimeout(printPage.print(), 5);
       display: none;
     }
 
-    .A4 .footer {
-      bottom: 0px;
-      left: 0px;
-    }
-    .A4 .footer .foot {
-        background-color: #67a3b7 !important;
-        -webkit-print-color-adjust: exact;
-    }
-
   }
   /** Fix for Chrome issue #273306 **/
   @media print {
@@ -414,114 +411,6 @@ setTimeout(printPage.print(), 5);
 
 
 
-
-    .A4 .footer {
-      position: fixed;
-      bottom: 0px;
-      left: 0px;
-    }
-    .A4 .footer .foot {
-        background-color: #67a3b7 !important;
-        -webkit-print-color-adjust: exact;
-    }
-  }
-
-  @page { margin: 0;padding: 0; }
-  .sheet {
-    margin: 0;
-  }
-
-
-      .A4 {
-        width: 210mm;
-      }
-      .inner-container {
-        padding-left: 20mm;
-        padding-right: 20mm;
-        width: 210mm;
-      }
-      .left-float {
-        float: left;
-      }
-
-
-      .company-detail {
-        height: 100px;
-      }
-      .company-detail .company-name h3 {
-        font-family: serif;
-        font-weight: bold;
-        font-size: 18px;
-        margin-bottom: 3px;
-      }
-      .company-detail .company-address-txt {
-          font-size: 13px;
-          font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-      }
-      .text-center {
-        text-align: center;
-      }
-      .text-rigth {
-        text-align: right;
-      }
-      .table td, .table th {
-        background-color: transparent !important;
-      }
-
-
-      .table>tbody>tr>td {
-        padding: 0 3px;
-        height: 20px;
-      }
-      .table-bordered>tbody>tr>td, .table-bordered>thead>tr>th {
-        border: 1px solid #000 !important;
-        -webkit-print-color-adjust: exact;
-      }
-
-      .billing-title {
-        text-align: center;
-        font-weight: bold;
-        font-size: 14px;
-          text-decoration: underline;
-      }
-      .A4 h3 {
-        margin-top: 0px;
-      }
-
-
-
-
-
-
-
-
-  .company-logo {
-    width: 50mm;
-  }
-  .company-address {
-    width: 70mm;
-  }
-  .invoice-detail {
-    width: 50mm;
-  }
-
-  .invoice-no {
-    margin-bottom: 15px;
-    font-size: 18px;
-  }
-  .buyer-detail, .delivery-detail {
-    min-height: 100px;
-    padding: 20px 10px 20px 10px;
-  }
-  .buyer-address, .delivery-address {
-    padding-left: 10px;
-    min-height: 80px;
-  }
-  .header-txt {
-    font-size: 10px;
-  }
-  .sale-table-invoice tbody {
-    font-size: 13px;
   }
 
 
@@ -529,183 +418,195 @@ setTimeout(printPage.print(), 5);
 
 
 
-  <div class="A4">
+<!DOCTYPE html>
+<html>
+<head>
+  
+
+<meta charset="utf-8">
+<style type="text/css">
+
+
+
+  /** Fix for Chrome issue #273306 **/
+  @page {
+    size: A4;
+    margin: 20px;
+  }
+  @media print {
+    html, body {
+      width: 210mm;
+      height: 297mm;
+      
+    }
+
+   
+    /* ... the rest of the rules ... */
+  }
+
+ 
+    .sheet {
+      margin: 0;
+    }
+    
+    .inner-container {
+      padding-left: 0mm;
+      padding-right: 20mm;        
+      width: 210mm;
+    }      
+    
+
+/*  New Format csss */
+    .print-table {
+      padding-top: 5mm;
+      font-size: 16px;
+    }
+    .print-table hr {
+      color: #000;
+    }
+    .print-table tr td {
+      border: 1px solid #000;
+      padding: 5px;
+    }
+    .print-table table {
+      color: #000;
+      /*border-collapse: collapse;*/
+    }
+    .declare_section {
+      padding-top: 20px;
+      padding-left: 30px;
+    }
+    .text_bold {
+      font-weight: bold;
+    }
+    .text_center {
+      text-align: center;
+    }
+    .footer table tr td {
+      border: none;
+    }
+    .strikethrough {
+      position: relative;
+    }
+    .strikethrough:before {
+      position: absolute;
+      content: "";
+      left: 0;
+      top: 50%;
+      right: 0;
+      border-top: 1px solid;
+      border-color: inherit;
+
+      -webkit-transform:rotate(-45deg);
+      -moz-transform:rotate(-45deg);
+      -ms-transform:rotate(-45deg);
+      -o-transform:rotate(-45deg);
+      transform:rotate(-45deg);
+    }
+     table { page-break-inside:auto }
+    tr    { page-break-inside:avoid; page-break-after:auto }
+
+</style>
+<!-- New Table -->
+
+<div class="A4 page-break strikethrough">
+<div class=" print-table">
     <div class="sheet padding-10mm">
 
-
-
-
-
-
-
-
-
-      <table> 
-        <thead>
-          <tr>
-            <td>
-              <div class="customer-detail inner-container" style="margin-top: 20px;margin-bottom:2px;">
-                  <table>
-                    <tr>
-                      <td>
-                        <div class="company-logo">
-                          <img style="width:165px" src="<?php echo get_template_directory_uri().'/admin/billing/inc/images/tax.png'; ?>">
-                        </div>
-                      </td>
-                      <td>
-                        <div class="company-address company-detail">
-                          <div class="company-name">
-                            <h3>SARAVANA HEALTH STORE</h3>
-                          </div>
-                          <div class="company-address-txt">
-                            No-12/7, MG Road,
-                          </div>
-                          <div class="company-address-txt">
-                            Thiruvanmiyur,
-                          </div>
-                          <div class="company-address-txt">
-                            Chennai - 600041
-                          </div>
-                          <div class="company-address-txt">
-                            <b>GST No - 33BMDPA4840E1ZP</b>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="invoice-detail company-detail">
-                          <div class="company-address-txt">
-                            <div class="invoice-no">INVOICE NO - <?php echo  $_GET['id']; ?></div>
-                          </div>
-                          <div class="company-address-txt">
-                            <b>DATE - <?PHP echo $bill_fdata->created_at; ?></b>
-                          </div>
-
-                          <div class="company-address-txt">
-                            <b>STATE : TAMILNADU</b>
-                          </div>
-                          <div class="company-address-txt">
-                            <b>STATE CODE : 33</b>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  </table>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="customer-detail inner-container" style="margin-top: 20px;margin-bottom:2px;">
-                
-              </div>
-            </td>
-          </tr>
-        </thead>
+    <div class="inner-container" >
+      <table class="customer-detail " style="margin-top: 20px;margin-bottom:2px;  border-collapse: collapse; " >
         <tbody>
-
-      <?php
-        $pages = false;
-        $per_page = 12;
-        $pieces = false;
-        $tota_row = 0;
-
-        if($bill_data) {
-          $pages = ceil(count($bill_ldata)/$per_page);
-          $pieces = array_chunk($bill_ldata, $per_page);
-          $tota_row = count($bill_ldata);
-          $reminder = ($tota_row % $per_page);
-        }
-
-
-        $page_total[-1] = 0;
-        for ($i = 0; $i < $pages; $i++) { 
-          $tot_tmp = 0;
-          foreach ($pieces[$i] as $key => $h_value) {
-            $tot_tmp = $tot_tmp + $h_value->hiring_amt;
-          }
-          $page_total[$i] = $page_total[$i-1] + $tot_tmp;
-        }
-
-
-            for ($i = 0; $i < $pages; $i++) { 
-              $page_start = ( $i * $per_page ) + 1;
-              $current_page = ($i + 1);
-          ?>
             <tr>
-              <td>
-                <div class="inner-container" style="margin-top: 0px;">
-                  <div class="bill-detail">
-                    <table class="table table-bordered sale-table-invoice" style="margin-bottom: 2px;">
-                      <thead>
-                        <tr>
-                          <th colspan="7">
-                            <div class="buyer-detail">
-                              BUYER,<br>
-                              <div class="buyer-address">
-                               <?php echo $bill_fdata->company_name; ?><br>
-								<?php echo $bill_fdata->customer_name; ?><br>
-								<?php echo $bill_fdata->mobile; ?><br>
-                               <?php echo $bill_fdata->address; ?><br>
-							  <b> GST NO<?php echo $bill_fdata->gst_number; ?></b>
-                              </div>
-                            </div>
-                          </th>
-                          <th colspan="5">
-                            <div class="delivery-detail">
-                              DELIVERY ADDRESS,<br>
-                              <div class="delivery-address">
-                                <?php echo $bill_fdata->home_delivery_name; ?><br>
-								<?php echo $bill_fdata->home_delivery_mobile; ?><br>
-								<?php echo $bill_fdata->home_delivery_address; ?><br>
-                              </div>
-                            </div>
-                          </th>
-                        </tr>
-                        <tr class="header-txt">
-                          <th style="width:25px;padding:0;line-height: 40px;" class="center-th" rowspan="2">
-                            <div class="text-center">S.No</div>
-                          </th>
-                          <th class="center-th" style="width:50px;line-height: 15px;" rowspan="2">
-                            <div class="text-center">HSN<br>CODE</div>
-                          </th>
-                          <th class="center-th" style="line-height: 40px;" rowspan="2">
-                            <div class="text-center">PRODUCTS</div>
-                          </th>
-                          <th class="center-th" style="width:35px;padding:0;line-height: 40px;" rowspan="2">
-                            <div class="text-center">QTY</div>
-                          </th>
-                          <th class="center-th" style="width:35px;padding:0;line-height: 13px;" rowspan="2">
-                            <div class="text-center">MRP<br>Per Piece</div>
-                          </th>
-                          <th class="center-th" style="width:35px;padding:0;line-height: 15px;" rowspan="2">
-                            <div class="text-center">DISCOUNTED<br>Price</div>
-                          </th>
-                          <th class="center-th" style="width:35px;padding:0;line-height: 40px;" rowspan="2">
-                            <div class="text-center">AMOUNT</div>
-                          </th>
-                          <th class="center-th" style="padding: 0;" colspan="2">
-                            <div class="text-center">CGST</div>
-                          </th>
-                          <th class="center-th" style="padding: 0;" colspan="2">
-                            <div class="text-center">SGST</div>
-                          </th>
-                          <th class="center-th" style="padding: 0;width: 80px;line-height: 15px;" rowspan="2">
-                            <div class="text-center">TOTAL<br>AMOUNT</div>
-                          </th>
-                        </tr>
-                        <tr class="header-txt">
-                          <th style="padding: 0;width: 35px;"><div class="text-center">RATE</div></th>
-                          <th style="padding: 0;width: 50px;"><div class="text-center">AMOUNT</div></th>
-                          <th style="padding: 0;width: 35px;"><div class="text-center">RATE</div></th>
-                          <th style="padding: 0;width: 50px;"><div class="text-center">AMOUNT</div></th>
-                        </tr>
-                      </thead>
+                <td colspan="12" style=" text-align: center; font-weight: bold; font-size: 22px;"  ><b>TAX INVOICE</b><h1><b style="color:red;">CANCELLED</b></h1></td>
+            </tr>
+            <tr>
+                <td colspan="8">
+                  <p><strong><?php echo $profile ? $profile->company_name : '';  ?></strong>
+                <br/><?php echo $profile ? $profile->address : '';  ?>
+                <br/><?php echo $profile ? $profile->address2 : '';  ?>
+                <br/>Cell : <?php echo $profile ? $profile->phone_number : '';  ?>
+                <br/>GST No : <?php echo $profile ? $profile->gst_number : '';  ?></p>
+                </td>
+                <td colspan="4">
+                  <b>INVOICE NO - <?php echo 'Inv '.$_GET['id']; ?><br> 
+                  DATE - <?php $timestamp = $bill_fdata->modified_at; 
+        $splitTimeStamp = explode(" ",$timestamp);
+        echo $date = $splitTimeStamp[0];?> </b>
+                  <hr>
+                  <b>STATE             : TAMILNADU <br> 
+                  STATE CODE : 33 </b>
+                </td>
+            </tr>
+             <tr>
+                <td colspan="8">
+                  <b>Buyer,</b><br>
+                  <b><?php echo $bill_fdata->company_name; ?></b><br>
+                  <?php echo $bill_fdata->customer_name; ?><br>
+                  <?php echo $bill_fdata->mobile; ?><br>
+                  <?php echo $bill_fdata->address; ?><br>
+                  <b> GST NO<?php echo $bill_fdata->gst_number; ?></b>
+                </td>                 
+                <td colspan="4">
+                  <b>DELIVERY ADDRESS</b><br>
+                  <?php echo $bill_fdata->home_delivery_name; ?><br>
+                  <?php echo $bill_fdata->home_delivery_mobile; ?><br>
+                  <?php echo $bill_fdata->home_delivery_address; ?><br>
+                </td>                
+            </tr>
+            <?php
+            // $pages = false;
+            // $per_page = 31;
+            // $pieces = false;
+            // $tota_row = 0;
+
+            
+              // $pages = ceil(count($bill_ldata)/$per_page);
+              // $pieces = array_chunk($bill_ldata, $per_page);
+              // $tota_row = count($bill_ldata);
+              // $reminder = ($tota_row % $per_page);
+            // }
+
+            // $page_total[-1] = 0;
+            // for ($i = 0; $i < $pages; $i++) { 
+            //   $tot_tmp = 0;
+            //   foreach ($pieces[$i] as $key => $h_value) {
+            //     $tot_tmp = $tot_tmp + $h_value->hiring_amt;
+            //   }
+            //   $page_total[$i] = $page_total[$i-1] + $tot_tmp;
+            // }
 
 
-                      <?php
-                      if($current_page > 1) {
+                // for ($i = 0; $i < $pages; $i++) { 
+                //   $page_start = ( $i * $per_page ) + 1;
+                //   $current_page = ($i + 1);
+
+            ?>
+           
+            <tr class="text_bold text_center">
+              <td rowspan="2">S.NO</td>
+              <td rowspan="2">HSN CODE</td>
+              <td rowspan="2">PRODUCTS</td>
+              <td rowspan="2">QTY</td>
+              <td rowspan="2">MRP Per Piece</td>
+              <td rowspan="2">Discounted Price</td>
+              <td rowspan="2">AMOUNT</td>
+              <td colspan="2">CGST</td>
+              <td colspan="2">SGST</td>
+              <td colspan="2">TOTAL</td>
+            </tr>
+            <tr class="text_bold text_center">
+              <td>RATE</td>
+              <td>AMOUNT</td>
+              <td>RATE</td>
+              <td>AMOUNT</td>
+              <td>AMOUNT</td>
+            </tr>
+            <?php
+                      //if($current_page > 1) {
+
                       ?>
-                        <tr>
+                       <!-- 
+                          <tr>
                           <td></td>
                           <td>
                             <div class="text-center">BF / TOTAL</div>
@@ -721,211 +622,155 @@ setTimeout(printPage.print(), 5);
                           <td><div class="text-right">-</div></td>
                           <td>
                             <div class="text-right">
-                              jhgjjhgj
+                             
                             </div>
                           </td>
-                        </tr>
-                      <?php
-                      }
-                      foreach ($pieces[$i] as $key => $value) {
-                      ?>
-                        <tr>
-                          <td>
-                            <div class="text-center">
-                              <?php echo $page_start ?>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="text-center">
-                              <?php echo $value->hsn; ?>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="text-left">
-                              <?php echo $value->product_name; ?>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="text-center">
-                              <?php echo $value->sale_unit; ?>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="text-rigth">
-                              <?php echo $value->unit_price; ?>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="text-rigth">
-                              <?php echo $value->discount;?>
-                            </div>
-                          </td>
-                          <td>
-                              <?php echo $value->amt; ?>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="text-center" style="text-align: right;">
-                              <?php echo $value->cgst; ?>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="text-rigth">
-                              <?php echo $value->cgst_value; ?>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="text-center">
-                              <?php echo $value->sgst; ?>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="text-rigth">
-                              <?php echo $value->sgst_value; ?>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="text-rigth">
-                              <?php echo $value->sub_total; ?>
-                            </div>
-                          </td>
-                        </tr>
+                        </tr> -->
 
                       <?php
-                        $page_start++;
-                      }
-                        if($pages == $current_page) {
+                     if($bill_data && $bill_ldata && count($bill_ldata)>0) {
+                        $i = 1;
+                        $page_start = 1;
+                        foreach ($bill_ldata as $value) {
                       ?>
-                          <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                          </tr>
-                          
-                          <tr>
-                            <td colspan="11"><div class="text-center">Discount (Hire Charges)</div></td>
-                            <td>
-                              <div class="text-rigth">
-                                <?php echo $bill_fdata->discount; ?>
-                              </div>
-                            </td>
-                          </tr>
 
-                          <tr>
-                            <td colspan="11"><div class="text-center">Total (Hire Charges)</div></td>
-                            <td>
-                              <div class="text-rigth">
-                                <?php echo $final_total = $bill_fdata->sub_total; ?>
-                              </div>
-                            </td>
-                          </tr>
-                          
-                      <?php
-                        } else {
-                      ?>
-                          <tr>
-                            <td colspan="11">
-                              <div class="text-center">CF / TOTAL</div>
-                            </td>
-                            <td>
-                              <div class="text-right">
-                                <?php echo $final_total = $bill_fdata->sub_total; ?>
-                              </div>
-                            </td>
-                          </tr>
-                      <?php
-                        }
 
-                      ?>
-                      
-                    </table>
-                  </div>
+            <tr class=" text_center">
+                <td><?php echo $page_start; ?></td>
+                <td><?php echo $value->hsn; ?></td>
+                <td><?php echo $value->product_name; ?></td>
+                <td><?php echo $value->sale_unit; ?></td>                
+                <td><?php echo $value->unit_price; ?></td>
+                <td><?php echo $value->discount;?></td>
+                <td><?php echo $value->amt; ?></td>
+                <td><?php echo $value->cgst; ?></td>
+                <td><?php echo $value->cgst_value; ?></td>
+                <td><?php echo $value->sgst; ?></td>
+                <td><?php echo $value->sgst_value; ?></td>
+                <td><?php echo $value->sub_total; ?></td>                
+            </tr>
+            <?php
+           
+            $page_start++;
+            }
+
+            
+            ?>   
+            <!-- <tr>
+              <td colspan="11" style=" text-align: right;" ><div  >Total</div></td>
+              <td>
+                <div class="text-center">
+                  <?php   $before = $bill_fdata->before_total; 
+                          $final_total = $bill_fdata->sub_total;
+                          echo $before; 
+                          ?>
                 </div>
               </td>
-            </tr>
-          <?php
+            </tr>   -->                     
+           <!--  <tr>
+              <td colspan="11" style=" text-align: right;" ><div  >Discount (%)</div></td>
+              <td>
+                <div class="text-center">
+                  <?php echo $bill_fdata->discount; ?>
+                </div>
+              </td>
+            </tr> -->
+            <!--  <tr>
+              <td colspan="11" style=" text-align: right;" ><div  >Discount (Amount)</div></td>
+              <td>
+                <div class="text-center">
+                  <?php echo $before - $final_total; ?>
+                </div>
+              </td>
+            </tr> -->
+            <tr>
+              <td colspan="11" style=" text-align: right;" ><div  >Total</div></td>
+              <td>
+                <div class="text-center"> 
+                  <?php echo $final_total; ?>
+                  
+                </div>
+              </td>
+            </tr>                       
+           <!--  <tr>                
+                <td colspan="11" style=" text-align: right;"><b>TOTAL</b></td>
+                <td class="text-center"  ><b><?php echo $final_total = $bill_fdata->sub_total; ?></b></td>
+            </tr> -->
+            <?php
+             
+            ?>
+                <!-- <tr>
+                  <td colspan="11" style="padding-bottom: 2em;border: none;">
+                    <div class="text-center">CF / TOTAL</div>
+                  </td>
+                  <td style="padding-bottom: 2em;border: none;">
+                    <div class="text-right">
+                      <?php echo $tot; ?>
+                    </div>
+                  </td>
+                </tr> -->
+            <?php
+              
+
+            ?>
+             <?php
             }
           ?>
-        </tbody>
-      </table>
-
-      <div class="inner-container" style="margin-top: 0px;">
-        <div>Amount Chargable (in words)</div>
-        <b>Rs <?php echo convert_number_to_words_full($final_total); ?></b>
-
-
-        <table class="table table-bordered" style="margin-top:10px;margin-bottom: 5px;width: 120mm;">
-          <thead>
             <tr>
-              <th class="center-th" style="width:90px;padding:0;" rowspan="2">
-                <div class="text-center">Taxable Value</div>
-              </th>
-              <th class="center-th" style="padding: 0;" colspan="2">
-                <div class="text-center">CGST</div>
-              </th>
-              <th class="center-th" style="padding: 0;" colspan="2">
-                <div class="text-center">SGST</div>
-              </th>
+                <td colspan="12">Amount Chargable ( In Words)  <b> <?php echo ucfirst(convert_number_to_words_full($final_total)); ?></b></td>
             </tr>
-            <tr>
-              <th style="padding: 0;width: 70px;"><div class="text-center">Rate</div></th>
-              <th style="padding: 0;width: 70px;"><div class="text-center">Amount</div></th>
-              <th style="padding: 0;width: 70px;"><div class="text-center">Rate</div></th>
-              <th style="padding: 0;width: 70px;"><div class="text-center">Amount</div></th>
-            </tr>
-          </thead>
-          <tbody>
 
-
-            <?php  if(isset($gst_data)) { 
-                      $total_tax=0;
-                            foreach( $gst_data as $g_data) {
-
-                     ?>
-                    <tr class="">
-                        <td class=""><div class="text-right">Rs. <?php  echo $g_data->sale_amt; ?></div></td>
-                        <td class=""><div class="text-right"><?php echo $g_data->cgst; ?> % </div></td>
-                        <td class=""><div class="text-right"><?php echo $g_data->sale_cgst; ?></div></td>
-                        <td class=""><div class="text-right"><?php echo $g_data->cgst; ?> % </div></td>
-                        <td class=""><div class="text-right"><?php echo $g_data->sale_sgst; ?></div></td>
-                    </tr>
-                      <?php $total_tax = ( 2 * $g_data->sale_sgst) +$total_tax;
-                            }
-                          } ?>
-                  <td colspan="4">
-                    <div class="text-center">
-                      Total Tax
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-right">
-                     <?php echo $total_tax; ?>
-                    </div>
-                  </td>
-                </tr>
           </tbody>
         </table>
-        <table>
-          <div>Tax Amount (in words)</div>
-          <b>Rupees <?php echo convert_number_to_words_full($total_tax); ?> </b>
+        </div>
+        <!-- TAX TABLE START -->
+        <div class="inner-container" > 
+        <table  class="customer-detail" style="margin-top: 20px;margin-bottom:2px; text-align: center;  border-collapse: collapse; ">
+          <tbody>
+            <tr class="text_bold text_center" >                
+                <td rowspan="2">TAXABLE VALUE</td>
+                <td colspan="2">CENTRAL SALES TAX</td>
+                <td colspan="2">STATE SALES TAX</td>                
+            </tr>
+            <tr class="text_bold text_center">                
+                
+                <td>RATE</td>
+                <td>AMOUNT</td>
+                <td>RATE</td>
+                <td>AMOUNT</td>                
+            </tr>
+            <?php  
+            if(isset($gst_data)) { 
+              $total_tax=0;
+              foreach( $gst_data as $g_data) {
+           ?>
+                <tr class="">
+                  <td class="amt_zero">Rs. <?php  echo $g_data->sale_amt; ?></td>
+                  <td class="cgst_zero"><?php echo $g_data->cgst; ?> % </td>
+                  <td class="cgst_val_zero"><?php echo $g_data->sale_cgst; ?></td>
+                  <td class="sgst_zero"><?php echo $g_data->cgst; ?> % </td>
+                  <td class="sgst_val_zero"><?php echo $g_data->sale_sgst; ?></td>
+                </tr>
+                <?php $total_tax = ( 2 * $g_data->sale_sgst) +$total_tax;
+                }
+              } 
+            ?>
+            <tr>
+                <td class="text_center" colspan="4" ><b>TOTAL  TAX</b></td>                
+                <td><b><?php echo $total_tax; ?></b></td>                
+            </tr>
+            <tr>   
+              <td colspan="12" style=" text-align: left;" ><b>Tax Amount (in words) : <?php echo ucfirst(convert_number_to_words_full($total_tax)); ?>  </b></td>
+            </tr>
+          </tbody>
         </table>
-      </div>
-
-
-<style type="text/css">
-  .customer-signature, .company-signature {
-    width: 85mm;
-  }
-</style>
+        </div>
+        <!-- TAX TABLE END  -->
+        <style type="text/css">
+      .customer-signature, .company-signature {
+        width: 85mm;
+      }
+    </style>
 
       <div class="footer" style="margin-bottom:20px;">
           <div class="inner-container" style="margin-top: 5px;">
@@ -934,14 +779,14 @@ setTimeout(printPage.print(), 5);
               <tr>
                 <td colspan="2">
                   <b><u>Declaration</u></b>
-                  <div style="margin-bottom:20px;">We declare that  this  invoice  shows  the  actual price of the goods described and that all particulars are true and correct</div>
+                  <div style="margin-bottom:10px;">We declare that  this  invoice  shows  the  actual price of the goods described and that all particulars are true and correct</div>
                 </td>
               </tr>
               <tr>
                 <td>
                   <div class="customer-signature">
                     <div class="company-name" style="font-family: serif;font-weight: bold;font-size: 16px;">
-                      For Saravana Health Store
+                      Customer Seal & Signature
                     </div>
                     <div style="height: 80px;"></div>
                   </div>
@@ -949,7 +794,7 @@ setTimeout(printPage.print(), 5);
                 <td>
                   <div class="company-signature">
                     <div class="company-name" style="font-family: serif;font-weight: bold;font-size: 16px;text-align:right;">
-                      Customer Seal & Signature
+                      For Saravana Health Store
                     </div>
                     <div style="margin-top: 60px;text-align:right;">Authorised Signatory</div>
                   </div>
@@ -959,12 +804,25 @@ setTimeout(printPage.print(), 5);
 
           </div>
       </div>
+  </div>
+</div>
+</div>
+
+
+
+
+
+
+
+ <!--  <div class="A4">
+    <div class="sheet padding-10mm">
+    
 
 
     </div>
-  </div>
-
-
+  </div> -->
+<body>
+  </html>
 
 
 

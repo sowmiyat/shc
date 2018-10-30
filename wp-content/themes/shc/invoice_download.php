@@ -8,8 +8,8 @@
  */
 
 $invoice_id = isset($_GET['id']) ? $_GET['id'] : 0;
-$year = isset($_GET['year']) ? $_GET['year'] : 0;
-$url = site_url( 'download-page/?id=' ).$invoice_id.'&year='.$year;
+$cur_year = isset($_GET['cur_year']) ? $_GET['cur_year'] : 0;
+$url = site_url( 'download-page/?id=' ).$invoice_id.'&cur_year='.$cur_year;
 $content =   file_get_contents($url,0,null,null);
 
 

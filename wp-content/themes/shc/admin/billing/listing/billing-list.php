@@ -39,12 +39,12 @@
 
 
                     <div class="col-md-1 form-group has-feedback">
-                        <input type="text" class="form-control  inv_id " name="inv_id" value="<?php echo $billing->inv_id; ?>" placeholder="ID" style="padding-right: 5px;">
+                        <input type="text" class="form-control  inv_id " name="inv_id" value="<?php echo $billing->inv_id; ?>" placeholder="Invoice" style="padding-right: 5px;">
                         <span class="form-control-feedback" aria-hidden="true" > </span>
                     </div>
-                    <div class="col-md-2 form-group">
+                   <!--  <div class="col-md-2 form-group">
                         <input type="text" name="order_id" class="order_id form-control" value="<?php echo $billing->order_id; ?>" placeholder="Order ID">
-                    </div>
+                    </div> -->
                     <div class="col-md-2 form-group">
                         <input type="text" name="name" class="name form-control" value="<?php echo $billing->name; ?>" placeholder="Customer Name">
                     </div>
@@ -55,7 +55,7 @@
                         <input type="text" name="bill_from" class="bill_from form-control" value="<?php echo $billing->bill_from; ?>" placeholder="Bill From">
                     </div>
                     <div class="col-md-2 form-group">
-                        <input type="text" name="bill_to" class="bill_to form-control" value="<?php echo $billing->bill_to; ?>" placeholder="Bill From">
+                        <input type="text" name="bill_to" class="bill_to form-control" value="<?php echo $billing->bill_to; ?>" placeholder="Bill To">
                     </div>
                 </div>
               <input type="hidden" name="filter_action" class="filter_action" value="billing_filter">
@@ -63,9 +63,10 @@
             </div>
         </div>
         <div class="col-md-5 form-group" style="float: right;">
-
-            <button class="btn btn-default print_invoice_list pull-right"><i class="fa fa-print"></i> Print</button>
-            <button class="btn btn-primary pull-right download_invoice_list" style="margin-right: 5px;"><i class="fa fa-file-pdf-o" href=""></i> Generate PDF</button>
+            <div class="pull-right">
+                <button class="btn btn-default print_invoice_list "><i class="fa fa-print"></i> Print</button>
+                <button class="btn btn-primary download_invoice_list" style="margin-right: 5px;"><i class="fa fa-file-pdf-o" href=""></i> Generate PDF</button>
+            </div>
         </div>
         <div class="billing_filter">
         <?php
@@ -90,7 +91,20 @@ jQuery(document).ready(function () {
             }
         }
     });
-    
+    jQuery(".ppage").live('keydown', function(e) { 
+      var keyCode = e.keyCode || e.which; 
+
+      if (event.shiftKey && event.keyCode == 9) { 
+            e.preventDefault(); 
+        // call custom function here
+            jQuery('.last_list_view').focus();
+        } else if(event.keyCode == 9){
+            e.preventDefault(); 
+            jQuery('.inv_id').focus();
+        } else {
+         jQuery('.ppage').focus();
+        }
+    });
     jQuery('.filter-section input[type="text"]:last').live('keydown', function(e){
 
         if(jQuery('.jambo_table td a').length == 0 && jQuery(".next.page-numbers").length == 0 ) {
@@ -110,10 +124,20 @@ jQuery(document).ready(function () {
 
         if(jQuery(this).parent().parent().next('tr').length == 0 && jQuery(".next.page-numbers").length == 0) {
             var keyCode = e.keyCode || e.which; 
-            if (keyCode == 9) { 
+            if (event.shiftKey && event.keyCode == 9) { 
                 e.preventDefault(); 
                 // call custom function here
-                jQuery('.ppage').focus()
+                 jQuery(this).parent().parent().find('.list_update').focus();
+            } 
+            else if ( event.keyCode == 9){
+                e.preventDefault(); 
+                // call custom function here
+               jQuery('.ppage').focus();
+            }
+            else{
+
+              
+                jQuery(this).parent().parent().find('.last_list_view').focus();
             } 
         }
     });

@@ -5,12 +5,13 @@
  * @package WordPress
  * @subpackage SHC
  */
+
     $number = 0;
     $bill_data = false;
     $invoice_id = '';
-    if(isset($_GET['id']) && $_GET['id'] != '' && isValidInvoicews($_GET['id'], 1) ) {
+    if(isset($_GET['id']) && $_GET['id'] != '' && isValidInvoicews($_GET['id'],$_GET['cur_year'],1) ) {
           $update = true;
-            $year = $_GET['year'];
+            $year = $_GET['cur_year'];
             $invoice_id['invoice_id'] = $_GET['id'];
             $bill_data = getBillDataws($invoice_id['invoice_id'],$year);
             $bill_fdata = $bill_data['bill_data'];
@@ -21,6 +22,16 @@
             $gst_slab = gst_group($bill_id);
             $gst_data = $gst_slab['gst_data'];
     }
+    $profile = get_profile1();
+    $netbank = get_netbank1();
+    $payment_type = get_wspaymenttype($_GET['id'],$_GET['year']);
+
+ $internet_check = '';
+foreach ($payment_type as $p_value) {
+  if($p_value->payment_type == 'internet'){
+    $internet_check = $p_value->payment_type;   
+  }   
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -33,115 +44,39 @@
 
 
   /** Fix for Chrome issue #273306 **/
-@page { margin: 0; }
-
-    body, html {
-      /*height: auto;
-      padding:0px;*/
-      margin: 0mm 25mm 25mm 0mm;
-
+  @page {
+    size: A4;
+    margin: 20px;
+  }
+  @media print {
+    html, body {
+      width: 210mm;
+      height: 297mm;
+      font-family: normal;
+      font-size: 12px;
+      
     }
 
-  
+   
+    /* ... the rest of the rules ... */
+  }
+
+ 
     .sheet {
       margin: 0;
     }
-    .A4 {
-        width: 210mm;
-    }
-    .A4 .footer {
-      position: fixed;
-      bottom: 0px;
-      left: 0px;
-    }
-    .A4 .footer .foot {
-        background-color: #67a3b7 !important;
-        -webkit-print-color-adjust: exact;
-    } 
+    
     .inner-container {
-      padding-left: 20mm;
-      padding-right: 20mm;        
+      padding-left: 10mm;
+      padding-right: 0mm;        
       width: 210mm;
     }      
-    .left-float {
-      float: left;
-    }
-    .company-detail {
-      height: 100px;
-    }
-    .company-detail .company-name h3 {
-      font-family: serif;
-      font-weight: bold;
-      font-size: 18px;
-      margin-bottom: 3px;
-    }
-    .company-detail .company-address-txt {
-        font-size: 13px;
-        font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-    }
-    .text-center {
-      text-align: center;
-    }
-    .text-rigth {
-      text-align: right;
-    }
-    .table td, .table th {
-      background-color: transparent !important;
-    }
-
-
-    .table>tbody>tr>td {
-      padding: 0 3px;
-      height: 20px;
-
-    }
-    .table-bordered>tbody>tr>td, .table-bordered>thead>tr>th {
-      border: 1px solid #000 !important;
-      -webkit-print-color-adjust: exact;
-    }
-
-    .billing-title {
-      text-align: center;
-      font-weight: bold;
-      font-size: 14px;
-        text-decoration: underline;
-    }
-     
-    .company-logo {
-      width: 50mm;
-    }
-    .company-address {
-      width: 70mm;
-    }
-    .invoice-detail {
-      width: 50mm;
-    }
-
-    .invoice-no {
-      margin-bottom: 15px;
-      font-size: 18px;
-    }
-    .buyer-detail, .delivery-detail {
-      min-height: 100px;
-      padding: 20px 10px 20px 10px;
-    }
-    .buyer-address, .delivery-address {
-      padding-left: 10px;
-      min-height: 80px;
-    }
-    .header-txt {
-      font-size: 10px;
-    } 
-    .sale-table-invoice tbody {
-      font-size: 13px;
-    }
-
-
+    
 
 /*  New Format csss */
     .print-table {
       padding-top: 5mm;
-      font-size: 14px;
+      font-size: 16px;
     }
     .print-table hr {
       color: #000;
@@ -167,32 +102,40 @@
     .footer table tr td {
       border: none;
     }
+.exempted span{
+  margin-left: 45%;
+  font-size: 18px;
+}
+
+     table { page-break-inside:auto }
+    tr    { page-break-inside:avoid; page-break-after:auto }
 
 </style>
 <!-- New Table -->
-<<<<<<< HEAD
-<div class="A4 print-table ">
-  <div class="sheet padding-10mm">
-=======
-<div class=" print-table ">
+
+<div class="page-break">
+<div class=" print-table">
     <div class="sheet padding-10mm">
->>>>>>> d123dbcf0bae7481e21a05265fbd6a66a5d1e338
+
     <div class="inner-container" >
       <table class="customer-detail " style="margin-top: 20px;margin-bottom:2px;  border-collapse: collapse; " >
         <tbody>
             <tr>
-                <td colspan="12" style=" text-align: center; font-weight: bold; font-size: 22px;"  ><b>TAX INVOICE</b></td>
+                <td colspan="12" style=" text-align: center; font-weight: bold; font-size: 22px;"  ><b>ORIGINAL INVOICE</b></td>
             </tr>
             <tr>
                 <td colspan="8">
-                  <p><b>SARAVANA HEALTH STORE</b> <br>No-12/7, MG Road,<br> 
-                  Thiruvanmiyur,<br>
-                  Chennai - 600041<br> 
-                  <b>GST No - 33BMDPA4840E1ZP</b></p>
+                  <p><b><?php echo $profile ? $profile->company_name : '';  ?></b> <br/>
+                    <?php echo $profile ? $profile->address : '';  ?><br>
+                    <?php echo $profile ? $profile->address2 : '';  ?><br>
+                  <b>Phone Number No - <?php echo $profile ? $profile->phone_number : '';  ?></b>
+                  <b>GST No - <?php echo $profile ? $profile->gst_number : '';  ?></b></p>
                 </td>
                 <td colspan="4">
-                  <b>INVOICE NO - <?php echo $_GET['id']; ?><br> 
-                  DATE - 05/09/2017 </b>
+                  <b>INVOICE NO - <?php echo 'Inv '.$_GET['id']; ?><br> 
+                  DATE - <?php $timestamp = $bill_fdata->modified_at; 
+        $splitTimeStamp = explode(" ",$timestamp);
+        echo $date = $splitTimeStamp[0];?> </b>
                   <hr>
                   <b>STATE             : TAMILNADU <br> 
                   STATE CODE : 33 </b></td>
@@ -290,6 +233,7 @@
                       <?php
                      if($bill_data && $bill_ldata && count($bill_ldata)>0) {
                         $i = 1;
+                        $page_start = 1;
                         foreach ($bill_ldata as $value) {
                       ?>
 
@@ -314,28 +258,47 @@
             }
 
             
-            ?>                          
-            <tr>
-              <td colspan="11" style=" text-align: right;" ><div  >Discount (Hire Charges)</div></td>
+            ?>   
+            <!-- <tr>
+              <td colspan="11" style=" text-align: right;" ><div  >Total</div></td>
+              <td>
+                <div class="text-center">
+                  <?php   $before = $bill_fdata->before_total; 
+                          $final_total = $bill_fdata->sub_total;
+                          echo $before; 
+                          ?>
+                </div>
+              </td>
+            </tr>   -->                     
+           <!--  <tr>
+              <td colspan="11" style=" text-align: right;" ><div  >Discount (%)</div></td>
               <td>
                 <div class="text-center">
                   <?php echo $bill_fdata->discount; ?>
                 </div>
               </td>
-            </tr>
+            </tr> -->
+            <!--  <tr>
+              <td colspan="11" style=" text-align: right;" ><div  >Discount (Amount)</div></td>
+              <td>
+                <div class="text-center">
+                  <?php echo $before - $final_total; ?>
+                </div>
+              </td>
+            </tr> -->
             <tr>
-              <td colspan="11" style=" text-align: right;" ><div  >Total (Hire Charges)</div></td>
+              <td colspan="11" style=" text-align: right;" ><div  >Total</div></td>
               <td>
                 <div class="text-center"> 
-                  <?php echo $final_total = $bill_fdata->sub_total;?>
+                  <?php echo $final_total; ?>
                   
                 </div>
               </td>
             </tr>                       
-            <tr>                
+           <!--  <tr>                
                 <td colspan="11" style=" text-align: right;"><b>TOTAL</b></td>
                 <td class="text-center"  ><b><?php echo $final_total = $bill_fdata->sub_total; ?></b></td>
-            </tr>
+            </tr> -->
             <?php
              
             ?>
@@ -357,12 +320,26 @@
             }
           ?>
             <tr>
-                <td colspan="12">Amount Chargable ( In Words)  <b> <?php echo ucfirst(convert_number_to_words_full($final_total)); ?></b></td>
+                <td colspan="12">Amount Chargable ( In Words)  <b> <?php echo ucfirst(ucwords(convert_number_to_words_full($final_total))); ?></b></td>
             </tr>
 
           </tbody>
         </table>
         </div>
+
+        <?php 
+        if(isset($gst_data)) {
+          $total_tax=0;
+          foreach( $gst_data as $g_data) {
+            $total_tax = ( 2 * $g_data->sale_sgst) +$total_tax;
+            $gst_tot = $g_data->sale_sgst + $gst_tot;
+          }
+          if($gst_tot == '0'){
+            echo "<div class='exempted'><span><b>GST EXEMPTED</span></b></div>";
+          }
+        } 
+        
+      ?>
         <!-- TAX TABLE START -->
         <div class="inner-container" > 
         <table  class="customer-detail" style="margin-top: 20px;margin-bottom:2px; text-align: center;  border-collapse: collapse; ">
@@ -374,9 +351,9 @@
             </tr>
             <tr class="text_bold text_center">                
                 
-                <td>RATE</td>
+                <td>%</td>
                 <td>AMOUNT</td>
-                <td>RATE</td>
+                <td>%</td>
                 <td>AMOUNT</td>                
             </tr>
             <?php  
@@ -400,28 +377,36 @@
                 <td><b><?php echo $total_tax; ?></b></td>                
             </tr>
             <tr>   
-              <td colspan="12" style=" text-align: left;" ><b>Tax Amount (in words) : <?php echo ucfirst(convert_number_to_words_full($total_tax)); ?>  </b></td>
+              <td colspan="12" style=" text-align: left;" ><b>Tax Amount (in words) : <?php echo ucfirst(ucwords(convert_number_to_words_full($total_tax))); ?>  </b></td>
             </tr>
           </tbody>
         </table>
-        </div>
-        <!-- TAX TABLE END  -->
-        <style type="text/css">
-      .customer-signature, .company-signature {
-        width: 85mm;
-      }
-    </style>
 
-      <div class="footer" style="margin-bottom:20px;">
-          <div class="inner-container" style="margin-top: 5px;">
+           <div class="footer" style="margin-bottom:20px;">
+          <div class="" style="margin-top: 5px;">
 
-            <table>
+            <table style="width:100%;margin-right: 0mm;">
               <tr>
                 <td colspan="2">
                   <b><u>Declaration</u></b>
                   <div style="margin-bottom:10px;">We declare that  this  invoice  shows  the  actual price of the goods described and that all particulars are true and correct</div>
                 </td>
               </tr>
+              <?php if($internet_check  == 'internet'){ ?>
+              <tr>
+                <td>
+                  <table border="1" style="margin-bottom:10px;">
+                     <tr><td><b>Banking Details,</b><br/>
+                     Name : <?php echo $netbank ? $netbank->shop_name : ''; ?>
+                     Bank Name : <?php echo $netbank ? $netbank->bank : ''; ?>
+                     Account Number : <?php echo $netbank ? $netbank->account : ''; ?>
+                     IFSC Code : <?php echo $netbank ? $netbank->ifsc : ''; ?>
+                     Account Type : <?php echo $netbank ? $netbank->account_type : ''; ?>
+                     Branch : <?php echo $netbank ? $netbank->branch : ''; ?> </td></tr>
+                  </table>
+                </td>
+              </tr>
+              <?php } ?>
               <tr>
                 <td>
                   <div class="customer-signature">
@@ -444,7 +429,18 @@
 
           </div>
       </div>
+        </div>
+        
+        <!-- TAX TABLE END  -->
+        <style type="text/css">
+     /* .customer-signature, .company-signature {
+        width: 100mm;
+      }*/
+    </style>
+
+     
   </div>
+</div>
 </div>
 
 

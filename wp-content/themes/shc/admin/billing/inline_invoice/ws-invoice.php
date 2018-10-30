@@ -103,12 +103,11 @@ dd {  padding: 0 0 0.5em 0; }
   <div class="body_style">
       <table cellspacing='3' cellpadding='3' WIDTH='100%' >
       <tr>
-          <td valign='top' WIDTH='50%'><strong>Saravana Health Store</strong>
-            <br/>7/12,Mg Road,Thiruvanmiyur,
-            <br/>Chennai,Tamilnadu,
-            <br/>Pincode-600041.
-            <br/>Cell:9841141648.
-            <br/>GST No - 33BMDPA4840E1ZP
+          <td valign='top' WIDTH='50%'><strong><?php echo $profile ? $profile->company_name : '';  ?></strong>
+                <br/><?php echo $profile ? $profile->address : '';  ?>
+                <br/><?php echo $profile ? $profile->address2 : '';  ?>
+                <br/>Cell : <?php echo $profile ? $profile->phone_number : '';  ?>
+                <br/>GST No : <?php echo $profile ? $profile->gst_number : '';  ?>
           </td>
           <td valign='top' WIDTH='50%'>
               <table>
@@ -987,7 +986,7 @@ $bill_data = array('fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfd
                       <td></td>
                     </tr>
                     <tr>
-                      <td colspan="7"><div class="text-center">Total (Hire Charges)</div></td>
+                      <td colspan="7"><div class="text-center">Total</div></td>
                       <td>
                         <div class="text-rigth">
                           100
@@ -1009,7 +1008,7 @@ $bill_data = array('fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfdg','fgfd
                             <thead>
                               <tr>
                                 <th class="center-th" style="" rowspan="2">
-                                  <div class="text-center">HSN</div>
+                                  <div class="text-center">HSN Code</div>
                                 </th>
                                 <th class="center-th" style="width:90px;padding:0;" rowspan="2">
                                   <div class="text-center">Taxable Value</div>

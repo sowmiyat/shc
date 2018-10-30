@@ -1,9 +1,18 @@
 <?php
+
+if(isset($_GET['action']) && $_GET['action'] == 'update'){
+  echo "<script language='javascript'>
+  jQuery(document).ready(function (argument) {
+    
+    jQuery('.delivery_check').trigger('click');
+  });
+</script>";
+}
     $bill_data = false;
     $invoice_id['inv_id'] = '';
 
     if(isset($_GET['id']) && $_GET['id'] != ''  ) {
-        if(isValidInvoice($_GET['id'], 1)){
+        if(isValidInvoice($_GET['id'],$_GET['year'] ,1)){
             $update = true;
             $year = $_GET['year'];
             $invoice_id['invoice_id'] = $_GET['id'];
@@ -22,18 +31,51 @@
         }
     }
 
+    if($bill_data && $bill_ldata && count($bill_ldata)>0) {
+      $i = 1;
+      $sale_unit = 0;
+      $delivery_count = 0;
+      foreach ($bill_ldata as $d_value) {
+        
+           $delivery_count = $delivery_count + $d_value->delivery_count; 
+           $sale_unit = $sale_unit + $d_value->sale_unit; 
+        }
+      }
+$profile = get_profile1();
+$netbank = get_netbank1();
+$payment_type = paymenttypeGroupByType($_GET['id'],$_GET['year']);
+$tot_paid_amt = 0;
+foreach ($payment_type['WithOutCredit'] as $p_value) {
+  $tot_paid_amt = $p_value->amount + $tot_paid_amt;
+ }
 ?>
 
+<?php if(isset($_GET['action'])){ ?>
+<script>
+  function print_current_page()
+  {
+  // window.print();
+  // var printPage = window.open(document.URL, '_blank');
+  // setTimeout(printPage.print(), 5);
+  var url      = window.location.href; 
+  var printPage = window.open(url+'1', '_blank');
+  setTimeout(printPage.print(), 5);
+  }
+</script>
+<?php } else { ?>
 <script>
   function print_current_page()
   {
   // window.print();
   var printPage = window.open(document.URL, '_blank');
   setTimeout(printPage.print(), 5);
+  
   }
 </script>
-<div class="container">
-  <div class="row">
+<?php }  ?>
+</script>
+<div class="">
+  <div class="">
     <div class="col-md-12 print-hide">
       <div class="x_panel">
         <div class="x_title">
@@ -48,7 +90,7 @@
                                     $added_year = 0;
                                     for($i=0;$i<60;$i++) {
                                         echo $years = $display_year + $added_year;
-                                        if($years == $current_year ){ $selected = 'selected'; } else {
+                                        if($years == $_GET['year'] ){ $selected = 'selected'; } else {
                                            $selected = ''; 
                                         }
                                         echo '<option value="'.$years.'"'.$selected.'>'.$years.'</option>';
@@ -61,9 +103,7 @@
                       <input type="submit" style="height: 38px;margin-left: 20px;" class="btn btn-success">
                   </h2>
                 
-                <button class="btn btn-primary pull-right generate_bill" style="margin-right: 5px;"><i class="fa fa-file-pdf-o"></i> Generate PDF</button>
-                <!-- <button class="btn btn-default pull-right bill_retail_print" onclick="print_current_page();"><i class="fa fa-print"></i>Print</button> -->
-              <a class="btn btn-default pull-right bill_retail_print" href="#" target="_blank" onclick="print_current_page();"><i class="fa fa-print"></i> Print</a>
+               
             </form>
             <div class="clearfix"></div>
         </div>
@@ -76,10 +116,10 @@
             <!-- title row -->
             <div class="row">
                 <div class="col-xs-12 invoice-header">
-                    <h4>
-                        <i class="fa fa-globe"></i> Invoice Number.   <?php echo 'INV'.$bill_fdata->id; ?>
+                    <h3>
+                        <i class="fa fa-globe"></i> Invoice Number.   <?php echo 'Inv '.$bill_fdata->inv_id; ?>
                         <small class="pull-right"><?php echo $bill_fdata->created_at; ?></small>
-                    </h4>
+                    </h3>
                 </div>
                 <!-- /.col -->
             </div>
@@ -88,11 +128,11 @@
               <div class="col-sm-4 invoice-col">
                 From
                 <address>
-                    <strong>Saravana Health Store</strong>
-                    <br>7/12,Mg Road,Thiruvanmiyur
-                    <br>Chennai,Tamilnadu,
-                    <br>Pincode-600041.
-                    <br>Cell:9841141648.
+                    <strong><?php echo $profile ? $profile->company_name : '';  ?></strong>
+                    <br/><?php echo $profile ? $profile->address : '';  ?>
+                    <br/><?php echo $profile ? $profile->address2 : '';  ?>
+                    <br/>Cell : <?php echo $profile ? $profile->phone_number : '';  ?>
+                    <br/>GST No : <?php echo $profile ? $profile->gst_number : '';  ?>
                 </address>
               </div>
               <!-- /.col -->
@@ -105,10 +145,10 @@
                 </address>
               </div>
               <!-- /.col -->
-              <div class="col-sm-4 invoice-col">
+              <!-- <div class="col-sm-4 invoice-col">
                 <b>Order ID:</b> <?php echo $bill_fdata->order_id; ?>
                 <br>
-              </div>
+              </div> -->
               <!-- /.col -->
             </div>
             <!-- /.row -->
@@ -117,7 +157,7 @@
             <div class="row">
               <div class="col-xs-12 table">
                 <h2>Billed Items</h2>
-                <input type="checkbox" name="check_all" value="check_all" class="check_all" style="width: 20px;height: 20px;">  Delivery Check all
+                <input type="checkbox" name="check_all" value="check_all" class="check_all" <?php if(isset($_GET['action']) && $_GET['action'] == 'update') {echo 'checked'; } else { if($delivery_count == $sale_unit){ echo 'checked'; } } ?> style="width: 20px;height: 20px;">  Delivery Check all
                 <table class="table table-striped">
                   <thead>
                     <tr>
@@ -128,18 +168,21 @@
                       <th style="width:80px;">QTY</th>
                       <th style="width:120px;">MRP</th>
                       <th style="width:140px;">DISCOUNT</th>
+                      <th style="width:140px;">WHOLESALE AMOUNT</th>
                       <th style="width:140px;">AMOUNT</th>
                       <th style="width:90px;">CGST</th>
                       <th style="width:90px;">CGST AMOUNT</th>
                       <th style="width:90px;">SGST</th>
-                      <th style="width:90px;">SGST AMONUT</th>
-                      <th style="width:120px;">SUB TOTAL</th>
+                      <th style="width:90px;">SGST AMOUNT</th>
+                      <th style="width:120px;">TOTAL</th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php 
                         if($bill_data && $bill_ldata && count($bill_ldata)>0) {
                             $i = 1;
+                            $sale_unit = 0;
+                            $delivery_count = 0;
                             foreach ($bill_ldata as $d_value) {
                               $is_delivery =$d_value->is_delivery;
                                 if($is_delivery == 1){
@@ -148,18 +191,32 @@
                                 else {
                                   $checked = '';
                                 }
+                                
                     ?>
-                        <tr>
+                        <tr <?php if($d_value->wholesale_price == $d_value->discount){
+                                 echo 'style="color:#093cf5"';
+                                } ?>>
                           <td>
                             <div class="rowno"><?php echo $i; ?></div>
                           </td>
                           <td class="delivery">
                                 <input type="checkbox" class="delivery_check" <?php echo $checked; ?>  style="width: 20px; height: 20px;"/>
-                                <?php if($d_value->delivery_count > 0) {
-                                  echo $d_value->delivery_count;
-                                }?>
 
-                                  <input type="text" value="<?php echo $d_value->sale_unit; ?>" class="delivery_count delivery_count_div" onkeypress="return isNumberKey(event)" style="display:none;width: 40px;"/>
+                                  <input type="text" value="<?php if($_GET['action'] == 'update'){
+                                            echo $d_value->sale_unit;
+                                            
+
+                                  } else { 
+                                    if($d_value->delivery_count > 0) {
+                                        echo $d_value->delivery_count;
+                                       
+
+
+                                      } 
+                                      else 
+                                        { echo '0'; 
+                                      }
+                                    }?>" class="delivery_count" onkeypress="return isNumberKey(event)" style="width: 30px;margin-top: 5px;"/>
                           </td> <input type="hidden" value="<?php  echo $d_value->id; ?>" class="delivery_id" />
                           <td>
                             <span class="span_product_name"><?php echo $d_value->product_name; ?></span>
@@ -168,7 +225,8 @@
                             <span class="span_hsn"><?php echo $d_value->hsn; ?></span>
                           </td>
                           <td>
-                            <span class="span_unit_count"><?php echo $d_value->sale_unit; ?><span>
+                            <span class="span_unit_count"><?php echo $d_value->sale_unit; 
+                            ?><span>
                               <input type="hidden" value="<?php echo $d_value->sale_unit; ?>" name="unit_count" class="unit_count"/> 
                           </td>
                           <td>
@@ -178,22 +236,25 @@
                             <span class="span_unit_price"><?php echo $d_value->discount; ?><span>
                           </td>
                           <td>
+                            <span class="span_whole_price"><?php echo $d_value->wholesale_price; ?><span>
+                          </td>
+                          <td>
                             <span class="span_sub_total"><?php echo $d_value->amt; ?></span>
                           </td>
                            <td>
-                            <span class="span_unit_price"><?php echo $d_value->cgst; ?><span>
+                            <span class="span_unit_price"><?php echo $d_value->cgst; ?></span>
                           </td>
                            <td>
-                            <span class="span_unit_price"><?php echo $d_value->cgst_value; ?><span>
+                            <span class="span_unit_price"><?php echo $d_value->cgst_value; ?></span>
                           </td>
                            <td>
-                            <span class="span_unit_price"><?php echo $d_value->sgst; ?><span>
+                            <span class="span_unit_price"><?php echo $d_value->sgst; ?></span>
                           </td>
                            <td>
-                            <span class="span_unit_price"><?php echo $d_value->sgst_value; ?><span>
+                            <span class="span_unit_price"><?php echo $d_value->sgst_value; ?></span>
                           </td>                               
                           <td>
-                            <span class="span_sale_tax"><?php echo $d_value->sub_total; ?></span>
+                            <span class="span_sale_tax"><?php echo $d_value->total; ?></span>
                           </td>
                         </tr>
                     <?php
@@ -223,8 +284,11 @@
                 <div class="table-responsive">
                   <table class="table">
                     <tbody>
-                      
                       <tr>
+                        <th style="width:50%">Total:</th>
+                        <td><?php echo $bill_fdata->before_total; ?></td>
+                      </tr>
+                     <!--  <tr>
 
                         <th>Discount:</th>
                         <td><?php if($bill_fdata->discount_type == 'cash') {
@@ -234,34 +298,109 @@
                           echo '%';
                         }
                         ?></td>
-                      </tr>
-                      <tr>
-                        <th style="width:50%">Subtotal:</th>
-                        <td><?php echo $bill_fdata->sub_total; ?></td>
-                      </tr>
+                      </tr> -->
+                      <?php if( $bill_fdata->before_total != $bill_fdata->sub_total) { ?>
                        <tr>
-                        <th>Paid Amount:</th>
-                        <td><?php echo $bill_fdata->paid_amount; ?></td>
-                      </tr>
-                      <tr>
-                        <th>Balance Amount:</th>
-                        <td><?php echo $bill_fdata->return_amt; ?></td>
-                      </tr>
-                      <tr>
-                        <th>Payment Type:</th>
-                        <td><?php echo $bill_fdata->payment_type.'<br/>'.$bill_fdata->payment_details.'<br/>'.$bill_fdata->payment_date; ?><br/>
+
+                        <th>Discount Amount(In Rs):</th>
+                        <td> <?php 
+                              $before_total = $bill_fdata->before_total;  
+                              $after_total  = $bill_fdata->sub_total;
+                              $discount = $before_total - $after_total;
+                              echo $discount .'.00';
+                            ?>
                         </td>
                       </tr>
+                      
+                      <tr>
+                        <th style="width:50%">Amount Payable:</th>
+                        <td><?php echo $bill_fdata->sub_total; ?></td>
+                      </tr>
+                      <?php } ?>
                        <tr>
-                        <th>Home Delivery: <br/></th>
+                        <th>Amount Paid:</th>
+                        <td><?php echo $tot_paid_amt + $bill_fdata->pay_to_bal; ?></td>
+                      </tr>
+                      <tr>
+                        <th>Amount Return:</th>
+                        <td><?php echo $bill_fdata->pay_to_bal; ?></td>
+                      </tr>
+                      <tr>
+                        <th>Due Amount:</th>
+                        <td><?php echo $bill_fdata->sub_total - $tot_paid_amt; ?></td>
+                      </tr>
+                      <tr>
+                        <th>Payment Type:</th><td>
+
+
+                        <?php $internet_check = '';
+                            $total_paid = 0;
+                        	foreach ($payment_type['WithOutCredit'] as $p_value) {
+														if($p_value->payment_type == 'cash'){
+															echo 'Cash : ';
+															echo  $p_value->amount.'</br>';
+														} 
+														if($p_value->payment_type == 'card'){
+														 	echo 'Card : ';
+														  echo $p_value->amount.'</br>';
+														}
+														if($p_value->payment_type == 'cheque'){
+
+															echo 'Cheque : ';
+															echo  $p_value->amount.'</br>';
+														} 
+														if($p_value->payment_type == 'internet'){
+															$internet_check = $p_value->payment_type; 
+															echo 'Netbanking : ';
+															echo $p_value->amount.'</br>';
+															?>
+															<table>
+														    <tr> <td><b>Banking Details,</b></td><td></td></tr>
+														    <tr> <td>Name</td><td> : <?php echo $netbank ? $netbank->shop_name : ''; ?></td></tr>
+														    <tr> <td>Bank Name</td><td> : <?php echo $netbank ? $netbank->bank : ''; ?></td></tr>
+														    <tr> <td>Account Number</td><td> : <?php echo $netbank ? $netbank->account : ''; ?></td></tr>
+														    <tr> <td>IFSC Code</td><td> : <?php echo $netbank ? $netbank->ifsc : ''; ?></td></tr>
+														    <tr> <td>Account Type</td><td> : <?php echo $netbank ? $netbank->account_type : ''; ?></td></tr>
+														    <tr> <td>Branch</td><td> : <?php echo $netbank ? $netbank->branch : ''; ?></td></tr>
+														  </table>
+															<?php 
+														 
+														}	
+                            $total_paid = $p_value->amount + $total_paid;
+
+													}
+                          foreach ($payment_type['WithCredit'] as $p_value) {
+                              if($p_value->payment_type == 'credit'){
+                                  echo  'Credit : ';
+                                  echo $bill_fdata->sub_total - $total_paid.'</br>';
+                              } 
+                          }
+                        ?>
+                        
+                      </td>
+                    </tr>
+                      <tr>
+                      	<th>COD</th>
+                      	<td>
+
+                      		<?php if($bill_fdata->cod_check == '1') {
+                                  echo $bill_fdata->sub_total - $total_paid;
+                                } 
+                          ?>
+                      	</td>
+                      </tr>
+                      
+                      <tr>
+                        <th>Delivery: <br/></th>
                           <td>
-                             <?php 
-                                
-                                    echo $bill_fdata->home_delivery_name;
-                                    echo "<br/>";
-                                    echo $bill_fdata->home_delivery_mobile;
-                                    echo "<br/>";
-                                    echo $bill_fdata->home_delivery_address; 
+                             <?php  $is_delivery = $bill_fdata->is_delivery;
+                                    if($is_delivery == '1'){     
+                                      echo $bill_fdata->home_delivery_name;
+                                      echo "<br/>";
+                                      echo $bill_fdata->home_delivery_mobile;
+                                      echo "<br/>";
+                                      echo $bill_fdata->home_delivery_address; 
+                                    }
                             ?> 
                           </td> 
                       </tr>
@@ -281,8 +420,11 @@
           <?php
             }
           ?>
-
-
+          <div class="pull-right">
+              <button class="btn btn-primary  generate_bill pdf" style="margin-right: 5px;"><i class="fa fa-file-pdf-o"></i> Generate PDF</button>
+                <!-- <button class="btn btn-default pull-right bill_retail_print" onclick="print_current_page();"><i class="fa fa-print"></i>Print</button> -->
+              <a class="btn btn-default bill_retail_print prt" href="javascript:void(0)" target="_blank" onclick="print_current_page();"><i class="fa fa-print"></i> Print</a>
+          </div>
         </div>
       </div>
     </div>
@@ -293,10 +435,46 @@
 
  <div class="clearfix"></div>
 
+ <script type="text/javascript">
+	// var invoice = jQuery('.invoice_id').val();
+ //  jQuery('.invoice_id').focus().val('').val(invoice);
+ jQuery('.prt').focus();
+ //<-----After keydown submit using tab goto first text box in Return billing--->
+  jQuery(".prt").on('keydown',  function(e) { 
+      var keyCode = e.keyCode || e.which; 
+       if(event.shiftKey && event.keyCode == 9) {  
+         e.preventDefault(); 
+        jQuery('.pdf').focus();
+      }
+      else if (keyCode == 9) { 
+        e.preventDefault(); 
+        jQuery('.invoice_id').focus();
+      } 
+      else {
+        jQuery('.prt').focus();
+      }
+        
 
+  });
 
+  jQuery(".invoice_id").on('keydown',  function(e) { 
+      var keyCode = e.keyCode || e.which; 
+       if(event.shiftKey && event.keyCode == 9) {  
+         e.preventDefault(); 
+        jQuery('.prt').focus();
+      }
+      else if (keyCode == 9) { 
+        e.preventDefault(); 
+        jQuery('.year').focus();
+      } 
+      else {
+        jQuery('.invoice_id').focus();
+      }
+        
 
+  });
 
+ </script>
 
 
 
@@ -322,14 +500,13 @@
 <style type="text/css" >
 
 	
-	 @media screen {
-    .A4_HALF {
-      display: none !important;
-    }
-
+	  @media screen {
     .A4_HALF .footer {
       bottom: 0px;
       left: 0px;
+    }
+    .A4_HALF{
+      display: none;
     }
     .A4_HALF .footer .foot {
         background-color: #67a3b7 !important;
@@ -345,6 +522,9 @@
     body, html {
       height: auto;
       padding:0px;
+      font-family: normal;
+      font-size: 13px;
+      
     }
     html.wp-toolbar {
       padding:0;
@@ -371,20 +551,23 @@
     }
   }
 
-  @page { margin: 0;padding: 0; }
-  .sheet {
-    margin: 0;
-  }
+      @page { margin: 0;padding: 0; }
+      .sheet {
+        margin: 0;
+       
+      }
 
 
       .A4_HALF {
-        width: 110mm;
+        width: 100mm;
       }
       .inner-container {
         padding-left: 20mm;
         padding-right: 20mm;
-        width: 110mm;
+        width: 100mm;
+
       }
+
       .left-float {
         float: left;
       }
@@ -410,156 +593,247 @@
       }
 
       .A4_HALF h3 {
-        margin-top: 20px;
+        margin-top: 10px;
       }
-
-
-
-      
+      .exempted span{
+        margin-left: 40%;
+        
+      }
 </style>   
-<div class="A4_HALF" style="margin-top:20px;">
-	<div class="sheet padding-10mm">
-	  <?php
-		  if($bill_data) {
-	  ?>
-		<table cellspacing='3' cellpadding='3' WIDTH='100%' >
-		  <tr>
-		  <td valign='top' WIDTH='50%'><strong>Saravana Health Store</strong>
-		  <br/>7/12,Mg Road,Thiruvanmiyur,
-		  <br/>Chennai,Tamilnadu,
-		  <br/>Pincode-600041.
-		  <br/>Cell:9841141648
+ <div class="A4_HALF">
+  <div class="sheet padding-10mm">
+    <?php
+      if($bill_data) {
+    ?>
+    <table cellspacing='3' cellpadding='1' WIDTH='100%' >
+      <tr class="text-center" >
+        <td valign='top' WIDTH='50%'>
+            <strong><?php echo $profile ? $profile->company_name : '';  ?></strong>
+            <span style="line-height:12px; " ><br/><?php echo $profile ? $profile->address : '';  ?>
+            <br/><?php echo $profile ? $profile->address2 : '';  ?>    
+            <br/>PH : <?php echo $profile ? $profile->phone_number : '';  ?>
+            <br/>GST No : <?php echo $profile ? $profile->gst_number : '';  ?></span>
+        </td>
+      </tr>
+    </table>
 
-		  <td valign='top' WIDTH='50%'>
-			  <table>
-				<tr><td>Inv No</td><td>: <?php echo 'INV '.$bill_fdata->inv_id; ?></td></tr>
-				<tr><td>Name</td><td>: <?php echo $bill_fdata->customer_name; ?></td></tr>
-				<tr><td>Date</td><td>: <?php echo date("d/m/Y"); ?></td></tr>
-				<tr><td>Mobile</td><td>: <?php echo $bill_fdata->mobile; ?></td></tr>
-				<tr><td>Addr</td><td>: <?php echo $bill_fdata->address; ?></td></tr>
-			  </table>
-		  </td>
-		  </tr>
-		</table>
+    <table cellspacing='3' cellpadding='3' WIDTH='100%' >
+      <tr>
+        <td valign='top' WIDTH='50%'>Customer : <?php echo $bill_fdata->customer_name; ?> </td>         
+        <td valign='top' WIDTH='50%'>Address : <?php echo $bill_fdata->address; ?></td>         
+      </tr>
+      <tr>        
+        <td valign='top' WIDTH='50%'>Phone No :<?php echo $bill_fdata->mobile; ?> </td>     
+      </tr>
+      
+    </table>
+    <div class="text-center" >ORIGINAL INVOICE</div>
+    <table cellspacing='3' cellpadding='3' WIDTH='100%' >
+      <tr>
+        <td valign='top' WIDTH='70%'>Inv No : <b><?php echo $bill_fdata->inv_id; ?></b></td>
+        <td valign='top' WIDTH='100%'>Date : <?php $timestamp = $bill_fdata->modified_at; 
+        $splitTimeStamp = explode(" ",$timestamp);
+        echo $date = $splitTimeStamp[0];?></td>    
+      </tr>
+      <tr>
+        <td valign='top' WIDTH='70%'></td>
+        <td valign='top' WIDTH='80%'>Time : <?php
+        echo $time = $splitTimeStamp[1]; ?></td>     
+      </tr>
+      <tr>
+        <!-- <td valign='top' WIDTH='30%'>Date : <?php echo date("d/m/Y"); ?></td> -->
+        <td valign='top' WIDTH='30%'> </td>
+      </tr>
+    </table>
+    <style>
+      .dotted_border_top  {
+        border-top: 1px dashed #000;        
 
-		<br />
-		<br/>
-		<table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" >
-		  <tr>
-		  <th valign='top'>SNO</th>
-		  <th valign='top'>PRD</th>
-		  <th valign='top'>HSN</th>
-		  <th valign='top'>QTY</th>
-		  <th valign='top'>MRP</th>
-		  <th valign='top'>Dis.Price</th>
-		  <th valign='top'>SUB TOTAL</th>
+      }
+      .dotted_border_bottom  {        
+        border-bottom: 1px dashed #000;
+      }
+    </style>
 
-		  </tr>
-		  <tr>
+    <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" >
+      <tr>
+        <th class="dotted_border_top dotted_border_bottom text-center"  valign='top'>SNO</th>
+        <th class="dotted_border_top dotted_border_bottom text-center"  valign='top'>PRODUCT</th>
+        <th class="dotted_border_top dotted_border_bottom text-center"  valign='top' >HSN</th>
+        <th class="dotted_border_top dotted_border_bottom text-center"  valign='top'>QTY</th>
+        <th class="dotted_border_top dotted_border_bottom text-center"  valign='top' >MRP</th>
+       <!--  <th class="dotted_border_top dotted_border_bottom"  valign='top' align='center'>Dis.Price</th> -->
+        <th class="dotted_border_top dotted_border_bottom text-center"  valign='top'>TOTAL</th>
+      </tr>
+      <tr>
 
-		  </tr>
-		  <?php
-			  if($bill_data && $bill_ldata && count($bill_ldata)>0) {
-				  $i = 1;
-				  foreach ($bill_ldata as $d_value) {
-		  ?>
-								
-		  <tr>
-		  <td valign='top' align='center'><?php echo $i; ?></td>
-		  <td valign='top'><?php echo $d_value->product_name; ?></td>
-		  <td valign='top'><?php echo $d_value->hsn; ?></td>
-		  <td valign='top' align='left'><?php echo $d_value->sale_unit; ?></td>
-		  <td valign='top' align='left'><?php echo $d_value->unit_price; ?></td>
-		  <td valign='top' align='left'><?php echo $d_value->discount; ?></td>
-		  <td valign='top' align='left'><?php echo $d_value->sub_total; ?></td></tr>
+      </tr>
+      <?php
+        if($bill_data && $bill_ldata && count($bill_ldata)>0) {
+          $i = 1;
+          foreach ($bill_ldata as $d_value) {
+      ?>
+                
+      <tr>
+      <td valign='top' align='center'><?php echo $i; ?></td>
+      <td valign='top' align='center'><?php echo $d_value->product_name; ?></td>
+      <td valign='top' align='center'><?php echo $d_value->hsn; ?></td>
+      <td valign='top' align='center'><?php echo $d_value->sale_unit; ?></td>
+      <td valign='top' align='center'><?php echo $d_value->unit_price; ?></td>
+     <!--  <td valign='top' align='left'><?php echo $d_value->discount; ?></td> -->
+      <td valign='top' align='right'><?php echo $d_value->total; ?>&nbsp;&nbsp;&nbsp;</td></tr>
 
-		  <?php
-				$i++;
-				  }
-				} 
-			  ?>  
-		</table>
-	  <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped">
-		  <tr>
-			<td valign='top' align='center'><b>NET AMOUNT:</b></td>
-			  <td valign='top' align='left' style="width:62px;"><span class="amount"><?php echo '<b>'.$bill_fdata->sub_total.'</b>'; ?></span></td>
-		  </tr>
-		  <tr>
-			<td valign='top' align='right'>Discount:</td>
-			  <td valign='top' align='left'><span class="amount"><?php if($bill_fdata->discount_type == 'cash') {
-								  echo $bill_fdata->discount; }
-								  else {
-									echo $bill_fdata->discount + 0;
-									echo '%';
-								  }
-								  ?></span></td>
-		  </tr>
-		  <tr>
-			<td valign='top' align='right'>Paid Amount:</td>
-			  <td valign='top' align='left'><span class="amount"><?php echo $bill_fdata->paid_amount; ?></span></td>
-		  </tr>
-		  <tr>
-			<td valign='top' align='right'>Balance:</td>
-			  <td valign='top' align='left'><span class="amount"><?php echo $bill_fdata->return_amt; ?></span></td>
-		  </tr>
-	  </table>
+      <?php
+        $i++;
+          }
+        } 
+        ?> 
+
+     
+    </table>
+
+
+      <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped">
+      <!-- <tr>
+        <td valign='top' colspan="3" >No.Of.Items : 4    </td>
+        <td valign='top'  align='right' >Total Qty : 10&nbsp;&nbsp;&nbsp;</td>
+      </tr> -->
+      
+       <tr> 
+         <td class="dotted_border_top " colspan="6"  align='right'><span class="amount"><b>AMOUNT</span></b></td>
+         <td  class="dotted_border_top "  align='right'><span class="amount"> <?php echo '<b>'.$bill_fdata->before_total.'</b>'; ?>&nbsp;&nbsp;&nbsp;</span></td>
+      </tr>
+      <?php if( $bill_fdata->before_total != $bill_fdata->sub_total) { ?>
+      <tr> 
+         <td class="dotted_border_top " colspan="6"  align='right'><span class="amount"><b>DISCOUNT</span></b></td>
+         <td  class="dotted_border_top "  align='right'><span class="amount">           
+          <?php 
+            
+          $before_total = $bill_fdata->before_total;  
+          $after_total  = $bill_fdata->sub_total;
+          $discount = $before_total - $after_total;
+          echo '<b>'.$discount .'.00</b>';
+          ?>&nbsp;&nbsp;&nbsp;</span></td>
+      </tr>
+
+      <tr> 
+         <td class="dotted_border_top dotted_border_bottom" colspan="6"  align='right'><span class="amount"><b>TOTAL AMOUNT</span></b></td>
+         <td  class="dotted_border_top dotted_border_bottom"  align='right'><span class="amount"><?php echo '<b>'.$bill_fdata->sub_total.'</b>'; ?>&nbsp;&nbsp;&nbsp;</span></td>
+      </tr>
+        <?php } ?>
+    </table>
 
           <?php
             }
           ?>
-                <!-- <table class="table table-bordered" style="margin-top:10px;margin-bottom: 5px;width: 120mm;"> -->
-		<table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped">
-		  <thead>
-			<tr>
-			  <th class="center-th" style="width:90px;padding:0;" rowspan="2">
-				<div class="text-center">Taxable Value</div>
-			  </th>
-			  <th class="center-th" style="padding: 0;" colspan="2">
-				<div class="text-center">CGST</div>
-			  </th>
-			  <th class="center-th" style="padding: 0;" colspan="2">
-				<div class="text-center">SGST</div>
-			  </th>
-			</tr>
-			<tr>
-			  <th style="padding: 0;width: 70px;"><div class="text-center">Rate</div></th>
-			  <th style="padding: 0;width: 70px;"><div class="text-center">Amount</div></th>
-			  <th style="padding: 0;width: 70px;"><div class="text-center">Rate</div></th>
-			  <th style="padding: 0;width: 70px;"><div class="text-center">Amount</div></th>
-			</tr>
-		  </thead>
-		  <tbody>
+              
+				
+        <?php 
+        if(isset($gst_data)) {
+          $total_tax=0;
+          foreach( $gst_data as $g_data) {
+            $total_tax = ( 2 * $g_data->sale_sgst) +$total_tax;
+            $gst_tot = $g_data->sale_sgst + $gst_tot;
+          }
+          if($gst_tot == '0.00'){
+            echo "<div class='exempted'><span><b>GST EXEMPTED</span></b></div>";
+          }
+        } 
+        
+      ?>
+    <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" >
+      <thead>
+        <tr>
+          <th colspan="5" class="dotted_border_bottom"  align="center" >GST Details</th>
+        </tr>     
+        <tr>
+          <th valign='top' class="center-th" style="width:90px;padding:0;" rowspan="2">
+            <div class="text-center">Taxable Value</div>
+          </th>
+          <th class="center-th" style="padding: 0;" colspan="2">
+            <div class="text-center">CGST</div>
+          </th>
+          <th class="center-th" style="padding: 0;" colspan="2">
+            <div class="text-center">SGST</div>
+          </th>
+        </tr>
+        <tr>
+          <th style="padding: 0;width: 70px;"><div class="text-center">%</div></th>
+          <th style="padding: 0;width: 70px;"><div class="text-right">Amount</div></th>
+          <th style="padding: 0;width: 70px;"><div class="text-center">%</div></th>
+          <th style="padding: 0;width: 70px;"><div class="text-right">Amount</div></th>
+        </tr>
+      </thead>
+      <tbody>
 
 
-			<?php  if(isset($gst_data)) { 
-					  $total_tax=0;
-							foreach( $gst_data as $g_data) {
+      <?php  
+      if(isset($gst_data)) { 
+          $total_tax=0;
+          $gst_tot=0;
+        foreach( $gst_data as $g_data) {
+      ?>
+          <tr class="">
+            <td class=""><div class="text-center"><?php  echo $g_data->sale_amt; ?></div></td>
+            <td class=""><div class="text-center"><?php echo $g_data->cgst; ?> % </div></td>
+            <td class=""><div class="text-right"><?php echo $g_data->sale_cgst; ?></div></td>
+            <td class=""><div class="text-center"><?php echo $g_data->cgst; ?> % </div></td>
+            <td class=""><div class="text-right"><?php echo $g_data->sale_sgst; ?></div></td>
+          </tr>
+           <?php 
+           $total_tax = ( 2 * $g_data->sale_sgst) +$total_tax;
+           $gst_tot = $g_data->sale_sgst + $gst_tot;
 
-					 ?>
-					<tr class="">
-						<td class=""><div class="text-right">Rs. <?php  echo $g_data->sale_amt; ?></div></td>
-						<td class=""><div class="text-right"><?php echo $g_data->cgst; ?> % </div></td>
-						<td class=""><div class="text-right"><?php echo $g_data->sale_cgst; ?></div></td>
-						<td class=""><div class="text-right"><?php echo $g_data->cgst; ?> % </div></td>
-						<td class=""><div class="text-right"><?php echo $g_data->sale_sgst; ?></div></td>
-					</tr>
-					  <?php $total_tax = ( 2 * $g_data->sale_sgst) +$total_tax;
-							}
-						  } ?>
-				  <td colspan="4">
-					<div class="text-center">
-					  Total Tax
-					</div>
-				  </td>
-				  <td>
-					<div class="text-right">
-					 <?php echo $total_tax; ?>
-					</div>
-				  </td>
-				</tr>
-		  </tbody>
-		</table>
-	</div>
+        }
+      } ?>
+      <tr class="">
+        <td class=""><div class="text-right"></div></td>
+        <td class=""><div class="text-right"></div></td>
+        <td class=""><div class="text-right"><?php echo $gst_tot; ?></div></td>
+        <td class=""><div class="text-right"></div></td>
+        <td class=""><div class="text-right"><?php echo $gst_tot; ?></div></td>
+      </tr>
+      <tr>
+        <td  class="dotted_border_bottom" colspan="4">
+          <div class="text-center">
+            <b>Total Tax</b>
+          </div>
+        </td>
+        <td class="dotted_border_bottom" >
+          <div class="text-right">
+           <b><?php echo $total_tax; ?></b>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <div style="text-align: center;" >Thank You !!!. Visit Again !!!.</div>
+    <?php $is_delivery = $bill_fdata->is_delivery; 
+    if($is_delivery == '1') { ?>
+  	<table>
+	    <tr><td><b>Delivery To</b></td><td>  </td></tr>
+	    <tr><td>Name</td><td>  : <?php echo $bill_fdata->home_delivery_name; ?></td></tr>
+	    <tr><td>Address</td><td>  : <?php echo $bill_fdata->home_delivery_mobile; ?></td></tr>
+	    <tr><td>Phone No</td><td>  : <?php echo $bill_fdata->home_delivery_address ; ?></td></tr>
+  	</table> 
+  <?php } ?>
 
+
+  <?php if($internet_check == 'internet'){ ?>
+  <table>
+    <tr> <td><b>Banking Details,</b></td><td></td></tr>
+    <tr> <td>Name</td><td> : <?php echo $netbank ? $netbank->shop_name : ''; ?></td></tr>
+    <tr> <td>Bank Name</td><td> : <?php echo $netbank ? $netbank->bank : ''; ?></td></tr>
+    <tr> <td>Account Number</td><td> : <?php echo $netbank ? $netbank->account : ''; ?></td></tr>
+    <tr> <td>IFSC Code</td><td> : <?php echo $netbank ? $netbank->ifsc : ''; ?></td></tr>
+    <tr> <td>Account Type</td><td> : <?php echo $netbank ? $netbank->account_type : ''; ?></td></tr>
+    <tr> <td>Branch</td><td> : <?php echo $netbank ? $netbank->branch : ''; ?></td></tr>
+  </table>
+    <?php   } ?>
+  </div>
+<div>
+ 
+  <br/>
+</div>
 </div>
 

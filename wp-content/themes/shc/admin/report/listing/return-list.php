@@ -1,5 +1,6 @@
 <?php
     $report = new report();
+    $profile = get_profile1();
 ?>
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
@@ -37,7 +38,7 @@
                     <div class="col-md-2 form-group">
                         <b></b>
                         <select name="slap" class="slap">
-                            <option value="" >GST Tax</option>
+                            <option value="" >GST Tax %</option>
                             <option value="0.00" <?php echo ($billing->slap == '0.00') ? 'selected' : '' ?>>0 %</option>
                             <option value="2.50" <?php echo ($billing->slap == '2.50') ? 'selected' : '' ?>>5 %</option>
                             <option value="6.00" <?php echo ($billing->slap == '6.00') ? 'selected' : '' ?>>12 %</option>
@@ -53,9 +54,10 @@
                         <b></b> <input type="text" name="bill_to" class="bill_to form-control" value="<?php echo ($billing->bill_to) ? $billing->bill_to : date('Y-m-d'); ?>" placeholder="Bill To">
                     </div>
                     <div class="col-md-5 form-group">
-
-                         <button class="btn btn-default return_report_print pull-right"><i class="fa fa-print"></i> Print</button>
-						            <button class="btn btn-primary pull-right return_report_download" style="margin-right: 5px;"><i class="fa fa-file-pdf-o" href=""></i> Generate PDF</button>
+                      <div class="pull-right">
+                        <button class="btn btn-default return_report_print "><i class="fa fa-print"></i> Print</button>
+						            <button class="btn btn-primary  return_report_download" style="margin-right: 5px;"><i class="fa fa-file-pdf-o" href=""></i> Generate PDF</button>
+                      </div>
                     </div>
                 </div>  	 
               <input type="hidden" name="filter_action" class="filter_action" value="return_report">
@@ -73,11 +75,11 @@
 
             <table cellspacing='3' cellpadding='3' WIDTH='100%' >
                 <tr>
-                    <td valign='top' WIDTH='50%'><strong>Saravana Health Store</strong>
-                        <br/>7/12,Mg Road,Thiruvanmiyur,
-                        <br/>Chennai,Tamilnadu,
-                        <br/>Pincode-600041.
-                        <br/>Cell:9841141648
+                    <td valign='top' WIDTH='50%'><strong><?php echo $profile ? $profile->company_name : '';  ?></strong>
+                        <br/><?php echo $profile ? $profile->address : '';  ?>
+                        <br/><?php echo $profile ? $profile->address2 : '';  ?>
+                        <br/>Cell : <?php echo $profile ? $profile->phone_number : '';  ?>
+                        <br/>GST No : <?php echo $profile ? $profile->gst_number : '';  ?>
                     </td>
                 </tr>
             </table>
@@ -94,11 +96,33 @@
     
 jQuery(document).ready(function () {
     jQuery('.ppage').focus();
+
+     jQuery(".ppage").live('keydown', function(e) { 
+      var keyCode = e.keyCode || e.which; 
+
+      if (event.shiftKey && event.keyCode == 9) { 
+            e.preventDefault(); 
+        // call custom function here
+            jQuery('.return_report_download').focus();
+        } else if(event.keyCode == 9){
+            e.preventDefault(); 
+            jQuery('.slap').focus();
+        } else {
+         jQuery('.ppage').focus();
+        }
+    });
+
+
     jQuery('.return_report_download').live('keydown', function(e){
-        var keyCode = e.keyCode || e.which; 
-        if (keyCode == 9) { 
+         if (event.shiftKey && event.keyCode == 9) { 
+            e.preventDefault(); 
+        // call custom function here
+            jQuery('.return_report_print').focus();
+        } else if(event.keyCode == 9){
             e.preventDefault(); 
             jQuery('.ppage').focus();
+        } else {
+         jQuery('.return_report_download').focus();
         }
     });    
 })   

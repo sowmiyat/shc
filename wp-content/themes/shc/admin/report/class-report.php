@@ -50,7 +50,7 @@
 		    $bill_from = $this->bill_from;
 		    $bill_to   = $this->bill_to;
    			if($this->slap != '') {
-		    	$condition .= " WHERE report.gst = ".$this->slap;
+		    	$condition .= "AND report.gst = ".$this->slap;
 		    }
 		    
 
@@ -131,11 +131,11 @@ on ws_sale_table.lot_id = ws_return_table.lot_id )
 as final_ws_sale group by final_ws_sale.lot_id )
 as report 
 left join ${lot_table} as 
-lot on report.lot_id=lot.id ${condition}";
+lot on report.lot_id=lot.id WHERE report.total_unit > 0 ${condition}";
 
 		    $total_query        = "SELECT COUNT(1) FROM (${query}) AS combined_table";
 
-	        $status_query       = "SELECT SUM(cgst_value) as total_cgst,sum(total_unit) as sold_qty,sum(total) as sub_tot FROM (${query}) AS combined_table";
+	        $status_query       = "SELECT SUM(cgst_value) as total_cgst,sum(total_unit) as sold_qty,sum(total) as sub_tot,sum(amt) as tot_amt FROM (${query}) AS combined_table";
 			$data['s_result']   = $wpdb->get_row( $status_query );
 		    $data['total']      = $wpdb->get_var( $total_query );
 
@@ -221,7 +221,8 @@ lot on report.lot_id=lot.id ${condition}";
 (select 
  full_return_tab.lot_id,
  sum(full_return_tab.return_cgst) as cgst_value,
- sum(full_return_tab.return_amt) as amt,sum(full_return_tab.return_unit) as return_unit,
+ sum(full_return_tab.return_amt) as amt,
+ sum(full_return_tab.return_unit) as return_unit,
  sum(full_return_tab.return_total) as subtotal from 
  (SELECT return_details.cgst,return_details.lot_id, 
   sum(return_details.cgst_value) as return_cgst, 
@@ -244,13 +245,12 @@ SELECT
   WHERE ws_return_details.active = 1 AND DATE(ws_return_details.modified_at) >= date('$bill_from') AND DATE(ws_return_details.modified_at) <= date('$bill_to') group by ws_return_details.lot_id
  ) as full_return_tab group by full_return_tab.lot_id) as r_table 
 left join 
-(select id,cgst,sgst,product_name,brand_name from ${lot_table} WHERE active=1) as lot_tab on lot_tab.id =r_table.lot_id ${condition}";
-
+(select id,cgst,sgst,product_name,brand_name from ${lot_table} WHERE active=1) as lot_tab on lot_tab.id =r_table.lot_id  ${condition}";
 
 
 		    $total_query        = "SELECT COUNT(1) FROM (${query}) AS combined_table";
 
-	        $status_query       = "SELECT SUM(cgst_value) as total_cgst,sum(return_unit) as sold_qty,sum(subtotal) as sub_tot FROM (${query}) AS combined_table";
+	        $status_query       = "SELECT SUM(cgst_value) as total_cgst,sum(return_unit) as sold_qty,sum(subtotal) as sub_tot,sum(amt) as tot_amt FROM (${query}) AS combined_table";
 			$data['s_result']   = $wpdb->get_row( $status_query );
 		    $data['total']      = $wpdb->get_var( $total_query );
 
@@ -333,7 +333,7 @@ left join
 		    }
 
 		    if($this->slap != '') {
-		    	$condition_final .= " WHERE report.gst = ".$this->slap;
+		    	$condition_final .= "AND report.gst = ".$this->slap;
 		    }
 		    $query 				= "SELECT * from (
 		    		SELECT 
@@ -392,13 +392,13 @@ left join
 							    sum(ws_return_details.return_unit) as return_unit,
 							    sum(ws_return_details.amt) as return_amt FROM ${ws_sale} as sale left join ${ws_return_table} as ws_return_details on sale.`id`= ws_return_details.sale_id WHERE sale.active = 1 and ws_return_details.active = 1 ${condition} group by ws_return_details.cgst
 							) as ws_return_table 
-							on ws_sale_table.cgst = ws_return_table.cgst ) as fin_tab GROUP by fin_tab.gst ) as report ${condition_final}";
+							on ws_sale_table.cgst = ws_return_table.cgst ) as fin_tab GROUP by fin_tab.gst ) as report WHERE report.total_unit > 0 ${condition_final}";
 		            
 
 
 		    $total_query        = "SELECT COUNT(1) FROM (${query}) AS combined_table";
 
-	        $status_query       = "SELECT SUM(cgst_value) as total_cgst,sum(total_unit) as sold_qty,sum(total) as sub_tot FROM (${query}) AS combined_table";
+	        $status_query       = "SELECT SUM(cgst_value) as total_cgst,sum(total_unit) as sold_qty,sum(total) as sub_tot,sum(amt) as tot_amt FROM (${query}) AS combined_table";
 			$data['s_result']   = $wpdb->get_row( $status_query );
 
 		    $data['total']      = $wpdb->get_var( $total_query );

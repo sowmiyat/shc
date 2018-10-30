@@ -1,7 +1,148 @@
 jQuery(document).ready(function (argument) {
 
-jQuery('#ws_billing_customer').focus();
+jQuery('#ws_billing_company').on('keydown',function(e){
+     var keyCode = e.keyCode || e.which; 
+       if(event.shiftKey && event.keyCode == 9) {  
+         e.preventDefault(); 
+        jQuery('.ws_bill_submit').focus();
+      }
+      else if (keyCode == 9) { 
+        e.preventDefault(); 
+        jQuery('#ws_billing_customer').focus();
+      } 
+      else {
+        jQuery('#ws_billing_company').focus();
+      }
+});
+jQuery('.ws_bill_submit').on('keydown',function(e){
+    var keyCode = e.keyCode || e.which; 
+       if(event.shiftKey && event.keyCode == 9) {  
+         e.preventDefault(); 
+        jQuery('.delivery_need').focus();
+      }
+      else if (keyCode == 9) { 
+        e.preventDefault(); 
+        jQuery('#ws_billing_company').focus();
+      } 
+      else {
+        jQuery('.ws_bill_submit').focus();
+      }
+});
+//<----- Payment type JS------>
+jQuery('.ws_payment_cash').live('click',function(){  
+    var today = moment().format(' YYYY-MM-DD'); 
+    var reference_id = jQuery('.invoice_id').val();
+    jQuery('.ws_payment_tab').css('display','block');
+    if(jQuery(this).is(':checked')) {
+        var type            = jQuery(this).attr('data-paytype'); 
+        
+        if(type == 'credit'){  
+            var readonly        = 'readonly';
+            var existing_count  = parseInt( jQuery('#ws_bill_payment_tab_cheque tr').length );
+            var current_row     = existing_count + 1;
+            if(current_row == 1){
+                var str1            = '<tr class="ws_payment_cheque"><td style="padding:5px;">' + Capital(type) + '<input type="hidden" name="pay_cheque" value="'+type+'" style="width:20px;" class="ws_pay_cheque"/></td><td style="padding:5px;"><input type="text" name="pay_amount_cheque" class="ws_pay_amount_cheque" '+ readonly +' value="'+ jQuery('.ws_fsub_total').val() +'" style="width: 74px;" onkeypress="return isNumberKey(event)"/><input type="hidden" name="payment_detail['+current_row+'][reference_screen]" value="billing_screen" /><input type="hidden" name="payment_detail['+current_row+'][reference_id]" value="'+ reference_id +'" /></td><td style="width: 190px;">'+today+'</td><td style="padding:5px;width:75px;"><a  href="#" class="ws_payment_sub_delete" style="">x</a></td></tr>';
+                jQuery('#ws_bill_payment_tab_cheque').append(str1);  
+            }
+           
+        } else {
+            if(type == 'internet'){
+                var type_text   = 'Netbanking';
+            } else{
+                var type_text = Capital(type);
+            }
+            var existing_count  = parseInt( jQuery('#ws_bill_payment_tab tr').length );
+            var current_row     = existing_count + 1;
+            var str             = '<tr class="ws_payment_table"><td style="padding:5px;">' + type_text + '<input type="hidden" name="payment_detail['+current_row+'][payment_type]" value="'+type+'" style="width:20px;" class="ws_payment_type"/></td><td style="padding:5px;"><input type="text" name="payment_detail['+current_row+'][payment_amount]" class="ws_payment_amount" data-paymenttype="'+type+'"  data-uniqueName="'+makeid()+'"  value="" style="width: 74px;" onkeypress="return isNumberKeyWithDot(event)"/><input type="hidden" name="payment_detail['+current_row+'][reference_screen]" value="billing_screen" /><input type="hidden" name="payment_detail['+current_row+'][reference_id]" value="'+ reference_id +'" /></td><td style="padding"5px;>'+today+'</td><td style="padding:5px;"><a  href="#" class="ws_payment_sub_delete" style="">x</a></td></tr>';                
+            jQuery('#ws_bill_payment_tab').append(str);
+        }
+        ws_payment_calculation();
+        
+        
+    }
 
+ });
+
+jQuery('.ws_payment_sub_delete').live('click',function(e){
+    var sub_tot     = 0;
+    if (confirm('Are you sure want to delete?')) {
+        jQuery(this).parent().parent().remove();
+    }
+    e.preventDefault();
+     var existing_count  = parseInt( jQuery('#ws_bill_payment_tab tr').length );
+     if(existing_count >= 1){
+        jQuery('.ws_payment_amount').focus();
+    } else{
+        jQuery('.ws_payment_cash').focus();
+    }
+    
+    ws_payment_calculation();
+    jQuery('.ws_paid_amount').trigger('change');
+
+    var uniquename = jQuery(this).parent().parent().find('.ws_payment_amount').data('uniquename');
+    deleteWsDueCash(uniquename);
+    
+});
+jQuery('.ws_payment_cash').live('keydown', function(e){
+    var keyCode = e.keyCode || e.which; 
+    if (keyCode == 40) {
+        e.preventDefault();
+        jQuery('.ws_payment_amount').focus();
+    }
+});
+
+jQuery('.ws_payment_amount').live('keydown', function(e){
+    var keyCode = e.keyCode || e.which; 
+    if (keyCode == 38) { 
+        e.preventDefault();
+        jQuery('.ws_payment_cash').focus();
+    }
+});
+
+
+jQuery('.ws_payment_amount').live('change click',function(){
+    var current_balance = ws_payment_calculation();
+    var amount          = parseFloat(jQuery(this).parent().parent().find('.ws_payment_amount').val());
+    var payment_type    = jQuery(this).parent().parent().find('.ws_payment_type').val();
+    var sub_tot = 0;
+    if( payment_type == 'card' || payment_type == 'internet' ||  payment_type == 'cheque' ){
+        if(current_balance >= 0) {
+            console.log("ok");
+        } else {
+            alert("Please Enter Amount as less than Total amount!!!");
+            parseFloat(jQuery(this).parent().parent().find('.ws_payment_amount').val(0));
+            
+        }
+    } 
+    ws_payment_calculation();
+    jQuery('.ws_paid_amount').trigger('change');   
+    
+});
+
+jQuery('.ws_cod_check').on('click',function(){
+    if(jQuery('.ws_cod_check:checked').val()=='cod'){
+        jQuery('.ws_cod_amount_div').css("display","block");
+        ws_payment_calculation();
+
+    } else {
+        jQuery('.ws_cod_amount_div').css("display","none");
+        jQuery('.ws_cod_amount').val('0');
+        
+    }
+
+});
+
+//ws delivery need or not 
+jQuery('.delivery_need').live('click',function(){
+    var delivery  = jQuery('.delivery_need:checked').val();
+    if(delivery == "yes"){
+        jQuery('.delivery_display').css('display','block');
+    }
+    else{
+        jQuery('.delivery_display').css('display','none');
+    }
+
+});
 
 //Ws delivery check products
 
@@ -17,25 +158,68 @@ jQuery('#ws_billing_customer').focus();
         }
                      
      });  
-     jQuery('.ws_delivery_check,.ws_delivery_count').on('click change',function(){
-         var delivery_count_check = parseFloat(jQuery(this).parent().parent().find('.ws_delivery_count').val());
-         var unit_count = parseFloat(jQuery(this).parent().parent().find('.ws_unit_count').val());
-         if( delivery_count_check > unit_count){
+
+    jQuery('.ws_delivery_check').live('click',function(){
+
+        var unit_count = parseFloat(jQuery(this).parent().parent().find('.ws_unit_count').val());
+        
+
+        var delivery_check = jQuery(this).parent().parent().find('.ws_delivery_check').is(":checked");
+        if(delivery_check){
+            var delivery        = 1;  
+            jQuery(this).parent().parent().find('.ws_delivery_count').css("display","inline-block");
+            jQuery(this).parent().parent().find('.ws_delivery_count').val(unit_count);
+            var delivery_count  = parseFloat(jQuery(this).parent().parent().find('.ws_delivery_count').val());
+
+        } else {
+
+            var delivery        = 0;
+            jQuery(this).parent().parent().find('.ws_delivery_count').css("display","none"); 
+            jQuery(this).parent().parent().find('.ws_delivery_count').val(0);
+            var delivery_count  = 0;
+        }
+        var delivery_id = jQuery(this).parent().parent().find('.ws_delivery_id').val();
+        
+        jQuery.ajax({
+            type: "POST",
+            dataType : "json",
+            url: frontendajax.ajaxurl,
+            data: {
+                action          :'ws_product_delivery',
+                id              : delivery_id,
+                delivery        : delivery,
+                delivery_count  : delivery_count,
+            },
+            success: function (data) {
+                clearPopup();     
+                
+            }
+        });
+     });
+
+     jQuery('.ws_delivery_count').on('change',function(){
+        var delivery_count_check = parseFloat(jQuery(this).parent().parent().find('.ws_delivery_count').val());
+        var unit_count = parseFloat(jQuery(this).parent().parent().find('.ws_unit_count').val());
+        if( delivery_count_check > unit_count){
             alert('please enter correct delivery product count !!!');
             jQuery(this).parent().parent().find('.ws_delivery_count').val(unit_count);
 
-         }
+        }
+        if(delivery_count_check == 0){
+            jQuery(this).parent().parent().find('.ws_delivery_check').attr('checked',false);
+        }
         var delivery_check = jQuery(this).parent().parent().find('.ws_delivery_check').is(":checked");
       
         if(delivery_check){
             var delivery = 1;
             
-            jQuery(this).parent().parent().find('.ws_delivery_count_div').css("display","block");
+            jQuery(this).parent().parent().find('.ws_delivery_count').css("display","inline-block");
              var delivery_count = parseFloat(jQuery(this).parent().parent().find('.ws_delivery_count').val());
              
         } else {
             var delivery = 0;
-            jQuery(this).parent().parent().find('.ws_delivery_count_div').css("display","none");
+            jQuery(this).parent().parent().find('.ws_delivery_count').css("display","none");
+            jQuery(this).parent().parent().find('.ws_delivery_count').val(0);
             var delivery_count = 0;
         }
         var delivery_id = jQuery(this).parent().parent().find('.ws_delivery_id').val();
@@ -44,7 +228,7 @@ jQuery('#ws_billing_customer').focus();
             dataType : "json",
             url: frontendajax.ajaxurl,
             data: {
-                action      :'ws_product_delivery',
+                action          :'ws_product_delivery',
                 id              : delivery_id,
                 delivery        : delivery,
                 delivery_count  : delivery_count,
@@ -73,23 +257,6 @@ jQuery('#ws_billing_customer').focus();
         }
     });
 
-      jQuery('.ws_bill_return_print').on('keydown', function(e){
-        var keyCode = e.keyCode || e.which; 
-        if (keyCode == 38) { 
-            e.preventDefault();
-            jQuery('.invoice_id').focus();
-
-        }
-    });
-
-    jQuery('.ws_bill_return_print').on('keydown', function(e){
-        var keyCode = e.keyCode || e.which; 
-        if (keyCode == 9) { 
-            e.preventDefault();
-            jQuery('.invoice_id').focus();
-
-        }
-    });
     //<-------- display secondary and landline textboxes----->
     jQuery('#ws_billing_secondary_mobile').live('keydown', function(e){
         var keyCode = e.keyCode || e.which; 
@@ -105,7 +272,8 @@ jQuery('#ws_billing_customer').focus();
             jQuery('#ws_billing_mobile').focus();
         }
     });
-    jQuery('#ws_billing_landline_mobile').live('keydown', function(e){ console.log(e);
+    jQuery('#ws_billing_landline_mobile').live('keydown', function(e){ 
+        console.log(e);
         var keyCode = e.keyCode || e.which; 
         if (keyCode == 38) { 
             e.preventDefault(); 
@@ -124,7 +292,7 @@ jQuery('#ws_billing_customer').focus();
         }
         else if (keyCode == 9) { 
             e.preventDefault(); 
-            jQuery('#ws_billing_customer').focus();
+            jQuery('#ws_billing_company').focus();
         }
         else {
             jQuery('#ws_submit_payment').focus();
@@ -141,7 +309,7 @@ jQuery('#ws_billing_customer').focus();
         }
         else if (keyCode == 9) { 
             e.preventDefault(); 
-            jQuery('#ws_billing_customer').focus();
+            jQuery('#ws_billing_company').focus();
         }
         else {
             jQuery('#ws_update_payment').focus();
@@ -200,8 +368,7 @@ jQuery('#ws_billing_customer').focus();
                 nameValidite : true,
             },
             ws_delivery_phone: {
-                minlength: 10,
-                maxlength: 10,
+                minlength:6,
             },
             ws_delivery_address : {
                 addressValidate : true,
@@ -229,7 +396,7 @@ jQuery('#ws_billing_customer').focus();
                 maxlength: "Please Enter Valid Landline Number!",
             },
             address: {
-                addressValidate : "Please Enter Valid Address",
+                addressValidate : "Address field contains only Alphabets,number , # , . , : , - and ,",
             },
             gst : {
                 gstValidate : "GST Numbers Does Not Contain Special Characters!",
@@ -241,10 +408,9 @@ jQuery('#ws_billing_customer').focus();
             },
             ws_delivery_phone : {
                 minlength: "Please Enter Valid  Number!",
-                maxlength: "Please Enter Valid  Number!",
             },
              ws_delivery_address: {
-                addressValidate : "Please Enter Valid Address",
+                addressValidate : "Address field contains only Alphabets,number , # , . , : , - and ,",
             },
 
         }
@@ -278,9 +444,8 @@ jQuery('#ws_billing_customer').focus();
                         clearPopup();
                         popItUp('Success', 'Bill Created!');
                         jQuery('#lightbox').css('display','none');
-                        console.log("efklf");
-                        console.log(data);
-                      window.location = bill_update_url+'&id='+data.inv_id;
+
+                      window.location = bill_update_url+'&id='+data.id+'&inv_id='+data.inv_id+'&year='+data.year;
 
                     }
                 });
@@ -314,11 +479,12 @@ jQuery('#ws_billing_customer').focus();
                         data : jQuery('#ws_billing_container :input').serialize()
                     },
                     success: function (data) {
+                        console.log(data);
                         clearPopup();
                         popItUp('Success', 'Successfully Updated!');
                         jQuery('#lightbox').css('display','none');
 
-                        window.location = bill_invoice_url+'&id='+ data.inv_id + '&year='+ data.year;
+                        window.location = bill_invoice_url+'&id='+ data.inv_id + '&year='+ data.year + '&action=update';
 
                     }
                 });
@@ -332,7 +498,7 @@ jQuery('#ws_billing_customer').focus();
 
 
 //<---- Billing mobile and customer search------->
-     jQuery( "#ws_billing_customer, #ws_billing_mobile" ).autocomplete ({
+     jQuery( "#ws_billing_customer, #ws_billing_mobile,#ws_billing_company" ).autocomplete ({
       source: function( request, response ) {
         var billing_field = jQuery(this.element).attr('id');
         jQuery.ajax( {
@@ -349,7 +515,13 @@ jQuery('#ws_billing_customer').focus();
                     // var field_val = item.customer_name +' \('+ item.mobile +'\)';
                     var field_val = item.customer_name;
                     var identification = 'name';
-                } else {
+                } else if(billing_field == 'ws_billing_company')
+                {
+                    var field_val = item.company_name;
+                    var identification = 'company';
+                }
+                else
+                {
                     var field_val = item.mobile;
                     var identification = 'mobile';
                 }
@@ -382,8 +554,8 @@ jQuery('#ws_billing_customer').focus();
                 },
                   success: function (data) {
                     
-                    jQuery('.ws_balance_amount').text(data);
-                    jQuery('.ws_balance_amount_val').val(data);
+                    jQuery('.ws_balance_amount').text(data.final_bal);
+                    jQuery('.ws_balance_amount_val').val(data.final_bal);
                     ws_rowCalculate();
 
 
@@ -395,23 +567,35 @@ jQuery('#ws_billing_customer').focus();
 
             if(ui.item.identification == 'mobile' ) {
                 jQuery('#ws_billing_mobile').val(ui.item.value);
-                jQuery('#ws_billing_customer').val(ui.item.name);
-            } else {
+                jQuery('.ws_delivery_phone').val(ui.item.value);
+                jQuery('#ws_billing_customer').val(ui.item.name); 
+                jQuery('#ws_billing_company').val(ui.item.company_name);
+               
+
+            } else if(ui.item.identification == 'company' ){
                 jQuery('#ws_billing_mobile').val(ui.item.mobile);
+                jQuery('.ws_delivery_phone').val(ui.item.mobile);
+                jQuery('#ws_billing_customer').val(ui.item.name);
+                jQuery('#ws_billing_company').val(ui.item.value);
+            }
+             else {
+                jQuery('#ws_billing_mobile').val(ui.item.mobile);
+                jQuery('.ws_delivery_phone').val(ui.item.mobile);
                 jQuery('#ws_billing_customer').val(ui.item.value);
+                jQuery('#ws_billing_company').val(ui.item.company_name);
             }
 
         
             jQuery('#ws_billing_secondary_mobile').val(ui.item.secondary_mobile);
             jQuery('#ws_billing_landline_mobile').val(ui.item.landline);
-            jQuery('#ws_billing_company').val(ui.item.company_name);
             jQuery('#ws_billing_gst').val(ui.item.gst);
-            
+            jQuery('.ws_delivery_name').val(ui.item.company_name);
+            jQuery('.ws_delivery_address').val(ui.item.address);
 
             jQuery('.ws_lot_id').focus();
             jQuery('.ws_paid_amount').trigger('change');
       },
-    response: function(event, ui) {
+        response: function(event, ui) {
         if (ui.content.length == 1)
         {
             jQuery(this).val(ui.content[0].value);
@@ -427,8 +611,8 @@ jQuery('#ws_billing_customer').focus();
                 },
                   success: function (data) {
                     
-                    jQuery('.ws_balance_amount').text(data);
-                    jQuery('.ws_balance_amount_val').val(data);
+                    jQuery('.ws_balance_amount').text(data.final_bal);
+                    jQuery('.ws_balance_amount_val').val(data.final_bal);
                     ws_rowCalculate();
 
 
@@ -441,14 +625,28 @@ jQuery('#ws_billing_customer').focus();
             if(ui.content[0].identification == 'mobile' ) {
                 jQuery('#ws_billing_mobile').val(ui.content[0].value);
                 jQuery('#ws_billing_customer').val(ui.content[0].name);
-            } else {
+                jQuery('.ws_delivery_phone').val(ui.content[0].value);
+                jQuery('#ws_billing_company').val(ui.content[0].company_name);
+            } 
+            else if(ui.content[0].identification == 'company' ){
+                jQuery('#ws_billing_mobile').val(ui.content[0].mobile);
+                jQuery('#ws_billing_customer').val(ui.content[0].name);
+                jQuery('.ws_delivery_phone').val(ui.content[0].mobile);
+                jQuery('#ws_billing_company').val(ui.content[0].value);
+            }
+            else {
                 jQuery('#ws_billing_mobile').val(ui.content[0].mobile);
                 jQuery('#ws_billing_customer').val(ui.content[0].value);
+                jQuery('.ws_delivery_phone').val(ui.content[0].mobile);
+                jQuery('#ws_billing_company').val(ui.content[0].company_name);
             }   
             jQuery('#ws_billing_secondary_mobile').val(ui.content[0].secondary_mobile);
             jQuery('#ws_billing_landline_mobile').val(ui.content[0].landline);
-            jQuery('#ws_billing_company').val(ui.content[0].company_name);
+
             jQuery('#ws_billing_gst').val(ui.content[0].gst);
+
+            jQuery('.ws_delivery_name').val(ui.content[0].company_name);
+            jQuery('.ws_delivery_address').val(ui.content[0].address);
             
 
             jQuery('.ws_lot_id').focus();
@@ -470,10 +668,9 @@ jQuery('#ws_billing_customer').focus();
     });
 
     jQuery('.ws_generate_bill').live('click',function() {
-        console.log("fdsfdf");
         var inv_id = jQuery('.invoice_id').val();
         var year = jQuery('.year').val();
-        var datapass =   home_page.url+'ws-download/?id='+inv_id+'&year='+year;
+        var datapass =   home_page.url+'ws-download/?id='+inv_id+'&cur_year='+year;
 
         // billing_list_single
         var thePopup = window.open( datapass, "Billing Invoice","" );
@@ -495,7 +692,18 @@ jQuery('#ws_billing_customer').focus();
     jQuery('.ws_print_bill').live('click',function(){
         var inv_id = jQuery(this).parent().parent().find('.invoice_id').val();
         var year = jQuery(this).parent().parent().find('.year').val();
-        var datapass =   home_page.url+'ws-invoice/?id='+inv_id+'&year='+year;
+        var datapass =   home_page.url+'ws-invoice/?id='+inv_id+'&cur_year='+year;
+
+        // billing_list_single
+        var thePopup = window.open( datapass, "Billing Wholesale Invoice","scrollbars=yes,menubar=0,location=0,top=50,left=300,height=700,width=950" );
+        thePopup.print();  
+    });
+
+
+    jQuery('.ws_delivery_print').live('click',function(){
+        var inv_id = jQuery(this).parent().parent().find('.invoice_id').val();
+        var year = jQuery(this).parent().parent().find('.year').val();
+        var datapass =   home_page.url+'ws-delivery-print/?id='+inv_id+'&cur_year='+year;
 
         // billing_list_single
         var thePopup = window.open( datapass, "Billing Wholesale Invoice","scrollbars=yes,menubar=0,location=0,top=50,left=300,height=700,width=950" );
@@ -522,14 +730,13 @@ jQuery('#ws_billing_customer').focus();
     });
 
 
-        jQuery('.ws_print_invoice_list').live('click',function() {
+    jQuery('.ws_print_invoice_list').live('click',function() {
         var  inv_id = jQuery('.inv_id').val();
-        var  order_id = jQuery('.order_id').val();
-        var  name = jQuery('.name').val();
+        var  cus_name = jQuery('.name').val();
         var  mobile = jQuery('.mobile').val();
         var bill_from = jQuery('.bill_from').val();
         var bill_to = jQuery('.bill_to').val();
-        var datapass =   home_page.url+'ws-sale-report-print/?bill_from='+bill_from+'&bill_to='+bill_to + '&inv_id='+inv_id+'&order_id='+order_id +'&name='+name+'&mobile='+mobile;
+        var datapass =   home_page.url+'ws-sale-report-print/?bill_from='+bill_from+'&bill_to='+bill_to + '&inv_id='+inv_id+'&cus_name='+cus_name+'&mobile='+mobile;
 
         // billing_list_single
         var thePopup = window.open( datapass, "Billing Wholesale Invoice","");
@@ -538,12 +745,11 @@ jQuery('#ws_billing_customer').focus();
 
         jQuery('.ws_download_invoice_list').live('click',function() {
         var  inv_id = jQuery('.inv_id').val();
-        var  order_id = jQuery('.order_id').val();
-        var  name = jQuery('.name').val();
+        var  cus_name = jQuery('.name').val();
         var  mobile = jQuery('.mobile').val();
         var bill_from = jQuery('.bill_from').val();
         var bill_to = jQuery('.bill_to').val();
-        var datapass =   home_page.url+'ws-sale-report-download/?bill_from='+bill_from+'&bill_to='+bill_to + '&inv_id='+inv_id+'&order_id='+order_id +'&name='+name+'&mobile='+mobile;
+        var datapass =   home_page.url+'ws-sale-report-download/?bill_from='+bill_from+'&bill_to='+bill_to + '&inv_id='+inv_id+'&cus_name='+cus_name+'&mobile='+mobile;
 
         // billing_list_single
         var thePopup = window.open( datapass, "Billing Wholesale Invoice","");
@@ -551,50 +757,66 @@ jQuery('#ws_billing_customer').focus();
 
 
      //<---- End Generate Print and Download Page ---> 
-
+//<------ Credit Notes ------->
+    jQuery('.cur_bal_check_box').on('click',function(){
+        jQuery('.ws_paid_amount').trigger('change');  
+        jQuery('.paid_amount').trigger('change');  
+        
+    });
 
 //<--- Display Balance -----> 
-    jQuery('.ws_paid_amount').on('change',function() {
-        var prev_bal = parseFloat(jQuery('.ws_balance_amount_val').val());
-        var current_bal = parseFloat(jQuery('.ws_fsub_total').val());
-        var paid = parseFloat(jQuery('.ws_paid_amount').val());
-        var bal = (prev_bal + current_bal) - paid;
-        jQuery('.ws_return_amt').val(bal);
-        jQuery('.ws_return_amt_txt').text(bal);
+    jQuery('.ws_paid_amount').on('change click',function() {
+        
+
+        prev_bal = parseFloat(jQuery('.ws_balance_amount_val').val());
+        current_bal = parseFloat(jQuery('.ws_fsub_total').val());
+        
+         if ( jQuery('.ws_paid_amount').val() == '')
+         {
+            var paid = parseFloat('0.00');   
+         } else {
+            var paid = parseFloat(jQuery('.ws_paid_amount').val());
+
+         }
+
+        bal = (current_bal) - paid;
+
+//current_bal 
+        currt_bal = paid - current_bal;
+
+       
+
+        if(currt_bal < 0 ){
+            jQuery('.ws_current_bal').val(0);
+            jQuery('.ws_current_bal_txt').text(0);
+          
+            // jQuery('.cur_bal_check_box').css('display','none');
+            // jQuery('.cur_bal_check_box').prop('checked',false);
+
+        }
+        else {
+            jQuery('.ws_current_bal').val(currt_bal);
+            jQuery('.ws_current_bal_txt').text(currt_bal);
+            // jQuery('.cur_bal_check_box').css('display','block');
+
+
+        }
+
+        if(jQuery('.cur_bal_check_box').attr('checked')){
+           var final_data =  bal + currt_bal;
+            
+        }  else {
+            var final_data = (prev_bal + current_bal) - paid;
+        }
+        bal = (bal > 0)? bal: 0 ;
+        jQuery('.ws_balance_pay').text(bal);
+        jQuery('.ws_return_amt').val(final_data.toFixed(2));
+        jQuery('.ws_return_amt_txt').text(final_data.toFixed(2));
+
 
     });
 
 //<--- End Display Balance -----> 
-
-
-
-//<------- credit and payment type------->
- jQuery('.payment_pay_type,.ws_paid_amount').on('change keyup',function() {
-    if((jQuery('.ws_paid_amount').val()) == '0') {
-        jQuery('.payment_pay_type:checked').val();
-        jQuery("input[name=ws_payment_pay_type][value='credit']").attr('disabled',false);
-        jQuery("input[name=ws_payment_pay_type][value='credit']").prop("checked",true);
-        jQuery("input[name=ws_payment_pay_type][value='cash']").attr('disabled',true);
-        jQuery("input[name=ws_payment_pay_type][value='card']").attr('disabled',true);
-        jQuery("input[name=ws_payment_pay_type][value='cheque']").attr('disabled',true);
-        jQuery("input[name=ws_payment_pay_type][value='internet_banking']").attr('disabled',true);
-        jQuery('.payment_details_card').css("display","none");
-        jQuery('.payment_details_cheque').css("display","none");
-        jQuery('.payment_details_internet').css("display","none");
-    } else
-     {
-        var pay_type = jQuery('.payment_pay_type:checked').val();
-        if( pay_type == 'credit') { 
-            jQuery("input[name=ws_payment_pay_type][value='credit']").prop("checked",false);
-            jQuery("input[name=ws_payment_pay_type][value='cash']").prop("checked",true);
-        }
-        jQuery("input[name=ws_payment_pay_type][value='cash']").attr('disabled',false);
-        jQuery("input[name=ws_payment_pay_type][value='card']").attr('disabled',false);
-        jQuery("input[name=ws_payment_pay_type][value='cheque']").attr('disabled',false);
-        jQuery("input[name=ws_payment_pay_type][value='internet_banking']").attr('disabled',false);
-        jQuery("input[name=ws_payment_pay_type][value='credit']").attr('disabled',true);
-     }
-});
 
 });
 
@@ -621,9 +843,6 @@ function customer_create_submit_popup_ws(action = '', length = 0) {
             jQuery('#src_info_box').bPopup().close();
             alert_popup('<span class="success_msg">Customer Account Created!</span>', 'Success');
 
-            
-                
-
         }
     });
 }
@@ -647,7 +866,7 @@ function create_popup(action = '', title = '') {
 }
 
 function clear_main_popup() {
-  jQuery('#popup-content').html('');              
+    jQuery('#popup-content').html('');              
 }
 
 
@@ -675,7 +894,8 @@ function populateSelectws(selector, v) {
                         hsn : item.hsn,
                         cgst : item.cgst,
                         sgst : item.sgst,
-                        unit_price : item.selling_price,
+                        unit_price : item.mrp,
+                        wholesale_price : item.wholesale_price,
                         value : item.product_name +' \('+item.brand_name+'\)',
                     }
                 }));
@@ -688,7 +908,9 @@ function populateSelectws(selector, v) {
 
             jQuery('.ws_lot_id_orig').val(ui.item.id);  
             jQuery('.ws_product').val(ui.item.product_name);  
+            jQuery('.ws_brand').val(ui.item.brand_name);  
             jQuery('.ws_unit_price').val(ui.item.unit_price);
+            jQuery('.ws_wholesale_price').val(ui.item.wholesale_price);
             jQuery('.discount').val(ui.item.unit_price);
             jQuery('.ws_hsn').val(ui.item.hsn);
             jQuery('.cgst_percentage').val(ui.item.cgst);
@@ -704,7 +926,7 @@ function populateSelectws(selector, v) {
                     action  :'ws_slap'
                 },
                   success: function (data) {    
-                    var str = '<td class="td_id">'+'1'+'</td><td class="stock_prod">' + ui.item.product_name + '</td><td class="slap_stock">'+ data +'</td><input type="hidden" name="ws_slab_sys_txt" value="'+ data +'"  class="ws_slab_sys_txt"/>';                
+                    var str = '<td class="td_id">'+'1'+'</td><td class="stock_prod">' + ui.item.product_name + '</td><td class="stock_prod">' + ui.item.unit_price + '</td><td class="slap_stock">'+ data +'</td><input type="hidden" name="ws_slab_sys_txt" value="'+ data +'"  class="ws_slab_sys_txt"/>';                
                     jQuery('.stock_table_body').html(str);
 
                 }
@@ -721,8 +943,10 @@ function populateSelectws(selector, v) {
                 jQuery(this).autocomplete( "close" );
 
                 jQuery('.ws_lot_id_orig').val(ui.content[0].id);  
-                jQuery('.ws_product').val(ui.content[0].product_name);  
+                jQuery('.ws_product').val(ui.content[0].product_name); 
+                jQuery('.ws_brand').val(ui.content[0].brand_name); 
                 jQuery('.ws_unit_price').val(ui.content[0].unit_price);
+                jQuery('.ws_wholesale_price').val(ui.content[0].wholesale_price);
                 jQuery('.discount').val(ui.content[0].unit_price);
                 jQuery('.ws_hsn').val(ui.content[0].hsn);
                 jQuery('.cgst_percentage').val(ui.content[0].cgst);
@@ -738,7 +962,7 @@ function populateSelectws(selector, v) {
                         action  :'ws_slap'
                     },
                       success: function (data) {    
-                        var str = '<td class="td_id">'+'1'+'</td><td class="stock_prod">' + ui.content[0].product_name + '</td><td class="slap_stock">'+ data +'</td><input type="hidden" name="ws_slab_sys_txt" value="'+ data +'"  class="ws_slab_sys_txt"/>';                
+                        var str = '<td class="td_id">'+'1'+'</td><td class="stock_prod">' + ui.content[0].product_name + '</td><td class="stock_prod">' + ui.content[0].unit_price + '</td><td class="slap_stock">'+ data +'</td><input type="hidden" name="ws_slab_sys_txt" value="'+ data +'"  class="ws_slab_sys_txt"/>';                
                         jQuery('.stock_table_body').html(str);
 
                     }
@@ -802,7 +1026,7 @@ jQuery( document ).ready(function() {
         var stock = parseFloat(jQuery('.ws_slab_sys_txt').val());
         var unit = parseFloat(jQuery('#unit').val());
         if(unit > stock){
-            alert('Enter Quantity as small as avalible stock!!!');
+            alert('Available stock is '+ stock + ' !!! Enter Quantity as small as avalible stock!!!');
             jQuery('.unit').val(Math.ceil(stock));
         }
     });
@@ -815,7 +1039,7 @@ jQuery( document ).ready(function() {
         var unit = parseFloat(jQuery(this).parent().parent().find('.sub_unit').val());
         var stock = parseFloat(jQuery(this).parent().parent().find('.sub_stock').val());
         if( unit > stock){
-            alert('Enter Quantity as small as avalible stock!!!');
+            alert('Available stock is '+ stock +' !!! Enter Quantity as small as avalible stock!!!');
             jQuery(this).parent().parent().find('.sub_unit').val(Math.ceil(stock));
         }
 
@@ -854,9 +1078,11 @@ jQuery( document ).ready(function() {
 
         var product_id          = jQuery('.ws_lot_id_orig').val();
         var product_name        = jQuery('.ws_product').val();
+        var brand_name          = jQuery('.ws_brand').val();
         var hsn_code            = jQuery('.ws_hsn').val();
         var stock               = jQuery('.ws_slab_sys_txt').val();
         var price               = jQuery('.ws_unit_price').val();
+        var wholesale_price     = jQuery('.ws_wholesale_price').val();
         var unit                = jQuery('.unit').val();
         var discount            = jQuery('.discount').val();
         var cgst                = jQuery('.cgst_percentage').val();
@@ -875,14 +1101,15 @@ jQuery( document ).ready(function() {
                 addFromProductControl();
                 jQuery('.product_control_error').remove();
             } else {
-                var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="customer_table" ><td class="td_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="customer_detail['+current_row+'][id]" class="sub_id" /><td class="td_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="customer_detail['+current_row+'][product]" class="sub_product"/><td class="td_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="customer_detail['+current_row+'][hsn]" class="sub_hsn"/><td class=""><input type="text" onkeypress="return isNumberKey(event)" value = "'+ unit + '" name="customer_detail['+current_row+'][unit]" class="sub_unit"/> </td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][stock]" class="sub_stock"/><td class="td_price">' + price + '</td> <input type="hidden" value = "'+ price + '" name="customer_detail['+current_row+'][price]" class="sub_price"/> <td><input type="text" onkeypress="return isNumberKeyWithDot(event)" value ="'+discount +'" name="customer_detail['+current_row+'][discount]" class="sub_discount"/></td><input type="hidden" value ="each" name="customer_detail['+current_row+'][discount_type]" class="discount_type"/><td class="td_amt">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][amt]" class="sub_amt"/><td class="td_cgst">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="customer_detail['+current_row+'][cgst]" class="sub_cgst"/> <td class="td_cgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][cgst_value]" class="sub_cgst_value"/><td class="td_sgst">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="customer_detail['+current_row+'][sgst]" class="sub_sgst"/><td class="td_sgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][sgst_value]" class="sub_sgst_value"/><td class="td_subtotal"></td> <input type="hidden" value ="" name="customer_detail['+current_row+'][subtotal]" class="sub_total"/><td><a href="#" class="sub_delete">Delete</a></td></tr>';                
+                var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="customer_table" ><td class="td_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="customer_detail['+current_row+'][id]" class="sub_id" /><td class="td_brand">'+brand_name+'</td> <input type="hidden" value="'+ brand_name + '" name="customer_detail['+current_row+'][brand]" class="sub_brand" /><td class="td_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="customer_detail['+current_row+'][product]" class="sub_product"/><td class="td_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="customer_detail['+current_row+'][hsn]" class="sub_hsn"/><td class=""><input type="text" onkeypress="return isNumberKey(event)"  value = "'+ unit + '" name="customer_detail['+current_row+'][unit]" class="sub_unit" autocomplete="off" style="width: 40px;" /> </td> <td>' + stock + '</td><input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][stock]" class="sub_stock"/><td class="td_price">' + price + '</td> <input type="hidden" value = "'+ price + '" name="customer_detail['+current_row+'][price]" class="sub_price"/> <td><input type="text" onkeypress="return isNumberKeyWithDot(event)" value ="'+discount +'" name="customer_detail['+current_row+'][discount]" autocomplete="off"  style="width: 70px;" class="sub_discount"/></td><td>'+ wholesale_price +'<input type="hidden" value="'+ wholesale_price +'"  name="customer_detail['+current_row+'][wholesale_price]" class="sub_wholesale_price"/></td><input type="hidden" value ="each" name="customer_detail['+current_row+'][discount_type]" class="discount_type"/><td class="td_amt">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][amt]" class="sub_amt"/><td class="td_cgst">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="customer_detail['+current_row+'][cgst]" class="sub_cgst"/> <td class="td_cgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][cgst_value]" class="sub_cgst_value"/><td class="td_sgst">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="customer_detail['+current_row+'][sgst]" class="sub_sgst"/><td class="td_sgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][sgst_value]" class="sub_sgst_value"/><td class="td_subtotal"></td> <input type="hidden" value ="" name="customer_detail['+current_row+'][subtotal]" class="sub_total"/><td><a href="#" class="sub_delete">Delete</a></td></tr>';                
                 jQuery('#bill_lot_add').append(str);
 
                 addFromProductControl();
                 jQuery('.product_control_error').remove();
             }
-            
+            jQuery('.sub_unit').trigger('change');
              ws_rowCalculate();
+
         } else {
             var product_name_selector = jQuery('#ws_lot_id');
             var lot_id_selector = jQuery('.ws_lot_id_orig');
@@ -903,10 +1130,10 @@ jQuery( document ).ready(function() {
                 unit_selector.after('<div class="product_control_error control_error">Unit Must be above 0</div>');
                 unit_selector.focus();
             }
-            if(discount == '' || discount <= 0) {
-                discount_selector.after('<div class="product_control_error control_error">Please Enter Valid Discounted Price!</div>');
-                discount_selector.focus();
-            }
+            // if(discount == '' || discount <= 0) {
+            //     discount_selector.after('<div class="product_control_error control_error">Please Enter Valid Discounted Price!</div>');
+            //     discount_selector.focus();
+            // }
         }
         /*else if(product_id == ''){
             alert_popup('Select Product !!!');
@@ -925,6 +1152,7 @@ jQuery( document ).ready(function() {
     jQuery('.sub_delete').live('click',function(){
        jQuery(this).parent().parent().remove();
         ws_rowCalculate();
+        jQuery('.ws_lot_id').focus();
     });
 
 });
@@ -954,8 +1182,8 @@ function ws_rowCalculate() {
     var sub ='0.00';
     var count = '0.00';
     var unit = '0.00';
-    var existing_count = '0';
-
+    var existing_count = '0';   
+    var before_total = parseFloat('0.00');
     var discount =parseFloat(jQuery('.ws_discount').val());
 
     discount = isNaN(discount) ? '0.00' : discount;
@@ -1016,12 +1244,17 @@ function ws_rowCalculate() {
         jQuery(this).find('.td_sgst_value').text(row_per_sgst.toFixed(2));
         sub_tot = sub_tot + parseFloat(jQuery(this).find('.sub_total').val());
 
-        
 
+    //<---- Display Total before discount ------->
+     var total = row_mrp * unit;
+
+     before_total = total + before_total;
 
     });
 
+    jQuery('.ws_total').val(before_total);
     jQuery('.ws_fsub_total').val(sub_tot);
+    //jQuery('.ws_paid_amount').val(sub_tot);
     jQuery('.ws_paid_amount').trigger('change');
 }
 
@@ -1033,8 +1266,10 @@ function ws_rowCalculate() {
 
 jQuery(document).ready(function (argument) {
 
+    jQuery('#ws_billing_return #ws_return_submit').on('click', function() {
+        var return_val = jQuery('.rtn_fsub_total').val();
+        if(return_val > 0){
 
-       jQuery('#ws_billing_return #ws_return_submit').on('click', function() {
 
         var bill_update_url = ws_bill_return.ws_return_page;
         jQuery('#lightbox').css('display','block');
@@ -1046,7 +1281,7 @@ jQuery(document).ready(function (argument) {
                 action : 'ws_create_return',
                 data   : jQuery('#ws_billing_return :input').serialize(),
                 year   : jQuery( ".year" ).val(),
-				search_inv_id : jQuery(".ws_return_inv_id").val(),
+    			search_inv_id : jQuery(".ws_return_inv_id").val(),
             },
             success: function (data) {
                 clearPopup();
@@ -1057,10 +1292,15 @@ jQuery(document).ready(function (argument) {
 
             }
         });
+        } else {
+            alert("Empty Bill Can't Submit!!!");
+        }
     });
 
     //<------- Goods Return Items Update ---->
     jQuery('#ws_billing_return #ws_return_update').on('click', function() {
+        var return_val = jQuery('.rtn_fsub_total').val();
+        if(return_val > 0){
 
         var bill_update_url = bill_return_viewws.returnviewws;
         jQuery('#lightbox').css('display','block');
@@ -1082,79 +1322,11 @@ jQuery(document).ready(function (argument) {
 
             }
         });
+        } else {
+            alert("Empty Bill Can't Submit!!!");
+        }
     });
  //<------- Return invoice start---------->
-    jQuery('.ws_return_inv_id').focus();
-
- //<-----After keydown submit using tab goto first text box in Return billing--->
-    jQuery("#ws_return_submit,#ws_return_update").on('keydown',  function(e) { 
-        var keyCode = e.keyCode || e.which; 
-
-        if (keyCode == 9) { 
-            e.preventDefault(); 
-            jQuery('.ws_return_inv_id').focus();
-        } 
-
-    });
-
-	//<-------Delete Bill------->
-
- //<-----After keydown submit using tab goto first text box in Return billing--->
-    jQuery(".bill_retail_print").on('keydown',  function(e) { 
-        var keyCode = e.keyCode || e.which; 
-
-        if (keyCode == 9) { 
-            e.preventDefault(); 
-            jQuery('.invoice_id').focus();
-        } 
-
-    });
-
-       //<-----After keydown submit using tab goto first text box in Return billing--->
-    jQuery('.ws_return_bill_submit').live('keydown', function(e) { 
-        console.log("dd");
-
-        if(jQuery(this).parent().parent().next('tr').length == 0) {
-            console.log("kdowd");
-            var keyCode = e.keyCode || e.which; 
-            if (keyCode == 9) { 
-                e.preventDefault(); 
-                // call custom function here
-                jQuery('.ws_return_inv_id').focus();
-            } 
-        }
-        else {
-            jQuery(this).parent().parent().next('tr').focus();
-        }
-    });
-
-    jQuery('#ws_return_submit').live('keydown', function(e) { 
-            var keyCode = e.keyCode || e.which; 
-            if (keyCode == 9) { 
-                e.preventDefault(); 
-                // call custom function here
-                jQuery('.ws_return_inv_id').focus()
-            } 
-    });
-     jQuery('.retail_return_bill_submit').live('keydown', function(e) { 
-            var keyCode = e.keyCode || e.which; 
-            if (keyCode == 9) { 
-                e.preventDefault(); 
-                // call custom function here
-                jQuery('.return_inv_id').focus()
-            } 
-    });
-      jQuery('.return_generate_bill').live('keydown', function(e) { 
-            var keyCode = e.keyCode || e.which; 
-            if (keyCode == 9) { 
-                e.preventDefault(); 
-                // call custom function here
-                jQuery('.invoice_id').focus()
-            } 
-    });
-
-      
-
 
 
 
@@ -1170,7 +1342,7 @@ jQuery(document).ready(function (argument) {
   	//<-------Delete Return Bill------->
 
   jQuery('.delete-ws-return-bill').live( "click", function() {
-    if(confirm('Are you sure you want to cancel this Invoice?')){
+    if(confirm('Are you sure you want to Delete this Goods Return Challan?')){
       var data=jQuery(this).attr("data-id");
       console.log(data);
       window.location.replace('admin.php?page=ws_return_items_list&delete_id='+data+'&action=delete');
@@ -1182,39 +1354,61 @@ jQuery(document).ready(function (argument) {
 
 });
 
-function wsReturn_rowCalculate() {
-    var sub_tot=parseFloat(0);
-   
-    jQuery('.rtn_customer_tab').each(function() { 
-        var unit_price          = parseFloat(jQuery(this).find('.rtn_sub_discount').val());
-        var unit_count          = parseFloat(jQuery(this).find('.sub_rtn_qty').val());
-        var cgst                = parseFloat(jQuery(this).find('.rtn_sub_cgst').val());
-        var sgst                = parseFloat(jQuery(this).find('.rtn_sub_sgst').val());
-        var unit_total          = (unit_price * unit_count);
-        var row_per_cgst        = ( (cgst * unit_total) / 100 );
-        var row_per_sgst        = ( (sgst * unit_total) / 100 );
-        var amt = unit_total - (row_per_cgst + row_per_sgst); 
-        unit_total               = (isNaN(unit_total) ? '0.00' : unit_total);
+function deleteWsDueCash(uniquename){
+    jQuery('tr.ws_due_data').each(function(){
+        jQuery(this).find('[ref-uniquename="'+uniquename+'"]').remove();
+        var previous_paid = billBalancePaidIndividual(jQuery(this));
+        jQuery(this).find('.ws_paid_due').val(previous_paid);
 
-        jQuery(this).find('.td_rtn_subtotal').text(unit_total); 
-        jQuery(this).find('.rtn_sub_total').val(unit_total);
-
-        jQuery(this).find('.td_rtn_amt').text(amt); 
-        jQuery(this).find('.rtn_sub_amt').val(amt);
-
-        jQuery(this).find('.rtn_sub_cgst_value').val(row_per_cgst);
-        jQuery(this).find('.rtn_sub_sgst_value').val(row_per_sgst);
-
-        jQuery(this).find('.td_rtn_cgst_value').text(row_per_cgst);
-        jQuery(this).find('.td_rtn_sgst_value').text(row_per_sgst);
-        sub_tot = sub_tot + parseFloat(jQuery(this).find('.rtn_sub_total').val());
-         
     });
-        jQuery('.ws_rtn_fsub_total').val(Math.round(sub_tot));
-        jQuery('.ws_paid_amount').trigger('change');
-   
-
+    //individualBillPaidCalculation();
 }
 
+function ws_payment_calculation(){
+    var total         = parseFloat(jQuery('.ws_fsub_total').val());
+    var due             = parseFloat(jQuery('.ws_balance_amount_val').val());
+    var total_payment   = due + total;
+    var paid_tot = 0;
+    jQuery('.ws_payment_table').each(function() {  
+        var tot     = parseFloat(jQuery(this).find('.ws_payment_amount').val());
+        tot         = isNaN(tot) ? 0 : tot ;
+        paid_tot    = paid_tot + tot;       
+    });
+   
 
-//jQuery('form')[0].checkValidity()
+    var total_pay     = total_payment - paid_tot;
+    var cur_pay       = total - paid_tot;
+    cur_pay = (cur_pay >= 0)? cur_pay : 0 ;
+    jQuery('.ws_pay_amount_cheque').val(cur_pay);
+    jQuery('.ws_cod_amount').val(cur_pay);
+    jQuery('.ws_paid_amount').val(paid_tot);
+    jQuery('.ws_paid_amount').trigger('change');
+    return total_pay;
+}
+function ws_duepaid_fun(customer_id = 0){
+jQuery.ajax({
+        type: "POST",
+        dataType : "json",
+        url: frontendajax.ajaxurl,
+        data: {
+            id                  : customer_id,
+            action              :'DuePaid',
+            type                : 'ws',
+            reference_id        : jQuery('.reference_id').val(),
+            reference_screen    : jQuery('.reference_screen').val(),
+        },
+         success: function (data) {
+            var due_data = data.due_data;
+            jQuery.each( due_data, function(a,b) {
+                //console.log(parseFloat(b.sale_id));
+                if(b.final_bal != '0.00' && parseFloat(b.sale_id) != parseFloat(jQuery('.invoice_id').val())){ 
+                    var existing_count  = parseInt( jQuery('#due_tab tr').length );
+                    var current_row     = existing_count + 1; 
+                    var tab_data = '<tr class="due_data"><td style="padding:5px;">' + b.sale_id + '<input type="hidden" name="due_detail['+current_row+'][due_id]" value="'+b.sale_id+'" style="width:20px;" class="due_id"/><input type="hidden" name="due_detail['+current_row+'][due_search_id]" value="'+b.search_id+'" style="width:20px;" class="due_search_id"/><input type="hidden" name="due_detail['+current_row+'][due_year]" value="'+b.year+'" style="width:20px;" class="due_year"/><input type="hidden" name="due_detail['+current_row+'][type_payment]" class="type_payment" value="due"/></td><td style="padding:5px;">' + b.final_bal + '<input type="hidden" name="due_detail['+current_row+'][due_amount]" value="'+b.final_bal+'" style="width:20px;" class="due_amount"/></td><td style="padding:5px;"><input type="text" name="due_detail['+current_row+'][paid_due]" class="paid_due" value="" style="width: 74px;" onkeypress="return isNumberKey(event)"/><input type="hidden" name="paid_due_hidden" class="paid_due_hidden" value="0"/></td><td><table class="duePaymentType"></table></td></tr>';
+                    jQuery('#due_tab').append(tab_data);
+                }
+            });   
+            //individualBillPaidCalculation();
+        }
+    });
+}

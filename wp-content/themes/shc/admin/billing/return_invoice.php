@@ -1,40 +1,68 @@
+<script type="text/javascript">
+if(!!window.performance && window.performance.navigation.type === 2)
+{
+    console.log('Reloading');
+    window.location.reload();
+}
+
+</script>
+<?php 
+if(isset($_GET['return_id'])){
+echo "<script language='javascript'>
+  jQuery(document).ready(function (argument) {
+    ReturnPaymentTypeCalculation();
+    jQuery('.ret_subtab').focus();
+  });
+
+</script>";
+}
+else{
+echo "<script language='javascript'>
+    jQuery(document).ready(function (argument) {
+        var invoice = jQuery('.return_inv_id').val();
+        jQuery('.return_inv_id').focus().val('').val(invoice);
+        
+     });
+</script>";
+}
+?>
+
 <?php
 
 
-    $bill_data = false;
-     $display  = false;
-     $update = false;
-     $invoice_id['inv_id'] = '';
-     $invoice_id['invoice_id'] = '';
+    $bill_data                  = false;
+    $display                    = false;
+    $update                     = false;
+    $invoice_id['inv_id']       = '';
+    $invoice_id['invoice_id']   = '';
 
-    if(isset($_GET['id']) && $_GET['id'] != '' ) {  
+    if(isset($_GET['id']) && $_GET['id'] != '' ) {   
+        if(isValidInvoice($_GET['id'],$_GET['year'], 1)) {
 
-        if(isValidInvoice($_GET['id'], 1)) {
-
+            
             $year                           = $_GET['year'];
             $invoice_id['inv_id']           = $_GET['id'];
             $bill_data                      = getBillDataReturnData($_GET['id'] , $year,$_GET['return_id']);
             $bill_fdata                     = $bill_data['bill_data'];
-           if(isset($_GET['return_id']) && $_GET['return_id'] != '' ) {
-                $display                        = false;
+            if(isset($_GET['return_id']) && $_GET['return_id'] != '' ) {
                 $update                         = true;
                 $bill_ldata                     = $bill_data['return_ordered_data'];
+                $return_check = getReturnCheckBox($_GET['return_id']);
             } else {
                 $display                        = true;
-                $update                         = false;
+
                 $bill_ldata                     = $bill_data['ordered_data'];
             }
             $bill_rdata                     = $bill_data['return_data'];
-            $invoice_id['invoice_id']       = $bill_fdata->inv_id;
-		}
-			
-    else {
+            $invoice_id['invoice_id']       = $bill_data['invoice_id'];
+
+        }
+        else {
              echo "<script>alert('INVOICE NOT FOUND!!! Try another number');</script>";
         }
-    
-    }
 
-   
+    } 
+
 
 ?>
 
@@ -51,12 +79,17 @@
 
                     Year
                         <select name="year" class="year">
-                            <?php   $current_year = date('Y');
-                                    $display_year = $current_year - 30;
+                            <?php   
+                                    $date = date("Y/m/d");
+                                    $finacial_year  = getFinancialYear($date);
+                                    $check_year = isset($_GET['year'])? $_GET['year'] : $finacial_year; 
+                                    $display_year = $finacial_year - 30;
                                     $added_year = 0;
                                     for($i=0;$i<60;$i++) {
                                         echo $years = $display_year + $added_year;
-                                        if($years == $current_year ){ $selected = 'selected'; } else {
+                                        if($years == $check_year ){
+                                         $selected = 'selected'; 
+                                        } else {
                                            $selected = ''; 
                                         }
                                         echo '<option value="'.$years.'"'.$selected.'>'.$years.'</option>';
@@ -136,6 +169,14 @@
                         .select2-container--default .select2-selection--single{
                                 border-radius: 0px;
                         }
+                        .billing-structure {
+                            border: 2px solid red;
+                            padding: 5px;
+                        }
+
+                        .billing-structure .balance_amount {
+                            font-weight: bold;
+                        }
 
 
                     </style>
@@ -154,12 +195,25 @@
 
                                             <address> 
                                                 <input type="hidden" name="customer_id" value="<?php echo $bill_fdata->customer_id; ?>"/>
-                                                <input type="hidden" name="inv_id" value="<?php echo $_GET['id']; ?>"/>
+                                                <input type="hidden" name="inv_id" value="<?php echo $invoice_id['invoice_id']; ?>"/>
                                                 <br><span><?php echo $bill_fdata->mobile; ?></span>
                                                 <br><span class="ws_customer_name"><?php echo $bill_fdata->customer_name; ?></span>
                                                 <br><span class="ws_address1"><?php echo $bill_fdata->address; ?></span>                      
                                             </address>                          
                                             
+                                    </div>
+                                    <div class="col-sm-3 invoice-col">
+                                        <?php
+
+                                            if($bill_fdata->payment_type == 'credit' || $bill_fdata->payment_type == 'internet_banking' || $bill_fdata->payment_type == 'cheque' ){ ?>
+                                             <div class="billing-structure"><span class="balance_amount"><?php echo 'CASH ON DELIVERY';  ?></span>
+                                                     
+                                            </div>   
+                                       <?php      }
+                                        ?>
+
+
+                               
                                     </div>
                                     <!-- /.col -->
                                 <div class="col-sm-6 invoice-col">
@@ -170,17 +224,17 @@
                                             <table class="table table-striped" data-repeater-list="ws_sale_detail">
                                                 <thead>
                                                     <tr>
-                                                        <th>S.No</th>
-                                                        <th>Product</th>
-                                                        <th>HSN</th>
-                                                        <th>Unit</th>
-                                                        <th>Price</th>
-                                                        <th>total</th>
-                                                        <th>Date</th>
+                                                        <th style="text-align: center;" >S.No</th>
+                                                        <th style="text-align: center;" >Product</th>
+                                                        <th style="text-align: center;" >HSN <br/> Code</th>
+                                                        <th style="text-align: center;" >Returned <br/> Qty</th>
+                                                        <th style="text-align: center;" >Price</th>
+                                                        <th style="text-align: center;" >total</th>
+                                                        <th style="text-align: center;" >Date</th>
                                                         
                                                     </tr>
                                                 </thead>
-                                                <tbody class="bill_lot_add_retail" id="bill_lot_add_retail">
+                                                <tbody class="bill_lot_add_retail" id="bill_lot_add_retail" style="text-align: center;" >
                                                     <?php 
                                                     if($display || $update) {  $i=1;
                                                         foreach($bill_rdata as $table_data) { ?>
@@ -229,38 +283,44 @@
                                             <h2>Billed Items</h2>
                                             <div class="billing-repeater rtn_ws_sale_detail" style="margin-top:20px;">
                                                 <table class="table table-striped" data-repeater-list="rtn_ws_sale_detail">
-                                                    <thead>
+                                                    <thead >
                                                         <tr>
-                                                            <th>S.No</th>
-                                                            <th>Product Name</th>
-                                                            <th>HSN Code</th>
-                                                            <th>Quantity</th>
-                                                            <th>Balance Qty</th>
-                                                            <th>Return Qty</th>
-                                                            <th>MRP</th>
-                                                            <th>Amount</th>
-                                                            <th>CGST</th>
-                                                            <th>CGST Value</th>
-                                                            <th>SGST</th>
-                                                            <th>SGST Value</th>
-                                                            <th>Subtotal</th>
+                                                            <th rowspan="2" style="text-align: center;" >S.No/Reason</th>
+                                                            <th rowspan="2" style="text-align: center;" >Product <br/> Name</th>
+                                                            <th rowspan="2" style="text-align: center;" >HSN <br/> Code</th>
+                                                            <th rowspan="2" style="text-align: center;" >Qty</th>
+                                                            <th rowspan="2" style="text-align: center;" >Delivery <br/> Qty</th>
+                                                            <th rowspan="2" style="text-align: center;" >Balance <br/> Qty</th>
+                                                            <th rowspan="2" style="text-align: center;" >Return <br/> Qty</th>
+                                                            <th rowspan="2" style="text-align: center;" >Sold <br/> Price</th>
+                                                            <th rowspan="2" >Taxless <br/> Amount</th>
+                                                            <th colspan="2" style="border-top: none;text-align: center;" >CGST</th>  
+                                                            <th colspan="2" style="border-top: none;text-align: center;" >SGST</th>
+                                                            <th rowspan="2" >Subtotal</th>
+                                                        </tr>
+                                                        <tr class="text_bold text_center">
+                                                            <th style="border-top: none;text-align: center;" class="column-title" >Rate(%)</th>
+                                                            <th style="border-top: none;text-align: center;" class="column-title" >Amount</th>
+                                                            <th style="border-top: none;text-align: center;" class="column-title" >Rate(%)</th>
+                                                            <th style="border-top: none;text-align: center;" class="column-title" >Amount</th>
                                                         </tr>
                                                     </thead>
-                                                      <tbody >
+                                                      <tbody style="text-align: center;">
                                                          <?php 
                                                     if($display || $update) {  $i=1;
-                                                        foreach($bill_ldata as $table_data) { ?>
-
-                                                    
-                                                     <tr class="rtn_bill_lot_add" name="rtn_customer_table" data-productid="<?php echo $table_data->lot_id; ?>">
-                                                        <td><?php echo $i; ?> </td><input type="hidden" name="customer_detail[<?php echo $i; ?>][id]" value="<?php echo $table_data->lot_id; ?>"  />
+                                                        foreach($bill_ldata as $table_data) {  ?>
+                                                        <tr class="rtn_bill_lot_add" name="rtn_customer_table" data-productid="<?php echo $table_data->lot_id; ?>">
+                                                        <td><?php echo $i; ?>  <?php $reason = ReturnReason($table_data->lot_id,$_GET['return_id']); ?>
+                                                        <input type="text" name="customer_detail[<?php echo $i; ?>][return_reason]" class="return_reason" placeholder="Fill the Reason..." value="<?php echo $reason->return_reason;  ?>"/> </td><input type="hidden" name="customer_detail[<?php echo $i; ?>][id]" value="<?php echo $table_data->lot_id; ?>"  />
                                                         <td><?php echo $table_data->product_name; ?> </td>
                                                         <td><?php echo $table_data->hsn; ?> </td>
                                                         <td><?php echo $table_data->sale_unit; ?> </td><input type="hidden" name="customer_detail[<?php echo $i; ?>][sale_qty]" id="sale_qty" class="sale_qty" value="<?php echo $table_data->sale_unit; ?>" />
-                                                        <td class="return_bal_qty_td"><?php if($update ) { echo $table_data->new_bal_qty;  } else {  echo $table_data->balance_unit; }?></td>
-                                                        <input type="hidden" name="customer_detail[<?php echo $i; ?>][return_bal_qty]" id="return_bal_qty" class="return_bal_qty" value="<?php echo $table_data->balance_unit; ?>" />
-                                                        <input type="hidden" name="customer_detail[<?php echo $i; ?>][return_bal]" id="return_bal" class="return_bal" value="<?php echo $table_data->balance_unit; ?>" />
-                                                        <td><input type="text" name="customer_detail[<?php echo $i; ?>][return_qty_ret]" class="return_qty_ret" style="width: 80px;" onkeypress="return isNumberKey(event)" value="<?php if($update){ echo $table_data->return_unit; } else { echo 0; } ?>"/></td>
+                                                        <td><?php echo $table_data->delivery_count; ?> </td><input type="hidden" name="customer_detail[<?php echo $i; ?>][ret_delivery_qty]" id="ret_delivery_qty" class="ret_delivery_qty" value="<?php echo $table_data->delivery_count; ?>" />
+                                                       <td class="return_bal_qty_td"><?php if($update ) { echo $bal = $table_data->new_bal_qty;  } else {  echo $bal = $table_data->balance_unit; }?></td>
+                                                        <input type="hidden" name="customer_detail[<?php echo $i; ?>][return_bal_qty]" id="return_bal_qty" class="return_bal_qty" value="<?php if($update ) { echo $table_data->new_bal_qty;  } else {  echo $table_data->balance_unit; }?>" />
+                                                        <input type="hidden" name="customer_detail[<?php echo $i; ?>][return_bal]" id="return_bal" class="return_bal" value="<?php if($update ) { echo $table_data->new_bal_qty;  } else {  echo $table_data->balance_unit; }?> " />
+                                                        <td><input type="text" name="customer_detail[<?php echo $i; ?>][return_qty_ret]" class="return_qty_ret" onkeypress="return isNumberKey(event)" style="width: 80px;" <?php if($bal == '0.00' || $bal < 0 )  echo 'readonly';?> value="<?php if($update){ echo $retn_unit = $table_data->return_unit; } else { echo $retn_unit = 0; } ?> "/></td>
+                                                        <input type="hidden" name="customer_detail[<?php echo $i; ?>][return_bal_check]" id="return_bal_check" class="return_bal_check" value="<?php if($update ) { echo $bal + $retn_unit; } else { echo $bal; }?>" />
                                                         <td><?php echo $table_data->discount; ?> </td><input type="hidden" value="<?php echo $table_data->discount; ?>" name="customer_detail[<?php echo $i; ?>][return_mrp]" class="return_mrp" />
                                                         <td class="return_amt_td"> <?php if($update) { echo $table_data->amt; } ?></td><input type="hidden" value="<?php echo $table_data->amt; ?>" name="customer_detail[<?php echo $i; ?>][return_amt]" class="return_amt" value="<?php if($update){ echo $table_data->amt; } ?>" />
                                                         <td><?php  echo $table_data->cgst;   ?> </td><input type="hidden" value="<?php echo $table_data->cgst; ?>" name="customer_detail[<?php echo $i; ?>][return_cgst]" class="return_cgst" value="<?php if($update){ echo $table_data->cgst; } ?>" />
@@ -277,8 +337,7 @@
                                                         }    
                                                     }
                                                 ?>
-
-                                                      </tbody>                                                
+                                                      </tbody>                                                 
                                                 </table>
                                             </div>
                                     </div>
@@ -299,16 +358,55 @@
                                                         <td>
                                                             <div class="form-horizontal form-label-left input_mask" style="position:relative;">
                                                                 <div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
-                                                                    <input type="text" class="form-control rtn_fsub_total" value="<?php if($update) { echo $total; } ?>" readonly name="rtn_fsub_total">
+                                                                    <input type="text" id="new_rtn_fsub_total"class="form-control rtn_fsub_total" value="<?php if($update) { echo $total; } else { echo '0'; } ?>" tabindex="-1" readonly name="rtn_fsub_total">
                                                                     <span class="fa fa-inr form-control-feedback right" aria-hidden="true"></span>
                                                                 </div>
                                                             </div>
                                                         </td>
                                                     </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <div>
+                                                                <table>
+
+                                                                    <?php 
+                                                                    $i = 1;
+                                                                    if(isset($_GET['return_id'])){
+                                                                        $Return_value = getReturnAmountInPaymentModeUpdate($invoice_id['invoice_id'],$_GET['return_id']);
+                                                                    } else {
+                                                                        $Return_value = getReturnAmountInPaymentMode($invoice_id['invoice_id']); 
+                                                                    }
+                                                                    
+
+                                                                    foreach ($Return_value['main_tab'] as $Paytype) {
+                                                                        echo '<tr class="tr_return_payment"><td><input type="hidden" name="return_amount['.$i.'][payment_type]" value="'.$Paytype->payment_type.'" class="payment_type"/></td>';
+                                                                        echo '<td><input type="hidden" name="return_amount['.$i.'][paid_amount]" value="'.$Paytype->balance_paid.'" class="paid_amount"/></td>';   
+                                                                        echo '<td><input type="hidden" name="return_amount['.$i.'][ret_amount]" value="" class="ret_amount"/></td></tr>';   
+                                                                        $i++;
+                                                                        if($Paytype->payment_type == 'credit'){
+                                                                            $PaymentCredit  = 'yes';
+                                                                        }
+                                                                    } ?>
+                                                                </table>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr> 
+                                                        <th <?php echo ($PaymentCredit == 'yes')? 'style="display:none"' : 'style="display:block"';  ?>>Pay Back: <input type="checkbox" name="retail_check_box" class="retail_check_box" style="width: 20px;height: 18px;" <?php if($update){ if(($return_check['returnCheckBox']->key_amount) != '0.00' ) { echo 'checked'; } }  else { if($PaymentCredit == 'yes'){ echo ''; }  else{ echo 'checked'; } } ?>>
+                                                            <!-- <input type="hidden" name="cd_id" value="<?php// if($update){ //echo $return_check['returnCheckBox']->id; } else { echo '0'; } ?>">  -->
+                                                        </th>
+                                                    
+                                                    </tr>
+
                                                 </tbody>
                                             </table>
+                                            
                                         </div>
                                     </div>
+                                    <?php if($PaymentCredit == 'yes'){
+                                              echo "<span style='width:62%;font-size:20px;font-weight:900px;margin-left:250px;'>Product purchase on Credit.Do not Pay back!!!</span>";
+                                           } 
+                                     ?>
                                     <!-- /.col -->
                                 </div>
                                 <!-- this row will not appear when printing -->
@@ -317,12 +415,12 @@
                                         <?php 
                                             if($display) {
                                         ?>
-                                        <input type="hidden" name="id" class="invoice_id_new" value="<?php echo $bill_fdata->id; ?>">
-                                        <button class="btn btn-success pull-right" id="return_submit"><i class="fa fa fa-edit"></i> Create Goods Return</button>
+                                            <input type="hidden" name="id" class="invoice_id_new" value="<?php echo $bill_fdata->id; ?>">
+                                            <button class="btn btn-success pull-right ret_subtab" id="return_submit"><i class="fa fa fa-edit"></i> Create Goods Return</button>
                                         <?php
                                             } else {
                                         ?>  <input type="hidden" name="return_id" class="return_id_new" value="<?php echo $_GET['return_id']; ?>">
-                                            <button class="btn btn-success pull-right" id="return_update" ><i class="fa fa-credit-card"></i> Update Goods Return </button>
+                                            <button class="btn btn-success pull-right ret_subtab" id="return_update" ><i class="fa fa-credit-card"></i> Update Goods Return </button>
                                         <?php
                                             } 
                                         ?>
@@ -344,3 +442,41 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+	
+
+    jQuery(".ret_subtab").on('keydown',  function(e) { 
+        var keyCode = e.keyCode || e.which; 
+           if(event.shiftKey && event.keyCode == 9) {  
+             e.preventDefault(); 
+            jQuery('.return_qty_ret').focus();
+          }
+          else if (keyCode == 9) { 
+            e.preventDefault(); 
+            jQuery('.return_inv_id').focus();
+          } 
+          else {
+            jQuery('.ret_subtab').focus();
+          }
+
+    });
+        
+     jQuery(".return_inv_id").on('keydown',  function(e) { 
+
+        var keyCode = e.keyCode || e.which; 
+
+        if(event.shiftKey && event.keyCode == 9){
+
+            e.preventDefault(); 
+            jQuery('.ret_subtab').focus();
+        }
+        else if (keyCode == 9) { 
+
+            e.preventDefault(); 
+            jQuery('.year').focus();
+        } else {
+           jQuery(".return_inv_id").focus();  
+        }
+
+    });
+</script>

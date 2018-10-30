@@ -25,7 +25,7 @@
             $bill_from = $_GET['bill_form'];
             $bill_to   = $_GET['bill_to'];
             if($_GET['slap'] != '') {
-                $condition .= " WHERE report.gst = ".$_GET['slap'];
+                $condition .= " AND report.gst = ".$_GET['slap'];
             }
 
 
@@ -105,24 +105,34 @@ on ws_sale_table.lot_id = ws_return_table.lot_id )
 as final_ws_sale group by final_ws_sale.lot_id )
 as report 
 left join ${lot_table} as 
-lot on report.lot_id=lot.id ${condition}";
+lot on report.lot_id=lot.id WHERE report.total_unit > 0 ${condition}";
 
 
            
 
-                 $results = $wpdb->get_results( $query );
+  $results = $wpdb->get_results( $query );
+  $status_query       = "SELECT SUM(cgst_value) as total_cgst,sum(total_unit) as sold_qty,sum(total) as sub_tot,sum(amt) as tot_amt FROM (${query}) AS combined_table";
+  $data['s_result']   = $wpdb->get_row( $status_query );
 
- } ?>
+ } 
+
+$profile = get_profile1();
+ ?>
 <html>
    <head>
 
     <meta charset="utf-8">
         <style>
+            @page {
+              
+              margin: 20px;
+            }
 
             body {font-family: arial, Arial, Helvetica, sans-serif; font-size: 12px;margin-left: 20px;margin-right: 30px;border:1px solid #73879c;}
             body {
                     height: 297mm;/*297*/
                     width: 210mm;
+                    padding: 20px;
                     
                 }
             dt { float: left; clear: left; text-align: right; font-weight: bold; margin-right: 10px; } 
@@ -164,33 +174,55 @@ lot on report.lot_id=lot.id ${condition}";
 
     <table cellspacing='3' cellpadding='3' WIDTH='100%' >
         <tr>
-            <td valign='top' WIDTH='50%'><strong>Saravana Health Store</strong>
-                <br/>7/12,Mg Road,Thiruvanmiyur,
-                <br/>Chennai,Tamilnadu,
-                <br/>Pincode-600041.
-                <br/>Cell:9841141648
+            <td valign='top' WIDTH='50%'><strong><?php echo $profile ? $profile->company_name : '';  ?></strong>
+                <br/><?php echo $profile ? $profile->address : '';  ?>
+                <br/><?php echo $profile ? $profile->address2 : '';  ?>
+                <br/>Cell : <?php echo $profile ? $profile->phone_number : '';  ?>
+                <br/>GST No : <?php echo $profile ? $profile->gst_number : '';  ?>
             </td>
         </tr>
     </table>
 
     <br />
-
+      <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" style=" border-collapse: collapse;border: 1px solid black; width:400px;margin: 0 auto;margin-bottom:20px;">
+          <thead>
+              <tr class="">
+                  <th style="border: 1px solid black;">Total Stock Return In</th>
+                  <th style="border: 1px solid black;">Total Taxless Amount</th>
+                  <th style="border: 1px solid black;">Total CGST(Rs)</th>
+                  <th style="border: 1px solid black;">Total SGST(Rs)</th>
+                  <th style="border: 1px solid black;">Total COGS</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <td style="border: 1px solid black;"><?php echo $data['s_result']->sold_qty; ?></td>
+                   <td style="border: 1px solid black;"><?php echo $data['s_result']->tot_amt;  ?> </td>
+                  <td style="border: 1px solid black;"><?php echo $data['s_result']->total_cgst; ?></td>
+                  <td style="border: 1px solid black;"><?php echo $data['s_result']->total_cgst; ?></td>
+                  <td style="border: 1px solid black;"><?php echo $data['s_result']->sub_tot; ?></td>
+              </tr>
+          </tbody>
+      </table>
     <br/>
 
-    <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" style=" border-collapse: collapse;border: 1px solid black;">
+    <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" style=" border-collapse: collapse;border: 1px solid black;text-align: center;">
     <tr>
-        <th style="border: 1px solid black;" >SNO</th>
-        <th style="border: 1px solid black;" >Brand Name</th>
-        <th style="border: 1px solid black;" >Product Name</th>
-        <th style="border: 1px solid black;" >Number of Goods Sold</th>
-        <th style="border: 1px solid black;" >CGST</th>
-        <th style="border: 1px solid black;" >SGST</th>
-        <th style="border: 1px solid black;" >CGST Amount</th>
-        <th style="border: 1px solid black;" >SGST Amonut</th>
-        <th style="border: 1px solid black;" >Amount</th>
-        <th style="border: 1px solid black;" >Cost Of Goods Sold(COGS)</th>
+        <th rowspan="2" style="border: 1px solid black;" >SNO</th>
+        <th rowspan="2" style="border: 1px solid black;" >Brand Name</th>
+        <th rowspan="2" style="border: 1px solid black;" >Product Name</th>
+        <th rowspan="2" style="border: 1px solid black;" >Number of Goods Sold</th>
+        <th rowspan="2" style="border: 1px solid black;" >Taxless Amount</th>
+        <th colspan="2" style="border: 1px solid black;" >RATE</th>  
+        <th colspan="2" style="border: 1px solid black;" >AMOUNT</th>
+        <th rowspan="2" style="border: 1px solid black;" >Cost Of Goods Sold(COGS)</th>
     </tr>
-
+     <tr class="text_bold text_center">
+      <th style="border: 1px solid black;" >CGST(%)</th>
+      <th style="border: 1px solid black;" >SGST(%)</th>
+      <th style="border: 1px solid black;" >CGST</th>
+      <th style="border: 1px solid black;" >SGST</th>
+    </tr>
     <?php 
     $i = 1;
     foreach ($results as $b_value) {
@@ -200,17 +232,31 @@ lot on report.lot_id=lot.id ${condition}";
                 <td style="border: 1px solid black;"><?php echo $b_value->product_name; ?></td>
                 <td style="border: 1px solid black;"><?php echo $b_value->brand_name; ?></td>
                 <td style="border: 1px solid black;"><?php echo round($b_value->total_unit); ?></td>
-                <td style="border: 1px solid black;"><?php echo $b_value->gst; ?> </td>
-                <td style="border: 1px solid black;"><?php echo $b_value->gst; ?> </td>
-                <td style="border: 1px solid black;"><?php echo $b_value->cgst_value; ?></td>
-                <td style="border: 1px solid black;"><?php echo $b_value->cgst_value; ?></td>
                 <td style="border: 1px solid black;"><?php echo $b_value->amt; ?></td> 
+                <td style="border: 1px solid black;"><?php echo $b_value->gst; ?> </td>
+                <td style="border: 1px solid black;"><?php echo $b_value->gst; ?> </td>
+                <td style="border: 1px solid black;"><?php echo $b_value->cgst_value; ?></td>
+                <td style="border: 1px solid black;"><?php echo $b_value->cgst_value; ?></td>
+                
                 <td style="border: 1px solid black;"><?php echo $b_value->total; ?></td>                               
             </tr>
     <?php
             $i++;
             }
         ?>  
+       <!--  <tr>
+          <td style="border: 1px solid black;"></td>
+          <td style="border: 1px solid black;"></td>
+          <td style="border: 1px solid black;"></td>
+          <td style="border: 1px solid black;"><?php echo $data['s_result']->sold_qty; ?></td>
+          <td style="border: 1px solid black;"><?php echo $data['s_result']->tot_amt;  ?> </td>
+          <td style="border: 1px solid black;"><?php ?> </td>
+          <td style="border: 1px solid black;"><?php ?></td> 
+          <td style="border: 1px solid black;"><?php  echo $data['s_result']->total_cgst; ?></td>
+          <td style="border: 1px solid black;"><?php  echo $data['s_result']->total_cgst; ?></td>
+          
+          <td style="border: 1px solid black;"><?php  echo $data['s_result']->sub_tot; ?></td>   
+        </tr> -->
     </table>
 
 

@@ -12,36 +12,37 @@
 
 
     $ppage = false;
-    if(!$customer) {
-        $customer = new Customer();
-        $ppage = 5;
+    if(!$customer_class) {
+        $customer_class = new Customer();
+        $result_args = array(
+            'orderby_field' => 'modified_at',
+            'page' => $customer_class->cpage,
+            'order_by' => 'DESC',
+            'items_per_page' => ($ppage) ? $ppage : $customer_class->ppage ,
+            'condition' => '',
+        );
     }
 
-    $result_args = array(
-        'orderby_field' => 'total_buy',
-        'page' => $customer->cpage,
-        'order_by' => 'DESC',
-        'items_per_page' => ($ppage) ? $ppage : $customer->ppage ,
-        'condition' => '',
-    );
-    $customer_list = $customer->customer_list_pagination($result_args);
+    
+    $customer_list = $customer_class->customer_list_pagination($result_args);
 
 ?>
         <div class="x_content">
             <div class="table-responsive">
-                <table class="table table-striped jambo_table bulk_action">
+                <table class="table table-striped jambo_table bulk_action" style="text-align:center">
                     <thead>
-                        <tr class="headings">
-                            <th>
+                        <tr class="headings" style="text-align:center">
+                            <th style="text-align:center">
                                 S.No
                             </th>
-                            <th class="column-title">Customer Name </th>
-                            <th class="column-title">Mobile </th>
-                            <th class="column-title">Address </th>
-                            <th class="column-title">Sale Total </th>
-							<th class="column-title">Balance(to be paid) </th>
-                            <th class="column-title">Registered On </th>
-                            <th class="column-title">Action </th>
+                            <th style="text-align:center" class="column-title">Customer <br/>Name </th>
+                            <th style="text-align:center" class="column-title">Mobile </th>
+                            <th style="text-align:center" class="column-title" style="width: 100px;">Address </th>
+                            <th style="text-align:center" class="column-title">Sale <br/>Total </th>
+                            <th style="text-align:center" class="column-title">Due <br/>Amount </th>
+							<!-- <th class="column-title">Paid </th> -->
+                            <th style="text-align:center" class="column-title">Registered <br/> On </th>
+                            <th style="text-align:center" class="column-title">Action </th>
                         </tr>
                     </thead>
 
@@ -51,22 +52,28 @@
                             $i = $customer_list['start_count']+1;
 
                             foreach ($customer_list['result'] as $c_value) {
-                                $customer_id = $c_value->id;
+                                $customer_id = $c_value->customer_id;
                     ?>
                                 <tr class="odd pointer">
                                     <td class="a-center ">
                                         <?php echo $i; ?>
                                     </td>
-                                    <td class=""><?php echo $c_value->name; ?></td>
+                                    <td class=""><?php echo $c_value->customer_name; ?></td>
                                     <td class=""><?php echo $c_value->mobile; ?></td>
-                                    <td class=""><?php echo $c_value->address; ?></i>
+                                    <td class="" style="width: 100px;"><?php echo $c_value->address; ?></i>
                                     </td>
-                                    <td class=""><?php echo $c_value->total_buy; ?></td>
-									<td class=""><?php echo $c_value->balance; ?></td>
-                                    <td class=""><?php echo $c_value->created_at; ?></td>
+                                    <td class=""><?php echo $c_value->new_sale_total1; ?></td>
+									<td class=""><?php echo $final_bal = $c_value->final_bal;  ?>
+                                    <!-- <td>
+                                   <?php  if($final_bal < 0){ ?>
+                                    <input type="checkbox" name="cur_bal_check" class="cur_bal_check" data-amt="<?php echo $final_bal = $c_value->final_balance;  ?>" data-id="<?php echo $c_value->id; ?>" style="width: 20px;height: 18px;" >
+                                   <?php  }
+                                    ?>
+                                     </td> -->
+                                    <td class=""><?php echo $c_value->modified_at; ?></td>
                                     <td>
                                         <a href="<?php echo admin_url('admin.php?page=new_customer')."&id=${customer_id}"; ?>" class="list_update">Update</a> /
-                                        <a href = "#" class="list_delete delete-cus last_list_view" data-id="<?php echo $c_value->id; ?>">Delete</a>
+                                        <a href = "#" class="list_delete delete-cus last_list_view" data-id="<?php echo $c_value->customer_id; ?>">Delete</a>
                                     </td>
                                 </tr>
                     <?php
@@ -96,7 +103,37 @@
         </div>
 <script>
 //<-------Delete Lot------->
+	jQuery('.cur_bal_check').on('click',function(){
+		var data=jQuery(this).attr("data-id");
+		var amt=jQuery(this).attr("data-amt");
+		jQuery(this).parent().parent().find('.cur_bal_check').css('display','none');
+		      jQuery.ajax({
+                type: "POST",
+                dataType : "json",
+                url: frontendajax.ajaxurl,
+                data: {
+                    action : 'balance_paid',
+                    id : data,
+					amt : amt,
+                },
+                success: function (data) {
+                    
+					if(data.redirect != 0) { 
+                        setTimeout(function() {
+                            managePopupContent(data);
+                        }, 1000);
+                    }
 
+                    if(data.success == 0) {
+                        popItUp('Error', data.msg);
+                    } else {
+                        popItUp('Success', data.msg);
+                    }
+                
+                }
+            });
+		
+	});
   jQuery('.delete-cus').live( "click", function() {
     if(confirm('Are you sure you want to delete this element?')){
       var data=jQuery(this).attr("data-id");

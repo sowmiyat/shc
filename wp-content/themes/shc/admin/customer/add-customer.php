@@ -25,6 +25,7 @@ input[type=number]::-webkit-outer-spin-button {
 						<div class="form-group">
 						<input type="hidden" value="off" name="form_submit_prevent" class="form_submit_prevent_customer" id="form_submit_prevent_customer"/>
 
+
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Customer Name 
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
@@ -65,7 +66,7 @@ input[type=number]::-webkit-outer-spin-button {
 							<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Address 
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<textarea id="address" name="address" class="form-control col-md-7 col-xs-12" autocomplete="off"><?php echo ($customer) ? $customer->address : ''; ?></textarea>
+								<textarea id="address" name="address" class="form-control col-md-7 col-xs-12 address" autocomplete="off" style="border: 2px solid rgb(238, 238, 238);"><?php echo ($customer) ? $customer->address : ''; ?></textarea>
 							</div>
 						</div>
 						<div class="divider-dashed"></div>

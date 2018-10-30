@@ -57,13 +57,11 @@ function src_global_var() {
 				'cancel_invoice' 			=> 'Cancel Billing List', 
 				'add_return' 				=> 'Return Goods', 
 				'return_list' 				=> 'Return List', 
-				'cancel_return_items' 		=> 'Cancel Return Goods List', 
 				'ws_add_billing' 			=> 'Wholesale Purchase & Sales', 
 				'ws_billing_list' 			=> 'Wholesale Billing List',
 				'ws_cancel_invoice' 		=> 'Cancel Wholesale Billing List',
 				'ws_add_return' 			=> 'Wholesale Return Goods', 
 				'ws_return_list' 			=> 'Wholesale Return List', 
-				'ws_cancel_return_items' 	=> 'Cancel Wholesale Return Goods List', 
 				 
 			),
 			'permission' => array(
@@ -72,13 +70,11 @@ function src_global_var() {
 				'cancel_invoice' 			=> (is_super_admin()) ? 'manage_options' : 'cancel_invoice', 
 				'add_return' 				=> (is_super_admin()) ? 'manage_options' : 'add_return',
 				'return_list' 				=> (is_super_admin()) ? 'manage_options' : 'return_list', 
-				'cancel_return_items' 		=> (is_super_admin()) ? 'manage_options' : 'cancel_return_items', 
 				'ws_add_billing' 			=> (is_super_admin()) ? 'manage_options' : 'ws_add_billing', 
 				'ws_billing_list' 			=> (is_super_admin()) ? 'manage_options' : 'ws_billing_list', 
 				'ws_cancel_invoice' 		=> (is_super_admin()) ? 'manage_options' : 'ws_cancel_invoice', 
 				'ws_add_return' 			=> (is_super_admin()) ? 'manage_options' : 'ws_add_return', 
 				'ws_return_list' 			=> (is_super_admin()) ? 'manage_options' : 'ws_return_list', 
-				'ws_cancel_return_items' 	=> (is_super_admin()) ? 'manage_options' : 'ws_cancel_return_items', 
 				
 			),			
 		),

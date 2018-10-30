@@ -62,7 +62,7 @@ function add_stock(){
 		$create_id = $wpdb->insert_id;
 
 		$wpdb->update($stock_table,array('created_by'=>$current_nice_name), array('id' => $create_id));
-
+		$data['msg'] = 'Stock Added Successfully!';
 		$data['redirect'] = network_admin_url( 'admin.php?page=list_stocks' );
 		
 	}
@@ -75,6 +75,8 @@ add_action( 'wp_ajax_nopriv_add_stock', 'add_stock' );
 
 
 function update_stock(){
+	$data['success'] = 0;
+	$data['msg'] = 'No changes happend!';
 	$current_user 		= wp_get_current_user();
 	$current_nice_name 	= $current_user->user_nicename;
 
@@ -92,12 +94,22 @@ function update_stock(){
 	$lot_id = $params['lot_number'];
 	$stock_count = $params['stock_count'];
 
-	if($lot_id != '' && get_stock($stock_id)) {
-		$wpdb->update($stock_table, $params, array('id' => $stock_id));
-		$wpdb->update($stock_table,array('modified_by'=>$current_nice_name), array('id' => $stock_id));
-		$data['success'] = 1;
-		$data['msg'] = 'Stock Updated Successfully!';
-		$data['redirect'] = network_admin_url( 'admin.php?page=list_stocks' );
+
+	$query = "SELECT * from ${stock_table} WHERE lot_number ='${lot_id}' and stock_count = '${stock_count}' and  id = ${stock_id} and active='1'";
+	if($wpdb->get_row($query)){
+		$data['success'] = 0;
+		$data['msg'] 	= 'No Updates!';
+		$data['redirect'] = network_admin_url( 'admin.php?page=add_stocks&stock_id='.$stock_id );
+		
+	} else {
+		if($lot_id != '' && get_stock($stock_id)) {
+			$wpdb->update($stock_table, $params, array('id' => $stock_id));
+			$wpdb->update($stock_table,array('modified_by'=>$current_nice_name), array('id' => $stock_id));
+			$data['success'] = 1;
+			$data['msg'] = 'Stock Updated Successfully!';
+			$data['redirect'] = network_admin_url( 'admin.php?page=list_stocks' );
+			
+		}
 	}
 
 	echo json_encode($data);
@@ -125,7 +137,7 @@ add_action( 'wp_ajax_nopriv_stock_filter_total', 'stock_filter_total' );
 
 function productCheck(){
 	global $wpdb;
-	$product_name 					= $_POST['productname'];
+	$product_name 					= 	$_POST['productname'];
     $lot_table 						=  $wpdb->prefix.'shc_lots';
     $query = "SELECT product_name FROM ${lot_table} WHERE product_name ='$product_name' and active=1";
 

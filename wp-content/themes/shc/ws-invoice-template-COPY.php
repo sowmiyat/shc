@@ -237,7 +237,7 @@
             </tr>
             <?php
             $pages = false;
-            $per_page = 31;
+            $per_page = 15;
             $pieces = false;
             $tota_row = 0;
 
@@ -303,7 +303,7 @@
                           <td><div class="text-right">-</div></td>
                           <td>
                             <div class="text-right">
-                             
+                         
                             </div>
                           </td>
                         </tr>
@@ -336,10 +336,10 @@
             if($pages == $current_page) {
             ?>                          
             <tr>
-              <td colspan="11" style=" text-align: right;" ><div  >Discount (Hire Charges)</div></td>
+              <td colspan="11" style=" text-align: right;" ><div  >Discount (%)</div></td>
               <td>
                 <div class="text-center">
-                  <?php echo $bill_fdata->discount; ?>
+                  <?php echo $bill_fdata->discount; echo " %"; ?>
                 </div>
               </td>
             </tr>
@@ -360,10 +360,10 @@
               } else {
             ?>
                 <tr>
-                  <td colspan="11" style="padding-bottom: 2em;border: none;">
+                  <td colspan="11" style="padding-bottom: 32em;border: none;">
                     <div class="text-center">CF / TOTAL</div>
                   </td>
-                  <td style="padding-bottom: 2em;border: none;">
+                  <td style="padding-bottom: 32em;border: none;">
                     <div class="text-right">
                       <?php echo $tot; ?>
                     </div>

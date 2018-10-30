@@ -15,6 +15,14 @@
     $customer_list = $customer->customer_list_pagination_dashboard($result_args);
 
 ?>
+<style>
+.pointer td{
+    text-align: center;
+}
+.headings th {
+    text-align: center;
+}
+</style>
         <div class="x_content">
             <div class="table-responsive">
                 <table class="table table-striped jambo_table bulk_action">
@@ -23,12 +31,12 @@
                             <th>
                                 S.No
                             </th>
-                            <th class="column-title">Customer Name </th>
+                            <th class="column-title">Customer <br/> Name </th>
                             <th class="column-title">Mobile </th>
                             <th class="column-title">Address </th>
-                            <th class="column-title">Sale Total </th>
-							<th class="column-title">Balance(to be paid) </th>
-                            <th class="column-title">Registered On </th>
+                            <th class="column-title">Sale <br/> Total </th>
+							<th class="column-title">Due <br/> Amount </th>
+                            <th class="column-title">Registered <br/> On </th>
                             <!-- <th class="column-title">Action </th> -->
                         </tr>
                     </thead>

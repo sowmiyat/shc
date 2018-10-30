@@ -32,7 +32,7 @@ function create_lot(){
 	parse_str($_POST['data'], $params);
 	unset($params['action']);
 	unset($params['form_submit_prevent']);
-	$lot_table = $wpdb->prefix. 'shc_lots';
+	$lot_table = $wpdb->prefix. 'shc_lots';	
 	$wpdb->insert($lot_table, $params);
 	$create_id 			= $wpdb->insert_id;
 	$lot_add_update 	=  array('lot_no' =>$create_id,'created_by'=>$current_nice_name);
@@ -40,7 +40,7 @@ function create_lot(){
 
 	if($wpdb->insert_id) {
 		$data['success'] = 1;
-		$data['msg'] 	= 'Lot Created!';
+		$data['msg'] 	= 'Product Created!';
 		
 		$data['redirect'] = network_admin_url( 'admin.php?page=list_lots' );
 	}
@@ -64,18 +64,41 @@ function update_lot(){
 	$params = array();
 	parse_str($_POST['data'], $params);
 	$lot_id = $params['lot_id'];
+	$brand_name = $params['brand_name'];
+	$product_name = $params['product_name'];
+	$mrp = $params['mrp'];
+	$selling_price = $params['selling_price'];
+	$wholesale_price = $params['wholesale_price'];
+	$purchase_price = $params['purchase_price'];
+	// $cgst = $params['cgst'];
+	// $sgst = $params['sgst'];
+	$gst 			= $params['gst_percentage'];
+	$sess 			= $params['sess'];
+	$hsn 			= $params['hsn'];
+	$stock_alert 	= $params['stock_alert'];
+	
 
 	unset($params['action']);
 	unset($params['lot_id']);
 	unset($params['form_submit_prevent']);
 	$lot_table = $wpdb->prefix. 'shc_lots';
-	if($lot_id != '' && get_lot($lot_id)) {
+
+	$query = "SELECT * from ${lot_table} WHERE brand_name ='${brand_name}' and product_name = '${product_name}' and wholesale_price = '${wholesale_price}' and selling_price = '${selling_price}' and mrp = '${mrp}' and purchase_price = '${purchase_price}' and gst = '${gst_percentage}' and sess = '${sess}' and hsn ='${hsn}' and stock_alert='${stock_alert}'  and  id = ${lot_id} and active='1'";
+	if($wpdb->get_row($query)){
+		$data['success'] = 0;
+		$data['msg'] 	= 'No Updates!';
+		$data['redirect'] = network_admin_url( 'admin.php?page=add_lot&id='.$lot_id );
+		
+	} else {
+		if($lot_id != '' && get_lot($lot_id)) {
 		$wpdb->update($lot_table, $params, array('id' => $lot_id));
 		$wpdb->update($lot_table, array('modified_by' => $current_nice_name ), array('id' => $lot_id));
 		$data['success'] = 1;
-		$data['msg'] 	= 'Lot Updated!';
+		$data['msg'] 	= 'Product Updated!';
 		$data['redirect'] = network_admin_url( 'admin.php?page=list_lots' );
 	}
+	}
+	
 
 	echo json_encode($data);
 	die();
@@ -90,8 +113,8 @@ function lot_filter() {
 	include( get_template_directory().'/admin/lots/ajax_loading/lot-list.php' );
 	die();	
 }
-add_action( 'wp_ajax_lot_filter', 'lot_filter' );
-add_action( 'wp_ajax_nopriv_lot_filter', 'lot_filter' );
+add_action( 'wp_ajax_lot_filter', 'lot_filter');
+add_action( 'wp_ajax_nopriv_lot_filter', 'lot_filter');
 
 
 function check_unique_product() {
@@ -99,9 +122,10 @@ function check_unique_product() {
 	global $wpdb;
 	$productname 	= $_POST['productname'];
 	$brandname 		= $_POST['brandname'];
+	$id 			= $_POST['id'];
 
     $lot_table 		=  $wpdb->prefix.'shc_lots';
-    $query 			=  "SELECT * FROM ${lot_table} WHERE brand_name='$brandname' and product_name ='$productname' and active=1";
+    $query 			=  "SELECT * FROM ${lot_table} WHERE brand_name='$brandname' and product_name ='$productname' and id != '$id' and active=1";
     $result 		=  $wpdb->get_row( $query );
 
     if($result) {

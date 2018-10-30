@@ -39,7 +39,7 @@
 
 
                     <div class="col-md-1 form-group has-feedback">
-                        <input type="text" class="form-control  inv_id " name="inv_id" value="<?php echo $billing->inv_id; ?>" placeholder="ID" style="padding-right: 5px;">
+                        <input type="text" class="form-control  inv_id " name="inv_id" value="<?php echo $billing->inv_id; ?>" placeholder="Invoice" style="padding-right: 5px;">
                         <span class="form-control-feedback" aria-hidden="true" > </span>
                     </div>
                     <div class="col-md-2 form-group">
@@ -85,7 +85,19 @@ jQuery(document).ready(function () {
             }
         }
     });
-    
+    jQuery(".ppage").live('keydown', function(e) { 
+      var keyCode = e.keyCode || e.which; 
+      if (event.shiftKey && event.keyCode == 9) { 
+            e.preventDefault(); 
+        // call custom function here
+            jQuery('.last_list_view').focus();
+        } else if(event.keyCode == 9){
+            e.preventDefault(); 
+            jQuery('.inv_id').focus();
+        } else {
+         jQuery('.ppage').focus();
+        }
+    }); 
     jQuery('.filter-section input[type="text"]:last').live('keydown', function(e){
 
         if(jQuery('.jambo_table td a').length == 0 && jQuery(".next.page-numbers").length == 0 ) {
@@ -101,15 +113,27 @@ jQuery(document).ready(function () {
     });
 
 
+    
     jQuery('.last_list_view').live('keydown', function(e) { 
 
         if(jQuery(this).parent().parent().next('tr').length == 0 && jQuery(".next.page-numbers").length == 0) {
             var keyCode = e.keyCode || e.which; 
-            if (keyCode == 9) { 
+            if (event.shiftKey && event.keyCode == 9) { 
+
+                e.preventDefault();
+                jQuery(this).closest('tr').prev('tr').find('.last_list_view').focus();
+
+            } 
+           
+            else if ( event.keyCode == 9){
+
                 e.preventDefault(); 
                 // call custom function here
-                jQuery('.ppage').focus()
+               jQuery('.ppage').focus();
             } 
+            else{
+                jQuery(this).parent().parent().find('last_list_view').focus();
+            }
         }
     });
 

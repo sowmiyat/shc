@@ -43,12 +43,12 @@
                                     <td class="a-center ">
                                         <?php echo $i; ?>
                                     </td>
-                                    <td class=""><?php echo 'INV '.$b_value->inv_id; ?></td>
-                                    <td class=""><?php echo 'GR '.$b_value->id; ?></td>
+                                    <td class=""><?php echo 'Inv '.$b_value->inv_id; ?></td>
+                                    <td class=""><?php echo $b_value->return_id; ?></td>
                                     <td class=""><?php echo $b_value->name; ?> </td>
                                     <td class=""><?php echo $b_value->mobile; ?> </td>  
                                     <td>
-                                        <a href="<?php echo admin_url('admin.php?page=cancel_return_items_view')."&id=$b_value->id"; ?>" class="bill_view">View</a> 
+                                        <a href="<?php echo admin_url('admin.php?page=cancel_return_items_view')."&id=$b_value->id"; ?>" class="bill_view last_list_view">View</a> 
                                         <input type="hidden" name="gr_id" class="gr_id" value="<?php echo $b_value->id; ?>"/>
                                     </td>
                                 </tr>

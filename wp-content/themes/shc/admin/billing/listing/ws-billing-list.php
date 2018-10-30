@@ -1,6 +1,11 @@
 <?php
     $billing = new Billing();
 ?>
+<style>
+.x_title span {
+    color: #405467;
+}
+</style>
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
         <div class="x_title">
@@ -34,12 +39,12 @@
 
 
                     <div class="col-md-1 form-group has-feedback">
-                        <input type="text" class="form-control inv_id" name="inv_id" value="<?php echo $billing->inv_id; ?>" placeholder="Invoice Number" style="padding-right: 5px;">
+                        <input type="text" class="form-control inv_id" name="inv_id" value="<?php echo $billing->inv_id; ?>" placeholder="Invoice" style="padding-right: 5px;">
                         <span class="form-control-feedback" aria-hidden="true" style="margin-top: 6px;"></span>
                     </div>
-                    <div class="col-md-2 form-group">
+                   <!--  <div class="col-md-2 form-group">
                         <input type="text" name="order_id" class="order_id form-control" value="<?php echo $billing->order_id; ?>" placeholder="Order ID">
-                    </div>
+                    </div> -->
                     <div class="col-md-2 form-group">
                         <input type="text" name="name" class="name form-control" value="<?php echo $billing->name; ?>" placeholder="Customer Name">
                     </div>
@@ -57,10 +62,11 @@
               
             </div>
         </div>
-         <div class="col-md-5 form-group" style="float: right;">
-
-            <button class="btn btn-default ws_print_invoice_list pull-right"><i class="fa fa-print"></i> Print</button>
-            <button class="btn btn-primary pull-right ws_download_invoice_list" style="margin-right: 5px;"><i class="fa fa-file-pdf-o" href=""></i> Generate PDF</button>
+         <div class="col-md-5 form-group " style="float: right;">
+            <div class="pull-right">
+                <button class="btn btn-default ws_print_invoice_list "><i class="fa fa-print"></i> Print</button>
+                <button class="btn btn-primary ws_download_invoice_list" style="margin-right: 5px;"><i class="fa fa-file-pdf-o" href=""></i> Generate PDF</button>
+            </div>
         </div>
         <div class="ws_billing_filter">
         <?php
@@ -85,7 +91,20 @@ jQuery(document).ready(function () {
             }
         }
     });
-    
+    jQuery(".ppage").live('keydown', function(e) { 
+        var keyCode = e.keyCode || e.which; 
+
+        if (event.shiftKey && event.keyCode == 9) { 
+            e.preventDefault(); 
+        // call custom function here
+            jQuery('.last_list_view').focus();
+        } else if(event.keyCode == 9){
+            e.preventDefault(); 
+            jQuery('.inv_id').focus();
+        } else {
+         jQuery('.ppage').focus();
+        }
+    });
     jQuery('.filter-section input[type="text"]:last').live('keydown', function(e){
 
         if(jQuery('.jambo_table td a').length == 0 && jQuery(".next.page-numbers").length == 0 ) {
@@ -101,14 +120,24 @@ jQuery(document).ready(function () {
     });
 
 
-    jQuery('.last_list_view').live('keydown', function(e) { 
+   jQuery('.last_list_view').live('keydown', function(e) { 
 
         if(jQuery(this).parent().parent().next('tr').length == 0 && jQuery(".next.page-numbers").length == 0) {
             var keyCode = e.keyCode || e.which; 
-            if (keyCode == 9) { 
+            if (event.shiftKey && event.keyCode == 9) { 
                 e.preventDefault(); 
                 // call custom function here
-                jQuery('.ppage').focus()
+                 jQuery(this).parent().parent().find('.list_update').focus();
+            } 
+            else if ( event.keyCode == 9){
+                e.preventDefault(); 
+                // call custom function here
+               jQuery('.ppage').focus();
+            }
+            else{
+
+              
+                jQuery(this).parent().parent().find('.last_list_view').focus();
             } 
         }
     });

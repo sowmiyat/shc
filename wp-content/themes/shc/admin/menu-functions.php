@@ -27,7 +27,7 @@ global $src_capabilities;
 	    'list_stocks',
 	    'list_stocks',
 	    'dashicons-list-view',
-	    8
+	    3
 	);
 	
 	add_submenu_page('list_stocks', 'Stock Added List', 'Stock Added List', $src_capabilities['stocks']['permission']['stock_list'], 'list_stocks', 'list_stocks' );
@@ -42,38 +42,38 @@ global $src_capabilities;
 	    'billing_list',
 	    'billing_list',
 	    'dashicons-cart',
-	    9
+	    7
 	);
 	add_submenu_page('billing_list', 'Billing List', 'Billing List', $src_capabilities['billing']['permission']['billing_list'], 'billing_list', 'billing_list' );
 	add_submenu_page('billing_list', 'New Billing', 'New Billing', $src_capabilities['billing']['permission']['add_billing'], 'new_billing', 'new_billing' );
 	add_submenu_page('billing_list', '', '', $src_capabilities['billing']['permission']['billing_list'], 'invoice', 'invoice' );
-	add_submenu_page('billing_list', 'Cancel Invoice list', 'Cancel Invoice list', $src_capabilities['billing']['permission']['cancel_invoice'], 'cancel_invoice', 'cancel_invoice' );
 	add_submenu_page('billing_list', '', '', $src_capabilities['billing']['permission']['cancel_invoice'], 'cancel_invoice_view', 'cancel_invoice_view' );
 	add_submenu_page('billing_list', 'Return Items', 'Return Items', $src_capabilities['billing']['permission']['add_return'], 'return_items', 'return_items' );
 	add_submenu_page('billing_list', 'Return Items List', 'Return Items List', $src_capabilities['billing']['permission']['return_list'], 'return_items_list', 'return_items_list' );
 	add_submenu_page('billing_list', '', '', $src_capabilities['billing']['permission']['return_list'], 'return_items_view', 'return_items_view' );
-	add_submenu_page('billing_list', 'Cancel Return Items', 'Cancel Return Items', $src_capabilities['billing']['permission']['cancel_return_items'], 'cancel_return_items', 'cancel_return_items' );
-	add_submenu_page('billing_list', '', '', $src_capabilities['billing']['permission']['cancel_return_items'], 'cancel_return_items_view', 'cancel_return_items_view' );
+	add_submenu_page('billing_list', 'Cancel Invoice list', 'Cancel Invoice list', $src_capabilities['billing']['permission']['cancel_invoice'], 'cancel_invoice', 'cancel_invoice' );
+	// add_submenu_page('billing_list', 'Cancel Return Items', 'Cancel Return Items', $src_capabilities['billing']['permission']['cancel_return_items'], 'cancel_return_items', 'cancel_return_items' );
+	// add_submenu_page('billing_list', '', '', $src_capabilities['billing']['permission']['cancel_return_items'], 'cancel_return_items_view', 'cancel_return_items_view' );
 
 	add_menu_page(
-	    __( 'WS Billing', 'shc'),
-	    'WS Billing',
+	    __( 'Wholesale Billing', 'shc'),
+	    'Wholesale Billing',
 	    $src_capabilities['billing']['permission']['ws_billing_list'],
 	    'ws_billing_list',
 	    'ws_billing_list',
 	    'dashicons-cart',
-	    8
+	    5
 	);
 	add_submenu_page('ws_billing_list', 'Billing List', 'Billing List', $src_capabilities['billing']['permission']['ws_billing_list'], 'ws_billing_list', 'ws_billing_list' );
 	add_submenu_page('ws_billing_list', 'New Billing', 'New Billing', $src_capabilities['billing']['permission']['ws_add_billing'], 'ws_new_billing', 'ws_new_billing' );
 	add_submenu_page('ws_billing_list', '', '', $src_capabilities['billing']['permission']['ws_billing_list'], 'ws_invoice', 'ws_invoice' );
-	add_submenu_page('ws_billing_list', 'Cancel Invoice list', 'Cancel Invoice list', $src_capabilities['billing']['permission']['ws_cancel_invoice'], 'ws_cancel_invoice', 'ws_cancel_invoice' );
 	add_submenu_page('ws_billing_list', '', '', $src_capabilities['billing']['permission']['ws_cancel_invoice'], 'ws_cancel_invoice_view', 'ws_cancel_invoice_view' );
 	add_submenu_page('ws_billing_list', 'Return Items', 'Return Items', $src_capabilities['billing']['permission']['ws_add_return'], 'ws_return_items', 'ws_return_items' );
 	add_submenu_page('ws_billing_list', 'Return Items List', 'Return Items List', $src_capabilities['billing']['permission']['ws_return_list'], 'ws_return_items_list', 'ws_return_items_list' );
 	add_submenu_page('ws_billing_list', '', '', $src_capabilities['billing']['permission']['ws_return_list'], 'ws_return_items_view', 'ws_return_items_view' );
-	add_submenu_page('ws_billing_list', 'Cancel Return Items', 'Cancel Return Items', $src_capabilities['billing']['permission']['ws_cancel_return_items'], 'ws_cancel_return_items', 'ws_cancel_return_items' );
-	add_submenu_page('ws_billing_list', '', '', $src_capabilities['billing']['permission']['ws_cancel_return_items'], 'ws_cancel_return_items_view', 'ws_cancel_return_items_view' );
+	add_submenu_page('ws_billing_list', 'Cancel Invoice list', 'Cancel Invoice list', $src_capabilities['billing']['permission']['ws_cancel_invoice'], 'ws_cancel_invoice', 'ws_cancel_invoice' );
+	// add_submenu_page('ws_billing_list', 'Cancel Return Items', 'Cancel Return Items', $src_capabilities['billing']['permission']['ws_cancel_return_items'], 'ws_cancel_return_items', 'ws_cancel_return_items' );
+	// add_submenu_page('ws_billing_list', '', '', $src_capabilities['billing']['permission']['ws_cancel_return_items'], 'ws_cancel_return_items_view', 'ws_cancel_return_items_view' );
 
 
 	add_menu_page(
@@ -83,20 +83,20 @@ global $src_capabilities;
 	    'customer_list',
 	    'customer_list',
 	    'dashicons-id',
-	    8
+	    6
 	);
 	add_submenu_page('customer_list', 'Customer List', 'Customer List', $src_capabilities['customers']['permission']['customer_list'], 'customer_list', 'customer_list' );
 	add_submenu_page('customer_list', 'New Customer', 'New Customer', $src_capabilities['customers']['permission']['add_customer'], 'new_customer', 'new_customer' );
 	
 
 	add_menu_page(
-	    __( 'WS Customers', 'shc'),
-	    'WS Customers',
+	    __( 'Wholesale Customers', 'shc'),
+	    'Wholesale Customers',
 	    $src_capabilities['customers']['permission']['ws_customer_list'],
 	    'wholesale_customer',
 	    'wholesale_customer',
 	    'dashicons-id',
-	    8
+	    4
 	);
 	add_submenu_page('wholesale_customer', 'Customer List', 'Customer List', $src_capabilities['customers']['permission']['ws_customer_list'], 'wholesale_customer', 'wholesale_customer' );
 	add_submenu_page('wholesale_customer', 'New Customer', 'New Customer', $src_capabilities['customers']['permission']['add_ws_customer'], 'new_wholesale_customer', 'new_wholesale_customer' );
@@ -108,7 +108,7 @@ global $src_capabilities;
 	    'add_admin',
 	    'add_admin',
 	    'dashicons-businessman',
-	    9
+	    12
 	);
 	add_submenu_page('add_admin', 'New Admin User', 'New Admin User', $src_capabilities['admin_user']['permission']['add_admin'], 'add_admin', 'add_admin' );
 	add_submenu_page('add_admin', 'Admin Users List', 'Admin Users List', $src_capabilities['admin_user']['permission']['admin_list'], 'list_admin_users', 'list_admin_users' );
@@ -120,7 +120,7 @@ global $src_capabilities;
 	    'add_admin_role',
 	    'add_admin_role',
 	    'dashicons-awards',
-	    9
+	    13
 	);
 	add_submenu_page('add_admin_role', 'New Role', 'New Role', $src_capabilities['roles']['permission']['add_roles'], 'add_admin_role', 'add_admin_role' );
 	add_submenu_page('add_admin_role', 'Role List', 'Role List', $src_capabilities['roles']['permission']['role_list'], 'list_roles', 'list_roles' );
@@ -133,13 +133,43 @@ global $src_capabilities;
 	    'list_report',
 	    'list_report',
 	    'dashicons-awards',
-	    9
+	    11
 	);
 	add_submenu_page('list_report', 'Stock Report', 'Stock Report',  $src_capabilities['report']['permission']['stock_report'], 'list_report', 'list_report' );
 	add_submenu_page('list_report', 'Goods Return Report', 'Goods Return Report',  $src_capabilities['report']['permission']['return_report'], 'list_return', 'list_return' );
 	add_submenu_page('list_report', 'Accountant Report', 'Accountant Report',  $src_capabilities['report']['permission']['acc_report'], 'list_report_account', 'list_report_account' );
 
-
+	add_menu_page(
+	    __( 'Profile', 'src'),
+	    'Profile',
+	    $src_capabilities['admin_user']['permission']['add_admin'],
+	    'add_profile',
+	    'add_profile',
+	    'dashicons-businessman',
+	    9
+	);
+	add_submenu_page('add_profile', 'Add Profile', 'Add Profile', $src_capabilities['admin_user']['permission']['add_admin'], 'add_profile', 'add_profile' );
+	add_menu_page(
+	    __( 'Bank Details', 'src'),
+	    'Bank Details',
+	    $src_capabilities['admin_user']['permission']['add_admin'],
+	    'add_netbank',
+	    'add_netbank',
+	    'dashicons-businessman',
+	    10
+	);
+	add_submenu_page('add_netbank', 'Add Bank Details', 'Add Bank Details', $src_capabilities['admin_user']['permission']['add_admin'], 'add_netbank', 'add_netbank' );
+	add_menu_page(
+	    __( 'Bill Due', 'shc'),
+	    'Bill Due',
+	    $src_capabilities['customers']['permission']['ws_customer_list'],
+	    'credit_debit',
+	    'credit_debit',
+	    'dashicons-id',
+	    8
+	);
+	add_submenu_page('credit_debit', 'Paid Bill Due List', 'Paid Bill Due List', $src_capabilities['customers']['permission']['ws_customer_list'], 'credit_debit', 'credit_debit' );
+	add_submenu_page('credit_debit', 'Pay Bill Due', 'Pay Bill Due', $src_capabilities['customers']['permission']['add_ws_customer'], 'add_credit_debit', 'add_credit_debit' );	
 
 }
 
@@ -288,5 +318,29 @@ function list_return() {
 function list_report_account() {
 	 require 'report/listing/stock-list-accountant.php';
 }
+
+//<------ Profile ----->
+function add_profile(){
+	 require 'profile/add_profile.php';
+}
+
+//<------ Profile ----->
+function add_netbank(){
+	 require 'netbank/add_netbank.php';
+}
+
+//<---- credit debit --->
+function credit_debit() {
+
+    require 'creditdebit/listing/creditdebit_list.php';
+
+}
+
+function add_credit_debit() {
+     require 'creditdebit/add_creditdebit.php';
+}
+
+
+
 
 ?>

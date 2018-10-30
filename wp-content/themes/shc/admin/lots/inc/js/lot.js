@@ -1,19 +1,35 @@
 jQuery(document).ready(function () {
+ var b_name = jQuery('#brand_name').val();
 
- jQuery('#brand_name').focus();
+  jQuery('#brand_name').focus().val('').val(b_name);
 
-    jQuery(".reset_button").on('keydown',  function(e) { 
+  jQuery(".reset_button").on('keydown',  function(e) { 
+    var keyCode = e.keyCode || e.which; 
+    if(event.shiftKey && event.keyCode == 9) {  
+       e.preventDefault(); 
+      jQuery('.cancel_button').focus();
+    }
+    else if (event.keyCode == 9) { 
+      e.preventDefault(); 
+      jQuery('#brand_name').select();
+    } 
+    else {
+      jQuery('.reset_button').focus();
+    }
+
+  });
+  jQuery("#brand_name").on('keydown',  function(e) { 
       var keyCode = e.keyCode || e.which; 
       if(event.shiftKey && event.keyCode == 9) {  
          e.preventDefault(); 
-        jQuery('.cancel_button').focus();
+        jQuery('.reset_button').focus();
       }
       else if (event.keyCode == 9) { 
         e.preventDefault(); 
-        jQuery('#brand_name').focus();
+        jQuery('#product_name').select();
       } 
       else {
-        jQuery('.reset_button').focus();
+        jQuery('#brand_name').focus();
       }
 
     });
@@ -36,7 +52,14 @@ jQuery(document).ready(function () {
                 uniqueProducts : true,
 
             },
+
+            mrp : {
+              required: true,
+            },
             selling_price: {
+                 required: true,
+            },
+            wholesale_price: {
                  required: true,
             },
             purchase_price: {
@@ -59,11 +82,18 @@ jQuery(document).ready(function () {
                 nameValidite : "Special Characters Not Allowed!",
                 uniqueProducts : "Product name Already Exists !!!",
             },
-            purchase_price : {
-                 required: "Please Enter Purchase Price!",
+            mrp: {
+              required: "Please Enter MRP!",
             },
+           
             selling_price: {
                 required: "Please Enter Selling Price!",
+            },
+            wholesale_price: {
+                required: "Please Enter Whole Sale Price!",
+            },
+             purchase_price : {
+                 required: "Please Enter Purchase Price!",
             },
             hsn : {
                 required: "Please Enter HSN code!",
@@ -86,9 +116,11 @@ jQuery(document).ready(function () {
                 data: {
                     action          : 'check_unique_product',
                     productname     : value,
-                    brandname       : jQuery('.unique_brand').val()
+                    brandname       : jQuery('.unique_brand').val(),
+                    id              : jQuery('.lot_no').val(),
                 },
                 success: function (msg) {
+
                     if( msg === 1 ) {
                         response = false;
                     } else {
@@ -142,17 +174,17 @@ jQuery(document).ready(function () {
     });
 
 
-jQuery('.unique_brand').keyup(function() {
-    this.value = this.value.toUpperCase();
-    jQuery('.unique_brand').val(this.value);
-});
+  jQuery('.unique_brand').keyup(function() {
+      this.value = this.value.toUpperCase();
+      jQuery('.unique_brand').val(this.value);
+  });
 
 
-    jQuery('#cgst').on('change',function() {
-        var cgst = jQuery('#cgst').val();
-        jQuery('#sgst').val(cgst);
+  jQuery('#cgst').on('change',function() {
+      var cgst = jQuery('#cgst').val();
+      jQuery('#sgst').val(cgst);
 
-    });
+  });
 
 
 //<-------Delete Lot------->

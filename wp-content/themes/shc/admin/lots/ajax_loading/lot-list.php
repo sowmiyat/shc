@@ -19,6 +19,14 @@
 
   
 ?>
+<style>
+.pointer td{
+    text-align: center;
+}
+.headings th {
+    text-align: center;
+}
+</style>
         <div class="x_content">
             <div class="table-responsive">
                 <table class="table table-striped jambo_table bulk_action">
@@ -29,16 +37,18 @@
                             </th>
                             <th class="column-title">Brand Name </th>
                             <th class="column-title">Product Name </th>
+                            <th class="column-title">MRP </th>
                             <th class="column-title">Selling Price </th>
+                            <th class="column-title">Wholesale Price </th>
                             <th class="column-title">Purchase Price </th>
-                            <th class="column-title">CGST(%) </th>
-                            <th class="column-title">SGST(%) </th>
+                            <th class="column-title">GST(%) </th>
+                            <th class="column-title">SESS </th>
                             <th class="column-title">HSN Code</th>
                             <th class="column-title">Action </th>
                         </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody style="text-align:center;">
                     <?php
                         if( isset($lot_list['result']) && $lot_list['result'] ) {
                             $i = $lot_list['start_count']+1;
@@ -52,10 +62,12 @@
                                     </td>
                                     <td class=""><?php echo $l_value->brand_name; ?></td>
                                     <td class=""><?php echo $l_value->product_name; ?></td>
+                                    <td class=""><?php echo $l_value->mrp; ?></td>
                                     <td class=""><?php echo $l_value->selling_price; ?></td>
+                                    <td class=""><?php echo $l_value->wholesale_price; ?></td>
                                     <td class=""><?php echo $l_value->purchase_price; ?></td> 
-                                    <td class=""><?php echo $l_value->cgst; ?></td>
-                                    <td class=""><?php echo $l_value->sgst; ?></td>
+                                    <td class=""><?php echo $l_value->gst_percentage; ?></td>
+                                    <td class=""><?php echo $l_value->sess; ?></td>
                                     <td class=""><?php echo $l_value->hsn; ?></td>
 
                                     <td class="">

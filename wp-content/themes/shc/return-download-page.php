@@ -61,6 +61,8 @@
     $points = ($point) ?
     "" . $words[$point / 10] . " " . 
           $words[$point = $point % 10] : '';
+
+$profile = get_profile1();
 ?>
 <!DOCTYPE html>
 <html>
@@ -69,10 +71,12 @@
 
 <meta charset="utf-8">
 <style>
-body {font-family: arial, Arial, Helvetica, sans-serif; font-size: 12px;margin-left: 20px;margin-right: 30px;border:1px solid #73879c;}
+body {font-family: arial, Arial, Helvetica, sans-serif; font-size: 12px;margin-left: 20px;margin-right: 30px;border:1px solid #73879c; }
 body {
         height: 297mm;/*297*/
         width: 210mm;
+              font-family: normal;
+      font-size: 13px;
         
     }
 dt { float: left; clear: left; text-align: right; font-weight: bold; margin-right: 10px; } 
@@ -110,27 +114,24 @@ dd {  padding: 0 0 0.5em 0; }
         <?php
             if($bill_data) {
         ?>
-<!-- <div class="col-xs-12 invoice-header">
-    <h4 style="margin-left: -15px;">
-        Invoice. #<?php echo $bill_fdata->inv_id; ?>
-        <small class="pull-right">Date: <?php echo date("d/m/Y"); ?></small>
-    </h4>
-</div> -->
+
   <div class="title"><div style="margin-left: 40%;margin-bottom: 10px;margin-top: 10px;"><b>GOODS RETURN CHALLAN</b></div></div>
 
   <div class="body_style">
       <table cellspacing='3' cellpadding='3' WIDTH='100%' >
       <tr>
-          <td valign='top' WIDTH='50%'><strong>Saravana Health Store</strong>
-          <br/>7/12,Mg Road,Thiruvanmiyur,
-          <br/>Chennai,Tamilnadu,
-          <br/>Pincode-600041.
-          <br/>Cell:9841141648.
-          <br/>GST No - 33BMDPA4840E1ZP
+          <td valign='top' WIDTH='50%'><strong><?php echo $profile ? $profile->company_name : '';  ?></strong>
+                <br/><?php echo $profile ? $profile->address : '';  ?>
+                <br/><?php echo $profile ? $profile->address2 : '';  ?>
+                <br/>Cell : <?php echo $profile ? $profile->phone_number : '';  ?>
+                <br/>GST No : <?php echo $profile ? $profile->gst_number : '';  ?>
           <td valign='top' WIDTH='50%'>
               <table>
+                <tr><td>Invoice Number</td><td>: <?php echo $bill_fdata->search_inv_id; ?></td></tr>
                 <tr><td>Return Number</td><td>: <?php echo $bill_fdata->return_id; ?></td></tr>
-                <tr><td>Date</td><td>: <?php echo date("d/m/Y"); ?></td></tr>
+                <tr><td>Date</td><td>: <?php $timestamp = $bill_fdata->modified_at; 
+        $splitTimeStamp = explode(" ",$timestamp);
+        echo $date = $splitTimeStamp[0];?></td></tr>
                 <tr><td>State</td><td>: TAMILNADU</td></tr>
                 <tr><td>State Code</td><td>: 33</td></tr>
               </table>
@@ -158,30 +159,27 @@ dd {  padding: 0 0 0.5em 0; }
 
       <br />
 
-      <!-- <table cellspacing='3' cellpadding='3' WIDTH='100%'>
-      <tr>
-      <td valign='top' WIDTH='50%'><b>Order number</b>: <?php //echo $bill_fdata->order_id; ?></td>
-      <td valign='top' WIDTH='50%'><b>Order date:</b> <?php //echo $bill_fdata->created_at; ?></td>
-      <td valign='top' WIDTH='33%'></td>
-      </tr>
-      </table> -->
 
       <br/>
 
 
-      <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" border=1>
+      <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" border=1 style="border-collapse: collapse;">
         <tr>
-          <th valign='top'>SNO</th>
-          <th valign='top'>PRODUCTS</th>
-          <th valign='top'>HSN</th>
-          <th valign='top'>Return Quantity</th>
-          <th valign='top'>MRP(Per Item)</th> 
-          <th valign='top'>AMOUNT</th>
-          <th valign='top'>CGST (%) </th>
-          <th valign='top'>CGST VALUE</th>
-          <th valign='top'>SGST (%) </th>
-          <th valign='top'>SGST VALUE</th>
-          <th valign='top'>SUB TOTAL</th>
+          <th valign='top' rowspan="2" >SNO</th>
+          <th valign='top' rowspan="2" >Products</th>
+          <th valign='top' rowspan="2" >HSN Code</th>
+          <th valign='top' rowspan="2" >Return Quantity</th>
+          <th valign='top' rowspan="2" >MRP(Per Item)</th> 
+          <th valign='top' rowspan="2" >Taxless Amount</th>
+          <th colspan="2" >CGST</th>  
+          <th colspan="2" >SGST</th>
+          <th valign='top' rowspan="2" >SUB TOTAL</th>
+        </tr>
+        <tr class="text_bold text_center">
+            <th>Rate(%)</th>
+            <th>Amount</th>
+            <th>Rate(%)</th>
+            <th>Amount</th>
         </tr>
       <?php
           if($bill_data && $bill_ldata && count($bill_ldata)>0) {

@@ -185,10 +185,11 @@
             </tr>
             <tr>
                 <td colspan="8">
-                  <p><b>SARAVANA HEALTH STORE</b> <br>No-12/7, MG Road,<br> 
-                  Thiruvanmiyur,<br>
-                  Chennai - 600041<br> 
-                  <b>GST No - 33BMDPA4840E1ZP</b></p>
+                  <p><strong><?php echo $profile ? $profile->company_name : '';  ?></strong>
+                <br/><?php echo $profile ? $profile->address : '';  ?>
+                <br/><?php echo $profile ? $profile->address2 : '';  ?>
+                <br/>Cell : <?php echo $profile ? $profile->phone_number : '';  ?>
+                <br/>GST No : <?php echo $profile ? $profile->gst_number : '';  ?></p>
                 </td>
                 <td colspan="4">
                   <b>INVOICE NO - <?php echo $_GET['id']; ?><br> 

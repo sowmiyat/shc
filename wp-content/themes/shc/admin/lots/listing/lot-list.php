@@ -32,7 +32,7 @@
                   </select>
                 </div>  
                 <div class="col-md-2">
-                  <input type="text" name="brand_name" class="brand_name_pagi" value="<?php echo $lots->brand_name; ?>" placeholder="Brand Name">
+                  <input type="text" name="brand_name" class="brand_name_pagi br" value="<?php echo $lots->brand_name; ?>" placeholder="Brand Name">
                 </div>
                 <div class="col-md-2">
                   <input type="text" name="product_name" class="product_name" value="<?php echo $lots->product_name; ?>" placeholder="Product Name">
@@ -58,12 +58,29 @@
 jQuery(document).ready(function () {
     jQuery('.ppage').focus();
 
+
+    jQuery(".ppage").live('keydown', function(e) { 
+      var keyCode = e.keyCode || e.which; 
+
+      if (event.shiftKey && event.keyCode == 9) { 
+            e.preventDefault(); 
+        // call custom function here
+            jQuery('.last_list_view').focus();
+        } else if(event.keyCode == 9){
+            e.preventDefault(); 
+            jQuery('.br').focus();
+        } else {
+         jQuery('.ppage').focus();
+        }
+    });
+
+
     jQuery(document).live('keydown', function(e){
         if(jQuery(document.activeElement).closest("#wpbody-content").length == 0) {
             var keyCode = e.keyCode || e.which; 
             if (keyCode == 9) { 
                 e.preventDefault(); 
-                jQuery('.ppage').focus()
+                jQuery('.ppage').focus();
             }
         }
     });
@@ -73,11 +90,21 @@ jQuery(document).ready(function () {
 
         if(jQuery('.jambo_table td a').length == 0 && jQuery(".next.page-numbers").length == 0 ) {
 
-            var keyCode = e.keyCode || e.which; 
-            if (keyCode == 9) { 
+            
+            if (event.shiftKey && event.keyCode == 9) { 
                 e.preventDefault(); 
                 // call custom function here
-                jQuery('.ppage').focus()
+                 jQuery('.product_name').focus();
+            } 
+            else if ( event.keyCode == 9){
+                e.preventDefault(); 
+                // call custom function here
+               jQuery('.ppage').focus();
+            }
+            else{
+
+              
+                jQuery('.filter-section input[type="text"]:last').focus();
             }
         }
 
@@ -85,15 +112,24 @@ jQuery(document).ready(function () {
 
 
     jQuery('.last_list_view').live('keydown', function(e) { 
-        console.log()
 
         if(jQuery(this).parent().parent().next('tr').length == 0 && jQuery(".next.page-numbers").length == 0) {
             var keyCode = e.keyCode || e.which; 
-            if (keyCode == 9) { 
+            if (event.shiftKey && event.keyCode == 9) { 
                 e.preventDefault(); 
                 // call custom function here
-                jQuery('.ppage').focus()
+                 jQuery(this).parent().parent().find('.list_update').focus();
             } 
+            else if ( event.keyCode == 9){
+                e.preventDefault(); 
+                // call custom function here
+               jQuery('.ppage').focus();
+            }
+            else{
+
+              
+                jQuery(this).parent().parent().find('.last_list_view').focus();
+            }
         }
     });
 

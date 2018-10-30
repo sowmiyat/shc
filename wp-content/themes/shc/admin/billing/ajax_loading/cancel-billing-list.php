@@ -20,12 +20,21 @@
 /*    echo "<pre>";
     var_dump($billing_list);*/
 ?>
+
+<style>
+.pointer td{
+    text-align: center;
+}
+.headings th {
+    text-align: center;
+}
+</style>
     <div class="x_content" style="width:100%;">
         <div class="table-responsive" style="width:150px;margin: 0 auto;margin-bottom:20px;">
-            <table class="table table-striped jambo_table bulk_action">
+            <!-- <table class="table table-striped jambo_table bulk_action">
                 <thead>
                     <tr class="headings" >
-                        <th style="text-align:center">Total Sale</th>    
+                        <th style="text-align:center">Total Return</th>    
                     </tr>
                 </thead>
                 <tbody>
@@ -33,23 +42,23 @@
                         <td style="text-align:center" ><?php echo $billing_list['s_result']->total_amount; ?></td>
                     </tr>
                 </tbody>
-            </table>
+            </table> -->
         </div>
     </div>
         <div class="x_content">
             <div class="table-responsive">
-                <table class="table table-striped jambo_table bulk_action">
+                <table class="table table-striped jambo_table bulk_action" >
                     <thead>
                         <tr class="headings">
                             <th>
                                 S.No
                             </th>
                             <th class="column-title">INV.No</th>
-                            <th class="column-title">Order ID</th>
-                            <th class="column-title">Customer Name</th>
-                            <th class="column-title">Customer Mobile</th>
-                            <th class="column-title">Purchase Total</th>
-                            <th class="column-title">Purchase Date</th>
+                            <th class="column-title">Order <br/> ID</th>
+                            <th class="column-title">Customer <br/> Name</th>
+                            <th class="column-title">Customer <br/> Mobile</th>
+                            <th class="column-title">Purchase  <br/>Total</th>
+                            <th class="column-title">Purchase <br/> Date</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -66,14 +75,14 @@
                                     <td class="a-center ">
                                         <?php echo $i; ?>
                                     </td>
-                                    <td class=""><?php echo 'INV '.$b_value->inv_id; ?></td>
+                                    <td class=""><?php echo $b_value->inv_id; ?></td>
                                     <td class=""><?php echo $b_value->order_id; ?></td>
                                     <td class=""><?php echo $b_value->name; ?> </td>
                                     <td class=""><?php echo $b_value->mobile; ?> </td>
                                     <td class=""><?php echo $b_value->sub_total; ?></td>
-                                    <td class=""><?php echo $b_value->created_at; ?></td>
+                                    <td class=""><?php echo $b_value->modified_at; ?></td>
                                     <td>
-                                        <a href="<?php echo admin_url('admin.php?page=cancel_invoice_view')."&id=${inv_id}&year=$b_value->financial_year"; ?>"  class="bill_view">View</a>
+                                        <a href="<?php echo admin_url('admin.php?page=cancel_invoice_view')."&id=${inv_id}&year=$b_value->financial_year"; ?>"  class="bill_view last_list_view">View</a>
                                        <!--  <a href="#" class="print_bill bill_view">Print</a> -->
                                         <input type="hidden" name="year" class="year" value = "<?php echo $b_value->financial_year; ?>"/>
                                         <input type="hidden" name="invoice_id" class="invoice_id" value="<?php echo $b_value->inv_id; ?>"/>

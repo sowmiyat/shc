@@ -1,19 +1,35 @@
 jQuery(document).ready(function () {
-
-    jQuery('#pro_number').focus();
+var p_num = jQuery('#pro_number').val();
+    jQuery('#pro_number').focus().val('').val(p_num);
 
     jQuery(".stock_cancel").on('keydown',  function(e) { 
         var keyCode = e.keyCode || e.which; 
-      if(event.shiftKey && event.keyCode == 9) {  
-         e.preventDefault(); 
-        jQuery('.submit_form').focus();
-      }
+        if(event.shiftKey && event.keyCode == 9) {  
+            e.preventDefault(); 
+            jQuery('.submit_form').focus();
+        }
         else if (keyCode == 9) { 
             e.preventDefault(); 
             jQuery('#pro_number').focus();
         } 
         else {
           jQuery('.stock_cancel').focus();
+        }
+    });
+
+    
+    jQuery("#pro_number").on('keydown',  function(e) { 
+        var keyCode = e.keyCode || e.which; 
+      if(event.shiftKey && event.keyCode == 9) {  
+            e.preventDefault(); 
+            jQuery('.stock_cancel').focus();
+        }
+        else if (keyCode == 9) { 
+            e.preventDefault(); 
+            jQuery('#stock_count').select();
+        } 
+        else {
+          jQuery('#pro_number').focus();
         }
     }); 
 
@@ -38,7 +54,8 @@ jQuery(document).ready(function () {
 
                         return {
                             id              : item.id,
-                            value           : item.product_name,
+                            value           : item.product_name +'('+ item.brand_name +')',
+                            product_name    : item.product_name,
                             selling_price   : item.selling_price,
                             brand_name      : item.brand_name,
 
@@ -53,7 +70,8 @@ jQuery(document).ready(function () {
 
             jQuery('#brand_name').val(ui.item.brand_name);
             jQuery('.lot_number').val(ui.item.id);
-            jQuery('#product_name').val(ui.item.value);
+            jQuery('#pro_number').val(ui.item.value);
+            jQuery('#product_name').val(ui.item.product_name);
             jQuery('#unit_price').val(ui.item.selling_price);
             jQuery('#selling_price').val(ui.item.selling_price);
             // jQuery('#stock_count').focus();
@@ -67,7 +85,8 @@ jQuery(document).ready(function () {
               jQuery(this).autocomplete( "close" );
               jQuery('#brand_name').val(ui.content[0].brand_name);
               jQuery('.lot_number').val(ui.content[0].id);
-              jQuery('#product_name').val(ui.content[0].value);
+              jQuery('#pro_number').val(ui.content[0].value);
+              jQuery('#product_name').val(ui.content[0].product_name);
               jQuery('#unit_price').val(ui.content[0].selling_price);
               jQuery('#selling_price').val(ui.content[0].selling_price);
 
@@ -120,7 +139,7 @@ jQuery(document).ready(function () {
                 url: frontendajax.ajaxurl,
                 data: {
                     action          : 'productCheck',
-                    productname     : value,
+                    productname     : jQuery('.product_name').val(),
                 },
                 success: function (msg) {
                     if( msg === 1 ) {

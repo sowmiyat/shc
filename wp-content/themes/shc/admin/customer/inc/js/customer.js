@@ -1,8 +1,10 @@
 jQuery(document).ready(function () {
+	
+    var comp_nam = jQuery('#company_name').val();
+    jQuery('#company_name').focus().val('').val(comp_nam);
 
-
-    jQuery('#customer_name').focus();
-    jQuery('#name').focus();
+    var nam =  jQuery('#name').val(); 
+    jQuery('#name').focus().val('').val(nam);
 
     jQuery(".reset_button_ws_cus").on('keydown',  function(e) { 
       var keyCode = e.keyCode || e.which; 
@@ -12,12 +14,30 @@ jQuery(document).ready(function () {
       }
       else if (keyCode == 9) { 
         e.preventDefault(); 
-        jQuery('#customer_name').focus();
+        jQuery('#company_name').focus();
       } 
       else {
         jQuery('.reset_button_ws_cus').focus();
       }
     });
+
+
+    jQuery("#company_name").on('keydown',  function(e) { 
+      var keyCode = e.keyCode || e.which; 
+       if(event.shiftKey && event.keyCode == 9) {  
+         e.preventDefault(); 
+        jQuery('.reset_button_ws_cus').focus();
+      }
+      else if (keyCode == 9) { 
+        e.preventDefault(); 
+        jQuery('#customer_name').select();
+      } 
+      else {
+        jQuery('#company_name').focus();
+      }
+    });
+
+    
 
     jQuery(".reset_button_cus").on('keydown',  function(e) { 
       var keyCode = e.keyCode || e.which; 
@@ -34,6 +54,37 @@ jQuery(document).ready(function () {
         jQuery('.reset_button_cus').focus();
       }
     });
+    jQuery("#name").on('keydown',  function(e) { 
+      var keyCode = e.keyCode || e.which; 
+       if(event.shiftKey && event.keyCode == 9) {  
+         e.preventDefault(); 
+        jQuery('.reset_button_cus').focus();
+      }
+      else if (keyCode == 9) { 
+        e.preventDefault(); 
+        jQuery('#mobile').select();
+      }
+      else {
+        jQuery('#name').focus();
+      }
+    });
+
+    jQuery("#landline").on('keydown',  function(e) { 
+      var keyCode = e.keyCode || e.which; 
+       if(event.shiftKey && event.keyCode == 9) {  
+         e.preventDefault(); 
+        jQuery('#secondarymobile').focus();
+      }
+      else if (keyCode == 9) { 
+        e.preventDefault(); 
+         var comp_nam = jQuery('#address').val();
+        jQuery('#address').focus().val('').val(comp_nam);
+      }
+      else {
+        jQuery('#landline').focus();
+      }
+    });
+
 
 
     jQuery.validator.setDefaults({
@@ -95,7 +146,7 @@ jQuery(document).ready(function () {
                 maxlength: "Please Enter Valid Landline Number!",
             },
             address: {
-                addressValidate : "Please Enter Valid Address",
+                addressValidate : "Address field contains only Alphabets,number , # , . , : , - and ,",
             },
             gst_number : {
                 required: "Please Enter Valid GST Number!",
@@ -150,7 +201,7 @@ jQuery(document).ready(function () {
                 maxlength: "Please Enter Valid Landline Number!",
             },
             address: {
-                addressValidate : "Please Enter Valid Address",
+                addressValidate : "Address field contains only Alphabets,number , # , . , : , - and ,",
             },
         }
     });

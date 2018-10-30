@@ -15,9 +15,8 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 	$lot_id = $_GET['id'];
 }
 ?>
-<div class="container">
-
-	<div class="row" style="margin-top:20px;">
+<div class="">
+	<div class="" style="margin-top:20px;">
 		<div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2">
 			<div class="x_panel">
 				<div class="x_title">
@@ -27,7 +26,7 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 				<div class="x_content">
 					<form class="form-horizontal form-label-left lot_submit" id="create_lot">
 						<input type="hidden" value="off" name="form_submit_prevent" class="form_submit_prevent_lot" id="form_submit_prevent_lot"/>
-						<input type="hidden" id="lot_no" name="lot_no" class="form-control col-md-7 col-xs-12" autocomplete="off" value="<?php echo ($lot) ? $lot->lot_no : '0'; ?>">
+						<input type="hidden" id="lot_no" name="lot_no" class="form-control col-md-7 col-xs-12 lot_no" autocomplete="off" value="<?php echo ($lot) ? $lot->lot_no : '0'; ?>">
 						<div class="row">
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<div class="form-group">
@@ -43,21 +42,41 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Product Name <span class="required">*</span>
 									</label>
 									<div class="col-md-6 col-sm-6 col-xs-12">
-										<input type="text" id="product_name" name="product_name"  class="form-control col-md-7 col-xs-12 unique_product"  autocomplete="off" value="<?php echo ($lot) ? $lot->product_name : ''; ?>">
+										<input type="text" id="product_name" name="product_name"  class="form-control col-md-7 col-xs-12 unique_product" autocomplete="off" value="<?php echo ($lot) ? $lot->product_name : ''; ?>">
 									</div>
 								</div>
 							</div>
 						</div>
-
 						<div class="divider-dashed"></div>
 
 						<div class="row">
+							<div class="col-md-6 col-sm-6 col-xs-12">
+								<div class="form-group">
+									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">MRP<span class="required">*</span>
+									</label>
+									<div class="col-md-6 col-sm-6 col-xs-12">
+										<input type="text" id="mrp" name="mrp"  class="form-control col-md-7 col-xs-12" onkeypress="return isNumberKeyWithDot(event)" autocomplete="off" value="<?php echo ($lot) ? $lot->mrp : ''; ?>">
+									</div>
+								</div>
+							</div>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<div class="form-group">
 									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Selling Price<span class="required">*</span>
 									</label>
 									<div class="col-md-6 col-sm-6 col-xs-12">
 										<input type="text" id="selling_price" name="selling_price"  class="form-control col-md-7 col-xs-12" onkeypress="return isNumberKeyWithDot(event)" autocomplete="off" value="<?php echo ($lot) ? $lot->selling_price : ''; ?>">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="divider-dashed"></div>
+						<div class="row">
+							<div class="col-md-6 col-sm-6 col-xs-12">
+								<div class="form-group">
+									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Wholesale Price<span class="required">*</span>
+									</label>
+									<div class="col-md-6 col-sm-6 col-xs-12">
+										<input type="text" id="wholesale_price" name="wholesale_price"  class="form-control col-md-7 col-xs-12" onkeypress="return isNumberKeyWithDot(event)" autocomplete="off" value="<?php echo ($lot) ? $lot->wholesale_price : ''; ?>">
 									</div>
 								</div>
 							</div>
@@ -70,12 +89,38 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 									</div>
 								</div>
 							</div>
+							
+							
+							
 						</div>
-
 						<div class="divider-dashed"></div>
-
 						<div class="row">
 							<div class="col-md-6 col-sm-6 col-xs-12">
+								<div class="form-group">
+									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">HSN Code <span class="required">*</span>
+									</label>
+									<div class="col-md-6 col-sm-6 col-xs-12">
+										<input type="text" id="hsn" name="hsn" class="form-control col-md-7 col-xs-12" autocomplete="off"  onkeypress="return isNumberKey(event)" value="<?php echo ($lot) ? $lot->hsn : ''; ?>">
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+								<div class="form-group">
+									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">GST %<span class="required">*</span>
+									</label>
+									<div class="col-md-6 col-sm-6 col-xs-12">
+										<select id="gst_percentage" name="gst_percentage">
+											<option value="0.00" <?php if(($lot->gst_percentage) == '0.00'){ echo 'selected'; } ?>>0.00%</option>
+											<option value="5.00" <?php if(($lot->gst_percentage) == '5.00'){ echo 'selected'; } ?>>5.00%</option>
+											<option value="12.00" <?php if(($lot->gst_percentage) == '12.00'){ echo 'selected'; } ?>>12.00%</option>
+											<option value="18.00" <?php if(($lot->gst_percentage) == '18.00'){ echo 'selected'; } ?>>18.00%</option>
+											<option value="28.00" <?php if(($lot->gst_percentage) == '28.00'){ echo 'selected'; } ?>>28.00%</option>
+										</select>
+									</div>
+								</div>
+							</div>
+
+							<!-- <div class="col-md-6 col-sm-6 col-xs-12">
 								<div class="form-group">
 									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">CGST %<span class="required">*</span>
 									</label>
@@ -89,32 +134,27 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 										</select>
 									</div>
 								</div>
-							</div>
-							<div class="col-md-6 col-sm-6 col-xs-12">
-								<div class="form-group">
-									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">SGST % <span class="required">*</span>
-									</label>
-									<div class="col-md-6 col-sm-6 col-xs-12">
-										<input type="text" id="sgst" name="sgst" required="required" class="form-control col-md-7 col-xs-12" readonly  value="<?php echo ($lot) ? $lot->sgst : '0.00'; ?>">
-									</div>
-								</div>
-							</div>
-						</div>
-
+							</div> -->
+						
+							
+						</div>						
 						<div class="divider-dashed"></div>
-
-
 
 						<div class="row">
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<div class="form-group">
-									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">HSN Code <span class="required">*</span>
+									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">SESS<span class="required">*</span>
 									</label>
 									<div class="col-md-6 col-sm-6 col-xs-12">
-										<input type="text" id="hsn" name="hsn" class="form-control col-md-7 col-xs-12" autocomplete="off"  onkeypress="return isNumberKey(event)" value="<?php echo ($lot) ? $lot->hsn : ''; ?>">
+										<input type="radio" name="sess" value="no" <?php if(isset($lot)){ if(($lot->sess) == 'no'){ echo 'checked'; } }  else{
+											echo 'checked';
+										} ?> >No  
+										<input type="radio" name="sess" value="yes" <?php if(($lot->sess) == 'yes'){ echo 'checked'; } ?>>Yes
+										
+										<!-- <input type="text" id="sgst" name="sgst" required="required" tabindex="-1" class="form-control col-md-7 col-xs-12" readonly  value="<?php echo ($lot) ? $lot->sgst : '0.00'; ?>"> -->
 									</div>
 								</div>
-							</div>
+							</div>	
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<div class="form-group">
 									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Stock Alert (Pieces) <span class="required">*</span>
@@ -125,9 +165,6 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 								</div>
 							</div>
 						</div>
-
-						
-						<div class="divider-dashed"></div>
 						<div class="form-group">
 							<div style="text-align:center;">
 								<button type="submit" class="btn btn-success">Submit</button>
@@ -150,7 +187,6 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 			</div>
 		</div>
 	</div>
-
 </div>
 
 

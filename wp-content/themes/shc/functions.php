@@ -15,7 +15,7 @@ function my_footer_shh() {
 	remove_menu_page( 'jetpack' );                    //Jetpack* 
 	remove_menu_page( 'edit.php' );                   //Posts
 	remove_menu_page( 'upload.php' );                 //Media
-	// remove_menu_page( 'edit.php?post_type=page' );    //Pages
+	remove_menu_page( 'edit.php?post_type=page' );    //Pages
 	remove_menu_page( 'edit-comments.php' );          //Comments
 	remove_menu_page( 'themes.php' );                 //Appearance
 	remove_menu_page( 'plugins.php' );                //Plugins
@@ -218,8 +218,9 @@ function load_custom_wp_admin_style() {
 	wp_enqueue_script('jquery');
   	wp_enqueue_script('jquery-ui-core');
   	wp_enqueue_script('jquery-ui-datepicker');
-  	wp_enqueue_style('jquery-min', 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js');
-  	wp_enqueue_style('jquery-min-js', 'https://code.jquery.com/ui/1.11.4/jquery-ui.js');
+	
+  	wp_enqueue_script('jquery-min-js', 'https://code.jquery.com/ui/1.11.4/jquery-ui.js');
+  	wp_enqueue_script('jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js',array(), null, true);  	
   	wp_enqueue_style('jquery-min-smooth', 'https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css');
 
   	wp_enqueue_style('jquery-ui-css', 'http://code.jquery.com/ui/1.8.24/themes/blitzer/jquery-ui.css');
@@ -239,6 +240,9 @@ require get_template_directory() . '/admin/customer/function.php';
 require get_template_directory() . '/admin/lots/function.php';
 require get_template_directory() . '/admin/stocks/function.php';
 require get_template_directory() . '/admin/billing/function.php';
+require get_template_directory() . '/admin/profile/function.php';
+require get_template_directory() . '/admin/netbank/function.php';
+require get_template_directory() . '/admin/creditdebit/function.php';
 
 $date = date('Y-m-d');
 function sales_statistics_widget_today( $post, $callback_args ) {
@@ -247,23 +251,63 @@ function sales_statistics_widget_today( $post, $callback_args ) {
 }
 
 function sales_statistics_widget_ws_today( $post, $callback_args ) {
+
 	include('admin/billing/ajax_loading/ws-billing-list.php');
 	//admin_url('admin.php?page=billing_list&ppage=20&inv_id&order_id&name&mobile&bill_from='.$date.'&bill_to='.$date.'&cpage=1');
 }
 function stock_alert( $post, $callback_args ) {
-	include('admin/stocks/ajax_loading/stock-list-total-dashboard.php');
+	 $stocks_class = new Stocks();
+	 $ppage = 5;
+	 $result_args = array(
+        'orderby_field' => 'tot_sale',
+        'page' => $stocks_class->cpage,
+        'order_by' => 'DESC',
+        'items_per_page' => $ppage ,
+        'condition' => '',
+    );
+	include('admin/stocks/ajax_loading/stock-list-total.php');
 	//admin_url('admin.php?page=billing_list&ppage=20&inv_id&order_id&name&mobile&bill_from='.$date.'&bill_to='.$date.'&cpage=1');
 }
 function sales_statistics_widget( $post, $callback_args ) {
-	include('admin/report/ajax_loading/stock-list.php');
-	//admin_url('admin.php?page=list_report&ppage=10&bill_from=&bill_to=&cpage=1');
+	$stocks_class = new Stocks();
+	$ppage = 5;
+	$result_args = array(
+        'orderby_field' => 'is_alert',
+        'second_orderby_field' => ', alert',
+        'page' => $stocks_class->cpage,
+        'order_by' => 'DESC',
+        'second_order_by' => 'ASC',
+        'items_per_page' => $ppage ,
+        'condition' => '',
+    );
+	include('admin/stocks/ajax_loading/stock-list-total.php');
 }
 function wscutomer( $post, $callback_args ) {
+
+	$customer_class = new Customer();
+    $ppage = 5;
+    $result_args = array(
+        'orderby_field' => 'ff.new_sale_total1',
+        'page' => $customer_class->cpage,
+        'order_by' => 'DESC',
+        'items_per_page' => $ppage ,
+        'condition' => '',
+    );
+
 	include('admin/customer/ajax_loading/wholesale-customer-list.php');
 	//admin_url('admin.php?page=wholesale_customer&ppage=10&name&mobile&customer_from&customer_to&sale_total=999&cpage=1');
 
 }
 function customer( $post, $callback_args ) {
+ 	$customer_class = new Customer();
+    $ppage = 5;
+    $result_args = array(
+        'orderby_field' => 'ff.new_sale_total1',
+        'page' => $customer_class->cpage,
+        'order_by' => 'DESC',
+        'items_per_page' => $ppage ,
+        'condition' => '',
+    );
 	include('admin/customer/ajax_loading/customer-list.php');
 	//echo admin_url('admin.php?page=customer_list&ppage=5&name&mobile&customer_from&customer_to&sale_total=999&cpage=1');
 }
@@ -275,10 +319,10 @@ function customer( $post, $callback_args ) {
 
 function add_dashboard_widgets() {
 	add_meta_box( 'my_sales_statistics_widget_re', 'Retail Sales Statistics', 'sales_statistics_widget_today', 'dashboard', 'normal', 'high' );
- 	add_meta_box( 'my_sales_statistics_widget', 'Today Sold Stocks', 'sales_statistics_widget', 'dashboard', 'normal', 'high' );
+ 	add_meta_box( 'my_sales_statistics_widget', 'Stock Alert', 'sales_statistics_widget', 'dashboard', 'normal', 'high' );
 	add_meta_box( 'my_customer', 'Retail Customer Status', 'customer', 'dashboard', 'normal', 'low' );
 	add_meta_box( 'my_sales_statistics_widget_ws', 'Wholesale Sales Statistics', 'sales_statistics_widget_ws_today', 'dashboard', 'side', 'high' );
-	add_meta_box( 'my_stocks_alert_widget', 'Stock Status', 'stock_alert', 'dashboard', 'side', 'low' );
+	add_meta_box( 'my_stocks_alert_widget', 'Most Active Stock', 'stock_alert', 'dashboard', 'side', 'low' );
 	add_meta_box( 'my_wscutomer', 'Wholesale Customer  Status', 'wscutomer', 'dashboard', 'side', 'low' );
 
 	
@@ -292,45 +336,6 @@ function mytheme_remove_help_tabs() {
     $screen = get_current_screen();
     $screen->remove_help_tabs();
 }	
-
-// function invoiceDownload($str='', $outfile = '')
-// {
-
-// 	$paper = DOMPDF_DEFAULT_PAPER_SIZE;
-// 	require_once("wp-pdf-templates/dompdf/dompdf_config.inc.php"); 
-// 	$dompdf = new DOMPDF();
-
-// 	global $_dompdf_show_warnings, $_dompdf_debug, $_DOMPDF_DEBUG_TYPES;
-
-// 	$options = array();
-
-// 	$orientation = "portrait";
-// 	$save_file = false; # Don't save the file
-
-
-// 	$dompdf->load_html($str);
-// 	$dompdf->set_paper($paper, $orientation);
-// 	$dompdf->render();
-
-// 	if ( $_dompdf_show_warnings ) {
-// 		global $_dompdf_warnings;
-// 		foreach ($_dompdf_warnings as $msg)
-// 		echo $msg . "\n";
-// 		echo $dompdf->get_canvas()->get_cpdf()->messages;
-// 		flush();
-// 	}
-
-
-// 	if ( !headers_sent() ) {
-// 	$dompdf->stream($outfile, $options);
-// 	}
-
-// }
-
-
-
-
-
 
 
 function splitCurrency($price = 0.00) {
@@ -355,10 +360,10 @@ function convert_number_to_words_full($number) {
       if(strlen($ps) < 2) {
       	$ps = $ps.'0';
       }
-      $ps_txt = convert_number_to_words($ps).' Paisa';
+      $ps_txt = convert_number_to_words($ps).' Paise';
     } 
 
-    return $rs_txt . $con . $ps_txt .' Only';
+    return $rs_txt .'Rupees'. $con . $ps_txt .' Only';
 }
 
 function convert_number_to_words($num) {
@@ -366,7 +371,6 @@ function convert_number_to_words($num) {
 		return 'overflow';
 	}
 	$num = '000000000'.$num;
-
 	$a = ['','one ','two ','three ','four ', 'five ','six ','seven ','eight ','nine ','ten ','eleven ','twelve ','thirteen ','fourteen ','fifteen ','sixteen ','seventeen ','eighteen ','nineteen '];
 	$b = ['', '', 'twenty','thirty','forty','fifty', 'sixty','seventy','eighty','ninety'];
 
@@ -405,5 +409,91 @@ function external_class_autoload($class_name) {
 
 // register function for autoloading required classes
 spl_autoload_register('external_class_autoload');
+
+
+
+// SELECT ff.*,((ff.debit+ff.final_balance )-ff.credit )as final_bal 
+// from 
+// (
+//     SELECT customer_table.*, 
+//     (case when final_sale_table.final_balance is null then 0.00 else final_sale_table.final_balance end) as final_balance, 
+//     (case when final_sale_table.sub_total-final_sale_table.total_return is null then 0.00 else final_sale_table.sub_total-final_sale_table.total_return end) as sub_total, 
+//     (case when customer_table.credit_in is null then '0.00' else customer_table.credit_in end ) as credit , 
+//     (case when customer_table.debit_in is null then '0.00' else customer_table.debit_in end ) as debit 
+//     from 
+//     ( 
+//         SELECT cus.*, 
+//         (case when creditdebit.credit_in is null then 0.00 else creditdebit.credit_in end) as credit_in, 
+//         (case when creditdebit.debit_in is null then 0.00 else creditdebit.debit_in end) as debit_in 
+//         from 
+//         (
+//             SELECT * FROM wp_shc_customers 
+//         ) 
+//         as cus 
+//         left join (
+//             select 
+//             sum((case when type='credit' then amount else '0.00' end ))as credit_in, 
+//             sum((case when type='debit' then amount else '0.00' end ))as debit_in,
+//             customer_id as credit_debit_cus 
+//             from 
+//             wp_shc_creditdebit 
+//             where active = 1 and customer_type ='retail' GROUP by customer_id
+//         ) 
+//         as creditdebit on cus.id = creditdebit.credit_debit_cus 
+//     ) as customer_table 
+//     left join ( 
+//         select cal_final.*, 
+//         ( cal_final.before_rtn_final_bal + cal_final.paid_return) as final_balance 
+//         from (
+//             select f_table.customer_id, 
+//             f_table.sale_total_bal,
+//             f_table.total_return as total_return, 
+//             (case when cd_notes.paid_return is null then 0.00 else cd_notes.paid_return end) as paid_return, 				(f_table.sale_total_bal - f_table.total_return) as before_rtn_final_bal, 
+//             (f_table.sub_total ) as sub_total from 
+//             ( 
+//                 select sale_customer.cus_id as customer_id, 
+//                 (case when sale_customer.sale_total_bal is null then 0.00 else sale_customer.sale_total_bal end) as sale_total_bal, 
+//                 (case when return_customer.total_return is null then 0.00 else return_customer.total_return end) as total_return, 
+//                 (case when sale_customer.sub_total is null then 0.00 else sale_customer.sub_total end) as sub_total from 
+//                 ( 
+//                     select *, 
+//                     (tab.sub_total-tab.paid_amount)as sale_total_bal 
+//                     from 
+//                     ( 
+//                         SELECT c.id as cus_id, 
+//                         (case when SUM(s.sub_total) is null then 0.00 else SUM(s.sub_total) end) as sub_total , 
+//                         ( case when SUM(s.paid_amount)-SUM(s.current_bal) is null then 0.00 else SUM(s.paid_amount)-SUM(s.current_bal) end) as paid_amount 
+//                         FROM wp_shc_customers 
+//                         as c 
+//                         LEFT JOIN 
+//                         wp_shc_sale as s 
+//                         ON c.id = s.customer_id 
+//                         WHERE c.active = 1 AND s.active = 1 GROUP BY c.id 
+//                     ) 
+//                     as tab 
+//                 ) as sale_customer 
+//                 left JOIN 
+//                 ( 
+//                     select customer_id, 
+//                     sum(total_amount) as total_return 
+//                     from wp_shc_return_items 
+//                     WHERE active = 1 GROUP by customer_id 
+//                 ) as return_customer 
+//                 on sale_customer.cus_id = return_customer.customer_id 
+//             ) as f_table 
+//             left join 
+//             ( 
+//                 select customer_id,
+//                 sum(key_amount) as paid_return 
+//                 from wp_shc_cd_notes WHERE active = 1 and master_key ='return_biling' group by customer_id 
+//             )as cd_notes 
+//             on f_table.customer_id = cd_notes.customer_id 
+//         ) as cal_final 
+//     ) as final_sale_table 
+//     on 
+//     customer_table.id = final_sale_table.customer_id 
+// ) as ff 
+// WHERE ff.active = 1 
+
 
 ?>

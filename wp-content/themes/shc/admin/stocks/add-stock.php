@@ -1,14 +1,14 @@
 <?php
 $stock = false;
-if(isset($_GET['stock_id']) && $stock = get_stock($_GET['stock_id']) ) {
+if(isset($_GET['stock_id']) && $stock = get_stock($_GET['stock_id'])) {
 	$stock_id = $_GET['stock_id'];
 
 }
 
 ?>
 
-<div class="container">
-	<div class="row">
+<div class="">
+	<div class="">
 		<div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2">
 			<div class="x_panel">
 				<div class="x_title">
@@ -24,6 +24,7 @@ if(isset($_GET['stock_id']) && $stock = get_stock($_GET['stock_id']) ) {
 							</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<input type="text" id="pro_number" name="pro_number" required="required" class="form-control col-md-7 col-xs-12 pro_number"  value="<?php echo ($stock) ? $stock->product_name : ''; ?>">
+								<input type="hidden" id="product_name" class="form-control col-md-7 col-xs-12 product_name"  value="<?php echo ($stock) ? $stock->product_name : ''; ?>">
 							</div>
 						</div>
 						<div class="divider-dashed"></div>

@@ -22,213 +22,320 @@
 
         }
     }
-
-  $number =$bill_fdata->total_amount;
-    $no = round($number);
-    $point = round($number - $no, 2) * 100;
-    $hundred = null;
-    $digits_1 = strlen($no);
-    $i = 0;
-    $str = array();
-    $words = array('0' => '', '1' => 'one', '2' => 'two',
-    '3' => 'three', '4' => 'four', '5' => 'five', '6' => 'six',
-    '7' => 'seven', '8' => 'eight', '9' => 'nine',
-    '10' => 'ten', '11' => 'eleven', '12' => 'twelve',
-    '13' => 'thirteen', '14' => 'fourteen',
-    '15' => 'fifteen', '16' => 'sixteen', '17' => 'seventeen',
-    '18' => 'eighteen', '19' =>'nineteen', '20' => 'twenty',
-    '30' => 'thirty', '40' => 'forty', '50' => 'fifty',
-    '60' => 'sixty', '70' => 'seventy',
-    '80' => 'eighty', '90' => 'ninety');
-    $digits = array('', 'hundred', 'thousand', 'lakh', 'crore');
-    while ($i < $digits_1) {
-     $divider = ($i == 2) ? 10 : 100;
-     $number = floor($no % $divider);
-     $no = floor($no / $divider);
-     $i += ($divider == 10) ? 1 : 2;
-     if ($number) {
-        $plural = (($counter = count($str)) && $number > 9) ? 's' : null;
-        $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
-        $str [] = ($number < 21) ? $words[$number] .
-            " " . $digits[$counter] . $plural . " " . $hundred
-            :
-            $words[floor($number / 10) * 10]
-            . " " . $words[$number % 10] . " "
-            . $digits[$counter] . $plural . " " . $hundred;
-      } else $str[] = null;
-    } 
-    $str = array_reverse($str);
-    $result = implode('', $str);
-    $points = ($point) ?
-    "" . $words[$point / 10] . " " . 
-          $words[$point = $point % 10] : '';
+$profile = get_profile1();
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel='stylesheet' id='bootstrap-min-css'  href="'<?php echo get_template_directory_uri(); ?>'/admin/inc/css/bootstrap.min.css'" type='text/css' media='all' />
+  <link rel='stylesheet' id='bootstrap-min-css'  href="<?php echo get_template_directory_uri(); ?>'/admin/inc/css/bootstrap.min.css'" type='text/css' media='all' />
 
 <meta charset="utf-8">
 <style>
-body {font-family: arial, Arial, Helvetica, sans-serif; font-size: 12px;margin-left: 20px;margin-right: 30px;border:1px solid #73879c;}
-body {
-        height: 297mm;/*297*/
-        width: 210mm;
-        
-    }
-dt { float: left; clear: left; text-align: right; font-weight: bold; margin-right: 10px; } 
-dd {  padding: 0 0 0.5em 0; }
- .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{
-     padding: 3px; 
-    } 
-    .footer_left,.footer_right{
-      width:50%;
-      float: left;
-      border:1px solid #73879c;
-      height: 100px;
-    }
-    .title{
-       border:1px solid #73879c;
-    }
-    .footer_last{
-      margin-top: 60px;
-    }
-    .body_style{
-        margin-left: 10px;
-    }
-    .print_padding{
-      padding: 10px;
 
+  
+    
+   @media screen {
+    .A4_HALF .footer {
+      bottom: 0px;
+      left: 0px;
     }
-</style> 
- 
+    .A4_HALF .footer .foot {
+        background-color: #67a3b7 !important;
+        -webkit-print-color-adjust: exact;
+    }
+
+  }
+  /** Fix for Chrome issue #273306 **/
+  @media print {
+    #adminmenumain, #wpfooter, .print-hide {
+      display: none;
+    }
+    body, html {
+      height: auto;
+      padding:0px;
+      font-family: normal;
+      font-size: 13px;
+      
+    }
+    html.wp-toolbar {
+      padding:0;
+    }
+    #wpcontent {
+      background: white;
+      box-shadow: 0 .5mm 2mm rgba(0,0,0,.3);
+      margin: 1mm;
+      display: block;
+      padding: 0;
+    }
+
+
+
+
+    .A4_HALF .footer {
+      position: fixed;
+      bottom: 0px;
+      left: 0px;
+    }
+    .A4_HALF .footer .foot {
+        background-color: #67a3b7 !important;
+        -webkit-print-color-adjust: exact;
+    }
+  }
+
+  @page { margin: 0;padding: 0; }
+  .sheet {
+    margin: 0;
+    
+
+
+  }
+
+
+      .A4_HALF {
+        width: 100mm;
+      }
+      .inner-container {
+        padding-left: 20mm;
+        padding-right: 20mm;
+        width: 100mm;
+
+      }
+
+      .left-float {
+        float: left;
+      }
+
+      .text-center {
+        text-align: center;
+      }
+      .text-rigth {
+        text-align: right;
+      }
+      .table td, .table th {
+        background-color: transparent !important;
+      }
+
+
+      .table>tbody>tr>td {
+        padding: 0 3px;
+        height: 20px;
+      }
+      .table-bordered>tbody>tr>td, .table-bordered>thead>tr>th {
+        border: 1px solid #000 !important;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .A4_HALF h3 {
+        margin-top: 10px;
+      }
+  .exempted span{
+        margin-left: 40%;
+        font-size: 14px;
+      }
+      
+</style>   
 </head>
 
 <body>
-  <div class="print_padding">
-  
 
-        <?php
-            if($bill_data) {
-        ?>
-<!-- <div class="col-xs-12 invoice-header">
-    <h4 style="margin-left: -15px;">
-        Invoice. #<?php echo $bill_fdata->inv_id; ?>
-        <small class="pull-right">Date: <?php echo date("d/m/Y"); ?></small>
-    </h4>
-</div> -->
-  <div class="title"><div style="margin-left: 40%;margin-bottom: 10px;margin-top: 10px;"><b>GOODS RETURN CHALLAN</b></div></div>
-
-  <div class="body_style">
-      <table cellspacing='3' cellpadding='3' WIDTH='100%' >
-      <tr>
-          <td valign='top' WIDTH='50%'><strong>Saravana Health Store</strong>
-          <br/>7/12,Mg Road,Thiruvanmiyur,
-          <br/>Chennai,Tamilnadu,
-          <br/>Pincode-600041.
-          <br/>Cell:9841141648.
-          <br/>GST No - 33BMDPA4840E1ZP
-          <td valign='top' WIDTH='50%'>
-              <table>
-                <tr><td>Return Number</td><td>: <?php echo $bill_fdata->return_id; ?></td></tr>
-                <tr><td>Date</td><td>: <?php echo date("d/m/Y"); ?></td></tr>
-                <tr><td>State</td><td>: TAMILNADU</td></tr>
-                <tr><td>State Code</td><td>: 33</td></tr>
-              </table>
-          </td>
+ <div class="A4_HALF">
+  <div class="sheet padding-10mm">
+    <?php
+      if($bill_data) {
+    ?>
+    <table cellspacing='3' cellpadding='3' WIDTH='100%' >
+      <tr class="text-center" >
+        <td valign='top' WIDTH='50%'>
+            <strong><?php echo $profile ? $profile->company_name : '';  ?></strong>
+            <span style=" font-size: 13px;line-height:12px; " ><br/><?php echo $profile ? $profile->address : '';  ?>
+            <br/><?php echo $profile ? $profile->address2 : '';  ?>    
+            <br/>PH : <?php echo $profile ? $profile->phone_number : '';  ?>
+            <br/>GST No : <?php echo $profile ? $profile->gst_number : '';  ?></span>
+        </td>
       </tr>
-      </table>
-      <br/>
-      <table  WIDTH='100%'>
+    </table>
+
+    <table cellspacing='' cellpadding='' WIDTH='100%' >
         <tr>
-          <td valign='top' width="50%">
+          <td>
             <table>
-              <tr><td><b>Return to , </b></td><td><b></b></td></tr>
-              <tr><td style="width: 100px;">Name</td><td>: <?php echo $bill_fdata->customer_name; ?></td></tr>
-              <tr><td>Mobile</td><td>: <?php echo $bill_fdata->mobile; ?></td></tr>
-              <tr><td>Address</td><td>: <?php echo $bill_fdata->address; ?></td></tr>         
-            </table>
-          </td>
-          
-        </tr>
-        
-
-      </table>
-
-      <br />
-
-      <!-- <table cellspacing='3' cellpadding='3' WIDTH='100%'>
-      <tr>
-      <td valign='top' WIDTH='50%'><b>Order number</b>: <?php //echo $bill_fdata->order_id; ?></td>
-      <td valign='top' WIDTH='50%'><b>Order date:</b> <?php //echo $bill_fdata->created_at; ?></td>
-      <td valign='top' WIDTH='33%'></td>
-      </tr>
-      </table> -->
-
-      <br/>
-
-
-      <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" style=" border-collapse: collapse;border: 1px solid black;">
-        <tr style="border: 1px solid black;">
-          <th valign='top' style="border: 1px solid black;">SNO</th>
-          <th valign='top' style="border: 1px solid black;">PRODUCTS</th>
-          <th valign='top' style="border: 1px solid black;">HSN</th>
-          <th valign='top' style="border: 1px solid black;">Return Quantity</th>
-          <th valign='top' style="border: 1px solid black;">MRP(Per Item)</th> 
-          <th valign='top' style="border: 1px solid black;">AMOUNT</th>
-          <th valign='top' style="border: 1px solid black;">CGST (%) </th>
-          <th valign='top' style="border: 1px solid black;">CGST VALUE</th>
-          <th valign='top' style="border: 1px solid black;">SGST (%) </th>
-          <th valign='top' style="border: 1px solid black;">SGST VALUE</th>
-          <th valign='top' style="border: 1px solid black;">SUB TOTAL</th>
-        </tr>
-      <?php
-          if($bill_data && $bill_ldata && count($bill_ldata)>0) {
-              $i = 1;
-              foreach ($bill_ldata as $d_value) {
-      ?>
-                            
-        <tr style="border: 1px solid black;">
-          <td valign='top' style="border: 1px solid black;" align='center'><?php echo $i; ?></td>
-          <td valign='top' style="border: 1px solid black;"><?php echo $d_value->product_name; ?></td>
-          <td valign='top' style="border: 1px solid black;"><?php echo $d_value->hsn; ?></td>
-          <td valign='top' style="border: 1px solid black;" align='left'><?php echo $d_value->sale_unit; ?></td>
-          <td valign='top' style="border: 1px solid black;" align='left'><?php echo $d_value->mrp; ?></td>
-          <td valign='top' style="border: 1px solid black;" align='left'><?php echo $d_value->amt; ?></td>
-          <td valign='top' style="border: 1px solid black;"><?php echo $d_value->cgst + 0; echo ' %'; ?></td>
-          <td valign='top' style="border: 1px solid black;"><?php echo $d_value->cgst_value; ?></td>
-          <td valign='top' style="border: 1px solid black;"><?php echo $d_value->sgst + 0; echo ' %';  ?></td>
-          <td valign='top' style="border: 1px solid black;"><?php echo $d_value->sgst_value; ?></td>
-          <td valign='top' style="border: 1px solid black;" style="padding:3px;" align='left'><?php echo $d_value->sub_total; ?></td>
-        </tr>
-      <?php
-            $i++;
-              }
-            } 
-          ?>  
-      </table>
-      <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped">
-      <tr>
-        <td valign='top' align='right'>Total:</td>
-          <td valign='top' align='left' style="width:62px;"><span class="amount"><?php echo $bill_fdata->total_amount; ?></span></td>
+              <tr>            
+                <td valign='top' WIDTH='50%'>Date :<?php echo date("d/m/Y"); ?> </td>     
+              </tr>
+              <tr> 
+                <td valign='top' WIDTH='50%'>State :TAMILNADU </td>    
+              </tr> 
+              <tr> 
+                <td valign='top' WIDTH='50%'>State Code :33 </td>   
+              </tr>     
+          </table>
+        </td>
+          <td>
+            <table>
+              <tr> 
+                 <td valign='top' WIDTH='50%'>Name : <?php echo $bill_fdata->customer_name; ?></td> 
+              </tr>              
+              <tr>
+                <td valign='top' WIDTH='50%'>Mobile :<?php echo $bill_fdata->mobile; ?> </td>  
+              </tr>
+              <tr>   
+                <td valign='top' WIDTH='50%'>Address :<?php echo $bill_fdata->address; ?></td>       
+              </tr>
+          </table>
+        </td>
       </tr>
       
-      </table>
+    </table>
+    <div class="text-center" ><b style="font-size:14px;">RETURN BILL</b></div>
+    <table cellspacing='3' cellpadding='3' WIDTH='100%' >
+      <tr>
+        <td valign='top' WIDTH='70%'>Return No :  <?php echo $bill_fdata->return_id; ?> </td>    
+        <td valign='top' WIDTH='100%'>Invoice No : <b><?php echo $bill_fdata->search_inv_id; ?></b></td>
+      </tr>
+      <tr>
+        <!-- <td valign='top' WIDTH='30%'>Date : <?php echo date("d/m/Y"); ?></td> -->
+        <td valign='top' WIDTH='30%'> </td>
+      </tr>
+    </table>
+    <style>
+      .dotted_border_top  {
+        border-top: 1px dashed #000;        
 
-      Amount Chargable ( In Words)<br/>
-      <?php echo ucwords($result) . "Rupees & ". ucwords($points). " Paises  Only "; ?>
- 
-       <br/>
-        <?php
-                  }
-                ?>
-        
-    </div>
+      }
+      .dotted_border_bottom  {        
+        border-bottom: 1px dashed #000;
+      }
+    </style>
 
-    <div>
-       <b style="float:right;">Authorised Signatory</b>
-    </div>
+    <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" >
+      <tr>
+        <th class="dotted_border_top dotted_border_bottom"  valign='top' align='center'>SNO</th>
+        <th class="dotted_border_top dotted_border_bottom"  valign='top' align='center'>PRODUCT</th>
+        <th class="dotted_border_top dotted_border_bottom"  valign='top' align='center'>HSN CODE</th>
+        <th class="dotted_border_top dotted_border_bottom"  valign='top' align='center'>RETURN <br/>QTY</th>
+        <th class="dotted_border_top dotted_border_bottom"  valign='top' align='center'>MRP</th>
+       <!--  <th class="dotted_border_top dotted_border_bottom"  valign='top' align='center'>Dis.Price</th> -->
+        <th class="dotted_border_top dotted_border_bottom"  valign='top' align='center'>TOTAL</th>
+      </tr>
+      <tr>
 
+      </tr>
+      <?php
+        if($bill_data && $bill_ldata && count($bill_ldata)>0) {
+          $i = 1;
+          foreach ($bill_ldata as $d_value) {
+      ?>
+                
+      <tr>
+      <td valign='top' align='center'><?php echo $i; ?></td>
+      <td valign='top' align='center'><?php echo $d_value->product_name; ?></td>
+      <td valign='top' align='center'><?php echo $d_value->hsn; ?></td>
+      <td valign='top' align='center'><?php echo $d_value->return_unit; ?></td>
+      <td valign='top' align='center'><?php echo $d_value->mrp; ?></td>
+     <!--  <td valign='top' align='left'><?php echo $d_value->discount; ?></td> -->
+      <td valign='top' align='right'><?php echo$d_value->sub_total; ?>&nbsp;&nbsp;&nbsp;</td></tr>
+
+      <?php
+        $i++;
+          }
+        } 
+        ?> 
+
+     
+    </table>
+
+
+      <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped">
+      <!-- <tr>
+        <td valign='top' colspan="3" >No.Of.Items : 4    </td>
+        <td valign='top'  align='right' >Total Qty : 10&nbsp;&nbsp;&nbsp;</td>
+      </tr> -->
+    
+      <tr> 
+         <td class="dotted_border_top dotted_border_bottom" colspan="6" valign='top' align='right'><span class="amount"><b>TOTAL AMOUNT</b></span></td>
+         <td  class="dotted_border_top dotted_border_bottom" valign='top' align='right'><span class="amount"><?php echo '<b>'.$bill_fdata->total_amount.'</b>'; ?>&nbsp;&nbsp;&nbsp;</span></td>
+      </tr>
+    </table>
+
+          <?php
+            }
+          ?>
+      <br/> 
+
+      Amount Chargable ( In Words)
+      <?php echo ucwords(convert_number_to_words_full($bill_fdata->total_amount)); ?>
+    <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" style="" >
+      <thead>
+        <tr>
+          <th colspan="5" class="dotted_border_bottom"  align="center" >GST Details</th>
+        </tr>     
+      <tr>
+        <th valign='top' class="center-th" style="width:90px;padding:0;" rowspan="2">
+        <div class="text-center">Taxable Value</div>
+        </th>
+        <th class="center-th" style="padding: 0;" colspan="2">
+        <div class="text-center">CGST</div>
+        </th>
+        <th class="center-th" style="padding: 0;" colspan="2">
+        <div class="text-center">SGST</div>
+        </th>
+      </tr>
+      <tr>
+        <th style="padding: 0;width: 70px;"><div class="text-center">Rate</div></th>
+        <th style="padding: 0;width: 70px;"><div class="text-right">Amount</div></th>
+        <th style="padding: 0;width: 70px;"><div class="text-center">Rate</div></th>
+        <th style="padding: 0;width: 70px;"><div class="text-right">Amount</div></th>
+      </tr>
+      </thead>
+      <tbody>
+
+    <?php
+        if($bill_data && $bill_ldata && count($bill_ldata)>0) {
+          $i = 1;
+          $gst_tot= 0;
+          $total_tax = 0.00;
+          foreach ($bill_ldata as $d_value) {
+      ?>
+         
+          <tr class="">
+            <td class=""><div class="text-center"><?php  echo $d_value->amt; ?></div></td>
+            <td class=""><div class="text-center"><?php echo $d_value->cgst + 0; echo ' %'; ?></div></td>
+            <td class=""><div class="text-center"><?php echo $d_value->cgst_value; ?></div></td>
+            <td class=""><div class="text-center"><?php echo $d_value->sgst + 0; echo ' %';  ?> </div></td>
+            <td class=""><div class="text-center"><?php echo $d_value->sgst_value; ?></div></td>
+          </tr>
+           <?php 
+           $total_tax = ( 2 * $d_value->cgst_value) +$total_tax;
+           $gst_tot = $d_value->cgst_value + $gst_tot;
+
+        }
+      } ?>
+      <tr class="">
+        <td class=""><div class="text-center"></div></td>
+        <td class=""><div class="text-center"></div></td>
+        <td class=""><div class="text-center"><?php echo $gst_tot; ?></div></td>
+        <td class=""><div class="text-center"></div></td>
+        <td class=""><div class="text-center"><?php echo $gst_tot; ?></div></td>
+      </tr>
+      <tr>
+        <td  class="dotted_border_bottom" colspan="4">
+        <div class="text-center">
+          <b>Total Tax</b>
+        </div>
+        </td>
+        <td class="dotted_border_bottom" >
+        <div class="text-center">
+         <b><?php echo $total_tax; ?></b>
+        </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <div style="text-align: center;" >Thank You !!!. Visit Again !!!.</div> 
+  </div>
+  <div style="margin-top:20px;">
+      <b style="float:right;">Authorised Signatory</b>
+  </div>
 </div>
 </body>
-</html> 
+</html>

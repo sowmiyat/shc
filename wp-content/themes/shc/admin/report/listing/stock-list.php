@@ -40,7 +40,7 @@
                     <div class="col-md-2 form-group">
                         <b></b>
                         <select name="slap" class="slap" >
-                            <option value="" >GST Tax</option>
+                            <option value="" >GST Tax % </option>
                             <option value="0.00" <?php echo ($report->slap == '0.00') ? 'selected' : '' ?>>0 %</option>
                             <option value="2.50" <?php echo ($report->slap == '2.50') ? 'selected' : '' ?>>5 %</option>
                             <option value="6.00" <?php echo ($report->slap == '6.00') ? 'selected' : '' ?>>12 %</option>
@@ -56,10 +56,10 @@
                         <b></b> <input type="text" name="bill_to" class="bill_to form-control" value="<?php echo date('Y-m-d'); ?>" placeholder="Bill To">
                     </div>
                     <div class="col-md-5 form-group">
-                        <button class="btn btn-default stock_print pull-right"><i class="fa fa-print"></i> Print</button>
-                        <!-- <a class="btn btn-default pull-right stock_print pull-right" href="#" target="_blank" ><i class="fa fa-print"></i> Print</a> -->
-                        
-                        <button class="btn btn-primary pull-right stock_download" style="margin-right: 5px;"><i class="fa fa-file-pdf-o" href=""></i> Generate PDF</button>
+                      <div class="pull-right">
+                        <button class="btn btn-default stock_print "><i class="fa fa-print"></i> Print</button>
+                        <button class="btn btn-primary  stock_download" style="margin-right: 5px;"><i class="fa fa-file-pdf-o" href=""></i> Generate PDF</button>
+                      </div>
                     </div>
                 </div>
               <input type="hidden" name="filter_action" class="filter_action" value="stock_report">
@@ -79,13 +79,35 @@
     
 jQuery(document).ready(function () {
     jQuery('.ppage').focus();
+
+    jQuery(".ppage").live('keydown', function(e) { 
+      var keyCode = e.keyCode || e.which; 
+
+      if (event.shiftKey && event.keyCode == 9) { 
+            e.preventDefault(); 
+        // call custom function here
+            jQuery('.stock_download').focus();
+        } else if(event.keyCode == 9){
+            e.preventDefault(); 
+            jQuery('.slap').focus();
+        } else {
+         jQuery('.ppage').focus();
+        }
+    });
+
+
     jQuery('.stock_download').live('keydown', function(e){
-        var keyCode = e.keyCode || e.which; 
-        if (keyCode == 9) { 
+         if (event.shiftKey && event.keyCode == 9) { 
+            e.preventDefault(); 
+        // call custom function here
+            jQuery('.stock_print').focus();
+        } else if(event.keyCode == 9){
             e.preventDefault(); 
             jQuery('.ppage').focus();
+        } else {
+         jQuery('.stock_download').focus();
         }
-    });    
+    });       
 })    
 
 

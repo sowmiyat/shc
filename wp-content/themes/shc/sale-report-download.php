@@ -8,14 +8,13 @@
 
 
 $inv_id = isset($_GET['inv_id']) ? $_GET['inv_id'] : '';
-$order_id = isset($_GET['order_id']) ? $_GET['order_id'] : '';
-$name = isset($_GET['name']) ? $_GET['name'] : '';
+$cus_name = isset($_GET['cus_name']) ? $_GET['cus_name'] : '';
 $mobile = isset($_GET['mobile']) ? $_GET['mobile'] : '';
 $bill_from = isset($_GET['bill_from']) ? $_GET['bill_from'] : '';
 $bill_to = isset($_GET['bill_to']) ? $_GET['bill_to'] : '';
 
 
-$url = site_url( 'sale-report-print/?bill_from=' ).$bill_from.'&bill_to='.$bill_to.'&name='.$name.'&inv_id='.$inv_id.'&order_id='.$order_id.'&mobile='.$mobile;
+$url = site_url( 'sale-report-print/?bill_from=' ).$bill_from.'&bill_to='.$bill_to.'&cus_name='.$cus_name.'&inv_id='.$inv_id.'&mobile='.$mobile;
 
 $content =   file_get_contents($url,0,null,null);
 

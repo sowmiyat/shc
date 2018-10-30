@@ -46,10 +46,10 @@
 		    	$condition .= " AND hsn LIKE '".$this->hsn."%' ";
 		    }
 		    if($this->brand_name != '') {
-		    	$condition .= " AND brand_name LIKE '".$this->brand_name."%' ";
+		    	$condition .= " AND brand_name LIKE '%".$this->brand_name."%' ";
 		    }
 		    if($this->product_name != '') {
-		    	$condition .= " AND product_name LIKE '".$this->product_name."%' ";
+		    	$condition .= " AND product_name LIKE '%".$this->product_name."%' ";
 		    }
 
 		    $query              = "SELECT * FROM ${table} WHERE active = 1 ${condition}";

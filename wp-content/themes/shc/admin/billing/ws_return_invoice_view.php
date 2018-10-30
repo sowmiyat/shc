@@ -15,6 +15,7 @@
 
         }
     }
+$profile = get_profile1();
 
 ?>
 
@@ -30,18 +31,16 @@ setTimeout(printPage.print(), 5);
     <div class="row">
         <div class="col-md-12 print-hide">
             <div class="x_panel">
-                <div class="x_title">
-                     <div class="x_title">
+                <div class="">
+                     <div class="">
                         <form action="<?php menu_page_url( 'ws_return_items_view' ); ?>" method="GET">
-                              <h2>Return ID 
+                              <h2><!-- Return ID  -->
                                   <input type="hidden" name="page" value="ws_return_items_view">
-                                  <input type="text" name="id" class="invoice_id" value="<?php echo $_GET['id']; ?>" required autocomplete="off"> 
+                                  <input type="hidden" name="id" class="invoice_id" value="<?php echo $_GET['id']; ?>" required autocomplete="off"> 
                                            
-                                  <input class="btn btn-success" type="submit" style="height: 38px;margin-left: 20px;">
+                                  <!-- <input class="btn btn-success" type="submit" style="height: 38px;margin-left: 20px;"> -->
                               </h2>
-                            <button class="btn btn-primary pull-right ws_return_generate_bill" style="margin-right: 5px;"><i class="fa fa-file-pdf-o"></i> Generate PDF</button>
-                            <!-- <button class="btn btn-default pull-right ws_bill_return_print" onclick="print_current_page();" style="border-color: #bc2323;"><i class="fa fa-print"></i> Print</button> -->
-                            <a class="btn btn-default pull-right ws_bill_return_print" href="#" target="_blank" onclick="print_current_page();"><i class="fa fa-print"></i> Print</a>
+
                                 
                         </form>
                         <div class="clearfix"></div>
@@ -122,7 +121,7 @@ setTimeout(printPage.print(), 5);
                     <div class="x_panel">
                         <div class="x_title">
 
-                            <h2>Invoice Design</h2>
+                            <h2>Goods Return Design</h2>
                             <div class="clearfix"></div>
                         </div>
                         <div class="x_content">
@@ -131,10 +130,10 @@ setTimeout(printPage.print(), 5);
                                 <!-- title row -->
                                 <div class="row">
                                     <div class="col-xs-12 invoice-header">
-                                        <h4>
+                                        <h3>
                                             <i class="fa fa-globe"></i> Goods Return.
                                             <small class="pull-right"><?php echo date('d/m/Y'); ?></small>
-                                        </h4>
+                                        </h3>
                                     </div>
                                     <!-- /.col -->
                                 </div>
@@ -143,11 +142,11 @@ setTimeout(printPage.print(), 5);
                                     <div class="col-sm-4 invoice-col">
                                         From
                                         <address>
-                                            <strong>Saravana Health Store</strong>
-                                            <br>7/12,Mg Road,Thiruvanmiyur
-                                            <br>Chennai,Tamilnadu,
-                                            <br>Pincode-600041.
-                                            <br>Cell:9841141648.
+                                            <strong><?php echo $profile ? $profile->company_name : '';  ?></strong>
+                                            <br/><?php echo $profile ? $profile->address : '';  ?>
+                                            <br/><?php echo $profile ? $profile->address2 : '';  ?>
+                                            <br/>Cell : <?php echo $profile ? $profile->phone_number : '';  ?>
+                                            <br/>GST No : <?php echo $profile ? $profile->gst_number : '';  ?>
                                         </address>
                                     </div>
                                     <!-- /.col -->
@@ -168,7 +167,7 @@ setTimeout(printPage.print(), 5);
                                     <div class="col-sm-4 invoice-col">
                                         <b>
                                             <input type="hidden" name="invoice_id" class="invoice_id" id="invoice_id" autocomplete="off" value="<?php echo $invoice_id ?>">
-                                            <b>Invoice Id : </b> <?php echo  $bill_fdata->inv_id; ?><br/>
+                                            <b>Invoice Id : </b> <?php echo  'Inv '.$bill_fdata->search_inv_id; ?><br/>
                                             <b>Return Id : </b> <?php echo $bill_fdata->return_id; ?>
                                         </b>
                                         <br>
@@ -185,28 +184,33 @@ setTimeout(printPage.print(), 5);
                                             <h2>Return Items</h2>
                                             <div class="billing-repeater rtn_ws_sale_detail" style="margin-top:20px;">
                                                 <table class="table table-striped" data-repeater-list="rtn_ws_sale_detail">
-                                                    <thead>
+                                                                                                       <thead>
                                                         <tr>
-                                                            <th>S.No</th>
-                                                            <th>Product Name</th>
-                                                            <th>HSN Code</th>
-                                                            <th>Return Quantity</th>
-                                                            <th>MRP</th>
-                                                            <th>Amount</th>
-                                                            <th>CGST (%) </th>
-                                                            <th>CGST Value</th>
-                                                            <th>SGST (%)</th>
-                                                            <th>SGST Value</th>
-                                                            <th>Subtotal</th>
+                                                            <th rowspan="2" style="text-align: center;">S.No/Reason</th>
+                                                            <th rowspan="2" style="text-align: center;">Product Name</th>
+                                                            <th rowspan="2" style="text-align: center;">HSN Code</th>
+                                                            <th rowspan="2" style="text-align: center;">Return Quantity</th>
+                                                            <th rowspan="2" style="text-align: center;">Sold Price</th>
+                                                            <th rowspan="2" style="text-align: center;">Taxless Amount</th>
+                                                            <th colspan="2" style="text-align: center;">CGST</th>
+                                                            <th colspan="2" style="text-align: center;">SGST</th>
+                                                            
+                                                            <th rowspan="2" style="text-align: center;">Subtotal</th>
                                                            
                                                         </tr>
+                                                        <tr class="text_bold text_center">
+                                                            <th style="border-top: none;text-align: center;" class="column-title" >Rate(%)</th>
+                                                            <th style="border-top: none;text-align: center;" class="column-title" >Amount</th>
+                                                            <th style="border-top: none;text-align: center;" class="column-title" >Rate(%)</th>
+                                                            <th style="border-top: none;text-align: center;" class="column-title" >Amount</th>
+                                                        </tr>
                                                     </thead>
-                                                    <tbody class="rtn_bill_lot_add" id="rtn_bill_lot_add">
+                                                    <tbody class="rtn_bill_lot_add" id="rtn_bill_lot_add" style="text-align: center;">
                                                        <?php
                                                         if($bill_data && $bill_ldata && count($bill_ldata)>0) {
                                                             $i = 1;
                                                             foreach ($bill_ldata as $d_value) {
-                                                                echo '<tr><td>'.$i.'</td>';
+                                                                echo '<tr><td>'.$i.' '.$d_value->return_reason.'</td>';
                                                                 echo '<td>'.$d_value->product_name.'</td>';
                                                                 echo '<td>'.$d_value->hsn.'</td>';
                                                                 echo '<td>'.$d_value->return_unit.'</td>';
@@ -241,7 +245,7 @@ setTimeout(printPage.print(), 5);
                                                         <td>
                                                             <div class="form-horizontal form-label-left input_mask" style="position:relative;">
                                                                 <div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
-                                                                    <input type="text" class="form-control ws_rtn_fsub_total" value="<?php echo $bill_fdata->total_amount; ?>" readonly name="ws_rtn_fsub_total">
+                                                                    <input type="text" class="form-control ws_rtn_fsub_total" value="<?php echo $bill_fdata->total_amount; ?>" tabindex="-1" readonly name="ws_rtn_fsub_total">
                                                                     <span class="fa fa-inr form-control-feedback right" aria-hidden="true"></span>
                                                                 </div>
                                                             </div>
@@ -267,12 +271,103 @@ setTimeout(printPage.print(), 5);
                       <?php
                         }
                       ?>
-
+                        <div class="pull-right">
+                            <button class="btn btn-primary ws_return_generate_bill" style="margin-right: 5px;"><i class="fa fa-file-pdf-o"></i> Generate PDF</button>
+                            <!-- <button class="btn btn-default pull-right ws_bill_return_print" onclick="print_current_page();" style="border-color: #bc2323;"><i class="fa fa-print"></i> Print</button> -->
+                            <a class="btn btn-default ws_bill_return_print" href="javascript:void(0)" target="_blank" onclick="print_current_page();"><i class="fa fa-print"></i> Print</a>
+                        </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    jQuery('.ws_bill_return_print').focus();
+
+    jQuery(".ws_bill_return_print").on('keydown',  function(e) { 
+        var keyCode = e.keyCode || e.which; 
+           if(event.shiftKey && event.keyCode == 9) {  
+             e.preventDefault(); 
+            jQuery('.ws_return_generate_bill').focus();
+          }
+          else if (keyCode == 9) { 
+            e.preventDefault(); 
+            jQuery('.invoice_id').focus();
+          } 
+          else {
+            jQuery('.ws_bill_return_print').focus();
+          }
+
+    });
+        
+     jQuery(".invoice_id").on('keydown',  function(e) { 
+
+        var keyCode = e.keyCode || e.which; 
+
+        if(event.shiftKey && event.keyCode == 9){
+           
+            e.preventDefault(); 
+            jQuery('.ws_bill_return_print').focus();
+        }
+        else if (keyCode == 9) { 
+           
+            e.preventDefault(); 
+            jQuery('.btn-success').focus();
+        } else {
+           jQuery(".invoice_id").focus();  
+        }
+
+    });
+
+
+
+
+(function($){
+    $.fn.setCursorToTextEnd = function() {
+        var $initialVal = this.val();
+        this.val($initialVal);
+    };
+})(jQuery);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -299,16 +394,6 @@ setTimeout(printPage.print(), 5);
     .A4 {
        display: none; 
     }
-
-    .A4 .footer {
-      bottom: 0px;
-      left: 0px;
-    }
-    .A4 .footer .foot {
-        background-color: #67a3b7 !important;
-        -webkit-print-color-adjust: exact;
-    }
-
   }
   /** Fix for Chrome issue #273306 **/
   @media print {
@@ -318,6 +403,9 @@ setTimeout(printPage.print(), 5);
     body, html {
       height: auto;
       padding:0px;
+      font-size: 12px;
+      font-family: normal;
+
     }
     html.wp-toolbar {
       padding:0;
@@ -329,467 +417,162 @@ setTimeout(printPage.print(), 5);
       display: block;
       padding: 0;
     }
-
-
-
-
-    .A4 .footer {
-      position: fixed;
-      bottom: 0px;
-      left: 0px;
-    }
-    .A4 .footer .foot {
-        background-color: #67a3b7 !important;
-        -webkit-print-color-adjust: exact;
-    }
   }
 
-  @page { margin: 0;padding: 0; }
-  .sheet {
-    margin: 0;
-  }
-
-
-      .A4 {
+@page{
+  margin: 20px;
+}
+.A4 {font-family: arial, Arial, Helvetica, sans-serif;margin-left: 20px;margin-right: 30px;}
+.A4{
         width: 210mm;
-      }
-      .inner-container {
-        padding-left: 20mm;
-        padding-right: 20mm;
-        width: 210mm;
-      }
-      .left-float {
-        float: left;
-      }
+        height: 297mm;
 
+}
+dt { float: left; clear: left; text-align: right; font-weight: bold; margin-right: 10px; } 
+dd {  padding: 0 0 0.5em 0; }
+ .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{
+     padding: 3px; 
+    } 
+    .footer_left,.footer_right{
+      width:50%;
+      float: left;
+      border:1px solid #73879c;
+      height: 100px;
+    }
+    .title{
+       
+    }
+    .footer_last{
+      margin-top: 60px;
+    }
+    .body_style{
+        margin-left: 10px;
+    }
+    .print_padding{
+      padding: 10px;
 
-      .company-detail {
-        height: 100px;
-      }
-      .company-detail .company-name h3 {
-        font-family: serif;
-        font-weight: bold;
-        font-size: 18px;
-        margin-bottom: 3px;
-      }
-      .company-detail .company-address-txt {
-          font-size: 13px;
-          font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-      }
-      .text-center {
-        text-align: center;
-      }
-      .text-rigth {
-        text-align: right;
-      }
-      .table td, .table th {
-        background-color: transparent !important;
-      }
-
-
-      .table>tbody>tr>td {
-        padding: 0 3px;
-        height: 20px;
-      }
-      .table-bordered>tbody>tr>td, .table-bordered>thead>tr>th {
-        border: 1px solid #000 !important;
-        -webkit-print-color-adjust: exact;
-      }
-
-      .billing-title {
-        text-align: center;
-        font-weight: bold;
-        font-size: 14px;
-          text-decoration: underline;
-      }
-      .A4 h3 {
-        margin-top: 0px;
-      }
-
-
-
-
-
-
-
-
-  .company-logo {
-    width: 50mm;
-  }
-  .company-address {
-    width: 70mm;
-  }
-  .invoice-detail {
-    width: 50mm;
-  }
-
-  .invoice-no {
-    margin-bottom: 15px;
-    font-size: 18px;
-  }
-  .buyer-detail, .delivery-detail {
-    min-height: 100px;
-    padding: 8px 10px 5px 10px;
-  }
-  .buyer-address, .delivery-address {
-    padding-left: 10px;
-    min-height: 80px;
-  }
-  .header-txt {
-    font-size: 10px;
-  }
-  .sale-table-invoice tbody {
-    font-size: 13px;
-  }
+    }
 
 
 </style>
 
-<div class="A4">
-    <div class="sheet padding-10mm">
+<div class="A4 print_padding">
+  
 
+        <?php
+            if($bill_data) {
+        ?>
+  <div class="title"><div style="margin-left: 40%;margin-bottom: 10px;margin-top: 10px;"><b>GOODS RETURN CHALLAN</b></div></div>
 
+  <div class="body_style">
+      <table cellspacing='3' cellpadding='3' WIDTH='100%' >
+      <tr>
+          <td valign='top' WIDTH='50%'>
+            <strong><?php echo $profile ? $profile->company_name : '';  ?></strong>
+                <br/><?php echo $profile ? $profile->address : '';  ?>
+                <br/><?php echo $profile ? $profile->address2 : '';  ?>
+                <br/>Cell : <?php echo $profile ? $profile->phone_number : '';  ?>
+                <br/>GST No : <?php echo $profile ? $profile->gst_number : '';  ?>
+          <td valign='top' WIDTH='50%'>
+              <table>
+                <tr><td>Invoice Number</td><td>: <?php echo 'Inv '.$bill_fdata->search_inv_id; ?></td></tr>
+                <tr><td>Return Number</td><td>: <?php echo $bill_fdata->return_id; ?></td></tr>
+                <tr><td>Date</td><td>: <?php echo date("d/m/Y"); ?></td></tr>
+                <tr><td>State</td><td>: TAMILNADU</td></tr>
+                <tr><td>State Code</td><td>: 33</td></tr>
+              </table>
+          </td>
+      </tr>
+      </table>
+      <br/>
+      <table  WIDTH='100%'>
+        <tr>
+          <td valign='top' width="50%">
+            <table>
+              <tr><td><b>Return to , </b></td><td><b></b></td></tr>
+              <tr><td style="width: 100px;">Name</td><td>: <?php echo $bill_fdata->customer_name; ?></td></tr>
+              <tr><td>Company</td><td>: <?php echo $bill_fdata->company_name; ?></td></tr>
+              <tr><td>Mobile</td><td>: <?php echo $bill_fdata->mobile; ?></td></tr>
+              <tr><td>Address</td><td>: <?php echo $bill_fdata->address; ?></td></tr>
+              <tr><td>GST Number</td><td>: <?php echo $bill_fdata->gst_number; ?></td></tr>
+            </table>
+          </td>
+          
+        </tr>
+        
 
-
-
-
-
-
-
-      <table> 
-        <thead>
-          <tr>
-            <td>
-              <div class="customer-detail inner-container" style="margin-top: 20px;margin-bottom:2px;">
-                  <table>
-                    <tr>
-                      <td>
-                        <div class="company-logo">
-                           <img style="width:165px" src="<?php echo get_template_directory_uri().'/admin/billing/inc/images/tax.png'; ?>">  
-                        </div>
-                      </td>
-                      <td>
-                        <div class="company-address company-detail">
-                          <div class="company-name">
-                            <h3>SARAVANA HEALTH STORE</h3>
-                          </div>
-                          <div class="company-address-txt">
-                            No-12/7, MG Road,
-                          </div>
-                          <div class="company-address-txt">
-                            Thiruvanmiyur,
-                          </div>
-                          <div class="company-address-txt">
-                            Chennai - 600041
-                          </div>
-                          <div class="company-address-txt">
-                            <b>GST No - 33BMDPA4840E1ZP</b>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="invoice-detail company-detail">
-                          <div class="company-address-txt">
-                            <div class="invoice-no">RETURN NO - <?php echo  'GR'.$_GET['id']; ?></div>
-                          </div>
-                          <div class="company-address-txt">
-                            <b>DATE - <?php echo $bill_fdata->created_at; ?></b>
-                          </div>
-
-                          <div class="company-address-txt">
-                            <b>STATE : TAMILNADU</b>
-                          </div>
-                          <div class="company-address-txt">
-                            <b>STATE CODE : 33</b>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  </table>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="customer-detail inner-container" style="margin-top: 20px;margin-bottom:2px;">
-                
-              </div>
-            </td>
-          </tr>
-        </thead>
-        <tbody>
-
-      <?php
-        $pages = false;
-        $per_page = 12;
-        $pieces = false;
-        $tota_row = 0;
-
-        if($bill_data) {
-          $pages = ceil(count($bill_ldata)/$per_page);
-          $pieces = array_chunk($bill_ldata, $per_page);
-          $tota_row = count($bill_ldata);
-          $reminder = ($tota_row % $per_page);
-        }
-
-
-        $page_total[-1] = 0;
-        for ($i = 0; $i < $pages; $i++) { 
-          $tot_tmp = 0;
-          foreach ($pieces[$i] as $key => $h_value) {
-            $tot_tmp = $tot_tmp + $h_value->hiring_amt;
-          }
-          $page_total[$i] = $page_total[$i-1] + $tot_tmp;
-        }
-
-
-            for ($i = 0; $i < $pages; $i++) { 
-              $page_start = ( $i * $per_page ) + 1;
-              $current_page = ($i + 1);
-          ?>
-            <tr>
-              <td>
-                <div class="inner-container" style="margin-top: 0px;">
-                  <div class="bill-detail">
-                    <table class="table table-bordered sale-table-invoice" style="margin-bottom: 2px;">
-                      <thead>
-                        <tr>
-                          <th colspan="12">
-                            <div class="buyer-detail">
-                              Return To,<br>
-                             <div class="buyer-address">
-                               <?php echo $bill_fdata->company_name; ?><br>
-								<?php echo $bill_fdata->customer_name; ?><br>
-								<?php echo $bill_fdata->mobile; ?><br>
-                               <?php echo $bill_fdata->address; ?><br>
-							  <b> GST NO<?php echo $bill_fdata->gst_number; ?></b>
-                              </div>
-                            </div>
-                          </th>
-                        </tr> 
-                        <tr class="header-txt">
-                          <th style="width:25px;padding:0;line-height: 40px;" class="center-th" rowspan="2">
-                            <div class="text-center">S.No</div>
-                          </th>
-                          <th class="center-th" style="width:50px;line-height: 15px;" rowspan="2">
-                            <div class="text-center">HSN<br>CODE</div>
-                          </th>
-                          <th class="center-th" style="line-height: 40px;" rowspan="2">
-                            <div class="text-center">PRODUCTS</div>
-                          </th>
-                          <th class="center-th" style="width:35px;padding:0;line-height: 40px;" rowspan="2">
-                            <div class="text-center">QTY</div>
-                          </th>
-                          <th class="center-th" style="width:35px;padding:0;line-height: 13px;" rowspan="2">
-                            <div class="text-center">MRP<br>Per Piece</div>
-                          </th>
-                          <th class="center-th" style="width:35px;padding:0;line-height: 40px;" rowspan="2">
-                            <div class="text-center">AMOUNT</div>
-                          </th>
-                          <th class="center-th" style="padding: 0;" colspan="2">
-                            <div class="text-center">CGST</div>
-                          </th>
-                          <th class="center-th" style="padding: 0;" colspan="2">
-                            <div class="text-center">SGST</div>
-                          </th>
-                          <th class="center-th" style="padding: 0;width: 100px;line-height: 15px;" rowspan="2">
-                            <div class="text-center">TOTAL<br>AMOUNT</div>
-                          </th>
-                        </tr>
-                        <tr class="header-txt">
-                          <th style="padding: 0;width: 35px;"><div class="text-center">RATE</div></th>
-                          <th style="padding: 0;width: 50px;"><div class="text-center">AMOUNT</div></th>
-                          <th style="padding: 0;width: 35px;"><div class="text-center">RATE</div></th>
-                          <th style="padding: 0;width: 50px;"><div class="text-center">AMOUNT</div></th>
-                        </tr>
-                      </thead>
-
-
-                      <?php
-                      if($current_page > 1) {
-                      ?>
-                        <tr>
-                          <td></td>
-                          <td>
-                            <div class="text-center">BF / TOTAL</div>
-                          </td>
-                          <td></td>
-                          <td><div class="text-center">-</div></td>
-                          <td><div class="text-center">-</div></td>
-                          <td><div class="text-center">-</div></td>
-                          <td><div class="text-center">-</div></td>
-                          <td><div class="text-center">-</div></td>
-                          <td><div class="text-center">-</div></td>
-                          <td><div class="text-center">-</div></td>
-                          <td><div class="text-right">-</div></td>
-                          <td>
-                            <div class="text-right">
-                              jhgjjhgj
-                            </div>
-                          </td>
-                        </tr>
-                      <?php
-                      }
-                      foreach ($pieces[$i] as $key => $value) {
-                      ?>
-                        <tr>
-                          <td>
-                            <div class="text-center">
-                              <?php echo $page_start ?>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="text-center">
-                              <?php echo $value->hsn; ?>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="text-left">
-                              <?php echo $value->product_name; ?>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="text-center">
-                              <?php echo $value->sale_unit; ?>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="text-rigth">
-                              <?php echo $value->mrp; ?>
-                            </div>
-                          </td>
-                          <td>
-                              <?php echo $value->amt; ?>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="text-center" style="text-align: right;">
-                              <?php echo $value->cgst; ?>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="text-rigth">
-                              <?php echo $value->cgst_value; ?>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="text-center">
-                              <?php echo $value->sgst; ?>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="text-rigth">
-                              <?php echo $value->sgst_value; ?>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="text-rigth">
-                              <?php echo $value->sub_total; ?>
-                            </div>
-                          </td>
-                        </tr>
-
-                      <?php
-                        $page_start++;
-                      }
-                        if($pages == $current_page) {
-                      ?>
-                          <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                          </tr>
-                          <tr>
-                            <td colspan="10"><div class="text-center">Total (Hire Charges)</div></td>
-                            <td>
-                              <div class="text-rigth">
-                                <?php echo $final_total = $bill_fdata->total_amount; ?>
-                              </div>
-                            </td>
-                          </tr>
-                          
-                      <?php
-                        } else {
-                      ?>
-                          <tr>
-                            <td colspan="11">
-                              <div class="text-center">CF / TOTAL</div>
-                            </td>
-                            <td>
-                              <div class="text-right">
-                                <?php echo $final_total = $bill_fdata->total_amount; ?>
-                              </div>
-                            </td>
-                          </tr>
-                      <?php
-                        }
-
-                      ?>
-                      
-                    </table>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          <?php
-            }
-          ?>
-        </tbody>
       </table>
 
-      <div class="inner-container" style="margin-top: 0px;">
-        <div>Amount Chargable (in words)</div>
-        <b>Rs <?php echo ucwords(convert_number_to_words_full($bill_fdata->total_amount)); ?></b>
-      </div>
+      <br />
+
+      <br/>
 
 
-<style type="text/css">
-  .customer-signature, .company-signature {
-    width: 85mm;
-  }
-</style>
+      
 
-      <div class="footer" style="margin-bottom:20px;">
-          <div class="inner-container" style="margin-top: 5px;">
+      <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" style=" border-collapse: collapse;border: 1px solid black;">
+        <tr style="border: 1px solid black;">
+            <th valign='top' rowspan="2"  style="border: 1px solid black;text-align: center;">SNO</th>
+            <th valign='top' rowspan="2"  style="border: 1px solid black;text-align: center;">PRODUCTS</th>
+            <th valign='top' rowspan="2"  style="border: 1px solid black;text-align: center;">HSN <br/> Code</th>
+            <th valign='top' rowspan="2"  style="border: 1px solid black;text-align: center;">Return Quantity</th>
+            <th valign='top' rowspan="2"  style="border: 1px solid black;text-align: center;">Sold Price(Per Item)</th> 
+            <th valign='top' rowspan="2"  style="border: 1px solid black;text-align: center;">Taxless Amount</th>
+            <th colspan="2" style="border: 1px solid black;text-align: center;" >CGST</th>  
+            <th colspan="2" style="border: 1px solid black;text-align: center;" >SGST</th>
+            <th valign='top' rowspan="2"  style="border: 1px solid black;text-align: center;">SUB TOTAL</th>
+        </tr>
+        <tr class="text_bold text_center">
+            <th style="border: 1px solid black;" >Rate(%)</th>
+            <th style="border: 1px solid black;" >Amount</th>
+            <th style="border: 1px solid black;" >Rate(%)</th>
+            <th style="border: 1px solid black;" >Amount</th>
+        </tr>
+      <?php
+          if($bill_data && $bill_ldata && count($bill_ldata)>0) {
+              $i = 1;
+              foreach ($bill_ldata as $d_value) {
+      ?>
+                            
+        <tr style="border: 1px solid black;text-align: center">
+          <td valign='top' style="border: 1px solid black;" align='center'><?php echo $i; ?></td>
+          <td valign='top' style="border: 1px solid black;"><?php echo $d_value->product_name; ?></td>
+          <td valign='top' style="border: 1px solid black;"><?php echo $d_value->hsn; ?></td>
+          <td valign='top' style="border: 1px solid black;" align='center'><?php echo $d_value->sale_unit; ?></td>
+          <td valign='top' style="border: 1px solid black;" align='center'><?php echo $d_value->mrp; ?></td>
+          <td valign='top' style="border: 1px solid black;" align='center'><?php echo $d_value->amt; ?></td>
+          <td valign='top' style="border: 1px solid black;"><?php echo $d_value->cgst + 0; echo ' %'; ?></td>
+          <td valign='top' style="border: 1px solid black;"><?php echo $d_value->cgst_value; ?></td>
+          <td valign='top' style="border: 1px solid black;"><?php echo $d_value->sgst + 0; echo ' %';  ?></td>
+          <td valign='top' style="border: 1px solid black;"><?php echo $d_value->sgst_value; ?></td>
+          <td valign='top' style="border: 1px solid black;" style="padding:3px;" align='center'><?php echo $d_value->sub_total; ?></td>
+        </tr>
+      <?php
+            $i++;
+              }
+            } 
+          ?>  
+      </table>
+      <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped">
+      <tr>
+        <td valign='top' align='right'>Total:</td>
+          <td valign='top' align='left' style="width:62px;"><span class="amount" style="line-height: 0px;"><?php echo $bill_fdata->total_amount; ?></span></td>
+      </tr>
+      
+      </table>
 
-            <table>
-              <tr>
-                <td colspan="2">
-                  <b><u>Declaration</u></b>
-                  <div style="margin-bottom:20px;">We declare that  this  return invoice  shows  the  actual price of the goods described and that all particulars are true and correct</div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="customer-signature">
-                    <div class="company-name" style="font-family: serif;font-weight: bold;font-size: 16px;">
-                      For Saravana Health Store
-                    </div>
-                    <div style="height: 80px;"></div>
-                  </div>
-                </td>
-                <td>
-                  <div class="company-signature">
-                    <div class="company-name" style="font-family: serif;font-weight: bold;font-size: 16px;text-align:right;">
-                      Customer Seal & Signature
-                    </div>
-                    <div style="margin-top: 60px;text-align:right;">Authorised Signatory</div>
-                  </div>
-                </td>
-              </tr>
-            </table>
-
-          </div>
-      </div>
-
-
+      Amount Chargable ( In Words)<br/>
+      <?php echo ucwords(convert_number_to_words_full($bill_fdata->total_amount)); ?>
+ 
+       <br/>
+        <?php
+                  }
+                ?>
+        
     </div>
-  </div>
+
+    <div>
+       <b style="float:right;">Authorised Signatory</b>
+    </div>
+
+</div>
