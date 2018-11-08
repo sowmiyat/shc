@@ -235,8 +235,8 @@ margin-top: 0px;
 									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">GST Type
 									</label>
 									<div class="col-md-6 col-sm-6 col-xs-12">
-										<input type="radio" name="gst_type" value="cgst" checked>CGST/SGST
-										<input type="radio" name="gst_type" value="igst">IGST
+										<input type="radio" name="gst_type" class="gst_type" value="cgst" checked>CGST/SGST
+										<input type="radio" name="gst_type" class="gst_type" value="igst">IGST
 									</div>
 								</div>
 							</div>
@@ -327,12 +327,12 @@ margin-top: 0px;
 												<th>Discounted <br/>Price</th>
 												<th class="highlighter">Wholesale <br/>Price</th>
 												<th>Taxless <br/> Amount</th>
-												<th>CGST</th>
-												<th>CGST <br/> Value</th>
-												<th>SGST</th>
-												<th>SGST <br/>Value</th>
-												<th>IGST</th>
-												<th>IGST <br/>Value</th>
+												<th class="cgst_display">CGST</th>
+												<th class="cgst_display">CGST <br/> Value</th>
+												<th class="cgst_display">SGST</th>
+												<th class="cgst_display">SGST <br/>Value</th>
+												<th class="no_display igst_display">IGST</th>
+												<th class="no_display igst_display">IGST <br/>Value</th>
 												<th>Total</th>
 												<th>Action</th>
 											</tr>
@@ -355,12 +355,12 @@ margin-top: 0px;
 														<td class="highlighter">'.$c_value->wholesale_price.'<input type="hidden"  value ="'.$c_value->wholesale_price.'" name="customer_detail['.$i.'][wholesale_price]" class="sub_wholesale_price"/></td>
 														<input type="hidden" value ="'.$c_value->discount_type.'" name="customer_detail['.$i.'][discount_type]" class="discount_type"/>
 														<td class="td_amt">' .$c_value->amt. '</td> <input type="hidden" value = "'.$c_value->amt. '" name="customer_detail['.$i.'][amt]" class="sub_amt"/>
-														<td class="td_cgst">' .$c_value->cgst. '  %' . '</td> <input type="hidden" value = "'.$c_value->cgst. '" name="customer_detail['.$i.'][cgst]" class="sub_cgst"/> 
-														<td class="td_cgst_value">'.$c_value->cgst_value.'</td> <input type="hidden" value = "'.$c_value->cgst_value.'" name="customer_detail['.$i.'][cgst_value]" class="sub_cgst_value"/>
-														<td class="td_sgst">' .$c_value->sgst. '  %' . '</td> <input type="hidden" value = "'.$c_value->sgst. '" name="customer_detail['.$i.'][sgst]" class="sub_sgst"/>
-														<td class="td_sgst_value">'.$c_value->sgst_value.'</td> <input type="hidden" value = "'.$c_value->sgst_value.'" name="customer_detail['.$i.'][sgst_value]" class="sub_sgst_value"/>
-														<td class="td_igst">' .$c_value->igst. '  %' . '</td> <input type="hidden" value = "'.$c_value->igst. '" name="customer_detail['.$i.'][igst]" class="sub_igst"/> 
-														<td class="td_igst_value">'.$c_value->igst_value.'</td> <input type="hidden" value = "'.$c_value->igst_value.'" name="customer_detail['.$i.'][igst_value]" class="sub_igst_value"/>
+														<td class="td_cgst cgst_display">' .$c_value->cgst. '  %' . '</td> <input type="hidden" value = "'.$c_value->cgst. '" name="customer_detail['.$i.'][cgst]" class="sub_cgst"/> 
+														<td class="td_cgst_value cgst_display">'.$c_value->cgst_value.'</td> <input type="hidden" value = "'.$c_value->cgst_value.'" name="customer_detail['.$i.'][cgst_value]" class="sub_cgst_value"/>
+														<td class="td_sgst cgst_display">' .$c_value->sgst. '  %' . '</td> <input type="hidden" value = "'.$c_value->sgst. '" name="customer_detail['.$i.'][sgst]" class="sub_sgst"/>
+														<td class="td_sgst_value cgst_display">'.$c_value->sgst_value.'</td> <input type="hidden" value = "'.$c_value->sgst_value.'" name="customer_detail['.$i.'][sgst_value]" class="sub_sgst_value"/>
+														<td class="td_igst igst_display">' .$c_value->igst. '  %' . '</td> <input type="hidden" value = "'.$c_value->igst. '" name="customer_detail['.$i.'][igst]" class="sub_igst"/> 
+														<td class="td_igst_value igst_display">'.$c_value->igst_value.'</td> <input type="hidden" value = "'.$c_value->igst_value.'" name="customer_detail['.$i.'][igst_value]" class="sub_igst_value"/>
 														<td class="td_total">'.$c_value->total.'</td> <input type="hidden" value ="'.$c_value->sub_total.'" name="customer_detail['.$i.'][subtotal]" class="sub_total"/><input type="hidden" value ="'.$c_value->total.'" name="customer_detail['.$i.'][total]" class="total"/><td><a href="#" class="retail_sub_delete">Delete</a></td></tr>';
 													
 													$i++;
@@ -379,8 +379,7 @@ margin-top: 0px;
 
 						<div class="row billing-repeater-extra">
 							<!-- accepted payments column -->
-							<div class="col-xs-6">
-								
+							<div class="col-xs-6">	
 								<div class="table-responsive">
 									<table class="table">
 										<tbody>

@@ -560,15 +560,14 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
                 jQuery('.product_control_error_retail').remove();
                 
             } else {
-                var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="customer_table_retail" ><td class="td_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="customer_detail['+current_row+'][id]" class="sub_id" /><td class="td_brand">'+brand_name+'</td> <input type="hidden" value="'+ brand_name + '" name="customer_detail['+current_row+'][brand]" class="sub_brand" /><td class="td_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="customer_detail['+current_row+'][product]" class="sub_product"/><td class="td_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="customer_detail['+current_row+'][hsn]" class="sub_hsn"/><td class=""><input type="text" onkeypress="return isNumberKey(event)" value = "'+ unit + '" name="customer_detail['+current_row+'][unit]" class="retail_sub_unit" size="4" autocomplete="off"/> </td> <td>' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][stock]" class="retail_sub_stock"/><td class="td_price">' + mrp + '</td> <input type="hidden" value = "'+ mrp + '" name="customer_detail['+current_row+'][price]" class="sub_price"/> <td><input type="text"  onkeypress="return isNumberKeyWithDot(event)" value ="'+ discount +'" name="customer_detail['+current_row+'][discount]" class="retail_sub_discount" size="4" style="width: 70px;" autocomplete="off"/></td><td>'+ wholesale_price +'<input type="hidden" value="'+ wholesale_price +'"  name="customer_detail['+current_row+'][wholesale_price]" class="sub_wholesale_price"/></td><input type="hidden" value ="each" name="customer_detail['+current_row+'][discount_type]" class="discount_type"/><td class="td_amt">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][amt]" class="sub_amt"/><td class="td_cgst">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="customer_detail['+current_row+'][cgst]" class="sub_cgst"/> <td class="td_cgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][cgst_value]" class="sub_cgst_value"/><td class="td_sgst">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="customer_detail['+current_row+'][sgst]" class="sub_sgst"/><td class="td_sgst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][sgst_value]" class="sub_sgst_value"/><input type="hidden" value = "'+ igst + '" name="customer_detail['+current_row+'][igst]" class="sub_igst"/> <td class="td_igst_value"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][igst_value]" class="sub_igst_value"/><td class="td_total"></td> <input type="hidden" value ="" name="customer_detail['+current_row+'][subtotal]" class="sub_total"/><input type="hidden" value ="" name="customer_detail['+current_row+'][total]" class="total"/><td><a  href="#" class="retail_sub_delete">Delete</a></td></tr>';                
+                var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="customer_table_retail" ><td class="td_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="customer_detail['+current_row+'][id]" class="sub_id" /><td class="td_brand">'+brand_name+'</td> <input type="hidden" value="'+ brand_name + '" name="customer_detail['+current_row+'][brand]" class="sub_brand" /><td class="td_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="customer_detail['+current_row+'][product]" class="sub_product"/><td class="td_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="customer_detail['+current_row+'][hsn]" class="sub_hsn"/><td class=""><input type="text" onkeypress="return isNumberKey(event)" value = "'+ unit + '" name="customer_detail['+current_row+'][unit]" class="retail_sub_unit" size="4" autocomplete="off"/> </td> <td>' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][stock]" class="retail_sub_stock"/><td class="td_price">' + mrp + '</td> <input type="hidden" value = "'+ mrp + '" name="customer_detail['+current_row+'][price]" class="sub_price"/> <td><input type="text"  onkeypress="return isNumberKeyWithDot(event)" value ="'+ discount +'" name="customer_detail['+current_row+'][discount]" class="retail_sub_discount" size="4" style="width: 70px;" autocomplete="off"/></td><td>'+ wholesale_price +'<input type="hidden" value="'+ wholesale_price +'"  name="customer_detail['+current_row+'][wholesale_price]" class="sub_wholesale_price"/></td><input type="hidden" value ="each" name="customer_detail['+current_row+'][discount_type]" class="discount_type"/><td class="td_amt">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][amt]" class="sub_amt"/><td class="td_cgst cgst_display">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="customer_detail['+current_row+'][cgst]" class="sub_cgst"/> <td class="td_cgst_value cgst_display"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][cgst_value]" class="sub_cgst_value"/><td class="td_sgst cgst_display">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="customer_detail['+current_row+'][sgst]" class="sub_sgst"/><td class="td_sgst_value cgst_display"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][sgst_value]" class="sub_sgst_value"/><td class="td_igst igst_display no_display">' + igst + '  %' + '</td><input type="hidden" value = "'+ igst + '" name="customer_detail['+current_row+'][igst]" class="sub_igst"/> <td class="td_igst_value no_display igst_display" ></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][igst_value]" class="sub_igst_value"/><td class="td_total"></td> <input type="hidden" value ="" name="customer_detail['+current_row+'][subtotal]" class="sub_total"/><input type="hidden" value ="" name="customer_detail['+current_row+'][total]" class="total"/><td><a  href="#" class="retail_sub_delete">Delete</a></td></tr>';                
                 jQuery('#bill_lot_add_retail').append(str);
-
                 addFromProductControlRetail();
                 jQuery('.product_control_error_retail').remove();
             }
 
             jQuery('.retail_sub_unit').trigger('change');
-           rowCalculate();
+            rowCalculate();
 
           
          } 
@@ -991,7 +990,10 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
         var thePopup = window.open( datapass, "Billing Wholesale Invoice","");
     });
 
-
+    jQuery('.gst_type').live('change', function(){
+        var gst_type = jQuery(this).val();
+        callGSTChange(gst_type);
+    });
 
 
     jQuery('.generate_bill').live('click',function(){
@@ -1422,60 +1424,7 @@ function addTotalToDue(){
     jQuery('#due_tab').prepend(tab_data);
 }
 
- function individualBillPaidCalculation(){
-    // jQuery('.bill_paid').val(0);
-    // //LOOP 1
-    // jQuery('.payment_amount').each(function(){
-    //     var bill_paid       = parseFloat(jQuery('.bill_paid').val());
-    //     var bill_total      = parseFloat(jQuery('.fsub_total').val());
-    //     var pay_type        = jQuery(this).data('paymenttype');
-    //     var uniquename      = jQuery(this).data('uniquename');
-        
-    //     var current_pay     = parseFloat(jQuery(this).val());
-    //     var pay_now         = current_pay;
-    //     // if(bill_total >= pay_now){
-    //     //     jQuery('.bill_paid').val(pay_now);   
-    //     //     jQuery('tr.due_data').each(function(){
-    //     //         jQuery(this).find('[ref-uniquename="'+uniquename+'"]').remove();
-    //     //     });    
-    //     // } else {
-    //         jQuery('.bill_paid').val(bill_total);
-    //         //loop 1 bal
-    //         var bal = current_pay;
-    //         jQuery('tr.due_data').find('[ref-uniquename="'+uniquename+'"]').remove();
-    //         //LOOP 2
-    //         jQuery('tr.due_data').each(function(){
-    //             //Delete code here
-    //             var id                      = jQuery(this).find('.due_id').val();
-    //             var inv_id                  = jQuery(this).find('.due_search_id').val();
-    //             var year                    = jQuery(this).find('.due_year').val();
-    //             var due_amount              = jQuery(this).find('.due_amount').val();
-    //             var type_payment            = jQuery(this).find('.type_payment').val();
-    //             //jQuery(this).find('[ref-uniquename="'+uniquename+'"]').remove();
-    //             var previous_paid           = billBalancePaidIndividual(jQuery(this));     
-    //             var bill_due                = jQuery(this).find('.due_amount').val() ? parseFloat(jQuery(this).find('.due_amount').val()) : 0;
-    //             var due_paid                = jQuery(this).find('.paid_due_hidden').val() ? parseFloat(jQuery(this).find('.paid_due_hidden').val()) : 0;
-    //             due_paid                    = due_paid+previous_paid;          
-    //             var current_row_pay_total   = bal+due_paid;
-    //             if(bill_due >= current_row_pay_total) {
-    //                 jQuery(this).find('.paid_due').val(current_row_pay_total);
-    //                 var str = '<tr class="aa" ref-uniquename="'+uniquename+'"><td class="ab"><input type="text" ref-uniquename="'+uniquename+'" ref-paytype="'+pay_type+'" class="row_cash_paid" name="duepayAmount[]['+type_payment+']" value="'+bal+'"></td><input type="hidden" name="duepayUniquename[]['+type_payment+']" value="'+uniquename+'"/><input type="hidden" name="duePaytype[]['+type_payment+']" value="'+pay_type+'"/><input type="hidden" name="dueId[]['+type_payment+']" value="'+id+'"/><input type="hidden" name="dueYear[]['+type_payment+']" value="'+year+'"/><input type="hidden" name="dueInvid[]['+type_payment+']" value="'+inv_id+'"/><input type="hidden" name="dueDueAmount[]['+type_payment+']" value="'+due_amount+'"/></tr>';
-    //                 jQuery(this).find('.duePaymentType').append(str);
-    //                 bal = 0;
-    //                 return false;
-    //             } else {
-    //                 var current_pay = ((bill_due - due_paid) );
-    //                 jQuery(this).find('.paid_due').val(bill_due);
-    //                 var str = '<tr class="aa" ref-uniquename="'+uniquename+'"><td class="ab"><input type="text" ref-uniquename="'+uniquename+'" ref-paytype="'+pay_type+'" class="row_cash_paid" name="duepayAmount[]['+type_payment+']" value="'+current_pay+'"></td><input type="hidden" name="duepayUniquename[]['+type_payment+']" value="'+uniquename+'"/><input type="hidden" name="duePaytype[]['+type_payment+']" value="'+pay_type+'"/><input type="hidden" name="dueId[]['+type_payment+']" value="'+id+'"/><input type="hidden" name="dueYear[]['+type_payment+']" value="'+year+'"/><input type="hidden" name="dueInvid[]['+type_payment+']" value="'+inv_id+'"/><input type="hidden" name="dueDueAmount[]['+type_payment+']" value="'+due_amount+'"/></tr>';
-    //                 jQuery(this).find('.duePaymentType').append(str);
-    //                 bal = bal-current_pay;
-    //             }
-               
-    //         });
-    //     //}   
-    // }); 
-}
-
+ 
 function Capital(str){
     str = str.toLowerCase().replace(/\b[a-z]/g, function(letter) {
         return letter.toUpperCase();
@@ -1500,4 +1449,22 @@ function ReturnPaymentTypeCalculation(){
         }
 
 });
+}
+
+function callGSTChange(gst_type='') {
+  if(gst_type == 'cgst') {
+    jQuery('.cgst_display').removeClass('no_display');
+    jQuery('.nogst_exclude').removeClass('no_display');
+    jQuery('.igst_display').addClass('no_display');
+  }
+  if(gst_type == 'igst') {
+    jQuery('.igst_display').removeClass('no_display');
+    jQuery('.nogst_exclude').removeClass('no_display');
+    jQuery('.cgst_display').addClass('no_display');
+  }
+  if(gst_type == 'no_gst') {
+    jQuery('.cgst_display').addClass('no_display');
+    jQuery('.igst_display').addClass('no_display');
+    jQuery('.nogst_exclude').addClass('no_display');
+  }
 }
