@@ -524,8 +524,6 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
 
 
     //<------- credit and payment type------->
- 
-
 
 //<--- Add table data-----> 
 
