@@ -230,6 +230,16 @@ margin-top: 0px;
 									</div>
 								</div>
 							</div>
+							<div class="col-md-4 col-sm-4 col-xs-12">
+								<div class="form-group">
+									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">GST Type
+									</label>
+									<div class="col-md-6 col-sm-6 col-xs-12">
+										<input type="radio" name="gst_type" value="cgst" checked>CGST/SGST
+										<input type="radio" name="gst_type" value="igst">IGST
+									</div>
+								</div>
+							</div>
 							<input type="hidden" name="ws_user_type" value="new" class="ws_user_type"/>
 			                <input type="hidden" name="old_customer_id" autocomplete="off" class="old_customer_id" value="<?php if(isset($bill_fdata)){ echo $bill_fdata->customer_id;} else { echo '0'; } ?>"/>
 						</div>
@@ -302,8 +312,7 @@ margin-top: 0px;
 							
 						<!-- Table row -->
 						<div class="row">
-							<div class="col-xs-12 table">
-								
+							<div class="col-xs-12 table">							
 								<div class="billing-repeater ws_sale_detail" style="margin-top:20px;">
 									<table class="table table-striped" data-repeater-list="ws_sale_detail">
 										<thead style="background-color: #169f85;color:#fff">
@@ -322,6 +331,8 @@ margin-top: 0px;
 												<th>CGST <br/> Value</th>
 												<th>SGST</th>
 												<th>SGST <br/>Value</th>
+												<th>IGST</th>
+												<th>IGST <br/>Value</th>
 												<th>Total</th>
 												<th>Action</th>
 											</tr>
@@ -348,6 +359,8 @@ margin-top: 0px;
 														<td class="td_cgst_value">'.$c_value->cgst_value.'</td> <input type="hidden" value = "'.$c_value->cgst_value.'" name="customer_detail['.$i.'][cgst_value]" class="sub_cgst_value"/>
 														<td class="td_sgst">' .$c_value->sgst. '  %' . '</td> <input type="hidden" value = "'.$c_value->sgst. '" name="customer_detail['.$i.'][sgst]" class="sub_sgst"/>
 														<td class="td_sgst_value">'.$c_value->sgst_value.'</td> <input type="hidden" value = "'.$c_value->sgst_value.'" name="customer_detail['.$i.'][sgst_value]" class="sub_sgst_value"/>
+														<td class="td_igst">' .$c_value->igst. '  %' . '</td> <input type="hidden" value = "'.$c_value->igst. '" name="customer_detail['.$i.'][igst]" class="sub_igst"/> 
+														<td class="td_igst_value">'.$c_value->igst_value.'</td> <input type="hidden" value = "'.$c_value->igst_value.'" name="customer_detail['.$i.'][igst_value]" class="sub_igst_value"/>
 														<td class="td_total">'.$c_value->total.'</td> <input type="hidden" value ="'.$c_value->sub_total.'" name="customer_detail['.$i.'][subtotal]" class="sub_total"/><input type="hidden" value ="'.$c_value->total.'" name="customer_detail['.$i.'][total]" class="total"/><td><a href="#" class="retail_sub_delete">Delete</a></td></tr>';
 													
 													$i++;
@@ -366,7 +379,6 @@ margin-top: 0px;
 
 						<div class="row billing-repeater-extra">
 							<!-- accepted payments column -->
-							
 							<div class="col-xs-6">
 								
 								<div class="table-responsive">

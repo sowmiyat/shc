@@ -105,7 +105,7 @@ function getBillDataws($inv_id = 0, $year = 0) {
 ( CASE WHEN c.gst_number IS NULL THEN '' ELSE c.gst_number END ) as gst_number,
 ( CASE WHEN c.company_name IS NULL THEN '' ELSE c.company_name END ) as company_name,
 ( CASE WHEN c.customer_name IS NULL THEN '' ELSE c.customer_name END ) as customer_name,
-( CASE WHEN c.mobile IS NULL THEN '' ELSE c.mobile END ) as mobile,
+( CASE WHEN c.mobile IS NULL THEN '' ELSE c.mobile END ) as mosbile,
 ( CASE WHEN c.secondary_mobile IS NULL THEN '' ELSE c.secondary_mobile END ) as secondary_mobile,
 ( CASE WHEN c.landline IS NULL THEN '' ELSE c.landline END ) as landline,
 ( CASE WHEN c.address IS NULL THEN '' ELSE c.address END ) as address
