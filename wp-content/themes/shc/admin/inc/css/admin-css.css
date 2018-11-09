@@ -481,6 +481,4 @@ input[type=url], input[type=week],select,textarea
 .highlighter{
     font-weight: 900 !important;
 }
-.no_display {
-    display: none;
-}
+

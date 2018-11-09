@@ -73,7 +73,7 @@ function update_lot(){
 	// $cgst = $params['cgst'];
 	// $sgst = $params['sgst'];
 	$gst 			= $params['gst_percentage'];
-	$sess 			= $params['sess'];
+	$cess 			= $params['cess'];
 	$hsn 			= $params['hsn'];
 	$stock_alert 	= $params['stock_alert'];
 	
@@ -83,7 +83,7 @@ function update_lot(){
 	unset($params['form_submit_prevent']);
 	$lot_table = $wpdb->prefix. 'shc_lots';
 
-	$query = "SELECT * from ${lot_table} WHERE brand_name ='${brand_name}' and product_name = '${product_name}' and wholesale_price = '${wholesale_price}' and selling_price = '${selling_price}' and mrp = '${mrp}' and purchase_price = '${purchase_price}' and gst = '${gst_percentage}' and sess = '${sess}' and hsn ='${hsn}' and stock_alert='${stock_alert}'  and  id = ${lot_id} and active='1'";
+	$query = "SELECT * from ${lot_table} WHERE brand_name ='${brand_name}' and product_name = '${product_name}' and wholesale_price = '${wholesale_price}' and selling_price = '${selling_price}' and mrp = '${mrp}' and purchase_price = '${purchase_price}' and gst = '${gst_percentage}' and cess = '${cess}' and hsn ='${hsn}' and stock_alert='${stock_alert}'  and  id = ${lot_id} and active='1'";
 	if($wpdb->get_row($query)){
 		$data['success'] = 0;
 		$data['msg'] 	= 'No Updates!';

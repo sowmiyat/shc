@@ -20,7 +20,7 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 		<div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2">
 			<div class="x_panel">
 				<div class="x_title">
-					<h2>Add New Lot <small>Sessions</small></h2>
+					<h2>Add New Lot <small>cessions</small></h2>
 					<div class="clearfix"></div>
 				</div>
 				<div class="x_content">
@@ -143,14 +143,14 @@ if(isset($_GET['id']) && $lot = get_lot($_GET['id']) ) {
 						<div class="row">
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<div class="form-group">
-									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">SESS<span class="required">*</span>
+									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">CESS<span class="required">*</span>
 									</label>
 									<div class="col-md-6 col-sm-6 col-xs-12">
-										<input type="radio" name="sess" value="no" <?php if(isset($lot)){ if(($lot->sess) == 'no'){ echo 'checked'; } }  else{
+										<input type="radio" name="cess" value="no" class="cess" <?php if(($lot)){ if(($lot->cess) == 'no'){ echo 'checked'; } }  else{
 											echo 'checked';
 										} ?> >No  
-										<input type="radio" name="sess" value="yes" <?php if(($lot->sess) == 'yes'){ echo 'checked'; } ?>>Yes
-										
+										<input type="radio" name="cess" value="yes" class="cess" <?php if(($lot->cess) == 'yes'){ echo 'checked'; } ?>>Yes
+										<input type="hidden" name="cess_percentage" class="cess_percentage" value="<?php echo ($lot)? $lot->cess_percentage : '0.00'; ?>">
 										<!-- <input type="text" id="sgst" name="sgst" required="required" tabindex="-1" class="form-control col-md-7 col-xs-12" readonly  value="<?php echo ($lot) ? $lot->sgst : '0.00'; ?>"> -->
 									</div>
 								</div>

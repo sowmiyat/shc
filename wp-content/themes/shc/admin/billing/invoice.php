@@ -74,6 +74,26 @@ foreach ($payment_type['WithOutCredit'] as $p_value) {
 </script>
 <?php }  ?>
 </script>
+
+<style type="text/css">
+  <?php 
+if(isset($bill_fdata)){
+  if($bill_fdata->gst_type =='cgst') { ?>
+  .igst_display {
+      display: none;
+  }
+  <?php  } else { ?>
+  .cgst_display {
+      display: none;
+  }
+  <?php }
+}
+else { ?>
+  .no_display {
+      display: none;
+  }
+<?php }  ?>
+</style>
 <div class="">
   <div class="">
     <div class="col-md-12 print-hide">
@@ -170,10 +190,13 @@ foreach ($payment_type['WithOutCredit'] as $p_value) {
                       <th style="width:140px;">DISCOUNT</th>
                       <th style="width:140px;">WHOLESALE AMOUNT</th>
                       <th style="width:140px;">AMOUNT</th>
-                      <th style="width:90px;">CGST</th>
-                      <th style="width:90px;">CGST AMOUNT</th>
-                      <th style="width:90px;">SGST</th>
-                      <th style="width:90px;">SGST AMOUNT</th>
+                      <th style="width:90px;" class="cgst_display">CGST</th>
+                      <th style="width:90px;" class="cgst_display">CGST AMOUNT</th>
+                      <th style="width:90px;" class="cgst_display">SGST</th>
+                      <th style="width:90px;" class="cgst_display">SGST AMOUNT</th>
+                       <th style="width:90px;" class="igst_display">IGST</th>
+                      <th style="width:90px;" class="igst_display">IGST AMOUNT</th>
+                      <th style="width:90px;" class="">CESS</th>
                       <th style="width:120px;">TOTAL</th>
                     </tr>
                   </thead>
@@ -241,17 +264,26 @@ foreach ($payment_type['WithOutCredit'] as $p_value) {
                           <td>
                             <span class="span_sub_total"><?php echo $d_value->amt; ?></span>
                           </td>
-                           <td>
+                           <td class="cgst_display">
                             <span class="span_unit_price"><?php echo $d_value->cgst; ?></span>
                           </td>
-                           <td>
+                           <td class="cgst_display">
                             <span class="span_unit_price"><?php echo $d_value->cgst_value; ?></span>
                           </td>
-                           <td>
+                           <td class="cgst_display">
                             <span class="span_unit_price"><?php echo $d_value->sgst; ?></span>
                           </td>
-                           <td>
+                           <td class="cgst_display">
                             <span class="span_unit_price"><?php echo $d_value->sgst_value; ?></span>
+                          </td> 
+                          <td class="igst_display">
+                            <span class="span_unit_price"><?php echo $d_value->igst; ?></span>
+                          </td>
+                           <td class="igst_display">
+                            <span class="span_unit_price"><?php echo $d_value->igst_value; ?></span>
+                          </td> 
+                          <td>
+                            <span class="span_unit_price"><?php echo $d_value->cess_value; ?></span>
                           </td>                               
                           <td>
                             <span class="span_sale_tax"><?php echo $d_value->total; ?></span>

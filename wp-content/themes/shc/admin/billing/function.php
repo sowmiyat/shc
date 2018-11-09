@@ -281,6 +281,7 @@ function create_order() {
 	$payment_table_display 	=  $wpdb->prefix.'shc_payment_display';
 	$params = array();
 	parse_str($_POST['data'], $params);
+
 	if( isset($params['invoice_id']) && $params['invoice_id'] != 0 && isValidInvoice($params['inv_id'],$params['year'] ) ) {
 		$invoice_id = $params['invoice_id'];
 		$wpdb->update($sale_table, array('locked' => 1), array('id' => $invoice_id));		
@@ -356,6 +357,7 @@ function create_order() {
 		'home_delivery_name' 		=> $params['delivery_name'],
 		'home_delivery_mobile' 		=> $params['delivery_phone'],
 		'home_delivery_address' 	=> $params['delivery_address'],
+		'gst_type' 					=> $params['gst_type'],
 		'before_total' 				=> $params['f_total'],
 		'prev_bal' 					=> $params['balance_amount_val'],
 		'sub_total' 				=> $params['fsub_total'], 
@@ -424,8 +426,11 @@ function create_order() {
 				'amt'					=> $s_value['amt'],
 				'cgst' 					=> $s_value['cgst'],
 				'sgst' 					=> $s_value['sgst'],
+				'igst' 					=> $s_value['igst'],
 				'cgst_value' 			=> $s_value['cgst_value'],
 				'sgst_value' 			=> $s_value['sgst_value'],
+				'igst_value' 			=> $s_value['igst_value'],
+				'cess_value' 			=> $s_value['cess_value'],
 				'unit_price' 			=> $s_value['price'],
 				'discount' 				=> $s_value['discount'],
 				'discount_type' 		=> $s_value['discount_type'],
@@ -605,8 +610,10 @@ function ws_create_order() {
 				'amt'					=> $s_value['amt'],
 				'cgst' 					=> $s_value['cgst'],
 				'sgst' 					=> $s_value['sgst'],
+				'igst' 					=> $s_value['igst'],
 				'cgst_value' 			=> $s_value['cgst_value'],
 				'sgst_value' 			=> $s_value['sgst_value'],
+				'cess_value' 			=> $s_value['cess_value'],
 				'unit_price' 			=> $s_value['price'],
 				'discount' 				=> $s_value['discount'],
 				'discount_type' 		=> $s_value['discount_type'],
@@ -701,6 +708,7 @@ function update_order() {
 		'home_delivery_name' 		=> $params['delivery_name'],
 		'home_delivery_mobile' 		=> $params['delivery_phone'],
 		'home_delivery_address' 	=> $params['delivery_address'],
+		'gst_type' 					=> $params['gst_type'],
 		'before_total' 				=> $params['f_total'],
 		'sub_total' 				=> $params['fsub_total'], 
 		'prev_bal' 					=> $params['balance_amount_val'],

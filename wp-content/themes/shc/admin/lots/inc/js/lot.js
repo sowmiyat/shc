@@ -199,6 +199,14 @@ jQuery(document).ready(function () {
   });
   //<-------End Delete Lot------->
 
+jQuery(document).on('click','.cess',function(){
+    var sess_value  = jQuery("input[name='cess']:checked").val();
+  if( sess_value == 'yes'){
+    jQuery('.cess_percentage').val(5.00);
+    } else { 
+    jQuery('.cess_percentage').val(0.00);
+    }
+});
 
 
 });

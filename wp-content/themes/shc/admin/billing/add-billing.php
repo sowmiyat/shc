@@ -14,7 +14,9 @@
 		$invoice_id['inv_id'] 		= $_GET['inv_id'];
 		$year 						= $_GET['year'];
 		$bill_data 					= getBillData($invoice_id['inv_id'],$year);
+
 		$bill_fdata 				= $bill_data['bill_data'];
+
 		$bill_ldata 				= $bill_data['ordered_data'];
 		$invoice_id['invoice_id']   = $bill_fdata->id;
 	} else {
@@ -33,8 +35,11 @@
 		$paid_due 		= $due_value1->amount + $paid_due;
 	}
 
-
 ?>
+
+
+
+
 
 <?php 
 
@@ -147,7 +152,30 @@ margin-top: 0px;
 	padding: 5px;
 }
 
+<?php 
+if(isset($bill_fdata)){
+	if($bill_fdata->gst_type =='cgst') { ?>
+	.igst_display {
+	    display: none;
+	}
+	<?php  } else { ?>
+	.cgst_display {
+	    display: none;
+	}
+	<?php }
+}
+else { ?>
+	.no_display {
+	    display: none;
+	}
+<?php }  ?>
+
+
+
+
+
 </style>
+
 <div class="">
 	<div class="col-md-12">
 		<div class="x_panel">
@@ -235,8 +263,8 @@ margin-top: 0px;
 									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">GST Type
 									</label>
 									<div class="col-md-6 col-sm-6 col-xs-12">
-										<input type="radio" name="gst_type" class="gst_type" value="cgst" checked>CGST/SGST
-										<input type="radio" name="gst_type" class="gst_type" value="igst">IGST
+										<input type="radio" name="gst_type" class="gst_type" value="cgst" <?php  if(isset($bill_fdata)){ if($bill_fdata->gst_type == 'cgst') { echo 'checked'; }} else { echo 'checked'; }?>>CGST/SGST
+										<input type="radio" name="gst_type" class="gst_type" value="igst"  <?php  if(isset($bill_fdata)){ if($bill_fdata->gst_type == 'igst') { echo 'checked'; }}?>>IGST
 									</div>
 								</div>
 							</div>
@@ -259,10 +287,11 @@ margin-top: 0px;
 										<input type="hidden" name="retail_hsn" class="retail_hsn"/>
 										<input type="hidden" name="retail_cgst" class="retail_cgst_percentage"/>
 										<input type="hidden" name="retail_sgst" class="retail_sgst_percentage"/>
+										<input type="hidden" name="retail_igst" class="retail_igst_percentage"/>
+										<input type="hidden" name="retail_cess" class="retail_cess_percentage"/>
 										
 									</div>
 								</div>
-
 								<div class="form-group">
 									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Unit(Quantity):<span class="required">*</span>
 									</label>
@@ -270,9 +299,7 @@ margin-top: 0px;
 										<input type="number" name="retail_unit" id="retail_unit" class="retail_unit" min="1"/>
 									</div>
 								</div>
-
 								<div class="form-group">
-									
 									<div class="col-md-6 col-sm-6 col-xs-12">
 										<input type="hidden" name="retail_discount" value="0.00" id="retail_discount" class="retail_discount"/>
 									</div>
@@ -307,7 +334,6 @@ margin-top: 0px;
 									</table>
 								</div>
 							</div>
-
 						</div>
 							
 						<!-- Table row -->
@@ -333,6 +359,7 @@ margin-top: 0px;
 												<th class="cgst_display">SGST <br/>Value</th>
 												<th class="no_display igst_display">IGST</th>
 												<th class="no_display igst_display">IGST <br/>Value</th>
+												<th class="">CESS</th>
 												<th>Total</th>
 												<th>Action</th>
 											</tr>
@@ -361,6 +388,8 @@ margin-top: 0px;
 														<td class="td_sgst_value cgst_display">'.$c_value->sgst_value.'</td> <input type="hidden" value = "'.$c_value->sgst_value.'" name="customer_detail['.$i.'][sgst_value]" class="sub_sgst_value"/>
 														<td class="td_igst igst_display">' .$c_value->igst. '  %' . '</td> <input type="hidden" value = "'.$c_value->igst. '" name="customer_detail['.$i.'][igst]" class="sub_igst"/> 
 														<td class="td_igst_value igst_display">'.$c_value->igst_value.'</td> <input type="hidden" value = "'.$c_value->igst_value.'" name="customer_detail['.$i.'][igst_value]" class="sub_igst_value"/>
+														<td class="cess_value_td">'.$c_value->cess_value.'</td> <input type="hidden" value = "'.$c_value->cess_value.'" name="customer_detail['.$i.'][cess_value]" class="cess_value"/>
+														<input type="hidden" value = "5.00" name="customer_detail['.$i.'][cess]" class="cess"/>
 														<td class="td_total">'.$c_value->total.'</td> <input type="hidden" value ="'.$c_value->sub_total.'" name="customer_detail['.$i.'][subtotal]" class="sub_total"/><input type="hidden" value ="'.$c_value->total.'" name="customer_detail['.$i.'][total]" class="total"/><td><a href="#" class="retail_sub_delete">Delete</a></td></tr>';
 													
 													$i++;
@@ -373,10 +402,7 @@ margin-top: 0px;
 							</div>
 							<!-- /.col -->
 						</div>
-
 						<!-- /.row -->
-
-
 						<div class="row billing-repeater-extra">
 							<!-- accepted payments column -->
 							<div class="col-xs-6">	
