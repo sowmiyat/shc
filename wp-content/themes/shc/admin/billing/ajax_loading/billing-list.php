@@ -155,6 +155,7 @@
                             <th class="column-title">Payment <br/> Type</th>
                             <th class="column-title">Purchase <br/> Date</th>
                             <th class="column-title">Delivery <br/> Print</th>
+                            <th class="column-title">Deliveried</th>
                             <th class="column-title">Payment</th>
                             <th class="column-title">Wholesale <br/> Rate</th>
                             <th class="column-title">Action</th>
@@ -176,9 +177,18 @@
                                 } else{
                                     $Style = '';
                                 }
+                                if($delivered == 0) {
+                                    $invoice_status = '<span class="c-process">Pending</span>';
+                                }
+                                if($delivered > 0) {
+                                    $invoice_status = '<span class="c-delivered">Delivered</span>';
+                                }   
+                                $payment_done = ($total_paid < $b_value->sub_total)? '<span class="c-process">Incomplete</span>' : '<span class="c-delivered">Completed</span>';
+                                 $wholesale_rate = isWholesaleRate($b_value->id);
+                                $margin_rate = ($wholesale_rate->isWholesale_rate >= 1) ? '<span class="w-wsrate">End Price</span>' : '<span class="w-normal">Normal Price</span>';
 
                     ?>
-                                <tr class="odd pointer" <?php if($delivered == 0) { echo 'style="color:red"';} ?>>
+                                <tr class="odd pointer">
                                     <td class="a-center ">
                                         <?php echo $i;  ?>
                                         
@@ -233,25 +243,9 @@
                                         <input type="hidden" name="year" class="year" value = "<?php echo $b_value->financial_year; ?>"/>
                                         <input type="hidden" name="invoice_id" class="invoice_id" value="<?php echo $b_value->inv_id; ?>"/>
                                     </td>
-                                    <td>
-                                        <?php if($total_paid < $b_value->sub_total) {
-                                            ?>
-                                        
-                                        <div class="round-c payment-red"></div>
-                                        <?php } else { ?>
-                                        <div class="round-c payment-green"></div>
-                                        <?php } ?>
-                                    </td>
-                                    <td>
-                                        <?php 
-                                        $wholesale_rate = isWholesaleRate($b_value->id);
-                                        if($wholesale_rate->isWholesale_rate >= 1){ ?>
-                                            <div class="round-c payment-blue"></div>
-                                        
-                                        <?php } else { ?>
-                                        <div class="round-c payment-black"></div>
-                                        <?php } ?>
-                                    </td>
+                                    <td class="d-status" data-status-id="<?php echo $b_value->id; ?>"><?php echo $invoice_status; ?></td>
+                                    <td class="d-status" style="position:relative;"> <?php echo $payment_done; ?></td>
+                                    <td class="d-status" style="position:relative;"> <?php echo $margin_rate; ?></td>
                                     <td style="width: 140px;">
                                         <a href="<?php echo admin_url('admin.php?page=invoice')."&id=${inv_id}&year=$b_value->financial_year"; ?>"  class="bill_view">View</a>/
                                          <a href="#" class="print_bill bill_view">Print</a>

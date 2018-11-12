@@ -482,3 +482,37 @@ input[type=url], input[type=week],select,textarea
     font-weight: 900 !important;
 }
 
+.c-pending {
+    background: #da6860;
+    color: #FFF;
+}
+.c-process {
+    background: #ec0a0a;
+    color: #FFF;
+}
+
+.w-wsrate {
+    background: #1613de;
+    color: #FFF;
+}
+.w-normal {
+    background: #000;
+    color: #FFF;
+}
+.c-delivered {
+    background: #067e1a;
+    color: #FFF;
+}
+
+.c-notpurchase {
+    background: #5f0fc7;
+    color: #FFF;
+}
+.d-status span{
+    border-radius: 4px;
+    padding: 5px 6px;
+    margin: 0 5px;
+    font-size: 90%;
+    font-weight: bold;
+    cursor: pointer;
+}
