@@ -34,7 +34,7 @@
 		$sale_id 		= $due_value1->sale_id; 
 		$paid_due 		= $due_value1->amount + $paid_due;
 	}
-
+var_dump($bill_fdata->gst_type);
 ?>
 
 
@@ -151,8 +151,10 @@ margin-top: 0px;
 .payment_tab tr td th{
 	padding: 5px;
 }
-
-<?php 
+.no_display {
+	    display: none;
+	}
+/*<?php 
 if(isset($bill_fdata)){
 	if($bill_fdata->gst_type =='cgst') { ?>
 	.igst_display {
@@ -162,13 +164,16 @@ if(isset($bill_fdata)){
 	.cgst_display {
 	    display: none;
 	}
-	<?php }
-}
+	<?php } ?>
+	.no_display {
+	    display: none;
+	}
+<?php }
 else { ?>
 	.no_display {
 	    display: none;
 	}
-<?php }  ?>
+<?php }  ?>*/
 
 
 
@@ -353,12 +358,12 @@ else { ?>
 												<th>Discounted <br/>Price</th>
 												<th class="highlighter">Wholesale <br/>Price</th>
 												<th>Taxless <br/> Amount</th>
-												<th class="cgst_display">CGST</th>
-												<th class="cgst_display">CGST <br/> Value</th>
-												<th class="cgst_display">SGST</th>
-												<th class="cgst_display">SGST <br/>Value</th>
-												<th class="no_display igst_display">IGST</th>
-												<th class="no_display igst_display">IGST <br/>Value</th>
+												<th class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'igst')) ? 'no_display' : ''; ?> cgst_display">CGST</th>
+												<th class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'igst')) ? 'no_display' : ''; ?> cgst_display">CGST <br/> Value</th>
+												<th class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'igst')) ? 'no_display' : ''; ?> cgst_display">SGST</th>
+												<th class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'igst')) ? 'no_display' : ''; ?> cgst_display">SGST <br/>Value</th>
+												<th class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'cgst')) ? 'no_display' : ''; ?> igst_display">IGST</th>
+												<th class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'cgst')) ? 'no_display' : ''; ?> igst_display">IGST <br/>Value</th>
 												<th class="">CESS</th>
 												<th>Total</th>
 												<th>Action</th>
@@ -369,7 +374,8 @@ else { ?>
 											if($bill_data['ordered_data']) {
 												$i = 1;
 												foreach ($bill_ldata as $c_value) {
-													
+													 $cgst_display_class = ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'igst')) ? 'no_display' : ''; 
+													 $igst_display_class = ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'cgst')) ? 'no_display' : ''; 
 														echo '<tr data-randid='.getToken().' data-productid='.$c_value->lot_id.' class="customer_table_retail" >
 														<td class="td_id">'.$i.'</td> <input type="hidden" value="'.$c_value->lot_id.'" name="customer_detail['.$i.'][id]" class="sub_id" />
 														<td class="td_brand">' .$c_value->brand_name. '</td> <input type="hidden" value = "'.$c_value->brand_name. '" name="customer_detail['.$i.'][brand]" class="sub_brand"/>
@@ -382,12 +388,12 @@ else { ?>
 														<td class="highlighter">'.$c_value->wholesale_price.'<input type="hidden"  value ="'.$c_value->wholesale_price.'" name="customer_detail['.$i.'][wholesale_price]" class="sub_wholesale_price"/></td>
 														<input type="hidden" value ="'.$c_value->discount_type.'" name="customer_detail['.$i.'][discount_type]" class="discount_type"/>
 														<td class="td_amt">' .$c_value->amt. '</td> <input type="hidden" value = "'.$c_value->amt. '" name="customer_detail['.$i.'][amt]" class="sub_amt"/>
-														<td class="td_cgst cgst_display">' .$c_value->cgst. '  %' . '</td> <input type="hidden" value = "'.$c_value->cgst. '" name="customer_detail['.$i.'][cgst]" class="sub_cgst"/> 
-														<td class="td_cgst_value cgst_display">'.$c_value->cgst_value.'</td> <input type="hidden" value = "'.$c_value->cgst_value.'" name="customer_detail['.$i.'][cgst_value]" class="sub_cgst_value"/>
-														<td class="td_sgst cgst_display">' .$c_value->sgst. '  %' . '</td> <input type="hidden" value = "'.$c_value->sgst. '" name="customer_detail['.$i.'][sgst]" class="sub_sgst"/>
-														<td class="td_sgst_value cgst_display">'.$c_value->sgst_value.'</td> <input type="hidden" value = "'.$c_value->sgst_value.'" name="customer_detail['.$i.'][sgst_value]" class="sub_sgst_value"/>
-														<td class="td_igst igst_display">' .$c_value->igst. '  %' . '</td> <input type="hidden" value = "'.$c_value->igst. '" name="customer_detail['.$i.'][igst]" class="sub_igst"/> 
-														<td class="td_igst_value igst_display">'.$c_value->igst_value.'</td> <input type="hidden" value = "'.$c_value->igst_value.'" name="customer_detail['.$i.'][igst_value]" class="sub_igst_value"/>
+														<td class="td_cgst cgst_display '.$cgst_display_class.'">' .$c_value->cgst. '  %' . '</td> <input type="hidden" value = "'.$c_value->cgst. '" name="customer_detail['.$i.'][cgst]" class="sub_cgst"/> 
+														<td class="td_cgst_value cgst_display '.$cgst_display_class.'">'.$c_value->cgst_value.'</td> <input type="hidden" value = "'.$c_value->cgst_value.'" name="customer_detail['.$i.'][cgst_value]" class="sub_cgst_value"/>
+														<td class="td_sgst cgst_display '.$cgst_display_class.'">' .$c_value->sgst. '  %' . '</td> <input type="hidden" value = "'.$c_value->sgst. '" name="customer_detail['.$i.'][sgst]" class="sub_sgst"/>
+														<td class="td_sgst_value cgst_display '.$cgst_display_class.'">'.$c_value->sgst_value.'</td> <input type="hidden" value = "'.$c_value->sgst_value.'" name="customer_detail['.$i.'][sgst_value]" class="sub_sgst_value"/>
+														<td class="td_igst igst_display '.$igst_display_class.'">' .$c_value->igst. '  %' . '</td> <input type="hidden" value = "'.$c_value->igst. '" name="customer_detail['.$i.'][igst]" class="sub_igst"/> 
+														<td class="td_igst_value igst_display '.$igst_display_class.'">'.$c_value->igst_value.'</td> <input type="hidden" value = "'.$c_value->igst_value.'" name="customer_detail['.$i.'][igst_value]" class="sub_igst_value"/>
 														<td class="cess_value_td">'.$c_value->cess_value.'</td> <input type="hidden" value = "'.$c_value->cess_value.'" name="customer_detail['.$i.'][cess_value]" class="cess_value"/>
 														<input type="hidden" value = "5.00" name="customer_detail['.$i.'][cess]" class="cess"/>
 														<td class="td_total">'.$c_value->total.'</td> <input type="hidden" value ="'.$c_value->sub_total.'" name="customer_detail['.$i.'][subtotal]" class="sub_total"/><input type="hidden" value ="'.$c_value->total.'" name="customer_detail['.$i.'][total]" class="total"/><td><a href="#" class="retail_sub_delete">Delete</a></td></tr>';

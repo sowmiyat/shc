@@ -782,8 +782,11 @@ function update_order() {
 				'amt'					=> $s_value['amt'],
 				'cgst' 					=> $s_value['cgst'],
 				'sgst' 					=> $s_value['sgst'],
+				'igst' 					=> $s_value['igst'],
 				'cgst_value' 			=> $s_value['cgst_value'],
 				'sgst_value' 			=> $s_value['sgst_value'],
+				'igst_value' 			=> $s_value['igst_value'],
+				'cess_value' 			=> $s_value['cess_value'],
 				'unit_price' 			=> $s_value['price'],
 				'discount' 				=> $s_value['discount'],
 				'discount_type' 		=> $s_value['discount_type'],
@@ -1190,7 +1193,7 @@ FROM ${sale_table} as s LEFT JOIN ${customer_table} as c ON s.customer_id = c.id
 	$data['invoice_id'] = $data['bill_data']->id;
 	$invoice_id = $data['bill_data']->id;
 
-	$ordered_item_query 		= "SELECT sale_tab.*,(case when (sale_tab.sale_unit - return_tab.return_unit) is null then sale_tab.sale_unit else (sale_tab.sale_unit - return_tab.return_unit) end ) as balance_unit from (SELECT dt.lot_id,dt.sale_unit,dt.sale_id,dt.discount,dt.delivery_count, l.lot_no, l.brand_name, l.product_name,l.hsn,l.cgst,l.sgst FROM ${sale_detail_table} as dt JOIN ${lots_table} as l ON dt.lot_id = l.id WHERE dt.sale_id = ${invoice_id} AND dt.active = 1  and dt.sale_update < '${currentdate_time}' ) as sale_tab left join (SELECT lot_id,sale_id,sum(return_unit) as return_unit FROM ${return_detail_table} WHERE sale_id = ${invoice_id} AND active = 1 and sale_update < '${currentdate_time}' GROUP by lot_id ) as return_tab on sale_tab.lot_id = return_tab.lot_id";
+	$ordered_item_query 		= "SELECT sale_tab.*,(case when (sale_tab.sale_unit - return_tab.return_unit) is null then sale_tab.sale_unit else (sale_tab.sale_unit - return_tab.return_unit) end ) as balance_unit from (SELECT dt.lot_id,dt.sale_unit,dt.sale_id,dt.discount,dt.delivery_count, l.lot_no, l.brand_name, l.product_name,l.hsn,l.gst_percentage,l.cess_percentage FROM ${sale_detail_table} as dt JOIN ${lots_table} as l ON dt.lot_id = l.id WHERE dt.sale_id = ${invoice_id} AND dt.active = 1  and dt.sale_update < '${currentdate_time}' ) as sale_tab left join (SELECT lot_id,sale_id,sum(return_unit) as return_unit FROM ${return_detail_table} WHERE sale_id = ${invoice_id} AND active = 1 and sale_update < '${currentdate_time}' GROUP by lot_id ) as return_tab on sale_tab.lot_id = return_tab.lot_id";
 	
 	$data['ordered_data'] 		= $wpdb->get_results($ordered_item_query);
 	$return_item_quantity 		= "SELECT dt.sale_id,dt.lot_id,sum(dt.sale_unit) as sale_unit,sum(dt.return_unit) as return_unit,dt.mrp,sum(dt.cgst_value) as cgst_value,sum(dt.sub_total) as sub_total,sum(dt.amt) as amt, l.lot_no, l.brand_name, l.product_name,l.hsn,dt.created_at FROM ${return_detail_table} as dt JOIN ${lots_table} as l ON dt.lot_id = l.id WHERE dt.sale_id =${invoice_id} AND dt.active = 1 and dt.sale_update < '${currentdate_time}' GROUP by dt.lot_id";
@@ -1200,15 +1203,17 @@ FROM ${sale_table} as s LEFT JOIN ${customer_table} as c ON s.customer_id = c.id
 		$return_ordered_itmes_query 	= "SELECT sale_table.*,
 (case when return_table.return_unit IS null then 0 else return_table.return_unit end) as return_unit,
 (case when return_table.cgst_value IS null then 0 else return_table.cgst_value end) as cgst_value,
+(case when return_table.igst_value IS null then 0 else return_table.igst_value end) as igst_value,
+(case when return_table.cess_value IS null then 0 else return_table.cess_value end) as cess_value,
 (case when return_table.amt IS null then 0 else return_table.amt end) as amt,
 (case when return_table.total_amount IS null then 0 else return_table.total_amount end) as total,
 (case when return_table.sub_total IS null then 0 else return_table.sub_total end) as sub_total,
 (case when return_table.bal_qty IS null then sale_table.balance_unit else return_table.bal_qty end) as new_bal_qty
- from (SELECT sale_tab.*,(case when (sale_tab.sale_unit - return_tab.return_unit) is null then sale_tab.sale_unit else (sale_tab.sale_unit - return_tab.return_unit) end ) as balance_unit from (SELECT dt.lot_id,dt.sale_unit,dt.sale_id,dt.delivery_count,dt.discount, l.lot_no, l.brand_name, l.product_name,l.hsn,l.cgst,l.sgst FROM ${sale_detail_table} as dt JOIN ${lots_table} as l ON dt.lot_id = l.id WHERE dt.sale_id = ${invoice_id} AND dt.active = 1  and dt.sale_update < '${currentdate_time}' ) as sale_tab left join (SELECT lot_id,sale_id,sum(return_unit) as return_unit FROM ${return_detail_table} WHERE sale_id = ${invoice_id} AND active = 1 and sale_update < '${currentdate_time}' GROUP by lot_id ) as return_tab on sale_tab.lot_id = return_tab.lot_id)  as sale_table left join (select rdetail_table.lot_id,rdetail_table.cgst_value,rdetail_table.cd_id,rdetail_table.cgst,rdetail_table.sub_total,rdetail_table.sale_update,rdetail_table.total_amount,rdetail_table.amt,rdetail_table.return_unit,rdetail_table.bal_qty from ( SELECT rt.`total_amount`,rt.cd_id as cd_id,ritems.* FROM ${return_table} as rt left join ${return_detail_table} as ritems on rt.id = ritems.return_id where rt.`id` = ${return_id} and rt.active = 1 and ritems.active = 1 and ritems.sale_update < '${currentdate_time}' ) as rdetail_table) as  return_table on sale_table.lot_id = return_table.lot_id";
+ from (SELECT sale_tab.*,(case when (sale_tab.sale_unit - return_tab.return_unit) is null then sale_tab.sale_unit else (sale_tab.sale_unit - return_tab.return_unit) end ) as balance_unit from (SELECT dt.lot_id,dt.sale_unit,dt.sale_id,dt.delivery_count,dt.discount, l.lot_no, l.brand_name, l.product_name,l.hsn,l.gst_percentage,l.cess_percentage FROM ${sale_detail_table} as dt JOIN ${lots_table} as l ON dt.lot_id = l.id WHERE dt.sale_id = ${invoice_id} AND dt.active = 1  and dt.sale_update < '${currentdate_time}' ) as sale_tab left join (SELECT lot_id,sale_id,sum(return_unit) as return_unit FROM ${return_detail_table} WHERE sale_id = ${invoice_id} AND active = 1 and sale_update < '${currentdate_time}' GROUP by lot_id ) as return_tab on sale_tab.lot_id = return_tab.lot_id)  as sale_table left join (select rdetail_table.lot_id,rdetail_table.cgst_value,rdetail_table.igst_value,rdetail_table.cess_value,rdetail_table.cd_id,rdetail_table.cgst,rdetail_table.sub_total,rdetail_table.sale_update,rdetail_table.total_amount,rdetail_table.amt,rdetail_table.return_unit,rdetail_table.bal_qty from ( SELECT rt.`total_amount`,rt.cd_id as cd_id,ritems.* FROM ${return_table} as rt left join ${return_detail_table} as ritems on rt.id = ritems.return_id where rt.`id` = ${return_id} and rt.active = 1 and ritems.active = 1 and ritems.sale_update < '${currentdate_time}' ) as rdetail_table) as  return_table on sale_table.lot_id = return_table.lot_id";
 		$data['return_ordered_data'] 	= $wpdb->get_results($return_ordered_itmes_query);
 
 	}
-	
+
 	return $data;
 
 
@@ -1278,6 +1283,7 @@ function getBillDataReturn($invoice_id = 0) {
 	$sale_table 			= $wpdb->prefix.'shc_return_items';
 	$sale_detail_table 		= $wpdb->prefix.'shc_return_items_details';
 	$lots_table 			= $wpdb->prefix.'shc_lots';
+	$sale_tab 				= $wpdb->prefix.'shc_sale';
 
 	$bill_query = "SELECT s.*,
 	( CASE WHEN c.id IS NULL THEN 0 ELSE c.id END ) as customer_id,
@@ -1286,12 +1292,12 @@ function getBillDataReturn($invoice_id = 0) {
 	( CASE WHEN c.secondary_mobile IS NULL THEN '' ELSE c.secondary_mobile END ) as secondary_mobile,
 	( CASE WHEN c.landline IS NULL THEN '' ELSE c.landline END ) as landline,
 	( CASE WHEN c.address IS NULL THEN '' ELSE c.address END ) as address
-	FROM ${sale_table} as s LEFT JOIN ${customer_table} as c ON s.customer_id = c.id WHERE  s.id = ${invoice_id} AND s.active = 1";
+	FROM (select rt.*,sale.gst_type from {$sale_table} as rt left join {$sale_tab} as sale on sale.id = rt.inv_id and sale.active= 1) as s LEFT JOIN ${customer_table} as c ON s.customer_id = c.id WHERE  s.id = ${invoice_id} AND s.active = 1";
 	$data['bill_data'] = $wpdb->get_row($bill_query);
 
 	$ordered_item_query = "SELECT dt.*, l.lot_no, l.brand_name, l.product_name,l.hsn FROM ${sale_detail_table} as dt JOIN ${lots_table} as l ON dt.lot_id = l.id WHERE dt.return_id = ${invoice_id} AND dt.active = 1 ";
 	$data['ordered_data'] = $wpdb->get_results($ordered_item_query);
-	
+
 	return $data;
 }
 
@@ -1828,8 +1834,11 @@ function create_return() {
 				'amt' 					=> $s_value['return_amt'],
 				'cgst' 					=> $s_value['return_cgst'],
 				'sgst' 					=> $s_value['return_sgst'],
+				'igst' 					=> $s_value['return_igst'],
 				'cgst_value' 			=> $s_value['return_cgst_value'],
 				'sgst_value' 			=> $s_value['return_sgst_value'],
+				'igst_value' 			=> $s_value['return_igst_value'],
+				'cess_value' 			=> $s_value['return_cess_value'],
 				'sub_total' 			=> $s_value['return_sub_total'],
 				'return_reason' 		=> $s_value['return_reason'],
 			);
@@ -1907,8 +1916,11 @@ function update_return() {
 				'amt' 					=> $s_value['return_amt'],
 				'cgst' 					=> $s_value['return_cgst'],
 				'sgst' 					=> $s_value['return_sgst'],
+				'igst' 					=> $s_value['return_igst'],
 				'cgst_value' 			=> $s_value['return_cgst_value'],
 				'sgst_value' 			=> $s_value['return_sgst_value'],
+				'igst_value' 			=> $s_value['return_igst_value'],
+				'cess_value' 			=> $s_value['return_cess_value'],
 				'sub_total' 			=> $s_value['return_sub_total'],
 				'return_reason' 		=> $s_value['return_reason'],
 			);

@@ -283,71 +283,124 @@ foreach ($payment_type as $p_value) {
 	        
 	      		?>
 	                <!-- <table class="table table-bordered" style="margin-top:10px;margin-bottom: 5px;width: 120mm;"> -->
-			<table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" style="font-size:15px;" >
-			  <thead>
-			  	<tr>
-			  		<th colspan="5" class="dotted_border_bottom"  align="center" >GST Details</th>
-			  	</tr>		  
-				<tr>
-				  <th valign='top' class="center-th" style="width:90px;padding:0;" rowspan="2">
-					<div class="text-center">Taxable Value</div>
-				  </th>
-				  <th class="center-th" style="padding: 0;" colspan="2">
-					<div class="text-center">CGST</div>
-				  </th>
-				  <th class="center-th" style="padding: 0;" colspan="2">
-					<div class="text-center">SGST</div>
-				  </th>
-				</tr>
-				<tr>
-				  <th style="padding: 0;width: 70px;"><div class="text-center">%</div></th>
-				  <th style="padding: 0;width: 70px;"><div class="text-right">Amount</div></th>
-				  <th style="padding: 0;width: 70px;"><div class="text-center">%</div></th>
-				  <th style="padding: 0;width: 70px;"><div class="text-right">Amount</div></th>
-				</tr>
-			  </thead>
-			  <tbody>
+			 <table cellspacing='3' cellpadding='3' WIDTH='100%' class="table table-striped" >
+      <thead>
+        <tr>
+          <th colspan="5" class="dotted_border_bottom"  align="center" >GST Details</th>
+        </tr>   
+        <?php if($bill_fdata->gst_type == 'cgst'){ ?>
 
-				<?php  
-				if(isset($gst_data)) { 
-				  	$total_tax=0;
-				  	$gst_tot=0;
-					foreach( $gst_data as $g_data) {
-				?>
-						<tr class="">
-							<td class=""><div class="text-center"><?php  echo $g_data->sale_amt; ?></div></td>
-							<td class=""><div class="text-center"><?php echo $g_data->cgst; ?> % </div></td>
-							<td class=""><div class="text-center"><?php echo $g_data->sale_cgst; ?></div></td>
-							<td class=""><div class="text-center"><?php echo $g_data->cgst; ?> % </div></td>
-							<td class=""><div class="text-center"><?php echo $g_data->sale_sgst; ?></div></td>
-						</tr>
-						 <?php 
-						 $total_tax = ( 2 * $g_data->sale_sgst) +$total_tax;
-						 $gst_tot = $g_data->sale_sgst + $gst_tot;
 
-					}
-				} ?>
-				<tr class="">
-					<td class=""><div class="text-center"></div></td>
-					<td class=""><div class="text-center"></div></td>
-					<td class=""><div class="text-center"><?php echo $gst_tot; ?></div></td>
-					<td class=""><div class="text-center"></div></td>
-					<td class=""><div class="text-center"><?php echo $gst_tot; ?></div></td>
-				</tr>
-				<tr>
-				  <td  class="dotted_border_bottom" colspan="4">
-					<div class="text-center">
-					  <b>Total Tax</b>
-					</div>
-				  </td>
-				  <td class="dotted_border_bottom" >
-					<div class="text-center">
-					 <b><?php echo $total_tax; ?></b>
-					</div>
-				  </td>
-				</tr>
-			  </tbody>
-			</table>
+        <tr>
+          <th valign='top' class="center-th" style="width:90px;padding:0;" rowspan="2">
+            <div class="text-center">Taxable Value</div>
+          </th>
+          <th class="center-th" style="padding: 0;" colspan="2">
+            <div class="text-center">CGST</div>
+          </th>
+          <th class="center-th" style="padding: 0;" colspan="2">
+            <div class="text-center">SGST</div>
+          </th>
+        </tr>
+        <tr>
+          <th style="padding: 0;width: 70px;"><div class="text-center">%</div></th>
+          <th style="padding: 0;width: 70px;"><div class="text-right">Amount</div></th>
+          <th style="padding: 0;width: 70px;"><div class="text-center">%</div></th>
+          <th style="padding: 0;width: 70px;"><div class="text-right">Amount</div></th>
+        </tr>
+      </thead>
+      <tbody>
+
+
+      <?php  
+      if(isset($gst_data)) { 
+          $total_tax=0;
+          $gst_tot=0;
+        foreach( $gst_data as $g_data) {
+      ?>
+          <tr class="">
+            <td class=""><div class="text-center"><?php  echo $g_data->sale_amt; ?></div></td>
+            <td class=""><div class="text-center"><?php echo $g_data->cgst; ?> % </div></td>
+            <td class=""><div class="text-right"><?php echo $g_data->sale_cgst; ?></div></td>
+            <td class=""><div class="text-center"><?php echo $g_data->cgst; ?> % </div></td>
+            <td class=""><div class="text-right"><?php echo $g_data->sale_sgst; ?></div></td>
+          </tr>
+           <?php 
+           $total_tax = ( 2 * $g_data->sale_sgst) +$total_tax;
+           $gst_tot = $g_data->sale_sgst + $gst_tot;
+
+        }
+      } ?>
+      <tr class="">
+        <td class=""><div class="text-right"></div></td>
+        <td class=""><div class="text-right"></div></td>
+        <td class=""><div class="text-right"><?php echo $gst_tot; ?></div></td>
+        <td class=""><div class="text-right"></div></td>
+        <td class=""><div class="text-right"><?php echo $gst_tot; ?></div></td>
+      </tr>
+      <tr>
+        <td  class="dotted_border_bottom" colspan="4">
+          <div class="text-center">
+            <b>Total Tax</b>
+          </div>
+        </td>
+        <td class="dotted_border_bottom" >
+          <div class="text-right">
+           <b><?php echo $total_tax; ?></b>
+          </div>
+        </td>
+      </tr>
+    <?php   } else { ?>
+      <tr>
+          <th valign='top' class="center-th" style="width:90px;padding:0;" rowspan="2">
+            <div class="text-center">Taxable Value</div>
+          </th>
+          <th class="center-th" style="padding: 0;" colspan="2">
+            <div class="text-center">IGST</div>
+        </tr>
+        <tr>
+          <th style="padding: 0;width: 70px;"><div class="text-center">%</div></th>
+          <th style="padding: 0;width: 70px;"><div class="text-right">Amount</div></th>
+        </tr>
+      </thead>
+      <tbody>
+
+
+      <?php  
+      if(isset($gst_data)) { 
+          $total_tax=0;
+          $gst_tot=0;
+        foreach( $gst_data as $g_data) {
+      ?>
+          <tr class="">
+            <td class=""><div class="text-center"><?php  echo $g_data->sale_amt; ?></div></td>
+            <td class=""><div class="text-center"><?php echo (2*$g_data->cgst); ?> % </div></td>
+            <td class=""><div class="text-right"><?php echo (2*$g_data->sale_cgst); ?></div></td>
+           <!--  <td class=""><div class="text-center"><?php //echo $g_data->cgst; ?> % </div></td>
+            <td class=""><div class="text-right"><?php //echo $g_data->sale_sgst; ?></div></td> -->
+          </tr>
+           <?php 
+           $total_tax = ( 2 * $g_data->sale_sgst) +$total_tax;
+           $gst_tot = $g_data->sale_sgst + $gst_tot;
+
+        }
+      } ?>
+     
+      <tr>
+        <td  class="dotted_border_bottom" colspan="2">
+          <div class="text-center">
+            <b>Total Tax</b>
+          </div>
+        </td>
+        <td class="dotted_border_bottom" >	
+          <div class="text-right">
+           <b><?php echo $total_tax; ?></b>
+          </div>
+        </td>
+      </tr>
+    <?php } ?>
+      </tbody>
+    </table>
 			<div style="text-align: center;" >Thank You !!!. Visit Again !!!.</div>
 			    <?php $is_delivery = $bill_fdata->is_delivery; 
     			if($is_delivery == '1') { ?>

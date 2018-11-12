@@ -777,7 +777,10 @@ else { ?>
       <thead>
         <tr>
           <th colspan="5" class="dotted_border_bottom"  align="center" >GST Details</th>
-        </tr>     
+        </tr>   
+        <?php if($bill_fdata->gst_type == 'cgst'){ ?>
+
+
         <tr>
           <th valign='top' class="center-th" style="width:90px;padding:0;" rowspan="2">
             <div class="text-center">Taxable Value</div>
@@ -837,6 +840,55 @@ else { ?>
           </div>
         </td>
       </tr>
+    <?php   } else { ?>
+      <tr>
+          <th valign='top' class="center-th" style="width:90px;padding:0;" rowspan="2">
+            <div class="text-center">Taxable Value</div>
+          </th>
+          <th class="center-th" style="padding: 0;" colspan="2">
+            <div class="text-center">IGST</div>
+        </tr>
+        <tr>
+          <th style="padding: 0;width: 70px;"><div class="text-center">%</div></th>
+          <th style="padding: 0;width: 70px;"><div class="text-right">Amount</div></th>
+        </tr>
+      </thead>
+      <tbody>
+
+
+      <?php  
+      if(isset($gst_data)) { 
+          $total_tax=0;
+          $gst_tot=0;
+        foreach( $gst_data as $g_data) {
+      ?>
+          <tr class="">
+            <td class=""><div class="text-center"><?php  echo $g_data->sale_amt; ?></div></td>
+            <td class=""><div class="text-center"><?php echo (2*$g_data->cgst); ?> % </div></td>
+            <td class=""><div class="text-right"><?php echo (2*$g_data->sale_cgst); ?></div></td>
+           <!--  <td class=""><div class="text-center"><?php //echo $g_data->cgst; ?> % </div></td>
+            <td class=""><div class="text-right"><?php //echo $g_data->sale_sgst; ?></div></td> -->
+          </tr>
+           <?php 
+           $total_tax = ( 2 * $g_data->sale_sgst) +$total_tax;
+           $gst_tot = $g_data->sale_sgst + $gst_tot;
+
+        }
+      } ?>
+     
+      <tr>
+        <td  class="dotted_border_bottom" colspan="2">
+          <div class="text-center">
+            <b>Total Tax</b>
+          </div>
+        </td>
+        <td class="dotted_border_bottom" >
+          <div class="text-right">
+           <b><?php echo $total_tax; ?></b>
+          </div>
+        </td>
+      </tr>
+    <?php } ?>
       </tbody>
     </table>
     <div style="text-align: center;" >Thank You !!!. Visit Again !!!.</div>

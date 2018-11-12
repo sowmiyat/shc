@@ -109,7 +109,9 @@ setTimeout(printPage.print(), 5);
                         .select2-container--default .select2-selection--single {
                                 border-radius: 0px;
                         }
-
+                        .no_display{
+                            display: none;
+                        }
                     </style>
                     <div class="row">
                         <div class="col-md-12">
@@ -187,32 +189,46 @@ setTimeout(printPage.print(), 5);
                                                                     <th rowspan="2" style="text-align: center;">Return Quantity</th>
                                                                     <th rowspan="2" style="text-align: center;">Sold Price</th>
                                                                     <th rowspan="2" style="text-align: center;">Taxless Amount</th>
-                                                                    <th colspan="2" style="text-align: center;">CGST</th>
-                                                                    <th colspan="2" style="text-align: center;">SGST</th>
+                                                                    <th colspan="2" class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'igst')) ? 'no_display' : ''; ?>" style="text-align: center;">CGST</th>
+                                                                    <th colspan="2" class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'igst')) ? 'no_display' : ''; ?>" style="text-align: center;">SGST</th>
+                                                                    <th colspan="2" class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'cgst')) ? 'no_display' : ''; ?>" style="text-align: center;">IGST</th>
+                                                                    <th colspan="2" style="text-align: center;">CESS</th>
                                                                     <th rowspan="2" style="text-align: center;">Subtotal</th>  
                                                                 </tr>
                                                                  <tr class="text_bold text_center">
-                                                                    <th style="border-top: none;text-align: center;" class="column-title" >Rate(%)</th>
-                                                                    <th style="border-top: none;text-align: center;" class="column-title" >Amount</th>
+                                                                    <th class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'igst')) ? 'no_display' : ''; ?>" style="border-top: none;text-align: center;" class="column-title" >Rate(%)</th>
+                                                                    <th class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'igst')) ? 'no_display' : ''; ?>" style="border-top: none;text-align: center;" class="column-title" >Amount</th>
+                                                                    <th class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'igst')) ? 'no_display' : ''; ?>" style="border-top: none;text-align: center;" class="column-title" >Rate(%)</th>
+                                                                    <th class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'igst')) ? 'no_display' : ''; ?>" style="border-top: none;text-align: center;" class="column-title" >Amount</th>
+                                                                    <th class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'cgst')) ? 'no_display' : ''; ?>" style="border-top: none;text-align: center;" class="column-title" >Rate(%)</th>
+                                                                    <th class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'cgst')) ? 'no_display' : ''; ?>" style="border-top: none;text-align: center;" class="column-title" >Amount</th>
                                                                     <th style="border-top: none;text-align: center;" class="column-title" >Rate(%)</th>
                                                                     <th style="border-top: none;text-align: center;" class="column-title" >Amount</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody class="rtn_bill_lot_add" id="rtn_bill_lot_add" style="text-align: center;">
                                                                <?php
+                                                                $cgst_class = ((isset($bill_fdata)) &&($bill_fdata->gst_type == "igst"))? "no_display" :"";
+                                                                $igst_class = ((isset($bill_fdata)) &&($bill_fdata->gst_type == "cgst"))? "no_display" :"";
                                                                 if($bill_data && $bill_ldata && count($bill_ldata)>0) {
                                                                     $i = 1;
                                                                     foreach ($bill_ldata as $d_value) {
+
+                                                                        
                                                                         echo '<tr><td>'.$i.' '.$d_value->return_reason.'</td>';
                                                                         echo '<td>'.$d_value->product_name.'</td>';
                                                                         echo '<td>'.$d_value->hsn.'</td>';
                                                                         echo '<td>'.$d_value->return_unit.'</td>';
                                                                         echo '<td>'.$d_value->mrp.'</td>';
                                                                         echo '<td>'.$d_value->amt.'</td>';
-                                                                        echo '<td>'.$d_value->cgst.'</td>';
-                                                                        echo '<td>'.$d_value->cgst_value.'</td>';
-                                                                        echo '<td>'.$d_value->sgst.'</td>';
-                                                                        echo '<td>'.$d_value->sgst_value.'</td>';
+                                                                        echo '<td class="'.$cgst_class.'">'.$d_value->cgst.'</td>';
+                                                                        echo '<td class="'.$cgst_class.'">'.$d_value->cgst_value.'</td>';
+                                                                        echo '<td class="'.$cgst_class.'">'.$d_value->sgst.'</td>';
+                                                                        echo '<td class="'.$cgst_class.'">'.$d_value->sgst_value.'</td>';
+                                                                        echo '<td class="'.$igst_class.'">'.$d_value->igst.'</td>';
+                                                                        echo '<td class="'.$igst_class.'">'.$d_value->igst_value.'</td>';
+                                                                        echo '<td>5.00</td>';
+                                                                        echo '<td>'.$d_value->cess_value.'</td>';
                                                                         echo '<td>'.$d_value->sub_total.'</td></tr>';
                                                                 }
                                                             }
@@ -612,9 +628,8 @@ setTimeout(printPage.print(), 5);
             <td class=""><div class="text-center"><?php echo $d_value->sgst_value; ?></div></td>
           </tr>
            <?php 
-           $total_tax = ( 2 * $d_value->cgst_value) +$total_tax;
-           $gst_tot = $d_value->cgst_value + $gst_tot;
-
+           $total_tax   = ( 2 * $d_value->cgst_value) + $total_tax;
+           $gst_tot     = $d_value->cgst_value + $gst_tot;
         }
       } ?>
       <tr class="">

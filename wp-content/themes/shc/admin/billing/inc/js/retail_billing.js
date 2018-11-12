@@ -559,7 +559,15 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
                 jQuery('.product_control_error_retail').remove();
                 
             } else {
-                var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="customer_table_retail" ><td class="td_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="customer_detail['+current_row+'][id]" class="sub_id" /><td class="td_brand">'+brand_name+'</td> <input type="hidden" value="'+ brand_name + '" name="customer_detail['+current_row+'][brand]" class="sub_brand" /><td class="td_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="customer_detail['+current_row+'][product]" class="sub_product"/><td class="td_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="customer_detail['+current_row+'][hsn]" class="sub_hsn"/><td class=""><input type="text" onkeypress="return isNumberKey(event)" value = "'+ unit + '" name="customer_detail['+current_row+'][unit]" class="retail_sub_unit" size="4" autocomplete="off"/> </td> <td>' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][stock]" class="retail_sub_stock"/><td class="td_price">' + mrp + '</td> <input type="hidden" value = "'+ mrp + '" name="customer_detail['+current_row+'][price]" class="sub_price"/> <td><input type="text"  onkeypress="return isNumberKeyWithDot(event)" value ="'+ discount +'" name="customer_detail['+current_row+'][discount]" class="retail_sub_discount" size="4" style="width: 70px;" autocomplete="off"/></td><td>'+ wholesale_price +'<input type="hidden" value="'+ wholesale_price +'"  name="customer_detail['+current_row+'][wholesale_price]" class="sub_wholesale_price"/></td><input type="hidden" value ="each" name="customer_detail['+current_row+'][discount_type]" class="discount_type"/><td class="td_amt">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][amt]" class="sub_amt"/><td class="td_cgst cgst_display">' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="customer_detail['+current_row+'][cgst]" class="sub_cgst"/> <td class="td_cgst_value cgst_display"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][cgst_value]" class="sub_cgst_value"/><td class="td_sgst cgst_display">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="customer_detail['+current_row+'][sgst]" class="sub_sgst"/><td class="td_sgst_value cgst_display"></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][sgst_value]" class="sub_sgst_value"/><td class="td_igst igst_display no_display">' + igst + '  %' + '</td><input type="hidden" value = "'+ igst + '" name="customer_detail['+current_row+'][igst]" class="sub_igst"/> <td class="td_igst_value no_display igst_display" ></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][igst_value]" class="sub_igst_value"/><td class="cess_value_td"></td><input type="hidden" value = "'+ cess_percentage +'" name="customer_detail['+ current_row +'][cess_percentage]" class="cess_percentage"/><input type="hidden" value = "0.00" name="customer_detail['+ current_row +'][cess_value]" class="cess_value"/><td class="td_total"></td> <input type="hidden" value ="" name="customer_detail['+current_row+'][subtotal]" class="sub_total"/><input type="hidden" value ="" name="customer_detail['+current_row+'][total]" class="total"/><td><a  href="#" class="retail_sub_delete">Delete</a></td></tr>';                
+                if(jQuery('.gst_type:checked').val() == 'cgst') {
+                    var cgst_display = '';
+                    var igst_display = 'no_display';
+                }
+                if(jQuery('.gst_type:checked').val() == 'igst') {
+                    var cgst_display = 'no_display';
+                    var igst_display = '';
+                }
+                var str = '<tr data-randid='+makeid()+' data-productid='+product_id+' class="customer_table_retail" ><td class="td_id">'+current_row+'</td> <input type="hidden" value="'+ product_id + '" name="customer_detail['+current_row+'][id]" class="sub_id" /><td class="td_brand">'+brand_name+'</td> <input type="hidden" value="'+ brand_name + '" name="customer_detail['+current_row+'][brand]" class="sub_brand" /><td class="td_product">' + product_name + '</td> <input type="hidden" value = "'+ product_name + '" name="customer_detail['+current_row+'][product]" class="sub_product"/><td class="td_hsn">' + hsn_code + '</td> <input type="hidden" value = "'+ hsn_code + '" name="customer_detail['+current_row+'][hsn]" class="sub_hsn"/><td class=""><input type="text" onkeypress="return isNumberKey(event)" value = "'+ unit + '" name="customer_detail['+current_row+'][unit]" class="retail_sub_unit" size="4" autocomplete="off"/> </td> <td>' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][stock]" class="retail_sub_stock"/><td class="td_price">' + mrp + '</td> <input type="hidden" value = "'+ mrp + '" name="customer_detail['+current_row+'][price]" class="sub_price"/> <td><input type="text"  onkeypress="return isNumberKeyWithDot(event)" value ="'+ discount +'" name="customer_detail['+current_row+'][discount]" class="retail_sub_discount" size="4" style="width: 70px;" autocomplete="off"/></td><td>'+ wholesale_price +'<input type="hidden" value="'+ wholesale_price +'"  name="customer_detail['+current_row+'][wholesale_price]" class="sub_wholesale_price"/></td><input type="hidden" value ="each" name="customer_detail['+current_row+'][discount_type]" class="discount_type"/><td class="td_amt">' + stock + '</td> <input type="hidden" value = "'+ stock + '" name="customer_detail['+current_row+'][amt]" class="sub_amt"/><td class="td_cgst cgst_display '+ cgst_display +'" >' + cgst + '  %' + '</td> <input type="hidden" value = "'+ cgst + '" name="customer_detail['+current_row+'][cgst]" class="sub_cgst"/> <td class="td_cgst_value cgst_display '+ cgst_display +' " ></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][cgst_value]" class="sub_cgst_value"/><td class="td_sgst cgst_display '+ cgst_display +'">' + sgst + '  %' + '</td> <input type="hidden" value = "'+ sgst + '" name="customer_detail['+current_row+'][sgst]" class="sub_sgst"/><td class="td_sgst_value cgst_display '+ cgst_display +'" ></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][sgst_value]" class="sub_sgst_value"/><td class="td_igst igst_display '+ igst_display +'" >' + igst + '  %' + '</td><input type="hidden" value = "'+ igst + '" name="customer_detail['+current_row+'][igst]" class="sub_igst"/> <td class="td_igst_value igst_display '+ igst_display +'" ></td> <input type="hidden" value = "" name="customer_detail['+current_row+'][igst_value]" class="sub_igst_value"/><td class="cess_value_td"></td><input type="hidden" value = "'+ cess_percentage +'" name="customer_detail['+ current_row +'][cess_percentage]" class="cess_percentage"/><input type="hidden" value = "0.00" name="customer_detail['+ current_row +'][cess_value]" class="cess_value"/><td class="td_total"></td> <input type="hidden" value ="" name="customer_detail['+current_row+'][subtotal]" class="sub_total"/><input type="hidden" value ="" name="customer_detail['+current_row+'][total]" class="total"/><td><a  href="#" class="retail_sub_delete">Delete</a></td></tr>';                
                 jQuery('#bill_lot_add_retail').append(str);
                 addFromProductControlRetail();
                 jQuery('.product_control_error_retail').remove();
@@ -568,7 +576,7 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
             jQuery('.retail_sub_unit').trigger('change');
             rowCalculate();
 
-callGSTChange(jQuery('.gst_type').val());
+            //callGSTChange(jQuery('.gst_type').val());
           
          } 
        
@@ -1217,13 +1225,11 @@ function rowCalculate() {
     var row_discount            = parseFloat(jQuery(this).find('.retail_sub_discount').val());
     var row_mrp                 = parseFloat(jQuery(this).find('.sub_price').val());
     unit                        = parseFloat(jQuery(this).find('.retail_sub_unit').val());
-    var igst                    = parseFloat(jQuery(this).find('.sub_igst').val());
-    cess_percentage             = parseFloat(jQuery(this).find('.cess_percentage').val());
+    var igst                    = isNaN(parseFloat(jQuery(this).find('.sub_igst').val()))? 0.00 : parseFloat(jQuery(this).find('.sub_igst').val());
+    cess_percentage             = isNaN(parseFloat(jQuery(this).find('.cess_percentage').val()))? 0.00 : parseFloat(jQuery(this).find('.cess_percentage').val());
     if( row_discount == row_mrp  || jQuery(this).find('.discount_type').val() == 'whole' ) {
         var whole_unit_total    = row_mrp * unit;
-        if(jQuery('.discount_per:checked').val() == 'percentage') {    
-
-            
+        if(jQuery('.discount_per:checked').val() == 'percentage') {                
             var whole_dis           = (whole_unit_total  * discount)/100;
             var unit_total          = whole_unit_total - whole_dis;
             var unit_price          = (unit_total / unit);
@@ -1249,7 +1255,8 @@ function rowCalculate() {
         var full_gst        = unit_total - amt;
         var row_per_cgst    = full_gst/2;
         var row_per_sgst    = full_gst/2;
-        var cess            = (amt * 5 )/100;
+        var cess            = (amt * cess_percentage )/100;
+        console.log(amt);
         jQuery(this).find('.retail_sub_discount').val(unit_price.toFixed(2));
 
         unit_total               = (isNaN(unit_total) ? '0.00' : unit_total);
@@ -1300,14 +1307,17 @@ function Return_rowCalculate() {
         var unit_count          = parseFloat(jQuery(this).find('.return_qty_ret').val());
         var cgst                = parseFloat(jQuery(this).find('.return_cgst').val());
         var sgst                = parseFloat(jQuery(this).find('.return_sgst').val());
+        var igst                = isNaN(parseFloat(jQuery(this).find('.return_igst').val())) ? 0.00 : parseFloat(jQuery(this).find('.return_igst').val());
+        var cess_percentage                = isNaN(parseFloat(jQuery(this).find('.return_cess').val())) ? 0.00 : parseFloat(jQuery(this).find('.return_cess').val());
         var unit_total          = (unit_price * unit_count);
         var row_per_cgst        = ( (cgst * unit_total) / 100 );
         var row_per_sgst        = ( (sgst * unit_total) / 100 );
-        var diviser         = 100 + cgst + sgst ;
+        var diviser         = 100 + igst + cess_percentage;
         var amt             = (unit_total *  100)/(diviser);
         var full_gst        = unit_total - amt;
         var row_per_cgst    = full_gst/2;
         var row_per_sgst    = full_gst/2;
+        var cess            = (amt * cess_percentage )/100;
         unit_total               = (isNaN(unit_total) ? '0.00' : unit_total);
         jQuery(this).find('.return_sub_total_td').text(unit_total.toFixed(2)); 
         jQuery(this).find('.return_sub_total').val(unit_total.toFixed(2));
@@ -1317,9 +1327,13 @@ function Return_rowCalculate() {
 
         jQuery(this).find('.return_cgst_value').val(row_per_cgst.toFixed(2));
         jQuery(this).find('.return_sgst_value').val(row_per_sgst.toFixed(2));
+        jQuery(this).find('.return_igst_value').val(full_gst.toFixed(2));
+        jQuery(this).find('.return_cess_value').val(cess.toFixed(2));
 
         jQuery(this).find('.return_cgst_value_td').text(row_per_cgst.toFixed(2));
         jQuery(this).find('.return_sgst_value_td').text(row_per_sgst.toFixed(2));
+        jQuery(this).find('.return_igst_value_td').text(full_gst.toFixed(2));
+        jQuery(this).find('.return_cess_value_td').text(cess.toFixed(2));
         sub_tot = sub_tot + parseFloat(jQuery(this).find('.return_sub_total').val());
         //console.log(sub_tot); 
     });
