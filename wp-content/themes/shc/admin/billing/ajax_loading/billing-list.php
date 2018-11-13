@@ -98,12 +98,12 @@
     var_dump($billing_list);*/
 ?>
     <div class="x_content" style="width:100%;">
-       <div style="width:20%;float:left" >
+       <!-- <div style="width:20%;float:left" >
             <div style="width:70%;float:left">Payment Completed -</div> <div style="width:30%;float:right;margin-top: 6px;"><div class="round-c payment-green"></div></div> 
             <div style="width:70%;float:left">Payment Incomplete -</div> <div style="width:30%;float:right;margin-top: 6px;"><div class="round-c payment-red"></div></div>
             <div style="width:70%;float:left">Wholesale Rate -</div> <div style="width:30%;float:right;margin-top: 6px;"><div class="round-c payment-blue"></div></div> 
-        </div>
-        <div class="table-responsive" style="margin: 0 auto;margin-bottom:20px;width:60%;float:right;margin-right: 182px;">
+        </div> -->
+        <div class="table-responsive" style="margin: 0 auto;margin-bottom:20px;width:60%;">
         
             <table class="table table-striped jambo_table bulk_action">
                 <thead>

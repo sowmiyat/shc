@@ -36,8 +36,6 @@
                         <option value="50" <?php echo ($billing->ppage == 50) ? 'selected' : '' ?>>50</option>
                       </select>
                     </div>
-
-
                     <div class="col-md-1 form-group has-feedback">
                         <input type="text" class="form-control  inv_id " name="inv_id" value="<?php echo $billing->inv_id; ?>" placeholder="Invoice" style="padding-right: 5px;">
                         <span class="form-control-feedback" aria-hidden="true" > </span>
@@ -127,16 +125,14 @@ jQuery(document).ready(function () {
             if (event.shiftKey && event.keyCode == 9) { 
                 e.preventDefault(); 
                 // call custom function here
-                 jQuery(this).parent().parent().find('.list_update').focus();
+                jQuery(this).parent().parent().find('.list_update').focus();
             } 
             else if ( event.keyCode == 9){
                 e.preventDefault(); 
                 // call custom function here
-               jQuery('.ppage').focus();
+                jQuery('.ppage').focus();
             }
-            else{
-
-              
+            else { 
                 jQuery(this).parent().parent().find('.last_list_view').focus();
             } 
         }

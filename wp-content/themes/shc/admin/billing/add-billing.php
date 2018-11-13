@@ -34,7 +34,7 @@
 		$sale_id 		= $due_value1->sale_id; 
 		$paid_due 		= $due_value1->amount + $paid_due;
 	}
-var_dump($bill_fdata->gst_type);
+
 ?>
 
 
@@ -362,8 +362,8 @@ else { ?>
 												<th class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'igst')) ? 'no_display' : ''; ?> cgst_display">CGST <br/> Value</th>
 												<th class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'igst')) ? 'no_display' : ''; ?> cgst_display">SGST</th>
 												<th class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'igst')) ? 'no_display' : ''; ?> cgst_display">SGST <br/>Value</th>
-												<th class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'cgst')) ? 'no_display' : ''; ?> igst_display">IGST</th>
-												<th class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'cgst')) ? 'no_display' : ''; ?> igst_display">IGST <br/>Value</th>
+												<th class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'cgst')) ? 'no_display' : ''; ?> <?php echo (!isset($bill_fdata))? 'no_display' : ''; ?> igst_display">IGST</th>
+												<th class="<?php echo ((isset($bill_fdata)) && ($bill_fdata->gst_type == 'cgst')) ? 'no_display' : ''; ?> <?php echo (!isset($bill_fdata))? 'no_display' : ''; ?> igst_display">IGST <br/>Value</th>
 												<th class="">CESS</th>
 												<th>Total</th>
 												<th>Action</th>
