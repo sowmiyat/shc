@@ -1397,12 +1397,15 @@ function customerBalance(customer_id = 0){
         dataType : "json",
         url: frontendajax.ajaxurl,
         data: {
-            id      : customer_id,
-            action  :'customer_balance'
+            id              : customer_id,
+            bill_id         : jQuery('.invoice_id').val(),
+            action          :'customer_balance'
         },
           success: function (data) {
-            jQuery('.balance_amount').text(data.final_bal);
-            jQuery('.balance_amount_val').val(data.final_bal);
+            jQuery('.balance_amount').text(data.customer_pending);
+            jQuery('.balance_amount_val').val(data.customer_pending);
+            jQuery('.current_due_bill').val(data.current_screen_paid);
+            jQuery('.current_due_bill_txt').text(data.current_screen_paid);
             rowCalculate();
 
         }

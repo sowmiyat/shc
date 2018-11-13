@@ -1385,95 +1385,209 @@ function getCancelBillDataReturnws($invoice_id = 0) {
 
 }
 
+
+
+
+function checkCustomerBalance($customer_id = 0, $condition = 'full', $current_screen = 'full', $ref_id = 0, $result = 'result'){
+
+	if( $condition == 'full' ) {
+		$cond = '';
+	}
+	if( $condition == 'due' ) {
+		$cond = 'AND full_table.customer_pending > 0';
+	}
+	if( $condition == 'balance' ) {
+		$cond = 'AND full_table.customer_pending < 0';
+	}
+
+
+
+
+	$query = "SELECT * FROM
+	(
+		SELECT 
+		s.id,
+	    s.customer_id,
+	    s.inv_id,
+	    s.financial_year,		
+	    ( CASE WHEN (s.sub_total) IS NULL THEN 0.00 ELSE s.sub_total END ) as sale_total,
+	    ( CASE WHEN (payment.total_paid) IS NULL THEN 0.00 ELSE payment.total_paid END ) as total_paid,
+	    ( CASE WHEN (ret.return_total) IS NULL THEN 0.00 ELSE ret.return_total END ) as return_total,
+		( CASE WHEN (s.pay_to_bal) IS NULL THEN 0.00 ELSE SUM(s.pay_to_bal) END ) as sale_to_pay,
+	    ( CASE WHEN (ret.return_to_pay) IS NULL THEN 0.00 ELSE ret.return_to_pay END ) as return_to_pay,
+		( ( CASE WHEN s.sub_total IS NULL THEN 0.00 ELSE s.sub_total END ) - ( CASE WHEN ret.return_total IS NULL THEN 0.00 ELSE ret.return_total END ) ) as actual_sale,
+		( ( CASE WHEN payment.total_paid IS NULL THEN 0.00 ELSE payment.total_paid END ) - ( ( CASE WHEN s.pay_to_bal IS NULL THEN 0.00 ELSE s.pay_to_bal END ) + ( CASE WHEN ret.return_to_pay IS NULL THEN 0.00 ELSE ret.return_to_pay END )) ) as actual_paid,
+	    (
+	    	( ( CASE WHEN s.sub_total IS NULL THEN 0.00 ELSE s.sub_total END ) - ( CASE WHEN ret.return_total IS NULL THEN 0.00 ELSE ret.return_total END ) )
+	        -
+	        ( ( CASE WHEN payment.total_paid IS NULL THEN 0.00 ELSE payment.total_paid END ) - ( ( CASE WHEN s.pay_to_bal IS NULL THEN 0.00 ELSE s.pay_to_bal END ) + ( CASE WHEN ret.return_to_pay IS NULL THEN 0.00 ELSE ret.return_to_pay END )) )
+	    ) as customer_pending,
+
+	    ( CASE WHEN (screen.current_screen_paid) IS NULL THEN 0.00 ELSE SUM(screen.current_screen_paid) END ) as current_screen_paid
+	    
+	    FROM
+		wp_shc_sale as s 
+	    
+		LEFT JOIN 
+		( 
+			SELECT  
+		  	( CASE WHEN (p.amount) IS NULL THEN 0.00 ELSE SUM(p.amount) END ) as total_paid,
+		  	p.sale_id as payment_sale_id
+		  	FROM wp_shc_payment as p WHERE p.payment_type != 'credit' AND p.active = 1 AND p.customer_id = $customer_id  GROUP BY p.sale_id
+		) as payment
+		ON s.id = payment.payment_sale_id
+
+		LEFT JOIN 
+		( 
+			SELECT  
+		  	( CASE WHEN (scr.amount) IS NULL THEN 0.00 ELSE SUM(scr.amount) END ) as current_screen_paid,
+		  	scr.sale_id as screen_sale_id
+		  	FROM wp_shc_payment as scr WHERE scr.payment_type != 'credit' AND scr.reference_screen = '$current_screen'  AND reference_id = $ref_id AND scr.active = 1 AND scr.customer_id = $customer_id  GROUP BY scr.sale_id
+		) as screen
+		ON s.id = screen.screen_sale_id
+		LEFT JOIN 
+		(
+		  	SELECT 
+		  	( CASE WHEN SUM(r.total_amount) IS NULL THEN 0.00 ELSE SUM(r.total_amount) END ) as return_total, 
+		  	( CASE WHEN SUM(r.key_amount) IS NULL THEN 0.00 ELSE SUM(r.key_amount) END ) as return_to_pay,
+		  	r.inv_id as return_sale_id
+		  	FROM wp_shc_return_items as r WHERE r.active = 1 AND r.customer_id =1  GROUP BY r.inv_id
+		) as ret
+		ON s.id = ret.return_sale_id WHERE s.customer_id = $customer_id  GROUP BY s.id
+	) as full_table WHERE 1 = 1 $cond";
+
+	global $wpdb;
+	if($result == 'result') {
+		$data = $wpdb->get_results($query);
+	} else {
+		$row_query = "SELECT f.customer_id, sum(f.customer_pending) as customer_pending, sum(f.current_screen_paid) as current_screen_paid, (sum(f.customer_pending) - sum(f.current_screen_paid) ) as actual_pending FROM ($query) as f GROUP BY f.customer_id";
+		$data = $wpdb->get_row($row_query);
+	}
+	return $data;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function customer_balance() {
 
 	global $wpdb;
 	$customer_id 	= $_POST['id'];
-	$sale_table 	= $wpdb->prefix.'shc_sale';
-	$return_table 	= $wpdb->prefix.'shc_return_items';
-	$payment_table  = $wpdb->prefix.'shc_payment';
-	$customer_table = $wpdb->prefix.'shc_customers';
+	$bill_id 		= $_POST['bill_id'];
+	$data 			= checkCustomerBalance($customer_id, 'due', 'billing_screen', $bill_id, 'row');
+	echo json_encode($data);
+	die();
+// 	$sale_table 	= $wpdb->prefix.'shc_sale';
+// 	$return_table 	= $wpdb->prefix.'shc_return_items';
+// 	$payment_table  = $wpdb->prefix.'shc_payment';
+// 	$customer_table = $wpdb->prefix.'shc_customers';
 
-	$query = "SELECT cus_full_detail.customer_id,
-cus_full_detail.customer_name,
-cus_full_detail.address,
-cus_full_detail.mobile,
-sum(cus_full_detail.new_sale_total) as new_sale_total,
-sum(cus_full_detail.final_bal) as final_bal
-FROM (
-	SELECT full_table.cus_id as customer_id,full_table.name as customer_name,full_table.address,full_table.mobile,
-(case when  full_table.sale_id is null then 0.00 else full_table.sale_id end ) as sale_id,
-(case when  full_table.search_id is null then 0.00 else full_table.search_id end ) as search_id,
-(case when  full_table.year is null then 0.00 else full_table.year end ) as year,
-(case when  full_table.sale_total is null then 0.00 else full_table.sale_total end ) as sale_total,
-(case when  full_table.paid_amount is null then 0.00 else full_table.paid_amount end ) as paid_amount,
-(case when  full_table.key_amount is null then 0.00 else full_table.key_amount end ) as key_amount,
-(case when  full_table.return_amount is null then 0.00 else full_table.return_amount end ) as return_amount,
-(case when  full_table.invoice_bill_bal is null then 0.00 else full_table.invoice_bill_bal end ) as invoice_bill_bal,
-(case when  full_table.return_bill_bal is null then 0.00 else full_table.return_bill_bal end ) as return_bill_bal,
-(case when  full_table.new_sale_total is null then 0.00 else full_table.new_sale_total end ) as new_sale_total,
-(case when  full_table.final_bal is null then 0.00 else full_table.final_bal end ) as final_bal
-from  
-( 
-    select * from (
-    SELECT id as cus_id,name,mobile,address FROM ${customer_table}  WHERE active = 1
-) as customer
-left join 
-(
-	SELECT tab.*,(tab.invoice_bill_bal - tab.return_bill_bal) as final_bal  from (
-    select final_tab.*, 
-(final_tab.sale_total- final_tab.paid_amount) as invoice_bill_bal,
-(final_tab.return_amount- final_tab.key_amount) as return_bill_bal,
-(final_tab.sale_total - final_tab.return_amount ) as new_sale_total
-from ( 
-    select bill_table.*,
-(case when return_tab.key_amount is null then 0.00 else return_tab.key_amount end) as key_amount,
-(case when return_tab.return_amount is null then 0.00 else return_tab.return_amount end) as return_amount
-from 
-(
-    SELECT sale.inv_id as sale_id,
-    sale.customer_id,
-    sale.search_id,
-    sale.year,sale.sale_total,
-    (case when payment.payment_amount is null then 0.00 else payment.payment_amount-sale.pay_to_bal end) as paid_amount 
-    from 
-(
-    SELECT id as inv_id,customer_id,
-    `inv_id` as search_id,
-    `financial_year` as year,
-    `sub_total` as sale_total,`pay_to_bal` FROM ${sale_table} WHERE`active`=1 
-)  as sale
-left join 
-( 
-    select 	sale_id,sum(amount) as payment_amount from ${payment_table} WHERE active = 1 and 	payment_type!= 'credit' GROUP by sale_id
- )  as payment
-on sale.inv_id = payment.sale_id
-) as bill_table 
-left join 
-(
-    SELECT inv_id,key_amount,total_amount as return_amount from {$return_table} WHERE active = 1
-) 
-as return_tab 
-on bill_table.sale_id = return_tab.inv_id )
-as final_tab  
-) as tab 
-)
-as full_sale_tab  
-on full_sale_tab.customer_id = customer.cus_id 
-) as full_table
-order by full_table.sale_id ASC )
-as cus_full_detail where cus_full_detail.customer_id = ${customer_id}  GROUP by cus_full_detail.customer_id ";
+// 	$query = "SELECT cus_full_detail.customer_id,
+// cus_full_detail.customer_name,
+// cus_full_detail.address,
+// cus_full_detail.mobile,
+// sum(cus_full_detail.new_sale_total) as new_sale_total,
+// sum(cus_full_detail.final_bal) as final_bal
+// FROM (
+// 	SELECT full_table.cus_id as customer_id,full_table.name as customer_name,full_table.address,full_table.mobile,
+// (case when  full_table.sale_id is null then 0.00 else full_table.sale_id end ) as sale_id,
+// (case when  full_table.search_id is null then 0.00 else full_table.search_id end ) as search_id,
+// (case when  full_table.year is null then 0.00 else full_table.year end ) as year,
+// (case when  full_table.sale_total is null then 0.00 else full_table.sale_total end ) as sale_total,
+// (case when  full_table.paid_amount is null then 0.00 else full_table.paid_amount end ) as paid_amount,
+// (case when  full_table.key_amount is null then 0.00 else full_table.key_amount end ) as key_amount,
+// (case when  full_table.return_amount is null then 0.00 else full_table.return_amount end ) as return_amount,
+// (case when  full_table.invoice_bill_bal is null then 0.00 else full_table.invoice_bill_bal end ) as invoice_bill_bal,
+// (case when  full_table.return_bill_bal is null then 0.00 else full_table.return_bill_bal end ) as return_bill_bal,
+// (case when  full_table.new_sale_total is null then 0.00 else full_table.new_sale_total end ) as new_sale_total,
+// (case when  full_table.final_bal is null then 0.00 else full_table.final_bal end ) as final_bal
+// from  
+// ( 
+//     select * from (
+//     SELECT id as cus_id,name,mobile,address FROM ${customer_table}  WHERE active = 1
+// ) as customer
+// left join 
+// (
+// 	SELECT tab.*,(tab.invoice_bill_bal - tab.return_bill_bal) as final_bal  from (
+//     select final_tab.*, 
+// (final_tab.sale_total- final_tab.paid_amount) as invoice_bill_bal,
+// (final_tab.return_amount- final_tab.key_amount) as return_bill_bal,
+// (final_tab.sale_total - final_tab.return_amount ) as new_sale_total
+// from ( 
+//     select bill_table.*,
+// (case when return_tab.key_amount is null then 0.00 else return_tab.key_amount end) as key_amount,
+// (case when return_tab.return_amount is null then 0.00 else return_tab.return_amount end) as return_amount
+// from 
+// (
+//     SELECT sale.inv_id as sale_id,
+//     sale.customer_id,
+//     sale.search_id,
+//     sale.year,sale.sale_total,
+//     (case when payment.payment_amount is null then 0.00 else payment.payment_amount-sale.pay_to_bal end) as paid_amount 
+//     from 
+// (
+//     SELECT id as inv_id,customer_id,
+//     `inv_id` as search_id,
+//     `financial_year` as year,
+//     `sub_total` as sale_total,`pay_to_bal` FROM ${sale_table} WHERE `active`=1 
+// )  as sale
+// left join 
+// ( 
+//     select 	sale_id,sum(amount) as payment_amount from ${payment_table} WHERE active = 1 and 	payment_type!= 'credit' GROUP by sale_id
+//  )  as payment
+// on sale.inv_id = payment.sale_id
+// ) as bill_table 
+// left join 
+// (
+//     SELECT inv_id,key_amount,total_amount as return_amount from {$return_table} WHERE active = 1
+// ) 
+// as return_tab 
+// on bill_table.sale_id = return_tab.inv_id )
+// as final_tab  
+// ) as tab 
+// )
+// as full_sale_tab  
+// on full_sale_tab.customer_id = customer.cus_id 
+// ) as full_table
+// order by full_table.sale_id ASC )
+// as cus_full_detail where cus_full_detail.customer_id = ${customer_id}  GROUP by cus_full_detail.customer_id ";
 
-    $data = $wpdb->get_row($query);
+//     $data = $wpdb->get_row($query);
 // var_dump($query);
 // die();
   
-	echo json_encode($data);
-	die();
+	// echo json_encode($data);
+	// die();
 
 }
 add_action( 'wp_ajax_customer_balance', 'customer_balance' );
 add_action( 'wp_ajax_nopriv_customer_balance', 'customer_balance' );
+
 
 function ws_customer_balance() {
 

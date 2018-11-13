@@ -621,8 +621,8 @@ else { ?>
 								
 								<div class="billing-structure">Due Amount:<span class="balance_amount"></span><br/>
 									<input type="hidden" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->prev_bal : 0;  ?>" name="balance_amount_val" class="balance_amount_val"/>
-									<input type="hidden" class="form-control return_amt" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->tot_due_amt : 0;  ?>" name="return_amt">
-									Total Due Balance <span class="return_amt_txt"><?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->tot_due_amt : 0;  ?></span>
+									<input type="hidden" class="form-control current_due_bill" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->tot_due_amt : 0;  ?>" name="current_due_bill_txt">
+									Total Due Balance <span class="current_due_bill_txt"><?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->tot_due_amt : 0;  ?></span>
 								</div>
 								<div class="cash_on_delivery">
 									<div class="cash_on_delivery_in">
