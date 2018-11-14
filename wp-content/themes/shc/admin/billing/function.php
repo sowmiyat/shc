@@ -130,8 +130,8 @@ function getCancelBillDataws($inv_id = 0, $year = 0) {
 	global $wpdb;
 	$customer_table 		=  $wpdb->prefix.'shc_wholesale_customer';
 	$sale_table 			=  $wpdb->prefix.'shc_ws_sale';
-	$sale_detail_table 		= $wpdb->prefix.'shc_ws_sale_detail';
-	$lots_table 			= $wpdb->prefix.'shc_lots';
+	$sale_detail_table 		=  $wpdb->prefix.'shc_ws_sale_detail';
+	$lots_table 			=  $wpdb->prefix.'shc_lots';
 
 
 	$bill_query = "SELECT s.*,
@@ -331,13 +331,9 @@ function create_order() {
 		$delivery_need = '0';
 	}
 
-	if(isset($params['cur_bal_check_box'])){
-			$pay_to = '1';
-			$pay_to_bal = $params['current_bal'];
-	} else{
-		$pay_to = '0';
-		$pay_to_bal = '0';
-	}
+	$pay_to = '1';
+	$pay_to_bal = $params['to_pay'];
+
 	if(isset($params['cod_check'])){
 		$cod_check = '1';
 		$cod_amount = $params['cod_amount'];
@@ -359,7 +355,7 @@ function create_order() {
 		'home_delivery_address' 	=> $params['delivery_address'],
 		'gst_type' 					=> $params['gst_type'],
 		'before_total' 				=> $params['f_total'],
-		'prev_bal' 					=> $params['balance_amount_val'],
+		//'prev_bal' 					=> $params['balance_amount_val'],
 		'sub_total' 				=> $params['fsub_total'], 
 		'paid_amount' 				=> $params['paid_amount'],
 		'tot_due_amt' 				=> $params['return_amt'],
@@ -410,7 +406,6 @@ function create_order() {
 				'pay_to' 			=> $pay_to_bal,
 							);
 			$wpdb->insert($payment_table, $payment_data);
-
 		}		
 	}
 
@@ -683,13 +678,8 @@ function update_order() {
 		$delivery_need = '0';
 	}
 
-	if(isset($params['cur_bal_check_box'])){
-			$pay_to = '1';
-			$pay_to_bal = $params['current_bal'];
-	} else{
-		$pay_to = '0';
-		$pay_to_bal = '0';
-	}
+	$pay_to = '1';
+	$pay_to_bal = $params['to_pay'];
 	if(isset($params['cod_check'])){
 		$cod_check = '1';
 		$cod_amount = $params['cod_amount'];
@@ -711,7 +701,7 @@ function update_order() {
 		'gst_type' 					=> $params['gst_type'],
 		'before_total' 				=> $params['f_total'],
 		'sub_total' 				=> $params['fsub_total'], 
-		'prev_bal' 					=> $params['balance_amount_val'],
+		//'prev_bal' 					=> $params['balance_amount_val'],
 		'paid_amount' 				=> $params['paid_amount'],
 		'tot_due_amt' 				=> $params['return_amt'],
 		'pay_to_bal' 				=> $pay_to_bal,
@@ -1464,6 +1454,7 @@ function checkCustomerBalance($customer_id = 0, $condition = 'full', $current_sc
 		$data = $wpdb->get_row($row_query);
 	}
 	return $data;
+
 }
 
 
@@ -2704,6 +2695,58 @@ function getDueAmountInReturnDataIndividual(){
 	$data 	= $wpdb->get_results($query);
 	return $data;
 
+}
+
+//Bill balance New
+function checkBillBalance($bill_id = 0) {
+
+	global $wpdb;
+
+	$query = "SELECT 
+
+	( CASE WHEN (s.sub_total) IS NULL THEN 0.00 ELSE SUM(s.sub_total) END ) as sale_total,
+	( CASE WHEN (payment.total_paid) IS NULL THEN 0.00 ELSE SUM(payment.total_paid) END ) as total_paid,
+	( CASE WHEN (ret.return_total) IS NULL THEN 0.00 ELSE SUM(ret.return_total) END ) as return_total,
+	( CASE WHEN (s.pay_to_bal) IS NULL THEN 0.00 ELSE SUM(s.pay_to_bal) END ) as pay_to_bal,
+	( CASE WHEN (ret.return_to_pay) IS NULL THEN 0.00 ELSE SUM(ret.return_to_pay) END ) as return_to_pay,
+	( ( CASE WHEN (s.sub_total) IS NULL THEN 0.00 ELSE SUM(s.sub_total) END ) - ( CASE WHEN (ret.return_total) IS NULL THEN 0.00 ELSE SUM(ret.return_total) END ) ) as actual_sale,
+	( ( CASE WHEN (payment.total_paid) IS NULL THEN 0.00 ELSE SUM(payment.total_paid) END ) - ( ( CASE WHEN (s.pay_to_bal) IS NULL THEN 0.00 ELSE SUM(s.pay_to_bal) END ) + ( CASE WHEN (ret.return_to_pay) IS NULL THEN 0.00 ELSE SUM(ret.return_to_pay) END )) ) as actual_paid
+	FROM wp_shc_sale as s 
+
+	LEFT JOIN 
+	( 
+		SELECT  
+	  	( CASE WHEN (p.amount) IS NULL THEN 0.00 ELSE SUM(p.amount) END ) as total_paid,
+	  	p.sale_id as payment_sale_id
+	  	FROM wp_shc_payment as p WHERE p.payment_type != 'credit' AND p.active = 1 AND p.sale_id = $bill_id
+	) as payment
+	ON s.id = payment.payment_sale_id
+	LEFT JOIN 
+	(
+	  	SELECT 
+	  	( CASE WHEN SUM(r.total_amount) IS NULL THEN 0.00 ELSE SUM(r.total_amount) END ) as return_total, 
+	  	( CASE WHEN SUM(r.key_amount) IS NULL THEN 0.00 ELSE SUM(r.key_amount) END ) as return_to_pay,
+	  	r.inv_id as return_sale_id
+	  	FROM wp_shc_return_items as r WHERE r.active = 1 AND r.inv_id = $bill_id
+	) as ret
+	ON s.id = ret.return_sale_id WHERE s.id = $bill_id";
+
+
+	$data = $wpdb->get_row($query);
+
+	$balance = $data->actual_sale - $data->actual_paid;
+	return $balance;
+
+}
+
+function getBillPaymentTotal($bill_id = 0) {
+
+	global $wpdb;
+	$query = "SELECT  
+	  	( CASE WHEN (p.amount) IS NULL THEN 0.00 ELSE SUM(p.amount) END ) as total_paid
+	  	FROM wp_shc_payment as p WHERE p.payment_type != 'credit' AND p.active = 1 AND p.sale_id = $bill_id";
+	$data = $wpdb->get_row($query);
+	return $data->total_paid;
 }
 
 

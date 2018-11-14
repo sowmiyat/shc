@@ -4,7 +4,6 @@
 	    console.log('Reloading');
 	    window.location.reload();
 	}
-
 </script>
 <?php
 	$update = false;
@@ -14,9 +13,7 @@
 		$invoice_id['inv_id'] 		= $_GET['inv_id'];
 		$year 						= $_GET['year'];
 		$bill_data 					= getBillData($invoice_id['inv_id'],$year);
-
 		$bill_fdata 				= $bill_data['bill_data'];
-
 		$bill_ldata 				= $bill_data['ordered_data'];
 		$invoice_id['invoice_id']   = $bill_fdata->id;
 	} else {
@@ -46,10 +43,8 @@
 if(isset($_GET['id'])){
 echo "<script language='javascript'>
   jQuery(document).ready(function (argument) { 
-  	addTotalToDue();
-    duepaid_fun('".$bill_fdata->customer_id."');
 	jQuery('#update_payment').focus();
-	jQuery('.paid_amount').trigger('change');
+	
   	
   });
 
@@ -135,19 +130,19 @@ margin-top: 0px;
 	font-size: 13px;
 
 }
-.new_payment_pay_type_cash,.new_payment_pay_type_card,.new_payment_pay_type_internet,.new_payment_pay_type_cheque,.new_payment_pay_type_credit,.cod_check {
+/*.new_payment_pay_type_cash,.new_payment_pay_type_card,.new_payment_pay_type_internet,.new_payment_pay_type_cheque,.new_payment_pay_type_credit,.cod_check {
 	width: 10px !important;
     height: 16px !important;
-}
+}*/
 .payment_cash,.payment_completed {
 	width: 10px !important;
     height: 16px !important;	
 }
-.payment_details_card,.payment_details_cheque,.payment_details_internet,.payment_details_cash,.cod_amount_div {
+/*.payment_details_card,.payment_details_cheque,.payment_details_internet,.payment_details_cash,.cod_amount_div {
 	display: none;
 	margin-top: 13px;
     margin-bottom: 10px;
-}
+}*/
 .payment_tab tr td th{
 	padding: 5px;
 }
@@ -434,6 +429,8 @@ else { ?>
 															<input type="text" class="form-control fsub_total highlighter" tabindex="-1"  value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->sub_total : 0;  ?>" readonly name="fsub_total">
 															<span class="fa fa-inr form-control-feedback right" aria-hidden="true"></span>
 														</div>
+														<input  type="hidden" name="final_total_hidden" class="final_total_hidden text-right" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->sub_total : 0;  ?>">
+                                    <input  type="hidden" name="current_due" class="current_due " value="<?php echo ( $bill_data && $bill_fdata ) ? checkBillBalance($bill_fdata->id) : 0; ?>">
 													</div>
 												</td>
 											</tr>
@@ -521,7 +518,7 @@ else { ?>
 
 											<tr>
 												<th></th>
-												<td>
+												<td>	<input type="hidden" class="previous_paid_total" value="<?php echo ( $bill_data && $bill_fdata ) ?  getBillPaymentTotal($bill_fdata->id) : 0; ?>">
 													<div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
 														<input type="hidden" class="form-control paid_amount"  value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->paid_amount : 0;  ?>" name="paid_amount">
 														
@@ -569,7 +566,18 @@ else { ?>
 												</td>
 											</tr>
 											<tr> -->
-
+												<tr>
+													<th>
+													COD 										
+													 <input type="checkbox" name="cod_check" class="cod_check" value="cod" <?php if($bill_fdata->cod_check == '1'){ echo 'checked'; } ?>/>
+													</th>
+													<td>
+													   <div class="cash_on_delivery">
+															<input type="text" name="cod_amount" style="width:60px;"  class="cod_amount" tabindex="-1"  value="<?php echo ($bill_data && $bill_fdata ) ? $bill_fdata->cod_amount : '0'; ?>" readonly />
+																							
+														</div>
+													</td>
+												</tr>
 											<tr style="font-weight:bold;">
 												<th>To Pay:
 													<input type="checkbox" name="cur_bal_check_box" style="visibility:hidden;" class="cur_bal_check_box" style="width: 20px;height: 18px;" <?php if($bill_data && $bill_fdata){ $paid = $bill_fdata->pay_to_check; if($paid == '1' ){ echo 'checked'; }  } else { echo 'checked'; } ?>>
@@ -577,8 +585,8 @@ else { ?>
 												</th>
 												<td>
 													<div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
-														<span class="current_bal_txt"><?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->pay_to_bal : 0;  ?></span>
-														<input type="hidden" name="current_bal" class="current_bal"  value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->pay_to_bal : 0;  ?>"> 
+														<span class="to_pay_text"><?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->pay_to_bal : 0;  ?></span>
+														<input type="hidden" name="to_pay" class="to_pay"  value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->pay_to_bal : 0;  ?>"> 
 														
 														<!-- <span class="fa fa-inr form-control-feedback right" aria-hidden="true"></span> -->
 													</div>
@@ -590,8 +598,8 @@ else { ?>
 												</th>
 												<td>
 													<div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
-														<span class="balance_pay"></span>
-														
+														<span class="balance_pay_text"></span>
+														<input type="hidden" name="balance_pay" value="0"  class="balance_pay"/>
 														
 														<!-- <span class="fa fa-inr form-control-feedback right" aria-hidden="true"></span> -->
 													</div>
@@ -622,23 +630,9 @@ else { ?>
 								<div class="billing-structure">Due Amount:<span class="balance_amount"></span><br/>
 									<input type="hidden" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->prev_bal : 0;  ?>" name="balance_amount_val" class="balance_amount_val"/>
 									<input type="hidden" class="form-control current_due_bill" value="<?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->tot_due_amt : 0;  ?>" name="current_due_bill_txt">
-									Total Due Balance <span class="current_due_bill_txt"><?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->tot_due_amt : 0;  ?></span>
+									Current Bill Balance <span class="current_due_bill_txt"><?php echo ( $bill_data && $bill_fdata ) ? $bill_fdata->tot_due_amt : 0;  ?></span>
 								</div>
-								<div class="cash_on_delivery">
-									<div class="cash_on_delivery_in">
-										<div style="width: 20%; float:left">
-											COD 										
-										 <input type="checkbox" name="cod_check" class="cod_check" value="cod" <?php if($bill_fdata->cod_check == '1'){ echo 'checked'; } ?>/>
-										</div>
-										
-										<div class="cod_amount_div" <?php if($bill_data && $bill_fdata){
-												if($bill_fdata->cod_check == '1') { echo 'style=display:block;width: 20%; float:right;'; } else { echo 'style=display:none;width: 20%; float:right'; }
-											} else{ echo 'style=width: 20%; float:right'; }  ?>>
 
-											<input type="text" name="cod_amount" style="width:60px;"  class="cod_amount" tabindex="-1"  value="<?php echo ($bill_data && $bill_fdata ) ? $bill_fdata->cod_amount : '0'; ?>" readonly />
-										</div>										
-									</div>
-								</div>
 								<div>
 									Delivery: 
 									<div>

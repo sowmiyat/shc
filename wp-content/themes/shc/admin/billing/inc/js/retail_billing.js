@@ -13,7 +13,7 @@ jQuery('.ret_delivery_need').live('click',function(){
 
 
 //<----- Payment type JS------>
-jQuery('.payment_cash').live('click',function(){ 
+jQuery(document).on('click','.payment_cash',function(){ 
     var today = moment().format(' YYYY-MM-DD'); 
     var reference_id = jQuery('.invoice_id').val(); 
     jQuery('.payment_tab').css('display','block');
@@ -40,7 +40,7 @@ jQuery('.payment_cash').live('click',function(){
             var str             = '<tr class="payment_table"><td style="padding:5px;">' + type_text + '<input type="hidden" name="payment_detail['+current_row+'][payment_type]" value="'+type+'" style="width:20px;" class="payment_type"/></td><td style="padding:5px;"><input type="text" name="payment_detail['+current_row+'][payment_amount]" class="payment_amount" data-paymenttype="'+type+'"  data-uniqueName="'+makeid()+'" value="" style="width: 74px;" onkeypress="return isNumberKey(event)"/><input type="hidden" name="payment_detail['+current_row+'][reference_screen]" value="billing_screen" /><input type="hidden" name="payment_detail['+current_row+'][reference_id]" value="'+ reference_id +'" /></td><td style="padding"5px;>'+today+'</td><td style="padding:5px;"><a  href="#" class="payment_sub_delete" style="">x</a></td></tr>';                
             jQuery('#bill_payment_tab').append(str);
         }
-        payment_calculation();               
+        paymentOperations();               
     }
  });
 
@@ -57,7 +57,7 @@ jQuery('.payment_sub_delete').live('click',function(e){
     } else{
         jQuery('.payment_cash').focus();
     }
-    payment_calculation();
+    paymentOperations();
     jQuery('.paid_amount').trigger('change');
     // jQuery('.payment_amount').trigger('change');
     var uniquename = jQuery(this).parent().parent().find('.payment_amount').data('uniquename');
@@ -81,29 +81,13 @@ jQuery('.payment_amount').live('keydown', function(e){
 
 
 jQuery('.payment_amount').live('change',function(){
-    var current_balance = payment_calculation();
-    var amount          = parseFloat(jQuery(this).parent().parent().find('.payment_amount').val());
-    var payment_type    = jQuery(this).parent().parent().find('.payment_type').val();
-    var sub_tot = 0;
-    if( payment_type == 'card' || payment_type == 'internet' ||  payment_type == 'cheque' ){
-        if(current_balance >= 0) {
-            
-        } else {
-            alert("Please Enter Amount as less than Total amount!!!");
-            parseFloat(jQuery(this).parent().parent().find('.payment_amount').val(0));
-            
-        }
-    }  
-    payment_calculation();
-    jQuery('.paid_amount').trigger('change');   
-    //individualBillPaidCalculation();
-    
+    paymentOperations(jQuery(this).parent().parent()); 
 });
 
 jQuery('.cod_check').on('click',function(){
     if(jQuery('.cod_check:checked').val()=='cod'){
         jQuery('.cod_amount_div').css("display","block");
-        payment_calculation();
+        paymentOperations();
     } else {
         jQuery('.cod_amount_div').css("display","none");
         jQuery('.cod_amount').val('0');
@@ -482,44 +466,45 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
 
 
 
-   jQuery('.paid_amount').on('change click',function(){
-        var prev_bal = parseFloat(jQuery('.balance_amount_val').val());
-        var current_bal = parseFloat(jQuery('.fsub_total').val());
-         if ( jQuery('.paid_amount').val() == '')
-         {
-            var paid = parseFloat('0.00');   
-         } else {
-            var paid = parseFloat(jQuery('.paid_amount').val());
-         }
-        var bal = (current_bal) - paid;
-//current_bal 
-        currt_bal = paid - current_bal; 
-        currt_bal = isNaN(currt_bal)? 0 :currt_bal;
-         if(currt_bal < 0 ){
-            jQuery('.current_bal').val(0);
-            jQuery('.current_bal_txt').text(0);
+   //jQuery('.paid_amount').on('change click',function(){
+            //paymentOperations();
+//         var prev_bal = parseFloat(jQuery('.balance_amount_val').val());
+//         var current_bal = parseFloat(jQuery('.fsub_total').val());
+//          if ( jQuery('.paid_amount').val() == '')
+//          {
+//             var paid = parseFloat('0.00');   
+//          } else {
+//             var paid = parseFloat(jQuery('.paid_amount').val());
+//          }
+//         var bal = (current_bal) - paid;
+// //current_bal 
+//         currt_bal = paid - current_bal; 
+//         currt_bal = isNaN(currt_bal)? 0 :currt_bal;
+//          if(currt_bal < 0 ){
+//             jQuery('.current_bal').val(0);
+//             jQuery('.current_bal_txt').text(0);
 
-           // jQuery('.cur_bal_check_box').css('display','none');
-           // jQuery('.cur_bal_check_box').prop('checked',false);
-        }
-        else {
-            jQuery('.current_bal').val(currt_bal);
-            jQuery('.current_bal_txt').text(currt_bal);
-            // jQuery('.cur_bal_check_box').css('display','block');
-            // jQuery('.cur_bal_check_box').prop('checked',true);
-        }
+//            // jQuery('.cur_bal_check_box').css('display','none');
+//            // jQuery('.cur_bal_check_box').prop('checked',false);
+//         }
+//         else {
+//             jQuery('.current_bal').val(currt_bal);
+//             jQuery('.current_bal_txt').text(currt_bal);
+//             // jQuery('.cur_bal_check_box').css('display','block');
+//             // jQuery('.cur_bal_check_box').prop('checked',true);
+//         }
 
-        if(jQuery('.cur_bal_check_box').attr('checked')){
-            var final_data =  bal + currt_bal;            
-        }  else {
-            var final_data = (prev_bal + current_bal) - paid;           
-        }
-        bal = (bal > 0)? bal: 0 ;
-        jQuery('.balance_pay').text(bal);
-        final_data = isNaN(final_data)? 0 : final_data;
-        jQuery('.return_amt').val(Math.round(final_data));
-        jQuery('.return_amt_txt').text(Math.round(final_data));      
-    });
+//         if(jQuery('.cur_bal_check_box').attr('checked')){
+//             var final_data =  bal + currt_bal;            
+//         }  else {
+//             var final_data = (prev_bal + current_bal) - paid;           
+//         }
+//         bal = (bal > 0)? bal: 0 ;
+//         jQuery('.balance_pay').text(bal);
+//         final_data = isNaN(final_data)? 0 : final_data;
+//         jQuery('.return_amt').val(Math.round(final_data));
+//         jQuery('.return_amt_txt').text(Math.round(final_data));      
+    //});
 
 
 
@@ -853,33 +838,6 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
   });
   //<-------End Delete Return Bill------->
 
-	
-	
-	
-	
-    //<-----After keydown submit using tab goto first text box in Return billing View in Retail Return--->
-  /*   jQuery(".return_print").on('keydown',  function(e) { 
-        var keyCode = e.keyCode || e.which; 
-
-        if (keyCode == 9) { 
-            e.preventDefault(); 
-            jQuery('.invoice_id').focus();
-        } 
-
-    }); */
-
-
-
-      //<-----After keydown submit using tab goto first text box in Return billing View in Wholesale Return--->
-    /* jQuery(".ws_return_print").on('keydown',  function(e) { 
-        var keyCode = e.keyCode || e.which; 
-
-        if (keyCode == 9) { 
-            e.preventDefault(); 
-            jQuery('.invoice_id').focus();
-        } 
-
-    }); */
 //<-------return quantity check ------>
     jQuery('.return_qty_ret').live('change',function(){
        
@@ -920,34 +878,6 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
         }
         
     });
-
-      /*Update Return Payment*/
-    // jQuery('#return_billing_container #return_update_payment').on('click', function() {
-      
-
-    //     var bill_invoice_url = bill_return.return_page;
-    //     jQuery('#lightbox').css('display','block');
-    //     jQuery.ajax({
-    //         type: "POST",
-    //         dataType : "json",
-    //         url: frontendajax.ajaxurl,
-    //         data: {
-    //             action : 'return_order',
-    //             data : jQuery('#return_billing_container :input').serialize()
-    //         },
-    //         success: function (data) {
-    //             clearPopup();
-    //             popItUp('Success', 'Successfully Updated!');
-    //             jQuery('#lightbox').css('display','none');
-
-    //             window.location = bill_invoice_url+'&id='+data.invoice_id;
-
-    //         }
-    //     });
-        
-    // });
-
-
 
     jQuery('.print_bill').live('click',function() {
         var inv_id = jQuery(this).parent().parent().find('.invoice_id').val();
@@ -1062,14 +992,14 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
         var bill_update_url = bill_return_view.returnview;
         jQuery('#lightbox').css('display','block');
         jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                action : 'update_return',
+            type        : "POST",
+            dataType    : "json",
+            url         : frontendajax.ajaxurl,
+            data        : {
+                action  : 'update_return',
                 search_inv_id : jQuery(".return_inv_id").val(),
-                data   : jQuery('#billing_return :input').serialize(),
-                year   : jQuery( ".year" ).val(),
+                data    : jQuery('#billing_return :input').serialize(),
+                year    : jQuery( ".year" ).val(),
 
             },
             success: function (data) {
@@ -1086,9 +1016,6 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
             alert("Empty Bill Can't Submit!!!");
         }
     });
-
-
-
 
 });
 
@@ -1144,7 +1071,7 @@ function populateSelect2(selector, v) {
             jQuery('.retail_igst_percentage').val(ui.item.igst);
             jQuery('.retail_cess_percentage').val(ui.item.cess_percentage);
 
-           var selector = jQuery(this);
+            var selector = jQuery(this);
             jQuery.ajax({
                 type: "POST",
                 dataType : "json",
@@ -1201,7 +1128,7 @@ function populateSelect2(selector, v) {
             }
         }
     });
-jQuery('.payment_amount').trigger('change');
+paymentOperations();
 }
 
 
@@ -1291,8 +1218,7 @@ function rowCalculate() {
     
     jQuery('.fsub_total').val(Math.round(sub_tot));
     //jQuery('.paid_amount').val(Math.round(sub_tot));
-    jQuery('.paid_amount').trigger('change');
-    payment_calculation();
+    paymentOperations();
     //individualBillPaidCalculation();
     //addTotalToDue();
 
@@ -1393,9 +1319,9 @@ function deleteDueCash(uniquename){
 }
 function customerBalance(customer_id = 0){
     jQuery.ajax({
-        type: "POST",
-        dataType : "json",
-        url: frontendajax.ajaxurl,
+        type                : "POST",
+        dataType            : "json",
+        url                 : frontendajax.ajaxurl,
         data: {
             id              : customer_id,
             bill_id         : jQuery('.invoice_id').val(),
@@ -1412,45 +1338,45 @@ function customerBalance(customer_id = 0){
     });
 }
 
-function duepaid_fun(customer_id = 0){
-jQuery.ajax({
-        type: "POST",
-        dataType : "json",
-        url: frontendajax.ajaxurl,
-        data: {
-            id                  : customer_id,
-            action              :'DuePaid',
-            type                : 'retail',
-            reference_id        : jQuery('.reference_id').val(),
-            reference_screen    : jQuery('.reference_screen').val(),
-        },
-         success: function (data) {
-            var due_data = data.due_data;
-            jQuery.each( due_data, function(a,b) {
-                //console.log(parseFloat(b.sale_id));
-                if(b.final_bal != '0.00' && parseFloat(b.sale_id) != parseFloat(jQuery('.invoice_id').val())){ 
-                    var existing_count  = parseInt( jQuery('#due_tab tr').length );
-                    var current_row     = existing_count + 1; 
-                    var tab_data = '<tr class="due_data"><td style="padding:5px;">' + b.sale_id + '<input type="hidden" name="due_detail['+current_row+'][due_id]" value="'+b.sale_id+'" style="width:20px;" class="due_id"/><input type="hidden" name="due_detail['+current_row+'][due_search_id]" value="'+b.search_id+'" style="width:20px;" class="due_search_id"/><input type="hidden" name="due_detail['+current_row+'][due_year]" value="'+b.year+'" style="width:20px;" class="due_year"/><input type="hidden" name="due_detail['+current_row+'][type_payment]" class="type_payment" value="due"/></td><td style="padding:5px;">' + b.final_bal + '<input type="hidden" name="due_detail['+current_row+'][due_amount]" value="'+b.final_bal+'" style="width:20px;" class="due_amount"/></td><td style="padding:5px;"><input type="text" name="due_detail['+current_row+'][paid_due]" class="paid_due" value="" style="width: 74px;" onkeypress="return isNumberKey(event)"/><input type="hidden" name="paid_due_hidden" class="paid_due_hidden" value="0"/></td><td><table class="duePaymentType"></table></td></tr>';
-                    jQuery('#due_tab').append(tab_data);
-                }
-            });   
-            //individualBillPaidCalculation();
-        }
-    });
-}
+// function duepaid_fun(customer_id = 0){
+//     jQuery.ajax({
+//         type: "POST",
+//         dataType : "json",
+//         url: frontendajax.ajaxurl,
+//         data: {
+//             id                  : customer_id,
+//             action              :'DuePaid',
+//             type                : 'retail',
+//             reference_id        : jQuery('.reference_id').val(),
+//             reference_screen    : jQuery('.reference_screen').val(),
+//         },
+//          success: function (data) {
+//             var due_data = data.due_data;
+//             jQuery.each( due_data, function(a,b) {
+//                 //console.log(parseFloat(b.sale_id));
+//                 if(b.final_bal != '0.00' && parseFloat(b.sale_id) != parseFloat(jQuery('.invoice_id').val())){ 
+//                     var existing_count  = parseInt( jQuery('#due_tab tr').length );
+//                     var current_row     = existing_count + 1; 
+//                     var tab_data = '<tr class="due_data"><td style="padding:5px;">' + b.sale_id + '<input type="hidden" name="due_detail['+current_row+'][due_id]" value="'+b.sale_id+'" style="width:20px;" class="due_id"/><input type="hidden" name="due_detail['+current_row+'][due_search_id]" value="'+b.search_id+'" style="width:20px;" class="due_search_id"/><input type="hidden" name="due_detail['+current_row+'][due_year]" value="'+b.year+'" style="width:20px;" class="due_year"/><input type="hidden" name="due_detail['+current_row+'][type_payment]" class="type_payment" value="due"/></td><td style="padding:5px;">' + b.final_bal + '<input type="hidden" name="due_detail['+current_row+'][due_amount]" value="'+b.final_bal+'" style="width:20px;" class="due_amount"/></td><td style="padding:5px;"><input type="text" name="due_detail['+current_row+'][paid_due]" class="paid_due" value="" style="width: 74px;" onkeypress="return isNumberKey(event)"/><input type="hidden" name="paid_due_hidden" class="paid_due_hidden" value="0"/></td><td><table class="duePaymentType"></table></td></tr>';
+//                     jQuery('#due_tab').append(tab_data);
+//                 }
+//             });   
+//             //individualBillPaidCalculation();
+//         }
+//     });
+// }
 
-function addTotalToDue(){
-    jQuery('.current_paid_row').remove();
-    var year          = jQuery('.year').val();
-    var inv_id        = jQuery('.inv_id').val();
-    var invoice_id    = jQuery('.invoice_id').val();
-    var amount        = jQuery('.fsub_total').val();
-    var existing_count  = parseInt( jQuery('#due_tab tr').length );
-    var current_row     = existing_count + 1;
-    var tab_data = '<tr class="due_data current_paid_row"><td style="padding:5px;">' + invoice_id + '<input type="hidden" name="due_detail['+current_row+'][due_id]" value="'+invoice_id+'" style="width:20px;" class="due_id"/><input type="hidden" name="due_detail['+current_row+'][due_search_id]" value="'+inv_id+'" style="width:20px;" class="due_search_id"/><input type="hidden" name="due_detail['+current_row+'][due_year]" value="'+year+'" style="width:20px;" class="due_year"/><input type="hidden" name="due_detail['+current_row+'][type_payment]" class="type_payment" value="current"/></td><td style="padding:5px;">' + amount + '<input type="hidden" name="due_detail['+current_row+'][due_amount]" value="'+amount+'" style="width:20px;" class="due_amount"/></td><td style="padding:5px;"><input type="text" name="due_detail['+current_row+'][paid_due]" class="paid_due" value="" style="width: 74px;" onkeypress="return isNumberKey(event)"/><input type="hidden" name="paid_due_hidden" class="paid_due_hidden" value="0"/></td><td><table class="duePaymentType"></table></td></tr>';
-    jQuery('#due_tab').prepend(tab_data);
-}
+// function addTotalToDue(){
+//     jQuery('.current_paid_row').remove();
+//     var year          = jQuery('.year').val();
+//     var inv_id        = jQuery('.inv_id').val();
+//     var invoice_id    = jQuery('.invoice_id').val();
+//     var amount        = jQuery('.fsub_total').val();
+//     var existing_count  = parseInt( jQuery('#due_tab tr').length );
+//     var current_row     = existing_count + 1;
+//     var tab_data = '<tr class="due_data current_paid_row"><td style="padding:5px;">' + invoice_id + '<input type="hidden" name="due_detail['+current_row+'][due_id]" value="'+invoice_id+'" style="width:20px;" class="due_id"/><input type="hidden" name="due_detail['+current_row+'][due_search_id]" value="'+inv_id+'" style="width:20px;" class="due_search_id"/><input type="hidden" name="due_detail['+current_row+'][due_year]" value="'+year+'" style="width:20px;" class="due_year"/><input type="hidden" name="due_detail['+current_row+'][type_payment]" class="type_payment" value="current"/></td><td style="padding:5px;">' + amount + '<input type="hidden" name="due_detail['+current_row+'][due_amount]" value="'+amount+'" style="width:20px;" class="due_amount"/></td><td style="padding:5px;"><input type="text" name="due_detail['+current_row+'][paid_due]" class="paid_due" value="" style="width: 74px;" onkeypress="return isNumberKey(event)"/><input type="hidden" name="paid_due_hidden" class="paid_due_hidden" value="0"/></td><td><table class="duePaymentType"></table></td></tr>';
+//     jQuery('#due_tab').prepend(tab_data);
+// }
 
  
 function Capital(str){
@@ -1495,4 +1421,65 @@ function callGSTChange(gst_type='') {
     jQuery('.igst_display').addClass('no_display');
     jQuery('.nogst_exclude').addClass('no_display');
   }
+}
+
+
+//New payment 
+function totalPayment(){
+    var paid_tot = 0.00;
+    jQuery('.payment_table').each(function() {  
+        var tot     = parseFloat(jQuery(this).find('.payment_amount').val());
+        tot         = isNaN(tot) ? 0.00 : tot ;
+        paid_tot    = paid_tot + tot;       
+    });
+    var previous_paid = isNaN(parseFloat(jQuery('.previous_paid_total').val())) ? 0.00 : parseFloat(jQuery('.previous_paid_total').val());
+    var current_paid = paid_tot - previous_paid;
+    return current_paid;
+}
+
+function currentDue() {
+    var final_total  = isNaN(parseFloat(jQuery('.fsub_total').val())) ? 0.00 : parseFloat(jQuery('.fsub_total').val());
+    var final_total_hidden = isNaN(parseFloat(jQuery('.final_total_hidden').val())) ? 0.00 : parseFloat(jQuery('.final_total_hidden').val());
+    var current_due = isNaN(parseFloat(jQuery('.current_due').val())) ? 0.00 : parseFloat(jQuery('.current_due').val());
+
+
+    var current_due = (final_total - final_total_hidden) + current_due;
+    return current_due;
+}
+
+function paymentOperations(selector = false) {
+
+
+    var total_paid = totalPayment();
+    var current_due = currentDue();
+
+    var due_after_pay = total_paid - current_due;
+
+    if(selector != false) {
+        var payment_type    = jQuery(selector).find('.payment_type').val();
+        if( payment_type == 'card' || payment_type == 'internet' ||  payment_type == 'cheque' ){
+            if(due_after_pay > 0) {
+                alert("Please Enter Amount as less than Total amount!!!");
+                parseFloat(jQuery(selector).find('.payment_amount').val(0));
+                paymentOperations();
+                return true;
+            }
+        }
+    }
+    var current_bill_bal = (current_due - total_paid).toFixed(2);
+    if(current_bill_bal > 0) {
+        jQuery('.to_pay').val(0);
+        jQuery('.to_pay_text').text(0);
+        jQuery('.cod_amount').val(current_bill_bal);
+        jQuery('.balance_pay').val(current_bill_bal);
+        jQuery('.balance_pay_text').text(current_bill_bal);
+    } else {
+        jQuery('.cod_amount').val(0);
+        jQuery('.balance_pay').val(0);
+        jQuery('.balance_pay_text').text(0);
+        jQuery('.to_pay').val(Math.abs(current_bill_bal));
+        jQuery('.to_pay_text').text(Math.abs(current_bill_bal));
+
+    }
+console.log("asdsadsa");
 }
