@@ -130,10 +130,10 @@ margin-top: 0px;
 	font-size: 13px;
 
 }
-/*.new_payment_pay_type_cash,.new_payment_pay_type_card,.new_payment_pay_type_internet,.new_payment_pay_type_cheque,.new_payment_pay_type_credit,.cod_check {
+.new_payment_pay_type_cash,.new_payment_pay_type_card,.new_payment_pay_type_internet,.new_payment_pay_type_cheque,.new_payment_pay_type_credit,.cod_check {
 	width: 10px !important;
     height: 16px !important;
-}*/
+}
 .payment_cash,.payment_completed {
 	width: 10px !important;
     height: 16px !important;	

@@ -2067,7 +2067,9 @@ function product_delivery() {
 	$lot_detail_table = $wpdb->prefix. 'shc_sale_detail';
 	$currentdate_time = date('Y-m-d H:i:s');
 
-
+	// $delivey_table_data  = array(
+	// 	'sale_id'     => 
+	// );
 
 	$delivery_data = array(
 		'is_delivery' 		=> $delivery,

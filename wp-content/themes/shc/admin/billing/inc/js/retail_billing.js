@@ -1089,6 +1089,7 @@ function populateSelect2(selector, v) {
             }); 
 
             console.log( "id: " + ui.item.id);
+            paymentOperations();
         },
         response: function(event, ui) {
             if (ui.content.length == 1)
@@ -1109,7 +1110,7 @@ function populateSelect2(selector, v) {
                 jQuery('.retail_igst_percentage').val(ui.content[0].igst);
                 jQuery('.retail_cess_percentage').val(ui.content[0].cess_percentage);
 
-               var selector = jQuery(this);
+                var selector = jQuery(this);
                 jQuery.ajax({
                     type: "POST",
                     dataType : "json",
@@ -1125,10 +1126,12 @@ function populateSelect2(selector, v) {
 
                     }
                 }); 
+                paymentOperations();
             }
+
         }
     });
-paymentOperations();
+
 }
 
 
@@ -1408,21 +1411,13 @@ function ReturnPaymentTypeCalculation(){
 function callGSTChange(gst_type='') {
   if(gst_type == 'cgst') {
     jQuery('.cgst_display').removeClass('no_display');
-    jQuery('.nogst_exclude').removeClass('no_display');
     jQuery('.igst_display').addClass('no_display');
   }
   if(gst_type == 'igst') {
     jQuery('.igst_display').removeClass('no_display');
-    jQuery('.nogst_exclude').removeClass('no_display');
     jQuery('.cgst_display').addClass('no_display');
-  }
-  if(gst_type == 'no_gst') {
-    jQuery('.cgst_display').addClass('no_display');
-    jQuery('.igst_display').addClass('no_display');
-    jQuery('.nogst_exclude').addClass('no_display');
   }
 }
-
 
 //New payment 
 function totalPayment(){
@@ -1433,6 +1428,8 @@ function totalPayment(){
         paid_tot    = paid_tot + tot;       
     });
     var previous_paid = isNaN(parseFloat(jQuery('.previous_paid_total').val())) ? 0.00 : parseFloat(jQuery('.previous_paid_total').val());
+    console.log(previous_paid);
+
     var current_paid = paid_tot - previous_paid;
     return current_paid;
 }
@@ -1449,10 +1446,10 @@ function currentDue() {
 
 function paymentOperations(selector = false) {
 
-
+console.log("asdsadsa");
     var total_paid = totalPayment();
     var current_due = currentDue();
-
+console.log(total_paid);
     var due_after_pay = total_paid - current_due;
 
     if(selector != false) {
@@ -1481,5 +1478,5 @@ function paymentOperations(selector = false) {
         jQuery('.to_pay_text').text(Math.abs(current_bill_bal));
 
     }
-console.log("asdsadsa");
+
 }

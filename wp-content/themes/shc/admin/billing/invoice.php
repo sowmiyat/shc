@@ -182,8 +182,9 @@ else { ?>
                   <thead>
                     <tr>
                       <th style="width:50px;">S.No</th>
-                      <th style="width:50px;">DELIVERY</th>
+                      <th style="width:50px;">DELIVERY </th>
                       <th style="width:300px;">PRODUCT</th>
+                      <th style="width:300px;">Delivery List</th>
                       <th style="width:300px;">HSN CODE</th>
                       <th style="width:80px;">QTY</th>
                       <th style="width:120px;">MRP</th>
@@ -241,8 +242,11 @@ else { ?>
                                       }
                                     }?>" class="delivery_count" onkeypress="return isNumberKey(event)" style="width: 30px;margin-top: 5px;"/>
                           </td> <input type="hidden" value="<?php  echo $d_value->id; ?>" class="delivery_id" />
-                          <td>
+                           <td>
                             <span class="span_product_name"><?php echo $d_value->product_name; ?></span>
+                          </td>
+                          <td>
+                            <span class="span_product_name"></span>
                           </td>
                           <td>
                             <span class="span_hsn"><?php echo $d_value->hsn; ?></span>

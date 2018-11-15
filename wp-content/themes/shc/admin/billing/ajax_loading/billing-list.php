@@ -243,9 +243,9 @@
                                         <input type="hidden" name="year" class="year" value = "<?php echo $b_value->financial_year; ?>"/>
                                         <input type="hidden" name="invoice_id" class="invoice_id" value="<?php echo $b_value->inv_id; ?>"/>
                                     </td>
-                                    <td class="d-status" data-status-id="<?php echo $b_value->id; ?>"><?php echo $invoice_status; ?></td>
-                                    <td class="d-status" style="position:relative;"> <?php echo $payment_done; ?></td>
-                                    <td class="d-status" style="position:relative;"> <?php echo $margin_rate; ?></td>
+                                    <td class="c-status" data-status-id="<?php echo $b_value->id; ?>"><?php echo $invoice_status; ?></td>
+                                    <td class="c-status" style="position:relative;"> <?php echo $payment_done; ?></td>
+                                    <td class="c-status" style="position:relative;"> <?php echo $margin_rate; ?></td>
                                     <td style="width: 140px;">
                                         <a href="<?php echo admin_url('admin.php?page=invoice')."&id=${inv_id}&year=$b_value->financial_year"; ?>"  class="bill_view">View</a>/
                                          <a href="#" class="print_bill bill_view">Print</a>

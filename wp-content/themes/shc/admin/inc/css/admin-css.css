@@ -508,7 +508,7 @@ input[type=url], input[type=week],select,textarea
     background: #5f0fc7;
     color: #FFF;
 }
-.d-status span{
+.c-status span{
     border-radius: 4px;
     padding: 5px 6px;
     margin: 0 5px;

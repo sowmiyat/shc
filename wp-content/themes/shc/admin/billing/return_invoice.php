@@ -402,7 +402,7 @@ echo "<script language='javascript'>
                                                     <table class="table">
                                                         <tbody>
                                                             <tr>
-                                                                <th style="width:50%">Subtotal:</th>
+                                                                <th style="width:50%">Total:</th>
                                                                 <td>
                                                                     <div class="form-horizontal form-label-left input_mask" style="position:relative;">
                                                                         <div class="col-xs-12 col-md-8 col-lg-6 form-group has-feedback nopadding">
@@ -464,7 +464,7 @@ echo "<script language='javascript'>
                                                     if($display) {
                                                 ?>
                                                     <input type="hidden" name="id" class="invoice_id_new" value="<?php echo $bill_fdata->id; ?>">
-                                                    <button class="btn btn-success pull-right ret_subtab" id="return_submit"><i class="fa fa fa-edit"></i> Create Goods Return</button>
+                                                    <button class="btn btn-success pull-right ret_subtab" id="return_submit"><i class="fa fa-edit"></i> Create Goods Return</button>
                                                 <?php
                                                     } else {
                                                 ?>  <input type="hidden" name="return_id" class="return_id_new" value="<?php echo $_GET['return_id']; ?>">
