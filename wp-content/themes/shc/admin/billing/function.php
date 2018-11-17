@@ -2059,34 +2059,75 @@ function product_delivery() {
 
 	global $wpdb;
 	$params = array();
-	parse_str($_POST['data'], $params);
-	$id = $_POST['id'];
-	$delivery = $_POST['delivery'];
-	$delivery_count = $_POST['delivery_count'];
+	
+	$delivery_id 		= $_POST['delivery_id'];
+	$sale_id 			= $_POST['sale_id'];
+	$delivery_count 	= (int)$_POST['delivery_count'];
+	$delivery 			= $_POST['delivery'];
+	$lot_detail_table 	= $wpdb->prefix. 'shc_sale_detail';
+	$delivery_table 	= $wpdb->prefix. 'shc_delivery_details';
+	$currentdate_time 	= date('Y-m-d H:i:s');
 
-	$lot_detail_table = $wpdb->prefix. 'shc_sale_detail';
-	$currentdate_time = date('Y-m-d H:i:s');
-
-	// $delivey_table_data  = array(
-	// 	'sale_id'     => 
-	// );
+	$delivey_table_data  	= array(
+		'sale_id'     		=> $sale_id ,
+		'delivery_id' 		=> $delivery_id,
+		'delivery_count' 	=> $delivery_count,
+	);
+	if($delivery_count > 0 ){
+		$wpdb->insert($delivery_table,$delivey_table_data);
+	}
 
 	$delivery_data = array(
 		'is_delivery' 		=> $delivery,
 		'delivery_date' 	=> $currentdate_time,
 		'delivery_count'  	=> $delivery_count,
-		);
+	);
 
 
-	$wpdb->update($lot_detail_table,$delivery_data,array('id' => $id));
-var_dump($wpdb->last_query);
-	//$data['success'] = 1;
+	$data_update1 = "UPDATE $lot_detail_table set delivery_count =delivery_count+$delivery_count where id = $delivery_id";
+	$data_update2 = "UPDATE $lot_detail_table set is_delivery ='$delivery' where id = $delivery_id";
+	$data_update3 = "UPDATE $lot_detail_table set delivery_date ='$currentdate_time' where id = $delivery_id";
+	$wpdb->query($data_update1);
+	$wpdb->query($data_update2);
+	$wpdb->query($data_update3);
+
+	$data['success'] = 1;
 	echo json_encode($data);
 	die();
 
 }
 add_action( 'wp_ajax_product_delivery', 'product_delivery');
 add_action( 'wp_ajax_nopriv_product_delivery', 'product_delivery');
+
+function product_delivery_remove() {
+
+	global $wpdb;
+	$params = array();
+	
+	$delivery_id 		= $_POST['delivery_id'];
+	$sale_id 			= $_POST['sale_id'];
+	$delivery_count 	= (int)$_POST['delivery_count'];
+	$delivery 			= $_POST['delivery'];
+	$lot_detail_table 	= $wpdb->prefix. 'shc_sale_detail';
+	$delivery_table 	= $wpdb->prefix. 'shc_delivery_details';
+	$currentdate_time 	= date('Y-m-d H:i:s');
+	$wpdb->update($delivery_table,array('active'=>0),array('sale_id'=>$sale_id,'delivery_id'=>$delivery_id,'delivery_count'=>$delivery_count));
+	$delivery_data = array(
+		'is_delivery' 		=> $delivery,
+		'delivery_date' 	=> $currentdate_time,
+		'delivery_count'  	=> $delivery_count,
+	);
+
+
+	$data_update1 = "UPDATE $lot_detail_table set delivery_count =delivery_count-$delivery_count where id = $delivery_id";
+	$wpdb->query($data_update1);
+	$data['success'] = 1;
+	echo json_encode($data);
+	die();
+
+}
+add_action( 'wp_ajax_product_delivery_remove', 'product_delivery_remove');
+add_action( 'wp_ajax_nopriv_product_delivery_remove', 'product_delivery_remove');
 
 
 function ws_product_delivery() {

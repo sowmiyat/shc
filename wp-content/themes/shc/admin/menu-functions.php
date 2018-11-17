@@ -51,6 +51,7 @@ global $src_capabilities;
 	add_submenu_page('billing_list', 'Return Items', 'Return Items', $src_capabilities['billing']['permission']['add_return'], 'return_items', 'return_items' );
 	add_submenu_page('billing_list', 'Return Items List', 'Return Items List', $src_capabilities['billing']['permission']['return_list'], 'return_items_list', 'return_items_list' );
 	add_submenu_page('billing_list', '', '', $src_capabilities['billing']['permission']['return_list'], 'return_items_view', 'return_items_view' );
+		add_submenu_page('billing_list', 'Delivery List', 'Delivery List', $src_capabilities['billing']['permission']['cancel_invoice'], 'delivery_list', 'delivery_list' );
 	add_submenu_page('billing_list', 'Cancel Invoice list', 'Cancel Invoice list', $src_capabilities['billing']['permission']['cancel_invoice'], 'cancel_invoice', 'cancel_invoice' );
 	// add_submenu_page('billing_list', 'Cancel Return Items', 'Cancel Return Items', $src_capabilities['billing']['permission']['cancel_return_items'], 'cancel_return_items', 'cancel_return_items' );
 	// add_submenu_page('billing_list', '', '', $src_capabilities['billing']['permission']['cancel_return_items'], 'cancel_return_items_view', 'cancel_return_items_view' );
@@ -215,7 +216,9 @@ function return_items_list(){
 function return_items_view() {
 	require 'billing/return_invoice_view.php';
 }
-
+function delivery_list() {
+	require 'billing/listing/delivery_list.php';
+}
 function cancel_invoice() {
 	require 'billing/listing/cancel-billing-list.php';
 }

@@ -127,103 +127,102 @@ jQuery('.bill_submit').on('keydown',function(e){
 
 //delivery check products
 
-    jQuery(".check_all").click(function(){
-        var check_all = jQuery(".check_all").is(":checked");
-        if(check_all == '1'){
+    // jQuery(".check_all").click(function(){
+    //     var check_all = jQuery(".check_all").is(":checked");
+    //     if(check_all == '1'){
         
-            jQuery(".delivery_check").trigger("click"); 
-            jQuery(".delivery_check").attr('checked', true);    // if i remove this line then selectall for checkbox don't works   
-        } else {
-            jQuery(".delivery_check").trigger("click");
-            jQuery(".delivery_check").attr('checked', false);
+    //         jQuery(".delivery_check").trigger("click"); 
+    //         jQuery(".delivery_check").attr('checked', true);    // if i remove this line then selectall for checkbox don't works   
+    //     } else {
+    //         jQuery(".delivery_check").trigger("click");
+    //         jQuery(".delivery_check").attr('checked', false);
 
-        }          
-    });  
+    //     }          
+    // });  
 
-    jQuery('.delivery_check').live('click',function(){
-        var unit_count = parseFloat(jQuery(this).parent().parent().find('.unit_count').val());        
-        var delivery_check = jQuery(this).parent().parent().find('.delivery_check').is(":checked");
-        if(delivery_check){
-            var delivery        = 1;  
-            jQuery(this).parent().parent().find('.delivery_count').css("display","inline-block");
-            jQuery(this).parent().parent().find('.delivery_count').val(unit_count);
-            var delivery_count  = parseFloat(jQuery(this).parent().parent().find('.delivery_count').val());
-        } else {
-            var delivery        = 0;
-            jQuery(this).parent().parent().find('.delivery_count').css("display","none"); 
-            jQuery(this).parent().parent().find('.delivery_count').val(0);
-            var delivery_count  = 0;
-        }
-        var delivery_id = jQuery(this).parent().parent().find('.delivery_id').val();        
-        jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                action          :'product_delivery',
-                id              : delivery_id,
-                delivery        : delivery,
-                delivery_count  : delivery_count,
-            },
-            success: function (data) {
-                clearPopup();                     
-            }
-        });
-    });
+    // jQuery('.delivery_check').live('click',function(){
+    //     var unit_count = parseFloat(jQuery(this).parent().parent().find('.unit_count').val());        
+    //     var delivery_check = jQuery(this).parent().parent().find('.delivery_check').is(":checked");
+    //     if(delivery_check){
+    //         var delivery        = 1;  
+    //         jQuery(this).parent().parent().find('.delivery_count').css("display","inline-block");
+    //         jQuery(this).parent().parent().find('.delivery_count').val(unit_count);
+    //         var delivery_count  = parseFloat(jQuery(this).parent().parent().find('.delivery_count').val());
+    //     } else {
+    //         var delivery        = 0;
+    //         // jQuery(this).parent().parent().find('.delivery_count').css("display","none"); 
+    //         jQuery(this).parent().parent().find('.delivery_count').val(0);
+    //         var delivery_count  = 0;
+    //     }
+    //     var delivery_id = jQuery(this).parent().parent().find('.delivery_id').val();        
+    //     jQuery.ajax({
+    //         type: "POST",
+    //         dataType : "json",
+    //         url: frontendajax.ajaxurl,
+    //         data: {
+    //             action          :'product_delivery',
+    //             id              : delivery_id,
+    //             delivery        : delivery,
+    //             delivery_count  : delivery_count,
+    //         },
+    //         success: function (data) {
+    //             clearPopup();                     
+    //         }
+    //     });
+    // });
 
-     jQuery('.delivery_count').live('change',function(){
+    //  jQuery('.delivery_count').live('change',function(){
 
-        var delivery_count_check = parseFloat(jQuery(this).parent().parent().find('.delivery_count').val());
-        var unit_count = parseFloat(jQuery(this).parent().parent().find('.unit_count').val());
-        if( delivery_count_check > unit_count) { 
-            alert('please enter correct product count !!!');
-            jQuery(this).parent().parent().find('.delivery_count').val(unit_count);
+    //     var delivery_count_check = parseFloat(jQuery(this).parent().parent().find('.delivery_count').val());
+    //     var unit_count = parseFloat(jQuery(this).parent().parent().find('.unit_count').val());
+    //     if( delivery_count_check > unit_count) { 
+    //         alert('please enter correct product count !!!');
+    //         jQuery(this).parent().parent().find('.delivery_count').val(unit_count);
 
-        } 
-        if(delivery_count_check == 0){
-            jQuery(this).parent().parent().find('.delivery_check').attr('checked',false);
-        }
-            var delivery_check = jQuery(this).parent().parent().find('.delivery_check').is(":checked");
+    //     } 
+    //     if(delivery_count_check == 0){
+    //         jQuery(this).parent().parent().find('.delivery_check').attr('checked',false);
+    //     }
+    //         var delivery_check = jQuery(this).parent().parent().find('.delivery_check').is(":checked");
       
-        if(delivery_check){
+    //     if(delivery_check){
 
-            var delivery        = 1;  
-            jQuery(this).parent().parent().find('.delivery_count').css("display","inline-block");
-            var delivery_count  = parseFloat(jQuery(this).parent().parent().find('.delivery_count').val());
+    //         var delivery        = 1;  
+    //         jQuery(this).parent().parent().find('.delivery_count').css("display","inline-block");
+    //         var delivery_count  = parseFloat(jQuery(this).parent().parent().find('.delivery_count').val());
              
-        } else {
-            var delivery        = 0;
-            jQuery(this).parent().parent().find('.delivery_count').css("display","none");
-            jQuery(this).parent().parent().find('.delivery_count').val(0);
+    //     } else {
+    //         var delivery        = 0;
+    //         //jQuery(this).parent().parent().find('.delivery_count').css("display","none");
+    //         jQuery(this).parent().parent().find('.delivery_count').val(0);
 
-            var delivery_count  = 0;
-        }
-        var delivery_id = jQuery(this).parent().parent().find('.delivery_id').val();
+    //         var delivery_count  = 0;
+    //     }
+    //     var delivery_id = jQuery(this).parent().parent().find('.delivery_id').val();
      
-        jQuery.ajax({
-            type: "POST",
-            dataType : "json",
-            url: frontendajax.ajaxurl,
-            data: {
-                action          :'product_delivery',
-                id              : delivery_id,
-                delivery        : delivery,
-                delivery_count  : delivery_count,
-            },
-            success: function (data) {
-                clearPopup();     
+    //     jQuery.ajax({
+    //         type: "POST",
+    //         dataType : "json",
+    //         url: frontendajax.ajaxurl,
+    //         data: {
+    //             action          :'product_delivery',
+    //             id              : delivery_id,
+    //             delivery        : delivery,
+    //             delivery_count  : delivery_count,
+    //         },
+    //         success: function (data) {
+    //             clearPopup();     
 
-            }
-        });
+    //         }
+    //     });
 
-     });
+    //  });
 
 
 
 jQuery('#billing_mobile').live('keydown', function(e){
     var keyCode = e.keyCode || e.which; 
     if (keyCode == 40) { 
-
         if(jQuery('#ui-id-1').css('display') != 'block') {
             e.preventDefault();
             jQuery('.secondary_mobile').css('display', 'block');
@@ -1266,9 +1265,29 @@ function Return_rowCalculate() {
         sub_tot = sub_tot + parseFloat(jQuery(this).find('.return_sub_total').val());
         //console.log(sub_tot); 
     });
+        var previous_to_pay = parseFloat(jQuery('.previous_pay_to_bal').val());
+        var current_to_pay = parseFloat(previous_to_pay + sub_tot);
+
         jQuery('#rtn_fsub_total').val(sub_tot.toFixed(2));
         jQuery('#new_rtn_fsub_total').val(sub_tot.toFixed());
+
+        if(current_to_pay > 0){
+    jQuery('.return_to_bal_text').text(current_to_pay.toFixed(2));
+    jQuery('.return_to_bal').val(current_to_pay.toFixed(2));
+    jQuery('.return_to_check').attr('readonly',false);
+    jQuery('.return_alert').css('display','none');
+  }
+  else {
+    jQuery('.return_to_bal_text').text(0);
+    jQuery('.return_to_bal').val(0);
+    jQuery('.return_to_check').attr('checked',false);
+    jQuery('.return_to_check').attr('readonly',true);
+    jQuery('.return_alert').css('display','block');
+  }
+
+
         ReturnPaymentTypeCalculation();
+
 }
 function addFromProductControlRetail() {
     jQuery('.lot_id').val('');
@@ -1445,13 +1464,9 @@ function currentDue() {
 }
 
 function paymentOperations(selector = false) {
-
-console.log("asdsadsa");
     var total_paid = totalPayment();
     var current_due = currentDue();
-console.log(total_paid);
     var due_after_pay = total_paid - current_due;
-
     if(selector != false) {
         var payment_type    = jQuery(selector).find('.payment_type').val();
         if( payment_type == 'card' || payment_type == 'internet' ||  payment_type == 'cheque' ){
@@ -1479,4 +1494,114 @@ console.log(total_paid);
 
     }
 
+}
+
+
+jQuery(document).on('click','.check_all',function(){
+    var check_all = jQuery(".check_all").is(":checked");
+    if (confirm('Delivery All products???')) { 
+           if ( check_all == 1) {
+                deliveryAllCheck(check_all);
+                jQuery(this).attr('readonly',true);
+           }  else {
+            jQuery(".check_all").attr("checked",false);
+            jQuery(this).attr('readonly',false);
+           }
+    }
+   
+});
+
+jQuery(document).on('change','.delivery_count',function(){
+    jQuery(this).parent().parent().find('.delivery_submit').css('display','block');
+    var delivery_count_hidden      = parseFloat(jQuery(this).parent().parent().find('.delivery_count_hidden').val()); 
+    var delivery_id         = jQuery(this).parent().parent().find('.delivery_id').val(); 
+    var sale_id             = jQuery('.sale_id').val(); 
+    deliveryDatabaseAjaxForRemove(sale_id,delivery_id,delivery_count_hidden,0);
+
+});
+jQuery(document).on('click','.delivery_submit',function(){
+    deliveryCount(jQuery(this).parent().parent());
+});
+
+function deliveryAllCheck(checked = 0){ 
+    jQuery('.invoice_table').each(function() {  
+        var ordered_quality     = parseFloat(jQuery(this).find('.unit_count').val());
+        var deliveried_qty     = parseFloat(jQuery(this).find('.deliveried_qty').val());
+        var delivery_count      = parseFloat(jQuery(this).find('.delivery_count').val()); 
+        var delivery_id         = jQuery(this).find('.delivery_id').val(); 
+        var sale_id             = jQuery('.sale_id').val(); 
+        if(checked == 1){  
+            jQuery(this).find('.delivery_count').val(ordered_quality - deliveried_qty); 
+            jQuery(this).find('.delivery_count_hidden').val(ordered_quality - deliveried_qty); 
+            deliveryDatabaseAjax(sale_id,delivery_id,ordered_quality - deliveried_qty,1);
+        } else {
+            jQuery(this).find('.delivery_count').val(0); 
+            jQuery(this).find('.delivery_count_hidden').val(0); 
+            deliveryDatabaseAjax(sale_id,delivery_id,0,0);
+        }
+    });
+}
+
+function deliveryCount(selector = ''){ 
+    var ordered_quality     = parseFloat(selector.find('.unit_count').val());
+    var deliveried_qty      = parseFloat(selector.find('.deliveried_qty').val())
+    var delivery_count      = parseFloat(selector.find('.delivery_count').val()); 
+    var delivery_id         = selector.find('.delivery_id').val(); 
+    var sale_id             = jQuery('.sale_id').val(); 
+    var original_delivery      = delivery_count + deliveried_qty;
+    console.log(original_delivery);
+    if(original_delivery > ordered_quality){
+        alert('Enter delivery count as small as  ordered count !!!');
+    } 
+    else if(original_delivery == ordered_quality){ 
+        deliveryDatabaseAjax(sale_id,delivery_id,delivery_count,1,selector);
+        
+    } else{
+       deliveryDatabaseAjax(sale_id,delivery_id,delivery_count,0,selector);
+       
+    }
+
+}
+function deliveryDatabaseAjax(sale_id = '',delivery_id = '',delivery_count='',delivery= 0,selector = false){
+
+    jQuery.ajax({
+        type: "POST",
+        dataType : "json",
+        url: frontendajax.ajaxurl,
+        data: {
+            action          :'product_delivery',
+            sale_id         : sale_id,
+            delivery_id     : delivery_id,
+            delivery        : delivery,
+            delivery_count  : delivery_count,
+        },
+        success: function (data) {
+            clearPopup();  
+           selector.find('.delivery_submit').css('display','none'); 
+           var old_data = parseFloat(selector.find('.deliveried_qty').val());               
+           selector.find('.deliveried_qty_div').text(delivery_count + old_data);                
+           selector.find('.deliveried_qty').val(delivery_count + old_data);                
+           selector.find('.delivery_count').val('');                
+        }
+    });
+
+}
+
+function deliveryDatabaseAjaxForRemove(sale_id = '',delivery_id = '',delivery_count='',delivery= 0){
+
+    jQuery.ajax({
+        type: "POST",
+        dataType : "json",
+        url: frontendajax.ajaxurl,
+        data: {
+            action          :'product_delivery_remove',
+            sale_id         : sale_id,
+            delivery_id     : delivery_id,
+            delivery        : delivery,
+            delivery_count  : delivery_count,
+        },
+        success: function (data) {
+            clearPopup();                     
+        }
+    });
 }

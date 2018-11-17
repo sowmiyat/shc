@@ -4,7 +4,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'update'){
   echo "<script language='javascript'>
   jQuery(document).ready(function (argument) {
     
-    jQuery('.delivery_check').trigger('click');
+   jQuery('.check_all').trigger('click');
   });
 </script>";
 }
@@ -93,6 +93,9 @@ else { ?>
       display: none;
   }
 <?php }  ?>
+input[type="checkbox"][readonly] {
+        pointer-events: none;
+    }
 </style>
 <div class="">
   <div class="">
@@ -103,6 +106,7 @@ else { ?>
                   <h2>Invoice 
                       <input type="hidden" name="page" value="invoice">
                       <input type="text" name="id" class="invoice_id" value="<?php echo $invoice_id['inv_id']; ?>" required autocomplete="off"> 
+                      <input type="hidden" name="sale_id" class="sale_id" value="<?php echo $bill_id; ?>"> 
                      Year
                         <select name="year" class="year">
                             <?php   $current_year = date('Y');
@@ -181,24 +185,26 @@ else { ?>
                 <table class="table table-striped">
                   <thead>
                     <tr>
-                      <th style="width:50px;">S.No</th>
-                      <th style="width:50px;">DELIVERY </th>
-                      <th style="width:300px;">PRODUCT</th>
-                      <th style="width:300px;">Delivery List</th>
-                      <th style="width:300px;">HSN CODE</th>
-                      <th style="width:80px;">QTY</th>
-                      <th style="width:120px;">MRP</th>
-                      <th style="width:140px;">DISCOUNT</th>
-                      <th style="width:140px;">WHOLESALE AMOUNT</th>
-                      <th style="width:140px;">AMOUNT</th>
-                      <th style="width:90px;" class="cgst_display">CGST</th>
-                      <th style="width:90px;" class="cgst_display">CGST AMOUNT</th>
-                      <th style="width:90px;" class="cgst_display">SGST</th>
-                      <th style="width:90px;" class="cgst_display">SGST AMOUNT</th>
-                       <th style="width:90px;" class="igst_display">IGST</th>
-                      <th style="width:90px;" class="igst_display">IGST AMOUNT</th>
-                      <th style="width:90px;" class="">CESS</th>
-                      <th style="width:120px;">TOTAL</th>
+                      <th style="">S.No</th>
+<!--                       <th style="">DELIVERY </th> -->
+                      <th style="">PRODUCT</th>
+                      <th style="">Ordered Qty</th>
+                      <th style="">Delivery Qty</th>
+                      <th style="">Deliveried Qty</th>
+                      <th style="">HSN CODE</th>
+<!--                       <th style="">QTY</th> -->
+                      <th style="">MRP</th>
+                      <th style="">DISCOUNT</th>
+                      <th style="">WHOLESALE <br/> AMOUNT</th>
+                      <th style="">AMOUNT</th>
+                      <th style="" class="cgst_display">CGST</th>
+                      <th style="" class="cgst_display">CGST  <br/>AMOUNT</th>
+                      <th style="" class="cgst_display">SGST</th>
+                      <th style="" class="cgst_display">SGST <br/> AMOUNT</th>
+                       <th style="" class="igst_display">IGST</th>
+                      <th style="" class="igst_display">IGST  <br/>AMOUNT</th>
+                      <th style="" class="">CESS</th>
+                      <th style="">TOTAL</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -219,43 +225,58 @@ else { ?>
                     ?>
                         <tr <?php if($d_value->wholesale_price == $d_value->discount){
                                  echo 'style="color:#093cf5"';
-                                } ?>>
+                                } ?> class="invoice_table">
                           <td>
                             <div class="rowno"><?php echo $i; ?></div>
                           </td>
-                          <td class="delivery">
-                                <input type="checkbox" class="delivery_check" <?php echo $checked; ?>  style="width: 20px; height: 20px;"/>
-
-                                  <input type="text" value="<?php if($_GET['action'] == 'update'){
-                                            echo $d_value->sale_unit;
-                                            
-
-                                  } else { 
-                                    if($d_value->delivery_count > 0) {
-                                        echo $d_value->delivery_count;
-                                       
-
-
-                                      } 
-                                      else 
-                                        { echo '0'; 
-                                      }
-                                    }?>" class="delivery_count" onkeypress="return isNumberKey(event)" style="width: 30px;margin-top: 5px;"/>
-                          </td> <input type="hidden" value="<?php  echo $d_value->id; ?>" class="delivery_id" />
+                           <input type="hidden" value="<?php  echo $d_value->id; ?>" class="delivery_id" />
                            <td>
                             <span class="span_product_name"><?php echo $d_value->product_name; ?></span>
                           </td>
-                          <td>
-                            <span class="span_product_name"></span>
-                          </td>
-                          <td>
-                            <span class="span_hsn"><?php echo $d_value->hsn; ?></span>
-                          </td>
+                         
                           <td>
                             <span class="span_unit_count"><?php echo $d_value->sale_unit; 
                             ?><span>
                               <input type="hidden" value="<?php echo $d_value->sale_unit; ?>" name="unit_count" class="unit_count"/> 
                           </td>
+                          <td class="delivery">
+                                <input type="checkbox" class="delivery_check" <?php echo $checked; ?>  style="display:none;width: 20px; height: 20px;"/>
+                                 <input type="hidden" value="0" class="delivery_count_hidden" onkeypress="return isNumberKey(event)" style="width: 60px;margin-top: 5px;"/>
+                                  <input type="text" value="" class="delivery_count" onkeypress="return isNumberKey(event)" style="width: 60px;margin-top: 5px;"/>
+                                  <input type="button" name="delivery_submit" class="delivery_submit btn btn-primary" value="Ok" style="display: none">
+                          </td>
+                          <td class="">
+                           <!--  <?php if($_GET['action'] == 'update'){
+                                echo $d_value->sale_unit;
+                                } else { 
+                                  if($d_value->delivery_count > 0) {
+                                      echo $d_value->delivery_count;
+                                    } 
+                                    else 
+                                      { echo '0'; 
+                                    }
+                              }?> -->
+                              <span class="deliveried_qty_div"><?php 
+                                  if($d_value->delivery_count > 0) {
+                                      echo $d_value->delivery_count;
+                                    } 
+                                    else {
+                                      echo 0;
+                                    }
+                              ?></span>
+                              <input type="hidden" name="deliveried_qty" class="deliveried_qty" value="<?php 
+                                  if($d_value->delivery_count > 0) {
+                                      echo $d_value->delivery_count;
+                                    } 
+                                    else {
+                                      echo 0;
+                                    }
+                              ?>" >
+                          </td>
+                          <td>
+                            <span class="span_hsn"><?php echo $d_value->hsn; ?></span>
+                          </td>
+                          
                           <td>
                             <span class="span_unit_price"><?php echo $d_value->unit_price; ?><span>
                           </td> 

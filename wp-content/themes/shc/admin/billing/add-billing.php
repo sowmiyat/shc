@@ -260,7 +260,7 @@ else { ?>
 							</div>
 							<div class="col-md-4 col-sm-4 col-xs-12">
 								<div class="form-group">
-									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">GST Type
+									<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">Bill Type
 									</label>
 									<div class="col-md-6 col-sm-6 col-xs-12">
 										<input type="radio" name="gst_type" class="gst_type" value="cgst" <?php  if(isset($bill_fdata)){ if($bill_fdata->gst_type == 'cgst') { echo 'checked'; }} else { echo 'checked'; }?>>CGST/SGST

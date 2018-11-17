@@ -1,4 +1,4 @@
-<script type="text/javascript">
+cuscript type="text/javascript">
 if(!!window.performance && window.performance.navigation.type === 2)
 {
     console.log('Reloading');
@@ -180,7 +180,10 @@ echo "<script language='javascript'>
                         .billing-structure .balance_amount {
                             font-weight: bold;
                         }
-
+                        .return_to_check{
+                            width: 10px !important;
+                            height: 16px !important;
+                        }
 
                     </style>
                     <div class="row">
@@ -393,11 +396,11 @@ echo "<script language='javascript'>
                                         </div>
                                         <div class="row billing-repeater-extra">
                                             <!-- accepted payments column -->
-                                            <div class="col-xs-6">
+                                            <div class="col-xs-8">
 
                                             </div>
                                             <!-- /.col -->
-                                            <div class="col-xs-6">  
+                                            <div class="col-xs-4">  
                                                 <div class="table-responsive">
                                                     <table class="table">
                                                         <tbody>
@@ -413,7 +416,7 @@ echo "<script language='javascript'>
                                                                 </td>
                                                             </tr>
                                                             <tr>
-                                                                <td>
+                                                                <td colspan="<?php if( $gst_from =='cgst' ) { echo '13'; } else if($gst_from == 'igst') { echo '11'; } else { echo '9'; } ?>">
                                                                     <div>
                                                                         <table>
 
@@ -439,11 +442,19 @@ echo "<script language='javascript'>
                                                                     </div>
                                                                 </td>
                                                             </tr>
-                                                            <tr> 
+                                                            <!-- <tr> 
                                                                 <th <?php echo ($PaymentCredit == 'yes')? 'style="display:none"' : 'style="display:block"';  ?>>Pay Back: <input type="checkbox" name="retail_check_box" class="retail_check_box" style="width: 20px;height: 18px;" <?php if($update){ if(($return_check['returnCheckBox']->key_amount) != '0.00' ) { echo 'checked'; } }  else { if($PaymentCredit == 'yes'){ echo ''; }  else{ echo 'checked'; } } ?>>
-                                                                    <!-- <input type="hidden" name="cd_id" value="<?php// if($update){ //echo $return_check['returnCheckBox']->id; } else { echo '0'; } ?>">  -->
+                                                                     <input type="hidden" name="cd_id" value="<?php// if($update){ //echo $return_check['returnCheckBox']->id; } else { echo '0'; } ?>">  
                                                                 </th>
                                                             
+                                                            </tr> -->
+                                                            <tr> <?php $readonly = (checkBillBalance($sale_id)*-1) > 0 ? '' : 'readonly'; ?>
+                                                                <td><div class="">Return To  <input type="checkbox" name="return_to_check" id="return_to_check" class="return_to_check" <?php echo $readonly; ?>/></div></td>
+                                                                <td>
+                                                                    <input type="hidden" class="previous_pay_to_bal" value="<?php echo (checkBillBalance($invoice_id['invoice_id'])*-1) ?>">
+                                                                    <div class="return_to_bal_text"><?php echo (checkBillBalance($invoice_id['invoice_id'])*-1) > 0 ? (checkBillBalance($invoice_id['invoice_id'])*-1) : 0;  ?></div>
+                                                                    <input type="hidden" name="return_to_bal" value="<?php echo (checkBillBalance($invoice_id['invoice_id'])*-1) ?>" class="return_to_bal">
+                                                                </td>
                                                             </tr>
 
                                                         </tbody>
@@ -451,12 +462,25 @@ echo "<script language='javascript'>
                                                     
                                                 </div>
                                             </div>
-                                            <?php if($PaymentCredit == 'yes'){
-                                                      echo "<span style='width:62%;font-size:20px;font-weight:900px;margin-left:250px;'>Product purchase on Credit.Do not Pay back!!!</span>";
-                                                   } 
+                                         <?php //if($PaymentCredit == 'yes'){
+                                            //           echo "<span style=''>Product purchase on Credit.Do not Pay back!!!</span>";
+                                            //        } 
                                              ?>
+                                             <style type="text/css">
+                                                 .return_alert_text{
+                                                    width:62%;font-size:20px;font-weight:900px;margin-left:250px;
+                                                 }
+                                             </style>
                                             <!-- /.col -->
-                                        </div>
+                                             <?php $display1  = 'style="display:none"';
+                                                 //$display = (checkBillBalance($sale_id)*-1) > 0 ? '' : 'style="display:block"'; ?>
+                                                <div class="return_alert" <?php echo $display1; ?>>
+                                                    <div class="return_alert_text">
+                                                         Product purchase on Credit.Do not Pay back!!!
+                                                    </div>
+                                                </div>
+                                            
+                                        
                                         <!-- this row will not appear when printing -->
                                         <div class="row no-print">
                                             <div class="col-xs-12">

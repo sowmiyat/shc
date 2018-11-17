@@ -132,7 +132,9 @@ as final_ws_sale group by final_ws_sale.lot_id )
 as report 
 left join ${lot_table} as 
 lot on report.lot_id=lot.id WHERE report.total_unit > 0 ${condition}";
-
+echo "<pre>";
+var_dump($query);
+echo "<pre>";
 		    $total_query        = "SELECT COUNT(1) FROM (${query}) AS combined_table";
 
 	        $status_query       = "SELECT SUM(cgst_value) as total_cgst,sum(total_unit) as sold_qty,sum(total) as sub_tot,sum(amt) as tot_amt FROM (${query}) AS combined_table";
