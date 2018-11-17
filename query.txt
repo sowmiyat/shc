@@ -1,0 +1,83 @@
+SELECT report.*,lot.brand_name,lot.product_name,lot.hsn from (
+    SELECT (sum(final_ws_sale.bal_cgst)) as cgst_value, 
+    (sum(final_ws_sale.bal_total)) as total, 
+    (sum(final_ws_sale.bal_unit)) as total_unit, 
+    (sum(final_ws_sale.bal_amt)) as amt, 
+    final_ws_sale.gst as gst, 
+    final_ws_sale.lot_id from 
+    (
+        SELECT 
+        (case when return_table.return_cgst is null then sale_table.sale_cgst else sale_table.sale_cgst - return_table.return_cgst end ) as bal_cgst, 
+        (case when return_table.return_total is null then sale_table.sale_total else sale_table.sale_total - return_table.return_total end ) as bal_total, 
+        (case when return_table.return_unit is null then sale_table.sale_unit else sale_table.sale_unit - return_table.return_unit end) as bal_unit, 
+        (case when return_table.return_amt is null then sale_table.sale_amt else sale_table.sale_amt - return_table.return_amt end ) as bal_amt, sale_table.cgst as gst, 
+        sale_table.lot_id FROM ( 
+            SELECT sale_details.cgst,sale_details.lot_id, 
+            sum(case when sale.gst_type ='cgst' then  sale_details.cgst_value else 0.00 end) as sale_cgst, 
+            sum(case when sale.gst_type ='cgst' then  sale_details.sgst_value else 0.00 end) sale_sgst, 
+            sum(case when sale.gst_type ='igst' then  sale_details.igst_value else 0.00 end) sale_igst
+			sum(sale_details.cess_value) as cess,
+           	sum(sale_details.sub_total) as sale_total, 
+            sum(sale_details.sale_unit) as sale_unit, 
+            sum(sale_details.amt) as sale_amt 
+            FROM wp_shc_sale as sale 
+            left join 
+            wp_shc_sale_detail as sale_details 
+            on sale.`id`= sale_details.sale_id 
+            WHERE sale.active = 1 and sale_details.active = 1 AND DATE(sale.modified_at) >= date('2018-11-17') AND DATE(sale.modified_at) <= date('2018-11-17') group by sale_details.lot_id ) 
+        as sale_table left join ( 
+           SELECT ret_tab.* FROM  (
+       SELECT return_details.cgst,
+       return_details.lot_id, 
+       sum(case when gst_type = 'cgst' then return_details.cgst_value else 0.00 end) as return_cgst, 
+       sum(case when gst_type = 'cgst' then return_details.sgst_value else 0.00 end) as return_sgst, 
+	   sum(case when gst_type = 'igst' then return_details.igst_value else 0.00 end) as return_sgst, 
+       sum(return_details.sub_total) as return_total , 
+       sum(return_details.return_unit) as return_unit, 
+       sum(return_details.amt) as return_amt,
+       return_details.sale_id,return_details.gst_type from wp_shc_return_items_details as return_details  
+       WHERE return_details.active = 1 AND DATE(return_details.modified_at) >= date('2018-11-17') AND DATE(return_details.modified_at) <= date('2018-11-17')  
+       group by return_details.lot_id) as ret_tab 
+    left join wp_shc_sale as sale 
+    on sale.id = ret_tab.sale_id ) as return_table on sale_table.lot_id = return_table.lot_id union ALL
+SELECT 
+(case when ws_return_table.return_cgst is null then ws_sale_table.sale_cgst else ws_sale_table.sale_cgst - ws_return_table.return_cgst end ) as bal_cgst, 
+(case when ws_return_table.return_total is null then ws_sale_table.sale_total else ws_sale_table.sale_total - ws_return_table.return_total end ) as bal_total, 
+(case when ws_return_table.return_unit is null then ws_sale_table.sale_unit else ws_sale_table.sale_unit - ws_return_table.return_unit end) as bal_unit, 
+(case when ws_return_table.return_amt is null then ws_sale_table.sale_amt else ws_sale_table.sale_amt - ws_return_table.return_amt end ) as bal_amt, 
+ws_sale_table.cgst as gst, ws_sale_table.lot_id 
+FROM ( 
+    SELECT ws_sale_details.cgst,ws_sale_details.lot_id, 
+ 	sum(case when sale.gst_type ='cgst' then  ws_sale_details.cgst_value else 0.00 end) as sale_cgst, 
+    sum(case when sale.gst_type ='cgst' then  ws_sale_details.sgst_value else 0.00 end) sale_sgst, 
+    sum(case when sale.gst_type ='igst' then  ws_sale_details.igst_value else 0.00 end) sale_igst,
+	SUM(ws_sale_details.cess_value) as cess,
+    sum(ws_sale_details.sub_total) as sale_total, 
+    sum(ws_sale_details.sale_unit) as sale_unit, 
+    sum(ws_sale_details.amt) as sale_amt FROM 
+    wp_shc_ws_sale as sale 
+    left join 
+    wp_shc_ws_sale_detail as ws_sale_details
+    on  sale.`id`= ws_sale_details.sale_id 
+    WHERE sale.active = 1 and ws_sale_details.active = 1 AND DATE(sale.modified_at) >= date('2018-11-17') AND DATE(sale.modified_at) <= date('2018-11-17') group by ws_sale_details.lot_id
+) as ws_sale_table left join ( 
+   SELECT ws_ret_tab.return_total,ws_ret_tab.return_unit,ws_ret_tab.return_amt FROM  (
+       SELECT ws_return_details.cgst,
+       ws_return_details.lot_id, 
+       sum(case when ws_return_details.gst_type = 'cgst' then ws_return_details.cgst_value else 0.00 end) as return_cgst, 
+       sum(case when ws_return_details.gst_type = 'cgst' then ws_return_details.sgst_value else 0.00 end) as return_sgst, 
+	   sum(case when ws_return_details.gst_type = 'igst' then ws_return_details.igst_value else 0.00 end) as return_sgst, 
+       sum(ws_return_details.sub_total) as return_total , 
+       sum(ws_return_details.return_unit) as return_unit, 
+       sum(ws_return_details.amt) as return_amt,
+       ws_return_details.sale_id from wp_shc_ws_return_items_details as ws_return_details  
+       WHERE ws_return_details.active = 1 AND DATE(ws_return_details.modified_at) >= date('2018-11-17') AND DATE(ws_return_details.modified_at) <= date('2018-11-17')  
+       group by ws_return_details.lot_id) as ws_ret_tab 
+    left join wp_shc_ws_sale as sale 
+    on sale.id = ws_ret_tab.sale_id
+) as ws_return_table
+on ws_sale_table.lot_id = ws_return_table.lot_id ) 
+as final_ws_sale group by final_ws_sale.lot_id )
+as report 
+left join wp_shc_lots as 
+lot on report.lot_id=lot.id WHERE report.total_unit > 0
