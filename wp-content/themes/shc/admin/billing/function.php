@@ -704,7 +704,7 @@ function update_order() {
 		//'prev_bal' 					=> $params['balance_amount_val'],
 		'paid_amount' 				=> $params['paid_amount'],
 		'tot_due_amt' 				=> $params['return_amt'],
-		'pay_to_bal' 				=> $pay_to_bal,
+		//'pay_to_bal' 				=> $pay_to_bal,
 		'pay_to_check' 				=> $pay_to,
 		'cod_check' 				=> $cod_check,
 		'cod_amount' 				=> $cod_amount,
@@ -714,6 +714,8 @@ function update_order() {
 
 	
 	$wpdb->update($sale_table, $sale_update, array('id' => $invoice_id));
+	$query = "UPDATE {$sale_table} set pay_to_bal=pay_to_bal+$pay_to_bal where id = $invoice_id";
+	$wpdb->query($query);
 	$query = "SELECT * from ${sale_table} where id = ${invoice_id}";
 	$data1 = $wpdb->get_row($query);
 	$data['inv_id'] = $data1->inv_id;
@@ -721,6 +723,7 @@ function update_order() {
 	$data['id'] = $invoice_id;
 
 	$wpdb->update($payment_table, array('active' => 0), array('sale_id' => $data['id']));
+
 
 	//$wpdb->update($payment_table_display, array('active' => 0), array('sale_id' => $data['id']));	
 
@@ -737,9 +740,11 @@ function update_order() {
 				'customer_id'		=> $customer_id,
 				'payment_type'		=> $value['payment_type'],
 				'amount'			=> $value['payment_amount'],
-				'pay_to' 			=> $pay_to_bal,
+				'pay_to'            => $pay_to_bal
 				);
 			$wpdb->insert($payment_table, $payment_data);
+			
+
        }
 	}
 	if(isset($params['pay_amount_cheque'])) {
@@ -1847,7 +1852,7 @@ function create_return() {
 	$wpdb->insert($sale_table, $sale_update);
 	$return_id  = $wpdb->insert_id;
 	$data['id'] = $wpdb->insert_id;
-	$amount = (isset($params['retail_check_box']))? $params['rtn_fsub_total'] : 0;
+	$amount = (isset($params['return_to_check']))? $params['rtn_fsub_total'] : 0;
 	$wpdb->update($sale_table, array('key_amount' 	=>$amount),array( 'id' => $return_id));
 	$id_update = array(
 		'return_id' 			=>  'GR '.$good_return_id,
@@ -1931,9 +1936,12 @@ function update_return() {
 	$wpdb->update($sale_table, $sale_update ,array('id' =>$params['return_id']));
 
 	$data['id'] = $params['return_id'];
+	$id = $params['return_id'];
 //key_amount
 	$amount = (isset($params['retail_check_box']))? $params['rtn_fsub_total'] : 0;
-	$wpdb->update($sale_table, array('key_amount' 	=>$amount),array( 'id' => $params['return_id']));
+	$query = "UPDATE {$sale_table} set key_amount=key_amount+$amount where id= $id";
+			$wpdb->query($query);
+	//$wpdb->update($sale_table, array('key_amount' 	=>$amount),array( 'id' => $params['return_id']));
 	$wpdb->update($sale_detail_table, array('active' => 0), array('return_id' => $params['return_id']));
 
 	foreach ($params['customer_detail'] as $s_value) {

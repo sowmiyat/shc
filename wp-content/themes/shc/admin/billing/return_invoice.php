@@ -1,4 +1,4 @@
-cuscript type="text/javascript">
+<script type="text/javascript">
 if(!!window.performance && window.performance.navigation.type === 2)
 {
     console.log('Reloading');

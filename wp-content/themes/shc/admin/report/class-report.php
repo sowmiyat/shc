@@ -56,7 +56,9 @@
 
 		  
 			$query = "SELECT report.*,lot.brand_name,lot.product_name,lot.hsn from (
-    SELECT (sum(final_ws_sale.bal_cgst)) as cgst_value, 
+    SELECT (sum(final_ws_sale.bal_cgst)) as cgst_value,
+    (sum(final_ws_sale.bal_igst)) as igst_value, 
+    (sum(final_ws_sale.cess)) as cess,
     (sum(final_ws_sale.bal_total)) as total, 
     (sum(final_ws_sale.bal_unit)) as total_unit, 
     (sum(final_ws_sale.bal_amt)) as amt, 
@@ -65,13 +67,17 @@
     (
         SELECT 
         (case when return_table.return_cgst is null then sale_table.sale_cgst else sale_table.sale_cgst - return_table.return_cgst end ) as bal_cgst, 
+        (case when return_table.return_igst is null then sale_table.sale_igst else sale_table.sale_igst - return_table.return_igst end ) as bal_igst, 
+        (case when return_table.cess is null then sale_table.cess else sale_table.cess - return_table.cess end ) as cess,
         (case when return_table.return_total is null then sale_table.sale_total else sale_table.sale_total - return_table.return_total end ) as bal_total, 
         (case when return_table.return_unit is null then sale_table.sale_unit else sale_table.sale_unit - return_table.return_unit end) as bal_unit, 
         (case when return_table.return_amt is null then sale_table.sale_amt else sale_table.sale_amt - return_table.return_amt end ) as bal_amt, sale_table.cgst as gst, 
         sale_table.lot_id FROM ( 
             SELECT sale_details.cgst,sale_details.lot_id, 
-            sum(sale_details.cgst_value) as sale_cgst, 
-            sum(sale_details.sgst_value) sale_sgst, 
+            sum(case when sale.gst_type ='cgst' then  sale_details.cgst_value else 0.00 end) as sale_cgst, 
+            sum(case when sale.gst_type ='cgst' then  sale_details.sgst_value else 0.00 end) sale_sgst, 
+            sum(case when sale.gst_type ='igst' then  sale_details.igst_value else 0.00 end) sale_igst,
+			sum(sale_details.cess_value) as cess,
            	sum(sale_details.sub_total) as sale_total, 
             sum(sale_details.sale_unit) as sale_unit, 
             sum(sale_details.amt) as sale_amt 
@@ -84,26 +90,32 @@
            SELECT ret_tab.* FROM  (
        SELECT return_details.cgst,
        return_details.lot_id, 
-       sum(return_details.cgst_value) as return_cgst, 
-       sum(return_details.sgst_value) as return_sgst, 
+       sum(case when rt.gst_type = 'cgst' then return_details.cgst_value else 0.00 end) as return_cgst, 
+       sum(case when rt.gst_type = 'cgst' then return_details.sgst_value else 0.00 end) as return_sgst, 
+	   sum(case when rt.gst_type = 'igst' then return_details.igst_value else 0.00 end) as return_igst, 
+	   return_details.cess_value as cess,
        sum(return_details.sub_total) as return_total , 
        sum(return_details.return_unit) as return_unit, 
        sum(return_details.amt) as return_amt,
-       return_details.sale_id from ${return_table} as return_details  
+       return_details.sale_id from ${return_table} as return_details left join wp_shc_return_items as  rt on rt.id = return_details.return_id  
        WHERE return_details.active = 1 AND DATE(return_details.modified_at) >= date('$bill_from') AND DATE(return_details.modified_at) <= date('$bill_to')  
        group by return_details.lot_id) as ret_tab 
     left join ${sale} as sale 
     on sale.id = ret_tab.sale_id ) as return_table on sale_table.lot_id = return_table.lot_id union ALL
 SELECT 
 (case when ws_return_table.return_cgst is null then ws_sale_table.sale_cgst else ws_sale_table.sale_cgst - ws_return_table.return_cgst end ) as bal_cgst, 
+(case when ws_return_table.return_igst is null then ws_sale_table.sale_igst else ws_sale_table.sale_igst - ws_return_table.return_igst end ) as bal_igst,
+(case when ws_return_table.cess is null then ws_sale_table.cess else ws_sale_table.cess - ws_return_table.cess end ) as cess, 
 (case when ws_return_table.return_total is null then ws_sale_table.sale_total else ws_sale_table.sale_total - ws_return_table.return_total end ) as bal_total, 
 (case when ws_return_table.return_unit is null then ws_sale_table.sale_unit else ws_sale_table.sale_unit - ws_return_table.return_unit end) as bal_unit, 
 (case when ws_return_table.return_amt is null then ws_sale_table.sale_amt else ws_sale_table.sale_amt - ws_return_table.return_amt end ) as bal_amt, 
 ws_sale_table.cgst as gst, ws_sale_table.lot_id 
 FROM ( 
     SELECT ws_sale_details.cgst,ws_sale_details.lot_id, 
-    sum(ws_sale_details.cgst_value) as sale_cgst, 
-    sum(ws_sale_details.sgst_value) sale_sgst, 
+ 	sum(case when sale.gst_type ='cgst' then  ws_sale_details.cgst_value else 0.00 end) as sale_cgst, 
+    sum(case when sale.gst_type ='cgst' then  ws_sale_details.sgst_value else 0.00 end) sale_sgst, 
+    sum(case when sale.gst_type ='igst' then  ws_sale_details.igst_value else 0.00 end) sale_igst,
+	SUM(ws_sale_details.cess_value) as cess,
     sum(ws_sale_details.sub_total) as sale_total, 
     sum(ws_sale_details.sale_unit) as sale_unit, 
     sum(ws_sale_details.amt) as sale_amt FROM 
@@ -116,12 +128,14 @@ FROM (
    SELECT ws_ret_tab.* FROM  (
        SELECT ws_return_details.cgst,
        ws_return_details.lot_id, 
-       sum(ws_return_details.cgst_value) as return_cgst, 
-       sum(ws_return_details.sgst_value) as return_sgst, 
+       sum(case when wrt.gst_type = 'cgst' then ws_return_details.cgst_value else 0.00 end) as return_cgst, 
+       sum(case when wrt.gst_type = 'cgst' then ws_return_details.sgst_value else 0.00 end) as return_sgst, 
+	   sum(case when wrt.gst_type = 'igst' then ws_return_details.igst_value else 0.00 end) as return_igst, 
+       ws_return_details.cess_value as cess,
        sum(ws_return_details.sub_total) as return_total , 
        sum(ws_return_details.return_unit) as return_unit, 
        sum(ws_return_details.amt) as return_amt,
-       ws_return_details.sale_id from ${ws_return_table} as ws_return_details  
+       ws_return_details.sale_id from ${ws_return_table} as ws_return_details left join wp_shc_ws_return_items as wrt on wrt.id = ws_return_details.return_id   
        WHERE ws_return_details.active = 1 AND DATE(ws_return_details.modified_at) >= date('$bill_from') AND DATE(ws_return_details.modified_at) <= date('$bill_to')  
        group by ws_return_details.lot_id) as ws_ret_tab 
     left join ${ws_sale} as sale 
@@ -132,12 +146,10 @@ as final_ws_sale group by final_ws_sale.lot_id )
 as report 
 left join ${lot_table} as 
 lot on report.lot_id=lot.id WHERE report.total_unit > 0 ${condition}";
-echo "<pre>";
-var_dump($query);
-echo "<pre>";
+
 		    $total_query        = "SELECT COUNT(1) FROM (${query}) AS combined_table";
 
-	        $status_query       = "SELECT SUM(cgst_value) as total_cgst,sum(total_unit) as sold_qty,sum(total) as sub_tot,sum(amt) as tot_amt FROM (${query}) AS combined_table";
+	        $status_query       = "SELECT SUM(cgst_value) as total_cgst,SUM(igst_value) as total_igst,sum(total_unit) as sold_qty,sum(total) as sub_tot,sum(amt) as tot_amt FROM (${query}) AS combined_table";
 			$data['s_result']   = $wpdb->get_row( $status_query );
 		    $data['total']      = $wpdb->get_var( $total_query );
 
@@ -223,27 +235,33 @@ echo "<pre>";
 (select 
  full_return_tab.lot_id,
  sum(full_return_tab.return_cgst) as cgst_value,
+  sum(full_return_tab.return_igst) as igst_value,
+  sum(full_return_tab.cess) as cess,
  sum(full_return_tab.return_amt) as amt,
  sum(full_return_tab.return_unit) as return_unit,
  sum(full_return_tab.return_total) as subtotal from 
  (SELECT return_details.cgst,return_details.lot_id, 
-  sum(return_details.cgst_value) as return_cgst, 
-  sum(return_details.sgst_value) as return_sgst, 
+ 	sum(case when rt.gst_type = 'cgst' then return_details.cgst_value else 0.00 end) as return_cgst, 
+  	sum(case when rt.gst_type = 'cgst' then return_details.sgst_value else 0.00 end) as return_sgst, 
+	sum(case when rt.gst_type = 'igst' then return_details.igst_value else 0.00 end) as return_igst, 
+	return_details.cess_value as cess,
   sum(return_details.sub_total) as return_total , 
   sum(return_details.return_unit) as return_unit, 
   sum(return_details.amt) as return_amt 
-  FROM  ${return_table} as return_details 
+  FROM  ${return_table} as return_details left join wp_shc_return_items as rt on rt.id = return_details.return_id
   WHERE return_details.active = 1 AND DATE(return_details.modified_at) >= date('$bill_from') AND DATE(return_details.modified_at) <= date('$bill_to') group by return_details.lot_id
 union all
 SELECT 
   ws_return_details.cgst,
   ws_return_details.lot_id, 
-  sum(ws_return_details.cgst_value) as return_cgst, 
-  sum(ws_return_details.sgst_value) as return_sgst, 
+	sum(case when wrt.gst_type = 'cgst' then ws_return_details.cgst_value else 0.00 end) as return_cgst, 
+  	sum(case when wrt.gst_type = 'cgst' then ws_return_details.sgst_value else 0.00 end) as return_sgst, 
+	sum(case when wrt.gst_type = 'igst' then ws_return_details.igst_value else 0.00 end) as return_igst, 
+	ws_return_details.cess_value as cess, 
   sum(ws_return_details.sub_total) as return_total , 
   sum(ws_return_details.return_unit) as return_unit, 
   sum(ws_return_details.amt) as return_amt 
-  FROM  ${ws_return_table} as ws_return_details 
+  FROM  ${ws_return_table} as ws_return_details left join wp_shc_ws_return_items as wrt on wrt.id = ws_return_details.return_id 
   WHERE ws_return_details.active = 1 AND DATE(ws_return_details.modified_at) >= date('$bill_from') AND DATE(ws_return_details.modified_at) <= date('$bill_to') group by ws_return_details.lot_id
  ) as full_return_tab group by full_return_tab.lot_id) as r_table 
 left join 
@@ -252,7 +270,7 @@ left join
 
 		    $total_query        = "SELECT COUNT(1) FROM (${query}) AS combined_table";
 
-	        $status_query       = "SELECT SUM(cgst_value) as total_cgst,sum(return_unit) as sold_qty,sum(subtotal) as sub_tot,sum(amt) as tot_amt FROM (${query}) AS combined_table";
+	        $status_query       = "SELECT SUM(cgst_value) as total_cgst,SUM(igst_value) as total_igst,sum(return_unit) as sold_qty,sum(subtotal) as sub_tot,sum(amt) as tot_amt FROM (${query}) AS combined_table";
 			$data['s_result']   = $wpdb->get_row( $status_query );
 		    $data['total']      = $wpdb->get_var( $total_query );
 
@@ -339,13 +357,17 @@ left join
 		    }
 		    $query 				= "SELECT * from (
 		    		SELECT 
-					(sum(fin_tab.bal_cgst)) as cgst_value, 
+					(sum(fin_tab.bal_cgst)) as cgst_value,
+					(sum(fin_tab.bal_igst)) as igst_value, 
+					(sum(fin_tab.cess)) as cess, 
 					(sum(fin_tab.bal_total)) as total, 
 					(sum(fin_tab.bal_unit)) as total_unit, 
 					(sum(fin_tab.bal_amt)) as amt,fin_tab.gst as gst 
 				      
 					from (SELECT 
-							(case when return_table.return_cgst is null then sale_table.sale_cgst else sale_table.sale_cgst - return_table.return_cgst end ) as bal_cgst, 
+							(case when return_table.return_cgst is null then sale_table.sale_cgst else sale_table.sale_cgst - return_table.return_cgst end ) as bal_cgst,
+							(case when return_table.return_igst is null then sale_table.sale_igst else sale_table.sale_igst - return_table.return_igst end ) as bal_igst, 
+							(case when return_table.cess is null then sale_table.cess else sale_table.cess - return_table.cess end ) as cess,
 							(case when return_table.return_total is null then sale_table.sale_total else sale_table.sale_total - return_table.return_total end ) as bal_total,
 							(case when return_table.return_unit is null then sale_table.sale_unit else  sale_table.sale_unit - return_table.return_unit end) as bal_unit,
 							(case when return_table.return_amt is null then sale_table.sale_amt else sale_table.sale_amt - return_table.return_amt end ) as bal_amt,
@@ -353,8 +375,10 @@ left join
 							FROM 
 							(
 							SELECT sale_details.cgst,
-							    sum(sale_details.cgst_value) as sale_cgst, 
-							    sum(sale_details.sgst_value) sale_sgst, 
+							   sum(case when sale.gst_type ='cgst' then  sale_details.cgst_value else 0.00 end) as sale_cgst, 
+            					sum(case when sale.gst_type ='cgst' then  sale_details.sgst_value else 0.00 end) sale_sgst, 
+            					sum(case when sale.gst_type ='igst' then  sale_details.igst_value else 0.00 end) sale_igst,
+								sum(sale_details.cess_value) as cess, 
 							    sum(sale_details.sub_total) as sale_total, 
 							    sum(sale_details.sale_unit) as sale_unit,
 							    sum(sale_details.amt) as sale_amt FROM ${sale} as sale left join ${sale_details} as sale_details on sale.`id`= sale_details.sale_id WHERE sale.active = 1 and sale_details.active = 1 ${condition} group by sale_details.cgst
@@ -362,16 +386,21 @@ left join
 							left join
 							(
 							 SELECT return_details.cgst,
-							    sum(return_details.cgst_value) as return_cgst, 
-							    sum(return_details.sgst_value) as return_sgst, 
-							    sum(return_details.sub_total) as return_total ,
+								sum(case when sale.gst_type = 'cgst' then return_details.cgst_value else 0.00 end) as return_cgst, 
+       							sum(case when sale.gst_type = 'cgst' then return_details.sgst_value else 0.00 end) as return_sgst, 
+	   							sum(case when sale.gst_type = 'igst' then return_details.igst_value else 0.00 end) as return_igst, 
+	   							
+							    sum(return_details.cess_value) as cess,
+							    sum(return_details.sub_total) as return_total,
 							    sum(return_details.return_unit) as return_unit,
 							    sum(return_details.amt) as return_amt FROM ${sale} as sale left join ${return_table} as return_details on sale.`id`= return_details.sale_id WHERE sale.active = 1 and return_details.active = 1 ${condition} group by return_details.cgst
 							) as return_table 
 							on sale_table.cgst = return_table.cgst
 				union all 
 				                	SELECT 
-		(case when ws_return_table.return_cgst is null then ws_sale_table.sale_cgst else ws_sale_table.sale_cgst - ws_return_table.return_cgst end ) as bal_cgst, 
+		(case when ws_return_table.return_cgst is null then ws_sale_table.sale_cgst else ws_sale_table.sale_cgst - ws_return_table.return_cgst end ) as bal_cgst,
+		(case when ws_return_table.return_igst is null then ws_sale_table.sale_igst else ws_sale_table.sale_igst - ws_return_table.return_igst end ) as bal_igst,
+		(case when ws_return_table.cess is null then ws_sale_table.cess else ws_sale_table.cess - ws_return_table.cess end ) as cess, 
 		(case when ws_return_table.return_total is null then ws_sale_table.sale_total else ws_sale_table.sale_total - ws_return_table.return_total end ) as bal_total,
 		(case when ws_return_table.return_unit is null then ws_sale_table.sale_unit else  ws_sale_table.sale_unit - ws_return_table.return_unit end) as bal_unit,
 		(case when ws_return_table.return_amt is null then ws_sale_table.sale_amt else ws_sale_table.sale_amt - ws_return_table.return_amt end ) as bal_amt,
@@ -379,8 +408,10 @@ left join
 							FROM 
 							(
 							SELECT ws_sale_details.cgst,
-							    sum(ws_sale_details.cgst_value) as sale_cgst, 
-							    sum(ws_sale_details.sgst_value) sale_sgst, 
+ 								sum(case when sale.gst_type ='cgst' then  ws_sale_details.cgst_value else 0.00 end) as sale_cgst, 
+    							sum(case when sale.gst_type ='cgst' then  ws_sale_details.sgst_value else 0.00 end) sale_sgst, 
+    							sum(case when sale.gst_type ='igst' then  ws_sale_details.igst_value else 0.00 end) sale_igst,
+								SUM(ws_sale_details.cess_value) as cess, 
 							    sum(ws_sale_details.sub_total) as sale_total, 
 							    sum(ws_sale_details.sale_unit) as sale_unit,
 							    sum(ws_sale_details.amt) as sale_amt FROM ${ws_sale} as sale left join ${ws_sale_details} as ws_sale_details on sale.`id`= ws_sale_details.sale_id WHERE sale.active = 1 and ws_sale_details.active = 1 ${condition} group by ws_sale_details.cgst
@@ -388,8 +419,10 @@ left join
 							left join
 							(
 							 SELECT ws_return_details.cgst,
-							    sum(ws_return_details.cgst_value) as return_cgst, 
-							    sum(ws_return_details.sgst_value) as return_sgst, 
+							    sum(case when sale.gst_type = 'cgst' then ws_return_details.cgst_value else 0.00 end) as return_cgst, 
+       							sum(case when sale.gst_type = 'cgst' then ws_return_details.sgst_value else 0.00 end) as return_sgst, 
+	   							sum(case when sale.gst_type = 'igst' then ws_return_details.igst_value else 0.00 end) as return_igst, 
+       							sum(ws_return_details.cess_value) as cess,
 							    sum(ws_return_details.sub_total) as return_total ,
 							    sum(ws_return_details.return_unit) as return_unit,
 							    sum(ws_return_details.amt) as return_amt FROM ${ws_sale} as sale left join ${ws_return_table} as ws_return_details on sale.`id`= ws_return_details.sale_id WHERE sale.active = 1 and ws_return_details.active = 1 ${condition} group by ws_return_details.cgst
@@ -400,7 +433,7 @@ left join
 
 		    $total_query        = "SELECT COUNT(1) FROM (${query}) AS combined_table";
 
-	        $status_query       = "SELECT SUM(cgst_value) as total_cgst,sum(total_unit) as sold_qty,sum(total) as sub_tot,sum(amt) as tot_amt FROM (${query}) AS combined_table";
+	        $status_query       = "SELECT SUM(cgst_value) as total_cgst,SUM(igst_value) as total_igst,sum(total_unit) as sold_qty,sum(total) as sub_tot,sum(amt) as tot_amt FROM (${query}) AS combined_table";
 			$data['s_result']   = $wpdb->get_row( $status_query );
 
 		    $data['total']      = $wpdb->get_var( $total_query );

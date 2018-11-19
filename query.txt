@@ -15,7 +15,7 @@ SELECT report.*,lot.brand_name,lot.product_name,lot.hsn from (
             SELECT sale_details.cgst,sale_details.lot_id, 
             sum(case when sale.gst_type ='cgst' then  sale_details.cgst_value else 0.00 end) as sale_cgst, 
             sum(case when sale.gst_type ='cgst' then  sale_details.sgst_value else 0.00 end) sale_sgst, 
-            sum(case when sale.gst_type ='igst' then  sale_details.igst_value else 0.00 end) sale_igst
+            sum(case when sale.gst_type ='igst' then  sale_details.igst_value else 0.00 end) sale_igst,
 			sum(sale_details.cess_value) as cess,
            	sum(sale_details.sub_total) as sale_total, 
             sum(sale_details.sale_unit) as sale_unit, 
@@ -29,13 +29,13 @@ SELECT report.*,lot.brand_name,lot.product_name,lot.hsn from (
            SELECT ret_tab.* FROM  (
        SELECT return_details.cgst,
        return_details.lot_id, 
-       sum(case when gst_type = 'cgst' then return_details.cgst_value else 0.00 end) as return_cgst, 
-       sum(case when gst_type = 'cgst' then return_details.sgst_value else 0.00 end) as return_sgst, 
-	   sum(case when gst_type = 'igst' then return_details.igst_value else 0.00 end) as return_sgst, 
+       sum(case when rt.gst_type = 'cgst' then return_details.cgst_value else 0.00 end) as return_cgst, 
+       sum(case when rt.gst_type = 'cgst' then return_details.sgst_value else 0.00 end) as return_sgst, 
+	   sum(case when rt.gst_type = 'igst' then return_details.igst_value else 0.00 end) as return_igst, 
        sum(return_details.sub_total) as return_total , 
        sum(return_details.return_unit) as return_unit, 
        sum(return_details.amt) as return_amt,
-       return_details.sale_id,return_details.gst_type from wp_shc_return_items_details as return_details  
+       return_details.sale_id,rt.gst_type from wp_shc_return_items_details as return_details left join wp_shc_return_items as  rt on rt.id = return_details.return_id  
        WHERE return_details.active = 1 AND DATE(return_details.modified_at) >= date('2018-11-17') AND DATE(return_details.modified_at) <= date('2018-11-17')  
        group by return_details.lot_id) as ret_tab 
     left join wp_shc_sale as sale 
@@ -61,16 +61,16 @@ FROM (
     on  sale.`id`= ws_sale_details.sale_id 
     WHERE sale.active = 1 and ws_sale_details.active = 1 AND DATE(sale.modified_at) >= date('2018-11-17') AND DATE(sale.modified_at) <= date('2018-11-17') group by ws_sale_details.lot_id
 ) as ws_sale_table left join ( 
-   SELECT ws_ret_tab.return_total,ws_ret_tab.return_unit,ws_ret_tab.return_amt FROM  (
+   SELECT ws_ret_tab.* FROM  (
        SELECT ws_return_details.cgst,
        ws_return_details.lot_id, 
-       sum(case when ws_return_details.gst_type = 'cgst' then ws_return_details.cgst_value else 0.00 end) as return_cgst, 
-       sum(case when ws_return_details.gst_type = 'cgst' then ws_return_details.sgst_value else 0.00 end) as return_sgst, 
-	   sum(case when ws_return_details.gst_type = 'igst' then ws_return_details.igst_value else 0.00 end) as return_sgst, 
+       sum(case when wrt.gst_type = 'cgst' then ws_return_details.cgst_value else 0.00 end) as return_cgst, 
+       sum(case when wrt.gst_type = 'cgst' then ws_return_details.sgst_value else 0.00 end) as return_sgst, 
+	   sum(case when wrt.gst_type = 'igst' then ws_return_details.igst_value else 0.00 end) as return_igst, 
        sum(ws_return_details.sub_total) as return_total , 
        sum(ws_return_details.return_unit) as return_unit, 
        sum(ws_return_details.amt) as return_amt,
-       ws_return_details.sale_id from wp_shc_ws_return_items_details as ws_return_details  
+       ws_return_details.sale_id from wp_shc_ws_return_items_details as ws_return_details  left join wp_shc_ws_return_items as wrt on wrt.id = ws_return_details.return_id  
        WHERE ws_return_details.active = 1 AND DATE(ws_return_details.modified_at) >= date('2018-11-17') AND DATE(ws_return_details.modified_at) <= date('2018-11-17')  
        group by ws_return_details.lot_id) as ws_ret_tab 
     left join wp_shc_ws_sale as sale 

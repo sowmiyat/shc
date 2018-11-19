@@ -218,7 +218,8 @@ on full_sale_tab.customer_id = customer.cus_id
 as cus_full_detail GROUP by cus_full_detail.customer_id )
 AS ff  WHERE ff.customer_id != 0 ${condition}";
 
-
+echo "<pre>";
+var_dump($query);
 
 		    $total_query        = "SELECT COUNT(1) FROM (${query}) AS combined_table";
 		    $data['total']      = $wpdb->get_var( $total_query );
