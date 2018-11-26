@@ -417,8 +417,6 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
 //<------ Select Product ------>
 
   populateSelect2('.lot_id', 'old');
-
-
    jQuery('.retail_sub_unit').live('change keyup',function(){
 
         var unit = parseFloat(jQuery(this).parent().parent().find('.retail_sub_unit').val());
@@ -556,12 +554,9 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
                 addFromProductControlRetail();
                 jQuery('.product_control_error_retail').remove();
             }
-
             jQuery('.retail_sub_unit').trigger('change');
             rowCalculate();
-
-            //callGSTChange(jQuery('.gst_type').val());
-          
+            //callGSTChange(jQuery('.gst_type').val());         
          } 
        
         else {
@@ -771,7 +766,6 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
 
      /*Update Payment*/
     jQuery('#billing_container #update_payment').on('click', function(){
-
         var valid = jQuery(".billing_validation").valid();
         var prevent = jQuery(".form_submit_prevent_r_bill").val();
         if( valid ) {
@@ -802,8 +796,7 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
                 alert('Please Add Atleast One Product!!! Empty Bill Can'+"'"+'t Submit');
             }
         }
-        return false;
-        
+        return false;       
     });
 
 
@@ -839,8 +832,6 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
 
 //<-------return quantity check ------>
     jQuery('.return_qty_ret').live('change',function(){
-       
-
         var bal_qty =parseFloat(jQuery(this).parent().parent().find('.return_bal_check').val());
         var delivery_count =parseFloat(jQuery(this).parent().parent().find('.ret_delivery_qty').val());
 
@@ -850,30 +841,29 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
              alert('Enter Return quantity as below as avalible quantity!!!');
              jQuery(this).parent().parent().find('.return_qty_ret').val('0');
          } else{
-                if(delivery_count < return_qty){
-                    alert('Products Not Delivered!!!');
+            if(delivery_count < return_qty){
+                alert('Products Not Delivered!!!');
+                jQuery(this).parent().parent().find('.return_qty_ret').val('0');
+            }
+            else { 
+                if(  bal_qty < return_qty ){
+                    alert('Enter Return quantity as below as avalible quantity!!!');
                     jQuery(this).parent().parent().find('.return_qty_ret').val('0');
-                }
-                else { 
-                    if(  bal_qty < return_qty ){
-                        alert('Enter Return quantity as below as avalible quantity!!!');
-                        jQuery(this).parent().parent().find('.return_qty_ret').val('0');
-                        var balance = bal_qty - 1;
+                    var balance = bal_qty - 1;
+                } else {
+                    if(isNaN(return_qty)){
+                         alert('Enter Return quantity!!!');
+                         jQuery(this).parent().parent().find('.return_qty_ret').val('0');
+                         var balance = bal_qty - 1;
                     } else {
-                        if(isNaN(return_qty)){
-                             alert('Enter Return quantity!!!');
-                             jQuery(this).parent().parent().find('.return_qty_ret').val('0');
-                             var balance = bal_qty - 1;
-                        } else {
-                            var balance = bal_qty - return_qty;
-                        }
-                        
+                        var balance = bal_qty - return_qty;
                     }
-                    //console.log(balance);
-                    jQuery(this).parent().parent().find('.return_bal_qty_td').text(balance);
-                    jQuery(this).parent().parent().find('.return_bal').val(balance);
-                    Return_rowCalculate();
                 }
+                //console.log(balance);
+                jQuery(this).parent().parent().find('.return_bal_qty_td').text(balance);
+                jQuery(this).parent().parent().find('.return_bal').val(balance);
+                Return_rowCalculate();
+            }
         }
         
     });
@@ -882,7 +872,6 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
         var inv_id = jQuery(this).parent().parent().find('.invoice_id').val();
         var year = jQuery(this).parent().parent().find('.year').val();
         var datapass =   home_page.url+'invoice/?id='+inv_id+'&cur_year='+year;
-
         // billing_list_single
         var thePopup = window.open( datapass, "Billing Invoice","scrollbars=yes,menubar=0,location=0,top=50,left=300,height=700,width=950" );
         thePopup.print();  
@@ -894,7 +883,6 @@ jQuery( "#billing_customer, #billing_mobile" ).autocomplete ({
         var inv_id = jQuery(this).parent().parent().find('.invoice_id').val();
         var year = jQuery(this).parent().parent().find('.year').val();
         var datapass =   home_page.url+'delivery-print/?id='+inv_id+'&cur_year='+year;
-
         // billing_list_single
         var thePopup = window.open( datapass, "Billing Invoice","scrollbars=yes,menubar=0,location=0,top=50,left=300,height=700,width=950" );
         thePopup.print();  

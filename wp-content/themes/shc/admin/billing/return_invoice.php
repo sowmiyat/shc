@@ -468,7 +468,7 @@ echo "<script language='javascript'>
                                              ?>
                                              <style type="text/css">
                                                  .return_alert_text{
-                                                    width:62%;font-size:20px;font-weight:900px;margin-left:250px;
+                                                    width:62%;font-size:20px;font-weight:900px;margin-left:250px;color: #f10606;
                                                  }
                                              </style>
                                             <!-- /.col -->
@@ -476,7 +476,7 @@ echo "<script language='javascript'>
                                                  //$display = (checkBillBalance($sale_id)*-1) > 0 ? '' : 'style="display:block"'; ?>
                                                 <div class="return_alert" <?php echo $display1; ?>>
                                                     <div class="return_alert_text">
-                                                         Product purchase on Credit.Do not Pay back!!!
+                                                        Product purchase on Credit.Do not Pay back!!!
                                                     </div>
                                                 </div>
                                             

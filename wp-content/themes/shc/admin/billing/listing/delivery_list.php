@@ -103,7 +103,6 @@ jQuery(document).ready(function () {
     });
     
     jQuery('.filter-section input[type="text"]:last').live('keydown', function(e){
-
         if(jQuery('.jambo_table td a').length == 0 && jQuery(".next.page-numbers").length == 0 ) {
 
             var keyCode = e.keyCode || e.which; 
