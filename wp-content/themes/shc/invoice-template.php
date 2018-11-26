@@ -326,8 +326,8 @@ foreach ($payment_type as $p_value) {
             <td class=""><div class="text-right"><?php echo $g_data->sale_sgst; ?></div></td>
           </tr>
            <?php 
-           $total_tax = ( 2 * $g_data->sale_sgst) +$total_tax;
-           $gst_tot = $g_data->sale_sgst + $gst_tot;
+           $total_tax = ( 2 * $g_data->sale_sgst) + $total_tax;
+           $gst_tot   = $g_data->sale_sgst + $gst_tot;
 
         }
       } ?>
